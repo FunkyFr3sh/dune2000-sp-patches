@@ -1,0 +1,1800 @@
+RVA,label,comment
+000010B0,Ahandle::UNKNOWN_MovieCode,Ahandle::UNKNOWN_MovieCode
+000013F0,Ahandle::UNKNOWN2_MovieCode,Ahandle::UNKNOWN2_MovieCode
+00001740,fptc,fptc
+00001A20,__assert,__assert
+00001AB0,AudioInit(int),AudioInit(int)
+00001C40,__InitMovieSurface2,__InitMovieSurface2
+000023D0,SetVideoMode(int_int_int),SetVideoMode(int_int_int)
+000024D0,ResetVideoMode,ResetVideoMode
+00002670,Ddstuff::UNKNOWN_MovieCode,Ddstuff::UNKNOWN_MovieCode
+00002FF0,IsLocalIp bool (char *IP),IsLocalIp bool (char *IP)
+00003460,Movies::Play?_MovieCode,Movies::Play?_MovieCode
+00003AA0,AnimInit(void),AnimInit(void)
+00003AE0,VQA_403AE0,VQA_403AE0
+00003B00,VQA_403B00,VQA_403B00
+00003CC0,__InitMovieSurface,__InitMovieSurface
+00005000,Unvqtblc::UNKNOWN_MovieCode,Unvqtblc::UNKNOWN_MovieCode
+00005090,Unvqtblc::UNKNOWN2_MovieCode,Unvqtblc::UNKNOWN2_MovieCode
+00005510,Unvqtblc::UNKNOWN3_MovieCode,Unvqtblc::UNKNOWN3_MovieCode
+00005940,Unvqtblc::UNKNOWN4_MovieCode,Unvqtblc::UNKNOWN4_MovieCode
+00005B30,Unvqtblc::UNKNOWN5_MovieCode,Unvqtblc::UNKNOWN5_MovieCode
+000065E0,VQAClass::ctor,VQAClass::ctor
+000068C0,VQAClass::UNKNOWN,VQAClass::UNKNOWN
+00006930,VQAClass::UNKNOWN2,VQAClass::UNKNOWN2
+00006D10,VQAClass::UNKNOWN3,VQAClass::UNKNOWN3
+000070A0,VQAClass::UNKNOWN4,VQAClass::UNKNOWN4
+000070B0,VQAClass::UNKNOWN5,VQAClass::UNKNOWN5
+00007140,VQAClass::UNKNOWN6,VQAClass::UNKNOWN6
+00007180,VQAClass::UNKNOWN7,VQAClass::UNKNOWN7
+00007190,VQAClass::UNKNOWN8,VQAClass::UNKNOWN8
+000071C0,VQAClass::UNKNOWN9,VQAClass::UNKNOWN9
+00007490,Wnd_file::UNKNOWN_MovieCode,Wnd_file::UNKNOWN_MovieCode
+000074E0,Wnd_file::UNKNOWN2_MovieCode,Wnd_file::UNKNOWN2_MovieCode
+00007600,Wnd_file::UNKNOWN3_MovieCode,Wnd_file::UNKNOWN3_MovieCode
+000076B0,Wnd_file::UNKNOWN4_MovieCode,Wnd_file::UNKNOWN4_MovieCode
+00007780,Wnd_file::UNKNOWN5_MovieCode,Wnd_file::UNKNOWN5_MovieCode
+00007840,Wnd_file::UNKNOWN6_MovieCode,Wnd_file::UNKNOWN6_MovieCode
+00007D90,strstreambuf::strstreambuf(int),strstreambuf::strstreambuf(int)
+00008930,WOL::DebugString,WOL::DebugString
+00008970,WOL::OnServerBan?,WOL::OnServerBan?
+00008A20,WOL::OnBan?,WOL::OnBan?
+00008BA0,WOL::OnPage?,WOL::OnPage?
+00008C90,WOL::OnServerList?,WOL::OnServerList?
+00008F50,WOL::OnUpdateList,WOL::OnUpdateList
+00009150,WOL::OnFailedLogin? (bad password),WOL::OnFailedLogin? (bad password)
+000096B0,WOL::OnChannelCreate,WOL::OnChannelCreate
+00009A00,WOL::OnChannelJoin?,WOL::OnChannelJoin?
+0000A1C0,WOL::OnUserLeftChannel?,WOL::OnUserLeftChannel?
+0000A450,WOL::EndOfNamesList?,WOL::EndOfNamesList?
+0000A4D0,WOL::OnGameStart?,WOL::OnGameStart?
+0000A6B0,WOL::OnGameOptions?,WOL::OnGameOptions?
+0000A6F0,WOL::OnGameOptions2?,WOL::OnGameOptions2?
+0000A730,WOL::OnIncomingChatMes?,WOL::OnIncomingChatMes?
+0000ABB0,WOL::OnUserList?,WOL::OnUserList?
+0000B0E0,WOL::OnGameEnd? UNKNOW,WOL::OnGameEnd? UNKNOW
+0000BCA0,WOL::OnUserIP?,WOL::OnUserIP?
+0000BCD0,WOL::OnKick?,WOL::OnKick?
+0000BEE0,WOL::OnUNKNOWN Connect? motd?,WOL::OnUNKNOWN Connect? motd?
+0000C170,WOL::OnError,WOL::OnError
+0000C2A0,WOL::SetChatEvent(char),WOL::SetChatEvent(char)
+0000C2D0,WOL::SetupChat(int),WOL::SetupChat(int)
+0000C380,WOL::ShutDownChat(void),WOL::ShutDownChat(void)
+0000C3C0,WOL::CheckForUpdateS?,WOL::CheckForUpdateS?
+0000C460,WOL::ConnectToWestwoodChat(int_int),ConnectToWestwood_Chat(int_int)
+0000C795,WOL::ConnectToWestwoodChat,WOL::ConnectToWestwoodChat
+0000CDE0,WOL::DisconnectFromWOL,WOL::DisconnectFromWOL
+0000CFC0,WOL::ProcessWOLAPIMessages(void),WOL::ProcessWOLAPIMessages(void)
+0000D290,WOL::DisconnectFromLadderServer(void),WOL::DisconnectFromLadderServer(void)
+0000D2D0,WOL::SendGameResultsToServer(void),WOL::SendGameResultsToServer(void)
+0000DA7F,,FinishingPlace
+0000DB7A,,packet size
+0000DB81,,packet buffer
+0000DC20,WOL::JoinINetChannel,WOL::JoinINetChannel
+0000E290,WOL::JoinPrivateGame,WOL::JoinPrivateGame
+0000E5B0,WOL::CreateGameChannel,WOL::CreateGameChannel
+0000E8D0,WOL::CreateChatChannel,WOL::CreateChatChannel
+0000E9E0,WOL::LeaveINetChannel,WOL::LeaveINetChannel
+0000EC20,WOL::RequestChatChannels,WOL::RequestChatChannels
+0000EC30,WOL::RequestGameChannels,WOL::RequestGameChannels
+0000EC40,WOL::SendINetMsgToAll,WOL::SendINetMsgToAll
+0000F460,WOL::UpdateChannelList,WOL::UpdateChannelList
+0000FE50,WOL::UpdateUserList,WOL::UpdateUserList
+00010DB0,WOL::UpdateScreenUsers,WOL::UpdateScreenUsers
+00011580,WOL::ClearChannelsAndUserList,WOL::ClearChannelsAndUserList
+00011E70,IsCurrentlyShown bool,IsCurrentlyShown bool
+00011ED0,Get_UNKNON_StatusOfMenu,Get_UNKNON_StatusOfMenu
+00011F20,WOL::UpdateINetScreen,WOL::UpdateINetScreen
+00012330,WOL::AddButtonPageUserMenu?,WOL::AddButtonPageUserMenu?
+00012520,WOL::UpdateButtonPageUserMenu?,WOL::UpdateButtonPageUserMenu?
+00012570,WOL::Enable_UNKNOWN_ButtonInetLobby?,WOL::Enable_UNKNOWN_ButtonInetLobby?
+000126C0,WOL::EnableStartGameButtonInetLobby?,WOL::EnableStartGameButtonInetLobby?
+00012850,WOL::EnableBanButtonInetLobby?,WOL::EnableBanButtonInetLobby?
+000129A0,WOL::EnableKickButtonInetLobby?,WOL::EnableKickButtonInetLobby?
+00012C50,WOL::EnableAcceptButtonInetLobby?,WOL::EnableAcceptButtonInetLobby?
+00012DF0,WOL::UpdateSquelchButtonInetLobby?,WOL::UpdateSquelchButtonInetLobby?
+00012F60,WOL::Disable_UNKNOWN_ButtonInetLobby?,WOL::Disable_UNKNOWN_ButtonInetLobby?
+00012FF0,WOL::DisableStartGameButtonInetLobby?,WOL::DisableStartGameButtonInetLobby?
+00013190,WOL::DisableBanButtonInetLobby?,WOL::DisableBanButtonInetLobby?
+00013220,WOL::DisableKickButtonInetLobby?,WOL::DisableKickButtonInetLobby?
+00013330,WOL::DisableAcceptGameButtonInetLobby?,WOL::DisableAcceptGameButtonInetLobby?
+000133E0,WOL::DisableSquelchButtonInetLobby?,WOL::DisableSquelchButtonInetLobby?
+00013580,WOL::BackView,WOL::BackView
+000139E0,WOL::HomeView,WOL::HomeView
+00013A50,WOL::RefreshINetLobbyList,WOL::RefreshINetLobbyList
+00013B50,WOL::HandleSwitchChatChannel?,WOL::HandleSwitchChatChannel?
+00013D60,WOL::SortIncomingGameOptions,WOL::SortIncomingGameOptions
+00015B80,WOL::SendGameOptions,WOL::SendGameOptions
+00016720,WOL::RequestUserKick,WOL::RequestUserKick
+00016940,WOL::RequestGameStart,WOL::RequestGameStart
+000169A0,WOL::RequestUserSquelch,WOL::RequestUserSquelch
+00016E70,WOL::RequestFindUser,WOL::RequestFindUser
+00016EE0,WOL::RequestPageUser,WOL::RequestPageUser
+00017610,WOL::PageButtonEvent?,WOL::PageButtonEvent?
+00017950,WOL::HandleIncomingPage?,WOL::HandleIncomingPage?
+00017C40,WOL::StartGuestINetGame,WOL::StartGuestINetGame
+00017E50,WOL::StartHostINetGame(void),WOL::StartHostINetGame(void)
+00018010,WOL::ToggleFindUserState(int),WOL::ToggleFindUserState(int)
+00018140,WOL::TogglePageUserState(int),WOL::TogglePageUserState(int)
+00018270,WOL::ToggleMicrophoneState(int),WOL::ToggleMicrophoneState(int)
+000183C0,WOL::ReturnPageMessage,WOL::ReturnPageMessage
+000184A0,WOL::OpenWebsite,WOL::OpenWebsite
+00018630,WOL::LaunchDune2kLadder,WOL::LaunchDune2kLadder
+00018660,WOL::LaunchChatHelp,WOL::LaunchChatHelp
+00018690,WOL::LaunchGameBrowser,WOL::LaunchGameBrowser
+000186B0,WOL::CancelDownload,WOL::CancelDownload
+000186D0,WOL::AbortDownload,WOL::AbortDownload
+000186E0,WOL::StartDownload,WOL::StartDownload
+000187D0,WOL::DownloadFinishedEvent,WOL::DownloadFinishedEvent
+000188C0,WOL::UpdateDownloadProgressText,WOL::UpdateDownloadProgressText
+00018AF0,WOL::FreeUpMemoryWOL,WOL::FreeUpMemoryWOL
+00018B60,WOL::JoinFindGame,WOL::JoinFindGame
+00018DC0,WOL::ShowAwaitingResponseMenu,WOL::ShowAwaitingResponseMenu
+00018E40,WOL::ShowAwaitingResponseMenu2,WOL::ShowAwaitingResponseMenu2
+00018EA0,WOL::ShowAwaitingHostMenu,WOL::ShowAwaitingHostMenu
+00018ED0,WOL::ShowAwaitingHostMenu2,WOL::ShowAwaitingHostMenu2
+00018F00,WOL::SetLangFilter_418F00,WOL::SetLangFilter_418F00
+00019040,WOL::ShowAllGames_419040,WOL::ShowAllGames_419040
+00019230,WOL::BanUser,WOL::BanUser
+00019530,WOL::RemoveUserFromList,WOL::RemoveUserFromList
+00019770,WOL::FreeUpMemoryWOL2,WOL::FreeUpMemoryWOL2
+00019880,WOL::UpdateUIandFreeMemory,WOL::UpdateUIandFreeMemory
+00019AB0,WOL::UpdateUIPlayerSide,WOL::UpdateUIPlayerSide
+00019CF0,WOL::CreateNewChannel,WOL::CreateNewChannel
+00019DF0,WOL::StartRegisterProg,WOL::StartRegisterProg
+0001A240,WOL::JoinedGameUpdateUI,WOL::JoinedGameUpdateUI
+0001A280,WOL::ParseHostInfoString,WOL::ParseHostInfoString
+0001A930,WOL::UpdateUserUIRankings?,WOL::UpdateUserUIRankings?
+0001AF50,AI::InitAI(int),AI::InitAI(int)
+0001B250,AI::ActivateAI(int),AI::ActivateAI(int)
+0001B610,AI::DoAI(void),AI::DoAI(void)
+0001B850,AI::CanBuildUnit(int),AI::CanBuildUnit(int)
+0001B910,AI::FindBestUnitToBuild(int),AI::FindBestUnitToBuild(int)
+0001BBB0,AI::GetBestBuilding(int_int_int_float),AI::GetBestBuilding(int_int_int_float)
+0001BDB0,AI::GetBestUnit,AI::GetBestUnit
+0001BEA0,AI::ShouldIBuildNow,AI::ShouldIBuildNow
+0001BF00,AI::DoRepairs,AI::DoRepairs
+0001BFE0,AI::DoBuildUnits,AI::DoBuildUnits
+0001C060,AI::DoBuildBuildings,AI::DoBuildBuildings
+0001C070,AI::DoProtection,AI::DoProtection
+0001C270,AI::DoDefence,AI::DoDefence
+0001C340,AI::GetGroupStrength,AI::GetGroupStrength
+0001C3A0,AI::FindFirstFreeGroup,AI::FindFirstFreeGroup
+0001C3E0,AI::GroupNewUnits(int_int),AI::GroupNewUnits(int_int)
+0001C920,AI::DoAttackBuildings(void),AI::DoAttackBuildings(void)
+0001CA60,AI::CreateSplinterGroup,AI::CreateSplinterGroup
+0001CB70,AI::GetUnitStrength,AI::GetUnitStrength
+0001CC20,AI::GetSelected,AI::GetSelected
+0001CC90,AI::ResetSelected,AI::ResetSelected
+0001CCE0,AI::SelectedGroup,AI::SelectedGroup
+0001CD50,AI::SelectUnit,AI::SelectUnit
+0001CDB0,AI::ClearUnits(void),AI::ClearUnits(void)
+0001CDF0,AI::BestSideToAttack(void),AI::BestSideToAttack(void)
+0001CE50,AI::RecalculateSideToAttack(void),AI::RecalculateSideToAttack(void)
+0001D070,AI::MonitorGroups(int),AI::MonitorGroups(int)
+0001E180,AI::GetBestBasePosition(int_int),AI::GetBestBasePosition(int_int)
+0001E220,AI::GroupStable(int),AI::GroupStable(int)
+0001E270,AI::RecentlyInAction(int),AI::RecentlyInAction(int)
+0001E2C0,AI::UnitRecentlyInAction(int),AI::UnitRecentlyInAction(int)
+0001E310,AI::UnitRecentlyHit(int),AI::UnitRecentlyHit(int)
+0001E340,AI::ReturnToBase,AI::ReturnToBase
+0001E3C0,AI::SendGroupToPoint,AI::SendGroupToPoint
+0001E420,AI::MoraleCheck,AI::MoraleCheck
+0001E490,AI::SetGroupToGuard,AI::SetGroupToGuard
+0001E4E0,AI::GroupNearTarget,AI::GroupNearTarget
+0001E5D0,AI::GetPercentage,AI::GetPercentage
+0001E650,AI::DoRepairUnits(int_int),AI::DoRepairUnits(int_int)
+0001E860,AI::GroupAtFullHealth(int),AI::GroupAtFullHealth(int)
+0001E8C0,AI::CanSpendCash(int_int),AI::CanSpendCash(int_int)
+0001E920,AI::GetInitialBuildingPositions(void),AI::GetInitialBuildingPositions(void)
+0001EAB0,AI::MonitorBuildings(void),AI::MonitorBuildings(void)
+0001EBC0,AI::RebuildBuildings(void),AI::RebuildBuildings(void)
+0001F670,AI::DoStopStartStuff(int_int_int),AI::DoStopStartStuff(int_int_int)
+0001FC30,AI::GroupExists(int),AI::GroupExists(int)
+0001FC80,AI::CommenceOperation(int),AI::CommenceOperation(int)
+0001FEA0,AI::SetUnitToGuard(int),AI::SetUnitToGuard(int)
+0001FEE0,AI::AttackBestBuilding(int_int_int),AI::AttackBestBuilding(int_int_int)
+00020010,AI::AttackObject(int_int_int),AI::AttackObject(int_int_int)
+00020140,AI::FindMostAppropriateTarget(int_int_int),AI::FindMostAppropriateTarget(int_int_int)
+00020300,AI::ShouldIBuildHarvester(void),AI::ShouldIBuildHarvester(void)
+00020320,AI::ShouldIBuildCarryall(void),AI::ShouldIBuildCarryall(void)
+00020350,AI::ShouldIBuildUnit(int),AI::ShouldIBuildUnit(int)
+000203D0,AI::DoBuildCarryalls(void),AI::DoBuildCarryalls(void)
+00020480,AI::FindGroupForDelivery(char),AI::FindGroupForDelivery(char)
+00020500,AI::DoAttackApproachers(void),AI::DoAttackApproachers(void)
+000205F0,AI::BuyGetUnitInBase(int_int),AI::BuyGetUnitInBase(int_int)
+000206C0,AI::NumberOfGroupsDoingTask(char),AI::NumberOfGroupsDoingTask(char)
+00020700,AI::GetNearestHostileThing(int_int_int_int_int),AI::GetNearestHostileThing(int_int_int_int_int)
+00020970,AI::AttackBestUnit(int_int_int_int),AI::AttackBestUnit(int_int_int_int)
+00020A70,AI::GetAveragePositionOfGroup(int_int_int),AI::GetAveragePositionOfGroup(int_int_int)
+00020B20,AI::GetEnemyBaseWaypoint(int_int_int_int_int),AI::GetEnemyBaseWaypoint(int_int_int_int_int)
+00020C60,AI::NoHostileUnitsWithinRange(int_int_int),AI::NoHostileUnitsWithinRange(int_int_int)
+00020C80,AI::DoUnitFacings(void),AI::DoUnitFacings(void)
+00020D50,AI::GetBestBuildingToBuild(void),AI::GetBestBuildingToBuild(void)
+00020E90,AI::FindRandomBuildingPosition(int_int_int_int),AI::FindRandomBuildingPosition(int_int_int_int)
+00021000,AI::CanAIPlaceBuilding(int_int_int),AI::CanAIPlaceBuilding(int_int_int)
+000212A0,AI::CanAIPlaceConcrete(int_int_int),AI::CanAIPlaceConcrete(int_int_int)
+000214A0,AI::DoDefendChecks(void),AI::DoDefendChecks(void)
+00021710,AI::MergeGroups(int_char),AI::MergeGroups(int_char)
+000218E0,AI::NeedBuilding(int),AI::NeedBuilding(int)
+00021950,AI::FindNewPositionForBuilding(int_int_int),AI::FindNewPositionForBuilding(int_int_int)
+00021A90,AI::ConcreteAlready(int_int),AI::ConcreteAlready(int_int)
+00021B60,AI::FindAlternativePlace(int_int),AI::FindAlternativePlace(int_int)
+00021C40,AI::UpgradeBuildings(void),AI::UpgradeBuildings(void)
+00021CF0,AI::BuyUnitsFromStartport(void),AI::BuyUnitsFromStartport(void)
+00021E50,AI::ShouldIBuyUnit(int),AI::ShouldIBuyUnit(int)
+00021FA0,AI::MonitorHarvesters(void),AI::MonitorHarvesters(void)
+00022140,AI::DoMCVs(void),AI::DoMCVs(void)
+00022230,AI::GetDefendGroupID(int),AI::GetDefendGroupID(int)
+00022270,AI::DoSpecialWeapons(void),AI::DoSpecialWeapons(void)
+00022730,AI::ItemReady(int_int),AI::ItemReady(int_int)
+00022800,AI::GetBestTarget(int_int),AI::GetBestTarget(int_int)
+00022900,AI::DoSaboteur(int),AI::DoSaboteur(int)
+00022A80,AI::DoFremen(int),AI::DoFremen(int)
+00022BF0,AI::422BF0,AI::422BF0
+00022C20,AI::DoOverrides(void),AI::DoOverrides(void)
+00022E60,AI::InIconList(int),AI::InIconList(int)
+00022EC0,AI::DealWithMCV(int),AI::DealWithMCV(int)
+00023020,AI::CanIDeployMCVHere(int_int),AI::CanIDeployMCVHere(int_int)
+00023100,AI::KickUnitsOutOfArea(char_char_char_char_int),AI::KickUnitsOutOfArea(char_char_char_char_int)
+00023220,AI::GetPlaceToMoveTo(int_int_int_int_int_int_int),AI::GetPlaceToMoveTo(int_int_int_int_int_int_int)
+00023360,AI::SendNearestUnit(char_int_int_int),AI::SendNearestUnit(char_int_int_int)
+00023440,AI::SendSomeUnitsToAttackBuilding(char_int_int_int_int_int),AI::SendSomeUnitsToAttackBuilding(char_int_int_int_int_int)
+00023500,AI::NoFriendlyUnits(int_int_int),AI::NoFriendlyUnits(int_int_int)
+000235E0,AI::TakeOver(void),AI::TakeOver(void)
+00023820,AI::StartingCredits423820,AI::StartingCredits423820
+00023830,AI::DebugString(char *),AI::DebugString(char *)
+00023850,AI::423850,AI::423850
+000239B0,Display::DrawTooltipUNKNOWN,Display::DrawTooltipUNKNOWN
+000239F0,Display::DrawingUNKNOWN2,Display::DrawingUNKNOWN2
+00023A20,Display::DrawCursor,Display::DrawCursor
+00023B40,Display::DrawInGameToolTips,Display::DrawInGameToolTips
+00023C50,Display::DrawInGameSelectionRectangle,Display::DrawInGameSelectionRectangle
+00023D20,Display::DrawingInGameUNKNOWN3,Display::DrawingInGameUNKNOWN3
+00023FB0,Display::DrawingInGameUNKNOWN4,Display::DrawingInGameUNKNOWN4
+00024140,Display::OnScreenDebugDrawingStuff,Display::OnScreenDebugDrawingStuff
+000241E0,Display::DrawingInGameUNKNOWN5,Display::DrawingInGameUNKNOWN5
+000243E0,Display::DrawingInGameUNKNOWN6,Display::DrawingInGameUNKNOWN6
+000245E0,Display::DrawingInGameRectanglesUNKNOWN7,Display::DrawingInGameRectanglesUNKNOWN7
+000249B0,Display::OnScreenDebugDrawingStuff2,Display::OnScreenDebugDrawingStuff2
+000254A0,Display::DrawInGameCredits,Display::DrawInGameCredits
+00025560,Display::DrawInGameCreditsFunc,Display::DrawInGameCreditsFunc
+000255E0,Display::DrawInGameMessages,Display::DrawInGameMessages
+0002561F,,seconds
+00025630,,minutes
+00025720,Display::DrawFancyTextMessage,Display::DrawFancyTextMessage
+00025860,Display::DrawPowerBar,Display::DrawPowerBar
+00025871,CurrentlyDisplayedPowerUsage,CurrentlyDisplayedPowerUsage
+00025877,CurrentPowerUsage,CurrentPowerUsage
+000259F0,Display::ColourFadeIn(int_int_int_int_int),Display::ColourFadeIn(int_int_int_int_int)
+00025C60,Display::DrawInGameNamesAndScore,Display::DrawInGameNamesAndScore
+00025E7B,,Draw Player Names - multiplayer
+00025FA0,Display::DrawInGameSideLogo,Display::DrawInGameSideLogo
+00026000,Display::DrawInGameMiniMap,Display::DrawInGameMiniMap
+000263B0,Display::DrawInGameSidebarIconsBuildingProgress,Display::DrawInGameSidebarIconsBuildingProgress
+00026E80,Display::DrawNormalSideBarMenu,Display::DrawNormalSideBarMenu
+00027690,Display::DrawStarportSideBarMenu,Display::DrawStarportSideBarMenu
+000278A0,Display::DrawUpgradeSideBarMenu,Display::DrawUpgradeSideBarMenu
+00027CC0,Display::DrawInGameSidebarArrows,Display::DrawInGameSidebarArrows
+00027D50,Display::BlitBuildingFoundation_427D50,Display::BlitBuildingFoundation_427D50
+00028070,Display::BlitBullets_428070,Display::BlitBullets_428070
+00028220,Display::DrawingInGameUNKNOWN8,Display::DrawingInGameUNKNOWN8
+000282F0,Display::BlitExplosions_4282F0,Display::BlitExplosions_4282F0
+000285C0,Display::DrawingInGameUNKNOWN9,Display::DrawingInGameUNKNOWN9
+000288D0,Display::DrawInGameBuildPlacementThing,Display::DrawInGameBuildPlacementThing
+00028C30,Display::DrawInGameBuildPlacementFunc,Display::DrawInGameBuildPlacementFunc
+00028CA0,Display::DrawInGameGraphics,Display::DrawInGameGraphics
+00028E30,Display::BlitVehicles_428E30,Display::BlitVehicles_428E30
+0002A5D0,Display::DrawingInGameFlyingObjects?UNKNOWN10,Display::DrawingInGameFlyingObjects?UNKNOWN10
+0002AA90,Display::SortSprites_42AA90,Display::SortSprites_42AA90
+0002ADA0,Display::SetLensImage_42ADA0,Display::SetLensImage_42ADA0
+0002AF00,Display::DrawingInGameUNKNOWN11,Display::DrawingInGameUNKNOWN11
+0002B590,Game::ShowErrorAndExit,Game::ShowErrorAndExit
+0002B670,Game::DebugFunction GameTicks OutputDebugStringA,Game::DebugFunction GameTicks OutputDebugStringA
+0002B730,Game::ShowFailureTxtErrorAndExit,Game::ShowFailureTxtErrorAndExit
+0002B7D0,Game::Dune2000CdCheck,Game::Dune2000CdCheck
+0002B800,Game::CDStuff,Game::CDStuff
+0002B8D0,Game::SetResourcePaths(char),Game::SetResourcePaths(char)
+0002BA50,Game::fopenWrapper,Game::fopenWrapper
+0002BB40,Game::fcloseWrapper,Game::fcloseWrapper
+0002BB60,Game::freadWrapper,Game::freadWrapper
+0002BB80,Game::fwriteWrapper,Game::fwriteWrapper
+0002BBA0,Game::fseekWrapper,Game::fseekWrapper
+0002BBC0,Game::fgetsWrapper,Game::fgetsWrapper
+0002BBE0,Game::GetNextLine(File *_char *_int),Game::GetNextLine(File *_char *_int)
+0002BC60,Globe::CreateGlobe(int),Globe::CreateGlobe(int)
+0002C310,Globe::DestroyGlobe,Globe::DestroyGlobe
+0002C370,Globe::ChooseTerritoryAnim,Globe::ChooseTerritoryAnim
+0002C400,Globe::ChangeCursorIcon,Globe::ChangeCursorIcon
+0002C6B0,Globe::PlaySounds,Globe::PlaySounds
+0002C9B0,Globe::DrawFadeImages,Globe::DrawFadeImages
+0002CD30,Globe::RegionsFadeFunction,Globe::RegionsFadeFunction
+0002CF10,Globe::MouseClickCheckXY,Globe::MouseClickCheckXY
+0002D020,Globe::MouseMoveCheckXY,Globe::MouseMoveCheckXY
+0002D0E0,Globe::PreviousMission,Globe::PreviousMission
+0002D110,Globe::NextMission,Globe::NextMission
+0002D140,Graphlib::DrawRectangle2,Graphlib::DrawRectangle2
+0002D1C0,Graphlib::UNKNOWN2,Graphlib::UNKNOWN2
+0002D1F0,Graphlib::DrawRectangleFilled,Graphlib::DrawRectangleFilled
+0002D360,Graphlib::UNKNOWN3,Graphlib::UNKNOWN3
+0002D450,Graphlib::DrawHorizontalLine,Graphlib::DrawHorizontalLine
+0002D520,Graphlib::DrawVerticalLine,Graphlib::DrawVerticalLine
+0002D5D0,Graphlib::DrawMenuToolTip,Graphlib::DrawMenuToolTip
+0002D660,Graphlib::DrawRectangleFilledWithBorder,Graphlib::DrawRectangleFilledWithBorder
+0002D6F0,Graphlib::LoadFontcol_fnt,Graphlib::LoadFontcol_fnt
+0002DB30,Graphlib::FreeUpFontMemory?,Graphlib::FreeUpFontMemory?
+0002DB70,Graphlib::FreeUpFontMemory2?,Graphlib::FreeUpFontMemory2?
+0002DBD0,Graphlib::UNKNOWN4,Graphlib::UNKNOWN4
+0002DC00,Graphlib::TextOnScreen,Graphlib::TextOnScreen
+0002DD50,Graphlib::DrawRightAlignedText,Graphlib::DrawRightAlignedText
+0002DD90,Graphlib::DrawTextWithBlackShadow,Graphlib::DrawTextWithBlackShadow
+0002DE70,Graphlib::UNKNOWN5,Graphlib::UNKNOWN5
+0002DFB0,Graphlib::DrawingUNKNOWN12,Graphlib::DrawingUNKNOWN12
+0002E050,Graphlib::DrawStringCentered_42E050,Graphlib::DrawStringCentered_42E050
+0002E0B0,Graphlib::DrawStringCentered_42E0B0,Graphlib::DrawStringCentered_42E0B0
+0002E110,Graphlib::DrawStringCentered_42E110,Graphlib::DrawStringCentered_42E110
+0002E170,Graphlib::UNKNOWN6,Graphlib::UNKNOWN6
+0002E1A0,Graphlib::UNKNOWN7,Graphlib::UNKNOWN7
+0002E1C0,Graphlib::LoadPalette?,Graphlib::LoadPalette?
+0002E3B0,Graphlib::UNKNOWN8,Graphlib::UNKNOWN8
+0002E3E0,Graphlib::FreeUpPaletteMemory?,Graphlib::FreeUpPaletteMemory?
+0002E420,Graphlib::UNKNOWN,Graphlib::UNKNOWN
+0002E450,Graphlib::LoadFontFile,Graphlib::LoadFontFile
+0002E660,Image::LoadTarga(char_int_int_int_int_int),Image::LoadTarga(char_int_int_int_int_int)
+0002E810,Image::LoadTarga(char_int_int),Image::LoadTarga(char_int_int)
+0002E8B0,Image::GetPaletteFromBitmap(lpFilename_int),Image::GetPaletteFromBitmap(lpFilename_int)
+0002EAA0,Image::Palette_42EAA0,Image::Palette_42EAA0
+0002EAE0,Image::GetBitmapData(char_int_int_int),Image::GetBitmapData(char_int_int_int)
+0002EBE0,Image::LoadBitmap(char_int_long_int_int_int_int),Image::LoadBitmap(char_int_long_int_int_int_int)
+0002EF90,Image::CreateTImage,Image::CreateTImage
+0002F060,Image::CreateTImageCopy,Image::CreateTImageCopy
+0002F120,Image::AllocPaletteMemory,Image::AllocPaletteMemory
+0002F160,Image::FreeUpMemory,Image::FreeUpMemory
+0002F1D0,Image::CreateTImageWithTarga(char_int_int_int_int_int),Image::CreateTImageWithTarga(char_int_int_int_int_int)
+0002F3D0,Image::UNKNOWN12,Image::UNKNOWN12
+0002F430,Image::CreateSurfaceWithBitmap(char_char_int_long_int_int_int_char_int_int),Image::CreateSurfaceWithBitmap(char_char_int_long_int_int_int_char_int_int)
+0002F800,Image::BlitToScreen,Image::BlitToScreen
+0002FAC0,Image::BlitTImage,Image::BlitTImage
+000305F0,Image::BlitClipTImage_4305F0,Image::BlitClipTImage_4305F0
+00030770,Image::BlitClipTImage_430770,Image::BlitClipTImage_430770
+00030860,Image::ClearTImage(int_int_int),Image::ClearTImage(int_int_int)
+000308F0,Image::DrawLineClipTImage(int_int_int_int_int_int_int),Image::DrawLineClipTImage(int_int_int_int_int_int_int)
+00030D10,Image::DrawRectangle,Image::DrawRectangle
+00030D90,Image::UNKNOWN,Image::UNKNOWN
+000310C0,Image::UNKNOWN13,Image::UNKNOWN13
+000310F0,Image::UNKNOWN2,Image::UNKNOWN2
+00031560,Image::UNKNOWN3,Image::UNKNOWN3
+000318A0,Image::UNKNOWN4,Image::UNKNOWN4
+000318F0,Image::UNKNOWN5,Image::UNKNOWN5
+000319B0,Image::UNKNOWN6,Image::UNKNOWN6
+00031AA0,Image::UNKNOWN7,Image::UNKNOWN7
+00031B50,Image::UNKNOWN8,Image::UNKNOWN8
+00031C40,Image::UNKNOWN14,Image::UNKNOWN14
+00031E40,Image::BlitFontChar,Image::BlitFontChar
+00031F50,Image::BlitFontChar2,Image::BlitFontChar2
+00032060,Image::BlitFontChar3,Image::BlitFontChar3
+000322D0,Image::UNKNOWN9,Image::UNKNOWN9
+000326B0,Image::BlitTImage_4326B0,Image::BlitTImage_4326B0
+00032D80,Image::UNKNOWN10,Image::UNKNOWN10
+00033340,Image::UNKNOWN11,Image::UNKNOWN11
+00034970,Image::SharePalette?,Image::SharePalette?
+000352C0,Image::UNKNOWN15,Image::UNKNOWN15
+000359A0,CInterface::ctor,CInterface::ctor
+0003603C,,ParseUIL_UIB_Files
+00036056,,ParseUIL_UIB_Files
+00037040,CInterface::~CInterface,CInterface::~CInterface
+00037480,CInterface::HandleLMouseButDClickEvent (int x; int y),CInterface::HandleLMouseButDClickEvent (int x; int y)
+000374D0,CInterface::HandleRMouseButDClickEvent (int x; int y),CInterface::HandleRMouseButDClickEvent (int x; int y)
+00037520,CInterface::HandleMouseMoveEvent (int x; int y),CInterface::HandleMouseMoveEvent (int x; int y)
+00037600,CInterface::HandleLMouseButUpEvent (int x; int y),CInterface::HandleLMouseButUpEvent (int x; int y)
+00037840,CInterface::HandleLMouseButDownEvent (int x; int y),CInterface::HandleLMouseButDownEvent (int x; int y)
+00037AF0,CInterface::HandleRMouseButUpEvent (int x; int y),CInterface::HandleRMouseButUpEvent (int x; int y)
+00037B60,CInterface::AddBackground,CInterface::AddBackground
+00037C7E,,LoadImage
+00037CE0,CInterface::AddButton,CInterface::AddButton
+00037E00,CInterface::AddToggleButton,CInterface::AddToggleButton
+00037F30,CInterface::AddGroupBox,CInterface::AddGroupBox
+00038030,CInterface::AddListBox,CInterface::AddListBox
+00038180,CInterface::AddCheckBox,CInterface::AddCheckBox
+00038290,CInterface::AddMultiStateBox,CInterface::AddMultiStateBox
+00038390,CInterface::AddEditBox,CInterface::AddEditBox
+000384A0,CInterface::AddTextBox,CInterface::AddTextBox
+00038AD0,CInterface::AddValueBar,CInterface::AddValueBar
+00038C10,CInterface::AddAnimations,CInterface::AddAnimations
+00038D10,CInterface::AddMovie(char *_int_int_int_int),CInterface::AddMovie(char *_int_int_int_int)
+00038E00,CInterface::UNKNOWN,CInterface::UNKNOWN
+000390E0,CInterface::LoadMenuFiles (uib uil),CInterface::LoadMenuFiles (uib uil)
+00039590,CUIObject::LoadBackground,CUIObject::LoadBackground
+00039670,CUIObject::LoadButton,CUIObject::LoadButton
+00039B10,CUIObject::LoadToggleButton,CUIObject::LoadToggleButton
+0003A000,CUIObject::LoadGroupBox,CUIObject::LoadGroupBox
+0003A2C0,CUIObject::LoadListBox,CUIObject::LoadListBox
+0003A900,CUIObject::LoadCheckBox,CUIObject::LoadCheckBox
+0003AC50,CUIObject::LoadMultiStateBox,CUIObject::LoadMultiStateBox
+0003B080,CUIObject::LoadEditBox,CUIObject::LoadEditBox
+0003B087,CUIObject::LoadEditBox,CUIObject::LoadEditBox
+0003B470,CUIObject::LoadTextBox,CUIObject::LoadTextBox
+0003B8B0,CUIObject::LoadValueBar,CUIObject::LoadValueBar
+0003BD90,CUIObject::LoadAnimation,CUIObject::LoadAnimation
+0003BFC0,CUIObject::LoadMovie,CUIObject::LoadMovie
+0003C270,CUIObject::AddCommand,CUIObject::AddCommand
+0003C4B0,CUIObject::DoDrawing,CUIObject::DoDrawing
+0003C554,,image Y
+0003C555,,image X
+0003CA50,CUIObject::UNKNOWN,CUIObject::UNKNOWN
+0003CB70,CUIObject::HandleWM_CharEvent? (int char),CUIObject::HandleWM_CharEvent? (int char)
+0003CDF0,CUIObject::HandleKeyDownEvent (int char),CUIObject::HandleKeyDownEvent (int char)
+0003D2A0,CUIObject::CreateCredits,CUIObject::CreateCredits
+0003D520,CUIObject::DrawCredtis?,CUIObject::DrawCredtis?
+0003D6AE,,width
+0003D7E0,CUIObject::CreateMultiplayerScore,CUIObject::CreateMultiplayerScore
+0003D820,CUIObject::CreateScore(int),CUIObject::CreateScore(int)
+0003DCB0,CUIObject::DoCreateMultiplayerScore,CUIObject::DoCreateMultiplayerScore
+0003EC70,CUIObject::ScoreFunc,CUIObject::ScoreFunc
+0003EE80,CUIObject::DoScoreScreenAnims?,CUIObject::DoScoreScreenAnims?
+0003EEE0,CUIObject::LoadHighScoreFile,CUIObject::LoadHighScoreFile
+0003EFD0,CUIObject::SaveHighScores,CUIObject::SaveHighScores
+0003F030,CUIObject::ScoreScreenAnimation?,CUIObject::ScoreScreenAnimation?
+0003FC90,CUIObject::CreateScoreScreen,CUIObject::CreateScoreScreen
+000411C0,CUIObject::GetPointerToSPScoreVars (int unk; char *scoreInfo),CUIObject::GetPointerToSPScoreVars (int unk; char *scoreInfo)
+00041240,CUIObject::GetPointerToMPScoreVars (int unk; char *scoreInfo),CUIObject::GetPointerToMPScoreVars (int unk; char *scoreInfo)
+000412C0,CopyPlayerStats?,CopyPlayerStats?
+000414D0,LoadSave::WriteSaveGame,LoadSave::WriteSaveGame
+000418B0,LoadSave::LoadSavedGame,LoadSave::LoadSavedGame
+00041F30,LoadSave::DoSaveGameStuffUNKNOWN,LoadSave::DoSaveGameStuffUNKNOWN
+00042540,Main::ResetKeymapUNKNOWN,Main::ResetKeymapUNKNOWN
+00042580,Main::MenuLoop(),Main::MenuLoop()
+00042910,Main::UNKNOWN4,Main::UNKNOWN4
+00042960,Main::GetProductionSpeedPercentageForHandicap,Main::GetProductionSpeedPercentageForHandicap
+000429B0,Main::GetPricePercentageForHandicap,Main::GetPricePercentageForHandicap
+00042A00,Main::GetUnitProductionBoostPercentage,Main::GetUnitProductionBoostPercentage
+00042B10,Main::GetBuildingProductionBoostPercentage,Main::GetBuildingProductionBoostPercentage
+00042BB0,Main::UnitPriceUNKNOWN,Main::UnitPriceUNKNOWN
+00042BE0,Main::UnitPriceUNKNOWN2,Main::UnitPriceUNKNOWN2
+00042C20,Main::UNKNOWN2,Main::UNKNOWN2
+00043040,Main::CoordBoolUNKNOWN,Main::CoordBoolUNKNOWN
+000430D0,Main::CanUnitBeBuilt(int_int_char),Main::CanUnitBeBuilt(int_int_char)
+000431D0,Main::UNKNOWN5,Main::UNKNOWN5
+00043250,Main::MapDataBoolUNKNOWN,Main::MapDataBoolUNKNOWN
+000432F0,Main::boolUNKNOWN,Main::boolUNKNOWN
+00043370,Main::boolUNKNOWN2,Main::boolUNKNOWN2
+000433A0,Main::HandleGameLoopEvents,Main::HandleGameLoopEvents
+0004419F,,Cannot place building bug
+000443AB,,Cannot place building bug
+00044671,,Do Not draw selection rectangle if cursor out of battlefield
+00044E8E,,Cannot place building bug
+000455B8,,Ignore order if cursor out of battlefield
+00046690,Main::randUNKNOWN,Main::randUNKNOWN
+00046760,Main::UpgradeIconData,Main::UpgradeIconData
+000467E0,Main::DoIconBuild,
+00046915,,BuildingProgress
+000470A0,Main::SetModelLatency (Multiplayer Connect),Main::SetModelLatency (Multiplayer Connect)
+00048460,randJmp,randJmp
+00048550,Main::MainLoop(void),Main::MainLoop(void)
+000489DF,SideBarButtonMainMenu2Visible,SideBarButtonMainMenu2Visible
+00048CB5,,Play SP Music
+000495F8,,Flip
+0004A54E,,Setup Player colors (Skirmish)
+0004A6AA,,Setup Player colors (Multi-Player)
+0004A870,Main::MainGame(),Main::MainGame()
+0004A9F0,Main::DoRepairs,
+0004AAE0,Main::UpdateSidebarStuff?,Main::UpdateSidebarStuff?
+0004ABE0,Main::UpdateSidebarStuff2?,Main::UpdateSidebarStuff2?
+0004B1F0,Main::UNKNOWN3,Main::UNKNOWN3
+0004B5C0,Main::DoTooltips,Main::DoTooltips
+0004C460,Main::RestartGame,Main::RestartGame
+0004C480,Map::RevealAllMap,Map::RevealAllMap
+0004C4F0,Map::PlayerDefeated(int sideId),Map::PlayerDefeated(int house)
+0004C520,Map::SetDeadOrder,Map::SetDeadOrder
+0004C6D0,Map::LoadMapData,Map::LoadMapData
+0004CFF0,Map::RevealUnitCircle,Map::RevealUnitCircle
+0004D0E0,Map::CheckAllMarkedTilesHaveUnitOnThem(void),Map::CheckAllMarkedTilesHaveUnitOnThem(void)
+0004D1D0,Map::CheckAllMarkedTilesHaveBuildingOnThem(void),Map::CheckAllMarkedTilesHaveBuildingOnThem(void)
+0004D250,Map::CheckAllUnitsAreMarkingTiles(void),Map::CheckAllUnitsAreMarkingTiles(void)
+0004DAC0,Map::GetBuildingsOnConcreteCount,Map::GetBuildingsOnConcreteCount
+0004E120,Map::RemoveUnitTileData,Map::RemoveUnitTileData
+0004E3B0,Map::RevealCircle,Map::RevealCircle
+0004E580,Map::UNKNOWN5,Map::UNKNOWN5
+0004E7C0,Map::SpawnCrates?,Map::SpawnCrates?
+0004E800,Map::CreateCrate,Map::CreateCrate
+0004E8E0,Map::CrateStuffUNKNOWN,Map::CrateStuffUNKNOWN
+0004E9D0,"Map::GetCrateOnCell(int x, int y)","Map::GetCrateOnCell(int x, int y)"
+0004EA70,Map::UNKNOWN2,Map::UNKNOWN2
+0004EF10,Map::AddSpiceBloom?,Map::AddSpiceBloom?
+0004F110,Map::UNKNOWN4,Map::UNKNOWN4
+0004F1B0,Map::UNKNOWN6,Map::UNKNOWN6
+0004F2F0,Map::UNKNOWN5,Map::UNKNOWN5
+0004F440,Map::UNKNOWN6,Map::UNKNOWN6
+0004F490,Memory::GetProcessHeapWrapper,Memory::GetProcessHeapWrapper
+0004F4D0,Memory::HeapAllocWrapper,Memory::HeapAllocWrapper
+0004F630,Memory::HeapFreeWrapper,Memory::HeapFreeWrapper
+0004F6F0,Memory::HeapFreeWrapper2,Memory::HeapFreeWrapper2
+0004F8E0,Mission::LoadObjectives (map events),Mission::LoadObjectives (map events)
+000500D0,Mission::UNKNOWN_ParseMissionSection? (Debug Files),Mission::UNKNOWN_ParseMissionSection? (Debug Files)
+000501A0,Mission::ParseAISection (Debug Files),Mission::ParseAISection (Debug Files)
+00052440,Mission::DatFileGetArrayIndex (Debug Files),Mission::DatFileGetArrayIndex (Debug Files)
+00052490,Mission::ParseMissionSection (Debug Files),Mission::ParseMissionSection (Debug Files)
+00053120,Mission::LoadEvents (Debug Files),Mission::LoadEvents (Debug Files)
+00053B30,Mission::UNKNOWN3,Mission::UNKNOWN3
+00053B90,Mission::CheckEvents,Mission::CheckEvents
+00053C1D,EventConditionsSwitch,EventConditionsSwitch
+00053C2D,BUILDINGEXISTS,BUILDINGEXISTS
+00053C6E,UNITEXISTS,UNITEXISTS
+00053CAB,INTERVAL,INTERVAL
+00053CEB,BASEDESTROYED,BASEDESTROYED
+00053D13,UNITSDESTROYED,UNITSDESTROYED
+00053D39,CASUALTIES,CASUALTIES
+00053DAF,TIMER,TIMER
+00053E2E,REVEALED,REVEALED
+00053E6C,HARVESTED,HARVESTED
+00053EAA,FLAG,FLAG
+00054120,Mission::ExecuteEvent,Mission::ExecuteEvent
+0005412F,EventTypesSwitch,EventTypesSwitch
+0005413F,ET_STARPORT_DELIVERY,ET_STARPORT_DELIVERY
+0005415A,ET_REINFORCE,ET_REINFORCE
+00054258,ET_ADDUNITS,ET_ADDUNITS
+000542D5,ET_ALLEGIANCE,ET_ALLEGIANCE
+00054316,ET_BESERK,ET_BESERK
+00054338,ET_SETBUILDRATE,ET_SETBUILDRATE
+0005435C,ET_SETATTACKBUILDINGRATE,ET_SETATTACKBUILDINGRATE
+00054380,ET_SETCASH,ET_SETCASH
+00054396,ET_SETTECH,ET_SETTECH
+000543AB,ET_WIN,ET_WIN
+000543C6,ET_REVEAL,ET_REVEAL
+000543E0,ET_SHOWTIMER,ET_SHOWTIMER
+000543F0,ET_HIDETIMER,ET_HIDETIMER
+00054401,ET_SHOWMESSAGE,ET_SHOWMESSAGE
+0005443D,ET_LOSE,ET_LOSE
+00054454,ET_SETFLAG,ET_SETFLAG
+000544E0,Mission::LoadVarsFile,Mission::LoadVarsFile
+00054E00,Mission::LoadTechposFile,Mission::LoadTechposFile
+00055290,Mission::BuildingUnitExistUNKNOWN,Mission::BuildingUnitExistUNKNOWN
+00055500,Mission::CreateSide(void),Mission::CreateSide(void)
+00055510,Model::HandleGameLoopEvents(int_int),Model::HandleGameLoopEvents(int_int)
+00055870,Model::AddUnit(byte House_byte UnitId_int_int_int_int_int_int),Model::AddUnit(byte House_byte UnitId_int_int_int_int_int_int)
+00055943,,UnitsOwned
+00055FC0,Model::BuildBuildingPick(int_int),Model::BuildBuildingPick(int_int)
+000560F0,Model::BuildBuildingCancel(int_int),Model::BuildBuildingCancel(int_int)
+00056210,Model::UNKNOWN,Model::UNKNOWN
+000563B0,Model::AddBuilding(byte House_byte BuildingId_int_int_int_int_int_int),Model::AddBuilding(byte House_byte BuildingId_int_int_int_int_int_int)
+000563E9,,BuildingsOwned
+00056A30,Model::AddBullet(int_int_int_int_int_int_int_int_int_int),Model::AddBullet(int_int_int_int_int_int_int_int_int_int)
+00056DF0,Model::AddAnimation(),Model::AddAnimation()
+00056EE0,Model::SellUNKNOWN,Model::SellUNKNOWN
+00056FD0,Model::StarportPick,Model::StarportPick
+000570D0,Model::CashUNKNOWN,Model::CashUNKNOWN
+00057140,Model::StartportPurchase,Model::StartportPurchase
+000572F0,Model::CashUNKNOWN2,Model::CashUNKNOWN2
+00057350,Model::UpgradePick,Model::UpgradePick
+00057490,Model::HoldCancelUNKNOWN,Model::HoldCancelUNKNOWN
+00057580,Model::UNKNOWN2,Model::UNKNOWN2
+00057810,Model::ProcessOrder(int),Model::ProcessOrder(int)
+0005812C,,bool IsAIPlayer?
+00058A7A,SpecialWeapons,SpecialWeapons
+00058E90,Model::TechnoCheck?,Model::TechnoCheck?
+00059450,Model::GenerateUnitMoveOrder(int_int_int),Model::GenerateUnitMoveOrder(int_int_int)
+00059540,Model::EventUNKNOWN,Model::EventUNKNOWN
+000595E0,Model::RepairUnit,Model::RepairUnit
+00059690,Model::EventUNKNOWN3,Model::EventUNKNOWN3
+000596F0,Model::GenerateUnitAttackUnitOrder(int_int_int),Model::GenerateUnitAttackUnitOrder(int_int_int)
+00059800,Model::EventUNKNOWN4,Model::EventUNKNOWN4
+000598D0,Model::UnitForceFire,Model::UnitForceFire
+00059980,Model::SetUnitToGuard,Model::SetUnitToGuard
+00059A20,Model::ScatterUnit,Model::ScatterUnit
+00059AB0,Model::SetUnitToRetreat,Model::SetUnitToRetreat
+00059B50,Model::FormAlliance?,Model::FormAlliance?
+00059BEA,,no unit selected
+00059BF4,,Ally?
+00059C17,,break Ally?
+00059C40,Model::SetUnitToStop,Model::SetUnitToStop
+00059D20,Model::EventUNKNOWN11,Model::EventUNKNOWN11
+00059DE0,Model::EventUNKNOWN12,Model::EventUNKNOWN12
+00059EA0,Model::SelectPrimaryBuilding,Model::SelectPrimaryBuilding
+00059F30,Model::BuildBuilding,Model::BuildBuilding
+00059F80,Model::CancelHoldBuildingProduction,Model::CancelHoldBuildingProduction
+00059FD0,Model::GenerateBuildPlaceBuildingOrder(int_int_int),Model::GenerateBuildPlaceBuildingOrder(int_int_int)
+0005A0B0,Model::BuildUnit,Model::BuildUnit
+0005A100,Model::CancelHoldUnitProduction,Model::CancelHoldUnitProduction
+0005A150,Model::RepairBuilding,Model::RepairBuilding
+0005A1A0,Model::SellBuilding,Model::SellBuilding
+0005A200,Model::BuyUnitFromStarport,Model::BuyUnitFromStarport
+0005A260,Model::UndoUnitStarportOrder,Model::UndoUnitStarportOrder
+0005A2B0,Model::StarportPurchase,Model::StarportPurchase
+0005A310,Model::CancelStarportOrder,Model::CancelStarportOrder
+0005A350,Model::UpgradeBuilding,Model::UpgradeBuilding
+0005A3A0,Model::CancelHoldBuildingUpgrade,Model::CancelHoldBuildingUpgrade
+0005A3F0,Model::DeployMCV,Model::DeployMCV
+0005A440,Model::DoSpecialWeapon,Model::DoSpecialWeapon
+0005A7A0,Model::ResetVars,Model::ResetVars
+0005AAB0,Model::OutOfSync?,Model::OutOfSync?
+0005ABA0,Model::GetTickCount(void),Model::GetTickCount(void)
+0005ABB0,Model::WriteNetworkLog,Model::WriteNetworkLog
+0005B510,Model::GetNetworkEvent?,Model::GetNetworkEvent?
+0005B570,Model::UpdateMyFrame?,Model::UpdateMyFrame?
+0005B590,Model::GameSpeedStuffUnknown1,Model::GameSpeedStuffUnknown1
+0005B610,Model::GameSpeedStuffUnknown2,GameSpeedStuffUnknown2
+0005B7E0,Model::ResetVars2,Model::ResetVars2
+0005B830,Model::DebugString(char *),Model::DebugString(char *)
+0005BB50,Model::ExecuteNetworkEvent2?,Model::ExecuteNetworkEvent2?
+0005BF00,Model::ExecuteGameEvent,Model::ExecuteGameEvent
+0005BFA0,Model::ExecuteNetworkEvent?,Model::ExecuteNetworkEvent?
+0005C0E0,Model::GetNetworkOrders(void),Model::GetNetworkOrders(void)
+0005C740,Model::ProcessPulseSignal(void),Model::ProcessPulseSignal(void)
+0005D120,Model::ProcessOrderQueue(int),Model::ProcessOrderQueue(int)
+0005D550,Blit_45D550,Blit_45D550
+0005D730,particle::UNKNOWN,particle::UNKNOWN
+0005D990,Model::CanUnitUseSquare(int_int_int_int_char),Model::CanUnitUseSquare(int_int_int_int_char)
+0005DE30,Model::GetNextSquareInDirection(int_int_char),Model::GetNextSquareInDirection(int_int_char)
+0005E060,Model::GetNextSquareOnLineToTarget(int_int_int_int),Model::GetNextSquareOnLineToTarget(int_int_int_int)
+0005E0E0,Model::GetBestAngle(int_int_int_int),Model::GetBestAngle(int_int_int_int)
+0005EAF0,Model::FindPath(int_int_int_int_int_int_int_int_int_char),Model::FindPath(int_int_int_int_int_int_int_int_int_char)
+0005FED0,Setup::AddTImageToResource,Setup::AddTImageToResource
+0005FFD0,Setup::AddTImagesToResource,Setup::AddTImagesToResource
+00060550,Setup::SetTImageToResource,Setup::SetTImageToResource
+00060C80,Setup::LoadUIBBFile,Setup::LoadUIBBFile
+00060EC0,Setup::LoadUI_LanguageFile,Setup::LoadUI_LanguageFile
+00061300,Setup::LoadUIData(void),Setup::LoadUIData(void)
+00061D10,Setup::LoadColoursFile,Setup::LoadColoursFile
+00061F60,Setup::SetRadarMap,Setup::SetRadarMap
+00061FB0,Setup::SetColors,Setup::SetColors
+00062010,Setup::SetPixelOnRadar8(int_int_char),Setup::SetPixelOnRadar8(int_int_char)
+000620B0,Setup::SetPixelOnRadar16(int_int_long),Setup::SetPixelOnRadar16(int_int_long)
+000626A0,Setup::LoadMouseFile,Setup::LoadMouseFile
+000628E0,Setup::LoadUIButtons,Setup::LoadUIButtons
+00062C20,Setup::LoadTImageResource,Setup::LoadTImageResource
+00062C80,Setup::LoadTileSet(char *tileSet),Setup::LoadTileSet(char *tileSet)
+00062D10,Setup::ChangeCurrentTileSet (char *tileSet),Setup::ChangeCurrentTileSet (char *tileSet)
+00063130,Setup::GetDatFileIntValue (char *line),Setup::GetDatFileIntValue (char *line)
+00063240,Setup::GetDatFileFloatValue,Setup::GetDatFileFloatValue
+00063260,Setup::DatFileParseParams,Setup::DatFileParseParams
+000633B0,Setup::datFileParser2?,Setup::datFileParser2?
+000634A0,Setup::ParseGraphics_dat,Setup::ParseGraphics_dat
+000636B0,Setup::ParseLinkText_dat,Setup::ParseLinkText_dat
+00063990,Setup::ParseUnitAtrb_dat,Setup::ParseUnitAtrb_dat
+00064960,Setup::ParseBuilAtrb_dat,Setup::ParseBuilAtrb_dat
+00065780,Setup::ParseBullAtrb_dat,Setup::ParseBullAtrb_dat
+00065D50,Setup::ParseExplAtrb_dat,Setup::ParseExplAtrb_dat
+00065E60,Setup::ReadDataTypes(void),Setup::ReadDataTypes(void)
+00066140,Setup::LoadGraphicsFile,Setup::LoadGraphicsFile
+00069790,Setup::PreplaceStuffOnMap,Setup::PreplaceStuffOnMap
+00069830,,Thin Spice
+0006984C,,Thick Spice
+00069DE4,,RandomNumber For Player Side
+00069EDB,,RandomNumber For Player Starting Location
+00069FD0,,StartingLocation
+0006A04A,,PrePlace mcv
+0006A174,,PrePlace Starting units (except mcv)
+0006AA00,Setup::DoPaletteStuff(void),Setup::DoPaletteStuff(void)
+0006AD80,Setup::ReadSmokeData(void),Setup::ReadSmokeData(void)
+0006B0F0,Setup::ReadArmour(void),Setup::ReadArmour(void)
+0006B690,Setup::ReadSpeed(void),Setup::ReadSpeed(void)
+0006B990,Side::ctor,Side::ctor
+0006BBD4,,UnitsOwned
+0006BD20,Side::InitStartingCredtis,Side::InitStartingCredtis
+0006BD40,Side::GetUnitLimit?,Side::GetUnitLimit?
+0006BD60,Side::UNKNOWN13,Side::UNKNOWN13
+0006BDB0,Side::RemoveObject?,Side::RemoveObject?
+0006BE50,Side::UNKNOWN12,Side::UNKNOWN12
+0006C450,Side::GetMyVersionOfBuilding,Side::GetMyVersionOfBuilding
+0006C570,Side::GetMyVersionOfUnit,Side::GetMyVersionOfUnit
+0006C680,Side::AddBuildingIcon,Side::AddBuildingIcon
+0006C6D0,Side::AddUnitIcon,Side::AddUnitIcon
+0006C790,Side::AddHarvestedCash,Side::AddHarvestedCash
+0006C7B0,Side::AddCash,Side::AddCash
+0006C7D0,Side::UpdateCashDrip(void),Side::UpdateCashDrip(void)
+0006CA00,Side::GetSideStats?,Side::GetSideStats?
+0006CCA0,Side::UNKNOWN7,Side::UNKNOWN7
+0006CD00,Side::AddToQueue,Side::AddToQueue
+0006CF10,"Side::GetCenterOfScreen? (int *outX, int *outY, bool unknown)","Side::GetCenterOfScreen? (int *outX, int *outY, bool unknown)"
+0006D180,Side::UNKNOWN,Side::UNKNOWN
+0006D2E0,Side::UNKNOWN2,Side::UNKNOWN2
+0006D6D0,Side::UNKNOWN3,Side::UNKNOWN3
+0006D9A0,Side::UNKNOWN4,Side::UNKNOWN4
+0006DDC0,Side::UNKNOWN5,Side::UNKNOWN5
+0006DEF0,Side::UNKNOWN6,Side::UNKNOWN6
+0006E6B0,Side::BlowupAll,Side::BlowupAll
+0006E7A0,Side::ISideList,Side::ISideList
+0006E9C0,Side::LetAITakeOver(void),Side::LetAITakeOver(void)
+0006EA50,Side::SurrenderAbort,Side::SurrenderAbort
+0006EAC0,Side::AddCashUNKNOWN,Side::AddCashUNKNOWN
+0006EAF0,Side::UNKNOWN8,Side::UNKNOWN8
+0006EB00,Side::Allegiance?UNKNOWN10,Side::Allegiance?UNKNOWN10
+0006EB60,Sound::LoadSoundRSFile,Sound::LoadSoundRSFile
+0006ECC0,Sound::CheckIfSampleIsCached? (char *sample),Sound::CheckIfSampleIsCached? (char *sample)
+0006ED00,Sound::LoadSoundRSFile2,Sound::LoadSoundRSFile2
+0006EDA0,Sound::ISampleManager_46EDA0,Sound::ISampleManager_46EDA0
+0006EEE0,Sound::AllocateSampleCache,Sound::AllocateSampleCache
+0006EF40,Sound::~Sound,Sound::~Sound
+0006EF90,Sound::LoadSampleCache,Sound::LoadSampleCache
+0006F540,Sound::PlaySoundEffect,Sound::PlaySoundEffect
+0006F700,Sound::SetSFXPriority2?,Sound::SetSFXPriority2?
+0006F770,Sound::SetSFXPriority?,Sound::SetSFXPriority?
+0006F820,"Sound::PlaySample(int id, int, int, int)","Sound::PlaySample(int id, int, int, int)"
+0006F900,Sound::PlaySideSpecificSample,Sound::PlaySideSpecificSample
+0006F9A0,Sound::AudToWavConvert?,Sound::AudToWavConvert?
+0006FAA0,Sound::UpdateUISoundQ,Sound::UpdateUISoundQ
+0006FD90,Sound::LoadMusicFile,Sound::LoadMusicFile
+0006FF30,Sound::MusicStuffUnknown,Sound::MusicStuffUnknown
+0006FFE4,,SongOver - restart it
+00070070,Sound::UNKNOWN,Sound::UNKNOWN
+000700B0,Sound::SetMusicVolume(int volume),Sound::SetMusicVolume(int volume)
+000700E0,Sound::PlayMusic (char *Filename),Sound::PlayMusic (char *Filename)
+00070170,Sound::UNKNOWN3,Sound::UNKNOWN3
+00070190,ProcessDirectDrawResult(long_int),ProcessDirectDrawResult(long_int)
+00070710,CUIManager::ctor,CUIManager::ctor
+00070A68,,LoadDune2000Ini
+00070B90,CUIManager::~CUIManager,CUIManager::~CUIManager
+00070DC0,CUIManager::CreateBackImages,CUIManager::CreateBackImages
+00070E20,CUIManager::~CUIManager,CUIManager::~CUIManager
+00070E60,CUIManager::In-Game Menus?,CUIManager:: In-Game Menus?
+00070E90,CUIManager::SetRectangle?,CUIManager:: SetRectangle?
+00070F10,CUIManager::GetPointerToUIMenu?,CUIManager::GetPointerToUIMenu?
+00070F90,CUIManager::UNKNOWN1 leave menu?,CUIManager::UNKNOWN1 leave menu?
+00071050,CUIManager::LMouseButDClickEvent (int x; int y),CUIManager::LMouseButDClickEvent (int x; int y)
+00071070,CUIManager::RMouseButDClickEvent (int x; int y),CUIManager::RMouseButDClickEvent (int x; int y)
+00071090,CUIManager::MouseMoveEvent (int x; int y),CUIManager::MouseMoveEvent (int x; int y)
+000710D0,CUIManager::LMouseButUpEvent (int x; int y),CUIManager::LMouseButUpEvent (int x; int y)
+000711A0,CUIManager::LMouseButDownEvent (int x; int y),CUIManager::LMouseButDownEvent (int x; int y)
+00071250,CUIManager::RMouseButUpEvent (int x; int y),CUIManager::RMouseButUpEvent (int x; int y)
+00071280,CUIManager::WM_CharEvent (int char),CUIManager::WM_CharEvent (int char)
+000712A0,CUIManager::KeyDownEvent (int char),CUIManager::KeyDownEvent (int char)
+000712C0,CUIManager::DoUIManager_4712C0,CUIManager::DoUIManager_4712C0
+00072730,CUIManager::UNKNOWN3,CUIManager::UNKNOWN3
+000730F0,CUIManager::UNKNOWN4,CUIManager::UNKNOWN4
+00073130,CUIManager::UNKNOWN5,CUIManager::UNKNOWN5
+000734E0,CUIManager::JumpToMenu (char *menu),CUIManager::JumpToMenu (char *menu)
+000737D0,CUIManager::QuitAndJumpToMenu (int unk; char *menu; int unk),CUIManager::QuitAndJumpToMenu (int unk; char *menu; int unk)
+00073840,CUIManager::ShowDialog? (int unk; char *menu; char *dialogBox?),CUIManager::ShowDialog? (int unk; char *menu; char *dialogBox?)
+000738B0,CUIManager::UNKNOWN6,CUIManager::UNKNOWN6
+00074250,CUIManager::UpdateUICheckBoxState (char *checkbox; bool checked),CUIManager::UpdateUICheckBoxState (char *checkbox; bool checked)
+00074280,CUIManager::AddStringInList,CUIManager::AddStringInList
+000742F0,CUIManager::AddStringInList2,CUIManager::AddStringInList2
+000744B0,CUIManager::RemoveStringInList,CUIManager::RemoveStringInList
+00074540,CUIManager::SetStringInTextBox,CUIManager::SetStringInTextBox
+00074600,CUIManager::SetIfOn?,CUIManager::SetIfOn?
+00074670,CUIManager::SetIfOff?,CUIManager::SetIfOff?
+00074820,CUIManager::ResetDDraw,CUIManager::ResetDDraw
+000748D0,CUIManager::SetAnimationState,CUIManager::SetAnimationState
+000749C0,CUIManager::ParseEndCommands,CUIManager::ParseEndCommands
+00074B60,CUIManager::UNKNOWN7,CUIManager::UNKNOWN7
+00074CF0,CUIManager::UICheckSaveGame,CUIManager::UICheckSaveGame
+00074E20,CUIManager::UISaveGame,CUIManager::UISaveGame
+000752C0,CUIManager::LoadMission,CUIManager::LoadMission
+00075740,CUIManager::UILoadGame,CUIManager::UILoadGame
+00075A00,CUIManager::LoadSkirmishGame?,CUIManager::LoadSkirmishGame?
+00075B60,CUIManager::ParseEditBox,CUIManager::ParseEditBox
+000760C0,CUIManager::DeleteGame,CUIManager::DeleteGame
+000762E0,CUIManager::LoadSavedGame,CUIManager::LoadSavedGame
+000762F0,CUIManager::PlaySample,CUIManager::PlaySample
+00076470,CUIManager::StopCDTrack,CUIManager::StopCDTrack
+000764B0,CUIManager::PlayCDTrack,CUIManager::PlayCDTrack
+00076590,CUIManager::LoadMusicList (in-game menu),CUIManager::LoadMusicList (in-game menu)
+00076A00,CUIManager::ResetToggleButton,CUIManager::ResetToggleButton
+00076AA0,CUIManager::UNKNOWN8,CUIManager::UNKNOWN8
+00076AF0,CUIManager::LoadColourStringTable (Debug Files),CUIManager::LoadColourStringTable (Debug Files)
+00076E00,CUIManager::LoadTextStringTable (Debug Files),CUIManager::LoadTextStringTable (Debug Files)
+00077190,CUIManager::LoadMenusStringTable (Debug Files),CUIManager::LoadMenusStringTable (Debug Files)
+00077530,CUIManager::LoadSamplesStringTable (Debug Files),CUIManager::LoadSamplesStringTable (Debug Files)
+00077790,CUIManager::LoadCampaignStringTable (Debug Files),CUIManager::LoadCampaignStringTable (Debug Files)
+00078100,CUIManager::SavePhoneInfo,CUIManager::SavePhoneInfo
+000781E0,CUIManager::WOLLoginDialogStuff,CUIManager::WOLLoginDialogStuff
+00078435,CUIManager::ShowWOLRegisterDialog,CUIManager::ShowWOLRegisterDialog
+00078460,CUIManager::SaveUserNames,CUIManager::SaveUserNames
+00078550,CUIManager::RemoveUserName,CUIManager::RemoveUserName
+000789E0,CUIManager::AddPhoneToList,CUIManager::AddPhoneToList
+00078AD0,CUIManager::SavePhoneNumbers,CUIManager::SavePhoneNumbers
+00078BF0,CUIManager::DeleteEntry,CUIManager::DeleteEntry
+00078C20,CUIManager::LoadDune2000Cfg,CUIManager::LoadDune2000Cfg
+00078FA0,CUIManager::SaveDune2000Cfg,CUIManager::SaveDune2000Cfg
+000794C0,CUIManager::GetPointerToUIButton? (char *controlName; int unk),CUIManager::GetPointerToUIButton? (char *controlName; int unk)
+00079550,CUIManager::GetPointerToUI UNKNOWN? (char *controlName; int unk),CUIManager::GetPointerToUI UNKNOWN? (char *controlName; int unk)
+000795F0,CUIManager::GetPointerToUIListbox? (char *controlName; int unk),CUIManager::GetPointerToUIListbox? (char *controlName; int unk)
+00079690,CUIManager::GetPointerToUICheckbox? (char *controlName; int unk),CUIManager::GetPointerToUICheckbox? (char *controlName; int unk)
+00079730,CUIManager::GetPointerToUIEditBox? (char *controlName; int unk),CUIManager::GetPointerToUIEditBox? (char *controlName; int unk)
+000797D0,CUIManager::GetPointerToUIToolTip? (char *controlName; int unk),CUIManager::GetPointerToUIToolTip? (char *controlName; int unk)
+00079870,CUIManager::GetPointerToUIAIValueBar? (char *controlName; int unk),CUIManager::GetPointerToUIAIValueBar? (char *controlName; int unk)
+00079910,CUIManager::GetPointerToUIAnimation? (char *controlName; int unk),CUIManager::GetPointerToUIAnimation? (char *controlName; int unk)
+000799D0,CUIManager::SetNetworkType,CUIManager::SetNetworkType
+00079D40,CUIManager::BreakFromLobby,CUIManager::BreakFromLobby
+00079DB0,CUIManager::BreakFromSession,CUIManager::BreakFromSession
+00079E80,CUIManager::StartGame,CUIManager::StartGame
+0007A450,CUIManager::LoadMapNamesIntoListBox?,CUIManager::LoadMapNamesIntoListBox?
+0007AC10,CUIManager::StartSession,CUIManager::StartSession
+0007AD60,CUIManager::JoinSession,CUIManager::JoinSession
+0007B470,CUIManager::ReEnterLobby,CUIManager::ReEnterLobby
+0007BAE0,CUIManager::SendInGameMsgTo,CUIManager::SendInGameMsgTo
+0007BD00,CUIManager::SendMsgToAll,CUIManager::SendMsgToAll
+0007BDA0,CUIManager::SendUIMsgToAll,CUIManager::SendUIMsgToAll
+0007DC30,CUIManager::SetValueS1To,CUIManager::SetValueS1To
+0007DCC0,CUIManager::SetValueS2To,CUIManager::SetValueS2To
+0007DD50,CUIManager::SetValueS4To,CUIManager::SetValueS4To
+0007DDE0,CUIManager::SetValueU1To,CUIManager::SetValueU1To
+0007DE70,CUIManager::SetValueU2To,CUIManager::SetValueU2To
+0007DF00,CUIManager::SetValueU4To,CUIManager::SetValueU4To
+0007DF90,CUIManager::SetToggleButtonState? (SetValueBFTo),CUIManager::SetToggleButtonState? (SetValueBFTo)
+0007E0F0,CUIManager::SetValueECTo (char *varName; char *value),CUIManager::SetValueECTo (char *varName; char *value)
+0007E174,,var address
+0007E176,,value
+0007E1A0,CUIManager::SetStringTo,CUIManager::SetStringTo
+0007E230,CUIManager::SetFromUIValueS1To,CUIManager::SetFromUIValueS1To
+0007E2F0,CUIManager::SetFromUIValueS2To,CUIManager::SetFromUIValueS2To
+0007E3B0,CUIManager::SetFromUIValueS4To,CUIManager::SetFromUIValueS4To
+0007E470,CUIManager::SetFromUIValueU1To,CUIManager::SetFromUIValueU1To
+0007E550,CUIManager::SetFromUIValueU2To,CUIManager::SetFromUIValueU2To
+0007E610,CUIManager::SetFromUIValueU4To,CUIManager::SetFromUIValueU4To
+0007E6E0,CUIManager::SetFromUIBFValueTo,CUIManager::SetFromUIBFValueTo
+0007E7A0,CUIManager::SetFromUIECValueTo,CUIManager::SetFromUIECValueTo
+0007E7B0,CUIManager::SetFromUIStringTo,CUIManager::SetFromUIStringTo
+0007F850,CUIManager::CheckIfValueS1,CUIManager::CheckIfValueS1
+0007F930,CUIManager::CheckIfValueS2,CUIManager::CheckIfValueS2
+0007FA10,CUIManager::CheckIfValueS4,CUIManager::CheckIfValueS4
+0007FAF0,CUIManager::CheckIfValueU1,CUIManager::CheckIfValueU1
+0007FCB0,CUIManager::CheckIfValueU2,CUIManager::CheckIfValueU2
+0007FD90,CUIManager::CheckIfValueU4,CUIManager::CheckIfValueU4
+0007FE70,CUIManager::CheckIfValueBF,CUIManager::CheckIfValueBF
+00080010,CUIManager::CheckIfValueEC,CUIManager::CheckIfValueEC
+00080B90,CUIManager::SetLanguageTo (char *language),CUIManager::SetLanguageTo (char *language)
+00080D80,CUIManager::ConnectToWWChat,CUIManager::ConnectToWWChat
+00080DC0,CUIManager::JumpIfSelected,CUIManager::JumpIfSelected
+00080E00,CUIManager::EnterText?,CUIManager::EnterText?
+00080F30,CUIManager::CreateWigNet,CUIManager::CreateWigNet
+00081030,CUIManager::DestroyWigNet,CUIManager::DestroyWigNet
+000810D0,CUIManager::LoadWOLIcons,CUIManager::LoadWOLIcons
+00081490,CUIManager::GetNextMusicTrack,CUIManager::GetNextMusicTrack
+00081700,CUIManager::TrackForHouse(char_char),CUIManager::TrackForHouse(char_char)
+00081870,CUIManager::WriteBinaryStringTables,CUIManager::WriteBinaryStringTables
+00081CF0,CUIManager::LoadBinaryStringTables,CUIManager::LoadBinaryStringTables
+000822C0,CUIManager::ConvertAllMenuFiles (.uid to .uil),CUIManager::ConvertAllMenuFiles (.uid to .uil)
+000823D0,CUIManager::ConvertToBinary (text .uid to .uil),CUIManager::ConvertToBinary (text .uid to .uil)
+000825B0,CUIManager::ReadBinaryString(int_int_char),CUIManager::ReadBinaryString(int_int_char)
+00082690,CUIManager::GetCD(void),CUIManager::GetCD(void)
+00082780,CUIObject::ctor,CUIObject::ctor
+00082820,CUIObject::~CUIObject,CUIObject::~CUIObject
+00082850,CUIObject::SetfCurrentState,CUIObject::SetfCurrentState
+00082EA9,,QueryRemoveUserName
+00082F2D,,DisplayNetMessage
+00082F81,,SetEditFocus
+00082FED,,DisableThis
+00083102,,Uncheck
+00083118,,AddStringInList
+00083B80,CUIObject::UNKNOWN2,CUIObject::UNKNOWN2
+00084000,CUIObject::LoadUIValue?,CUIObject::LoadUIValue?
+00084CC0,CUIObject::UNKNOWN3,CUIObject::UNKNOWN3
+00084F10,CUIObject::CheckIfMouseIsOverButton?  (int x; int y),CUIObject::CheckIfMouseIsOverButton?  (int x; int y)
+00085000,CButton::ctor,CButton::ctor
+00085240,CButton::~CButton,CButton::~CButton
+000852E0,CButton::UNKNOWN,CButton::UNKNOWN
+00085310,CButton::ChangefIUpImage,CButton::ChangefIUpImage
+00085420,CButton::ChangefIDownImage,CButton::ChangefIDownImage
+00085530,CButton::ChangeButtonColor?,CButton::ChangeButtonColor?
+00085940,CToggleButton::ctor,CToggleButton::ctor
+00085B80,CToggleButton::~CToggleButton,CToggleButton::~CToggleButton
+000860E0,CGroupBox::ctor,CGroupBox::ctor
+00086220,CGroupBox::~CGroupBox,CGroupBox::~CGroupBox
+00086290,CGroupBox::SetfBackImageName,CGroupBox::SetfBackImageName
+00086440,CListBox::ctor,CListBox::ctor
+000868D0,CListBox::~CListBox,CListBox::~CListBox
+00086A40,CListBox::SetfEntryArraySize,CListBox::SetfEntryArraySize
+00086BB0,CListBox::ModifyEntryString,CListBox::ModifyEntryString
+00086C60,CListBox::ModifyEntryColour,CListBox::ModifyEntryColour
+00086CD0,CListBox::ModifyEntryData,CListBox::ModifyEntryData
+00086D20,CListBox::AddEntry,CListBox::AddEntry
+00086F10,CListBox::AddEntryWordWrap,CListBox::AddEntryWordWrap
+00087420,CListBox::DeleteEntry,CListBox::DeleteEntry
+000876F0,CListBox::UNKNOWN2,CListBox::UNKNOWN2
+00087990,CListBox::UNKNOWN3,CListBox::UNKNOWN3
+00087A00,CListBox::UNKNOWN4,CListBox::UNKNOWN4
+0008AB10,CCheckBox::ctor,CCheckBox::ctor
+0008AD20,CCheckBox::~CCheckBox,CCheckBox::~CCheckBox
+0008AF30,MultiStateBox::ctor,MultiStateBox::ctor
+0008B060,MultiStateBox::~MultiStateBox,MultiStateBox::~MultiStateBox
+0008B190,CEditBox::ctor,CEditBox::ctor
+0008B230,CEditBox::~CEditBox,CEditBox::~CEditBox
+0008B9C0,CTextBox::ctor,CTextBox::ctor
+0008BA70,CTextBox::~CTextBox,CTextBox::~CTextBox
+0008C030,CValueBar::ctor,CValueBar::ctor
+0008C3A0,CValueBar::~CValueBar,CValueBar::~CValueBar
+0008CEC0,CAnimation::ctor,CAnimation::ctor
+0008D160,CAnimation::~CAnimation,CAnimation::~CAnimation
+0008D1F0,CAnimation::UNKNOWN,CAnimation::UNKNOWN
+0008D2B0,CAnimation::DoAnimation,CAnimation::DoAnimation
+0008D650,CAnimation::Draw,CAnimation::Draw
+0008D730,CMovie::ctor,CMovie::ctor
+0008D880,CMovie::~CMovie,CMovie::~CMovie
+0008D8F0,CMovie::Play?,CMovie:: UNKNOWN2 ?
+0008D980,Data::FileStreamReadLine (without LineFeed),Data::FileStreamReadLine (without LineFeed)
+0008D9B0,Data::ReplaceLineFeedWithNull,Data::ReplaceLineFeedWithNull
+0008D9D0,"Data::StringToInt (char *str; int wordIndex) space separated, converts the chosen word","Data::StringToInt (char *str; int wordIndex) space separated, converts the chosen word"
+0008DA20,Data::GetStringFromIndex (char *str; int wordIndex; char *out) space separated- converts the chosen word to int,Data::GetStringFromIndex (char *str; int wordIndex; char *out) space separated- converts the chosen word to int
+0008DB10,Data::GetStringWordCount int (char *str) space separated words,Data::GetStringWordCount int (char *str) space separated words
+0008DB90,Data::GetColourId(char *colour),Data::GetColourId(char *colour)
+0008DC10,Data::GetTextId,Data::GetTextId
+0008DC70,Data::TextStringExistsBool(char *key),Data::TextStringExistsBool(char *key)
+0008DCC0,"Data::GetTextString(int textId, bool showError)","Data::GetTextString(int textId, bool showError)"
+0008DD10,Data::GetMenuId(char *menu),Data::GetMenuId(char *menu)
+0008DD90,Data::GetSampleId(char *sample),Data::GetSampleId(char *sample)
+0008DE10,Data::GetSampleString(int sampleId),Data::GetSampleString(int sampleId)
+0008DE40,Data::GetPointerToVar1 ?,Data::GetPointerToVar1 ?
+0008DED0,Data::GetPointerToVar2 ?,Data::GetPointerToVar2 ?
+0008DF60,Data::GetPointerToVar3 ?,Data::GetPointerToVar3 ?
+0008DFF0,Data::GetPointerToVar4 ?,Data::GetPointerToVar4 ?
+0008E080,Data::GetPointerToVar5 ?,Data::GetPointerToVar5 ?
+0008E110,Data::GetPointerToVar6 ?,Data::GetPointerToVar6 ?
+0008E1A0,Data::GetPointerToVar7 ?,Data::GetPointerToVar7 ?
+0008E230,Data::GetPointerToVar8 ?,Data::GetPointerToVar8 ?
+0008E2B0,Data::GetPointerToVar1 (char *var),Data::GetPointerToVar1 (char *var)
+0008E330,Data::GetPointerToVar2 (char *var),Data::GetPointerToVar2 (char *var)
+0008E3B0,Data::GetPointerToVar3 (char *var),Data::GetPointerToVar3 (char *var)
+0008E430,Data::GetPointerToVar4 (char *var),Data::GetPointerToVar4 (char *var)
+0008E4B0,Data::GetPointerToVar5 (char *var),Data::GetPointerToVar5 (char *var)
+0008E530,Data::GetPointerToVar6 (char *var),Data::GetPointerToVar6 (char *var)
+0008E5B0,Data::GetPointerToVar7 (char *var),Data::GetPointerToVar7 (char *var)
+0008E630,Net::SendNetMessage,Net::SendNetMessage
+0008E660,Net::UNKNOWN,Net::UNKNOWN
+0008E820,Net::ShareSettings?StartGame?UNKNOWN,Net::ShareSettings?StartGame?UNKNOWN
+0008F854,WOLGameVersion,WOLGameVersion
+0008FD80,Net::UNKNOWN2,Net::UNKNOWN2
+0008FE30,Net::SetgRepeatTrack,Net::SetgRepeatTrack
+0008FE40,Net::SetgNetTournamentGame?,Net::SetgNetTournamentGame?
+00090050,Net::UNKNOWN3,Net::UNKNOWN3
+00090060,Net::SetgNetSerialComPort,Net::SetgNetSerialComPort
+000900D0,Net::SetgNetUnitCount,Net::SetgNetUnitCount
+00090100,Net::SetgNetTechLevel,Net::SetgNetTechLevel
+00090130,Net::SetgNetAIPlayers,Net::SetgNetAIPlayers
+00090190,Net::SetgNetWorms,Net::SetgNetWorms
+000901C0,Net::SetgNetStartingCredits,Net::SetgNetStartingCredits
+000901F0,Net::SetgNetMap?,Net::SetgNetMap?
+00090240,Net::SetgNetCrates,Net::SetgNetCrates
+00090270,Net::SetgNetPlayerName,Net::SetgNetPlayerName
+00090320,Net::SetgNetPlayerSide,Net::SetgNetPlayerSide
+00090560,Net::SetgNetPlayerColour,Net::SetgNetPlayerColour
+00090830,Net::SetgNetPlayerHandicap?,Net::SetgNetPlayerHandicap?
+00090930,Net::SetgNetPlayerLoginName,Net::SetgNetPlayerLoginName
+00090A60,Net::SetgNetPlayerPassword,Net::SetgNetPlayerPassword
+00090BB0,Net::SetgNetMap,Net::SetgNetMap
+00091330,LoadImage?,LoadImage?
+000914A0,Net::GetPlayerHouse(int),Net::GetPlayerHouse(int)
+00091560,Net::GetPlayerColour(int),Net::GetPlayerColour(int)
+00091600,Net::GetPlayerColourNumber(char),Net::GetPlayerColourNumber(char)
+00091660,Net::GetPlayerUNKNOWNSetting(char *settings),Net::GetPlayerUNKNOWNSetting(char *settings)
+000916B0,Net::GetPlayerUNKNOWNSetting6 (char *settings),Net::GetPlayerUNKNOWNSetting6 (char *settings)
+000916F0,Net::GetPlayerHandicap (char *settings),Net::GetPlayerHandicap (char *settings)
+00091720,Net::GetPlayerName (char *settings),Net::GetPlayerName (char *settings)
+00091740,Net::BuildMySettingsString?,Net::BuildMySettingsString?
+00091990,Net::GetUniqueGroup_ID(void),Net::GetUniqueGroupID(void)
+00091A10,Net::GetColourSelected(int_int),Net::GetColourSelected(int_int)
+00091AE0,Net::CheckIfMapExists1 bool (char *netMap),Net::CheckIfMapExists1 bool (char *netMap)
+00091B40,Net::CheckIfMapExists2 bool (char *netMap),Net::CheckIfMapExists2 bool (char *netMap)
+00091C60,Net::AlterHandicap(int),Net::AlterHandicap(int)
+00092000,IsWindowsNTMachine(void),IsWindowsNTMachine(void)
+00092060,NullModemDialogStuff,NullModemDialogStuff
+00092110,LANSettingsChangedEvent?,LANSettingsChangedEvent?
+00092310,NetAcceptButtonClicked?,NetAcceptButtonClicked?
+00092400,NetStartButtonClicked?,NetStartButtonClicked?
+000925A0,NetAcceptButtonClicked? 2,NetAcceptButtonClicked? 2
+00092750,CheckIfSaveGamesExist bool,CheckIfSaveGamesExist bool
+000927C0,CreateProcess,CreateProcess
+00092840,RetryCDInDrive,RetryCDInDrive
+00092870,NoCDSoQuit,NoCDSoQuit
+00092A70,DrawMenu?,DrawMenu?
+00092B17,,flip
+00092B60,PlayerColour Stuff- update UI ?,PlayerColour Stuff- update UI ?
+00092C40,CheckForCD(int_char),CheckForCD(int_char)
+00092E20,LeftGame (Surrender),LeftGame(Surrender)
+00092EB0,AbortGame,AbortGame
+00092F30,EditBoxEmpty,EditBoxEmpty
+00092F70,ForceButtonDown,ForceButtonDown
+00092F90,SetCallerID_492F90,SetCallerID_492F90
+00093050,InitNetMapAndNetMapDescVars,InitNetMapAndNetMapDescVars
+00093190,WigNetError,WigNetError
+000931C0,SetNetCratesUpdateUIText,SetNetCratesUpdateUIText
+00093350,SetNetWormsUpdateUIText,SetNetWormsUpdateUIText
+000936A0,Unit::GetNextSquare(int_int_int),Unit::GetNextSquare(int_int_int)
+000940D0,Unit::UNKNOWN,Unit::UNKNOWN
+00094210,Unit::UNKNOWN2,Unit::UNKNOWN2
+00094260,Unit::MoveUnit(int_int_int),Unit::MoveUnit(int_int_int)
+00094CD0,Unit::UNKNOWN3,Unit::UNKNOWN3
+00095560,Unit::MoveUnitSimple,Unit::MoveUnitSimple
+00095B90,Unit::ShootTarget,Unit::ShootTarget
+00096030,Unit::ShootTarget2,Unit::ShootTarget2
+00096B00,Unit::AttackUnit,Unit::AttackUnit
+00096D10,Unit::AttackBuilding?,Unit::AttackBuilding?
+000970F0,Unit::UNKNOWN9,Unit::UNKNOWN9
+00097140,Unit::UNKNOWN10,Unit::UNKNOWN10
+00097270,Unit::CanUnitAttackTile,Unit::CanUnitAttackTile
+00097390,Unit::UNKNOWN11,Unit::UNKNOWN11
+00097530,Unit::UNKNOWN12,Unit::UNKNOWN12
+00097550,Unit::CanUnitAttackBuilding,Unit::CanUnitAttackBuilding
+000975D0,Unit::AttackUnit2,Unit::AttackUnit2
+000976B0,Unit::AttackUnit3,Unit::AttackUnit3
+000977A0,Unit::BuildingSoldDestroyedSpawnInfantry?,Unit::BuildingSoldDestroyedSpawnInfantry?
+000979A0,Unit::UNKNOWN5,Unit::UNKNOWN5
+00097B90,Unit::UpdateUnit,Unit::UpdateUnit
+0009B7F0,Unit::UpdateUnit2,Unit::UpdateUnit2
+0009BE60,Unit::UNKNOWN6,Unit::UNKNOWN6
+0009CA10,Unit::UNKNOWN7,Unit::UNKNOWN7
+0009CDE0,Unit::UNKNOWN8,Unit::UNKNOWN8
+0009D170,Unit::ClosestBuildingTile,Unit::ClosestBuildingTile
+0009D2E0,Unit::DamageTiles(int_int_int_int_int_long_char),Unit::DamageTiles(int_int_int_int_int_long_char)
+0009DD80,Unit::Explosion?,Unit::Explosion?
+0009DEB0,Unit::UNKNOWN13,Unit::UNKNOWN13
+0009E120,Unit::UNKNOWN14,Unit::UNKNOWN14
+0009E140,Unit::UNKNOWN15,Unit::UNKNOWN15
+0009E160,Unit::UNKNOWN16,Unit::UNKNOWN16
+0009E290,Unit::UNKNOWN17,Unit::UNKNOWN17
+0009E6B0,Unit::UNKNOWN18,Unit::UNKNOWN18
+0009E770,Unit::SpawnOrnithopter,Unit::SpawnOrnithopter
+0009E860,Unit::SpawnDeathHandRocket,Unit::SpawnDeathHandRocket
+0009E9D0,Unit::NewBestBullet(char_char_int_int_int_char),Unit::NewBestBullet(char_char_int_int_int_char)
+0009EBF0,Unit::PickupCrate(int_int),Unit::PickupCrate(int_int)
+0009EC55,CrateTypesSwitch,CrateTypesSwitch
+0009EC6A,CT_CASH,CT_CASH
+0009ECF5,CT_REVEAL,CT_REVEAL
+0009ED96,CT_NOMAP,CT_NOMAP
+0009EE99,CT_UNIT,CT_UNIT
+0009EFE8,CT_EXPLODE,CT_EXPLODE
+0009F089,CT_STEALTH,CT_STEALTH
+0009F112,CT_SPICEBLOOM,CT_SPICEBLOOM
+0009F12E,CT_SPICEBLOOM2,CT_SPICEBLOOM2
+0009F14A,CT_SPICEBLOOM3,CT_SPICEBLOOM3
+0009F1B0,"Unit::StealthUnitsOnCell(int x, int y, int unknown)","Unit::StealthUnitsOnCell(int x, int y, int unknown)"
+0009F240,Unit::PlayUnitResponse(char),Unit::PlayUnitResponse(char)
+0009F310,Unit::UNKNOWN21,Unit::UNKNOWN21
+0009F320,Unit::UNKNOWN22,Unit::UNKNOWN22
+0009F3B0,Unit::GetSpeed(int),Unit::GetSpeed(int)
+0009F4A0,Unit::UNKNOWN23,Unit::UNKNOWN23
+0009F4D0,Unit::UNKNOWN24,Unit::UNKNOWN24
+0009F5C0,Unit::UNKNOWN25,Unit::UNKNOWN25
+0009F5F0,Unit::UNKNOWN26,Unit::UNKNOWN26
+0009FB40,Unit::ChangeOwner? (deviated unit),Unit::ChangeOwner? (deviated unit)
+0009FB90,IntToStringIp (int IP; char *out),IntToStringIp (int IP; char *out)
+0009FBC0,Wignet::Init(int_int),Wignet::Init(int_int)
+0009FBE0,Wignet::ctor(int_int),Wignet::ctor(int_int)
+0009FCF0,Wignet::~Wignet(void),Wignet::~Wignet(void)
+0009FDE0,Wignet::SetMode(char_int_char_char),Wignet::SetMode(char_int_char_char)
+0009FE30,Wignet::SetSessionName(int_int_int),Wignet::SetSessionName(int_int_int)
+0009FFA0,Wignet::GetNetworkTypes(int_int_int),Wignet::GetNetworkTypes(int_int_int)
+000A0200,Wignet::UNKNOWN,Wignet::UNKNOWN
+000A0430,Wignet::UNKNOWN2,Wignet::UNKNOWN2
+000A04C0,Wignet::UNKNOWN3,Wignet::UNKNOWN3
+000A0510,Wignet::GetSessionList(int),Wignet::GetSessionList(int)
+000A07A0,Wignet::GetMemberList(int),Wignet::GetMemberList(int)
+000A08E0,Wignet::StartSession(void),Wignet::StartSession(void)
+000A0990,Wignet::JoinSession(void),Wignet::JoinSession(void)
+000A0A30,Wignet::SetNetworkType(int_int),Wignet::SetNetworkType(int_int)
+000A12F0,Wignet::JoinMember,Wignet::JoinMember
+000A13F0,Wignet::SelectNetwork(void),Wignet::SelectNetwork(void)
+000A1450,Wignet::CloseSession,Wignet::CloseSession
+000A1570,Wignet::UNKNOWN4,Wignet::UNKNOWN4
+000A16A0,Wignet::InitiateSession,Wignet::InitiateSession
+000A1890,Wignet::UNKNOWN5,Wignet::UNKNOWN5
+000A1950,Wignet::UNKNOWN6,Wignet::UNKNOWN6
+000A1C90,Wignet::EnterSession,Wignet::EnterSession
+000A2050,Wignet::GetNetMessage,Wignet::GetNetMessage
+000A2710,Wignet::SendNetMessage,Wignet::SendNetMessage
+000A2810,Wignet::UNKNOWN7,Wignet::UNKNOWN7
+000A2880,Wignet::UNKNOWN8,Wignet::UNKNOWN8
+000A29F0,Wignet::UNKNOWN9,Wignet::UNKNOWN9
+000A2A10,DialogFunc,DialogFunc
+000A3120,FailureTxtGetLine(int lineNumber),FailureTxtGetLine(int lineNumber)
+000A31D0,WindowProcedure(void *_uint_uint_long),WindowProcedure(void *_uint_uint_long)
+000A384C,WP_switch_a,WP_switch_a
+000A3860,WP_switch_b,WP_switch_b
+000A3884,WP_byte_switch,WP_byte_switch
+000A39E0,ParseCommandLine(int),ParseCommandLine(int)
+000A3A80,PCL_switch,PCL_switch
+000A3AA0,PCL_byte_switch,PCL_byte_switch
+000A3AC0,EnumFunc,EnumFunc
+000A3BB0,Winmain::WinMain(hInstance_hPrevInstance_lpCmdLine_nCmdShow),Winmain::WinMain(hInstance_hPrevInstance_lpCmdLine_nCmdShow)
+000A3E90,Winmain::WinMain(hInstance_hPrevInstance_lpCmdLine_nCmdShow),
+000A3F50,Winmain::UNKNOWN,Winmain::UNKNOWN
+000A4030,Winmain::UNKNOWN2 (SetVideoMode?),Winmain::UNKNOWN2 (SetVideoMode?)
+000A4560,IsChosenResolutionSupportedCheck,IsChosenResolutionSupportedCheck
+000A45D0,CreateSide(void),CreateSide(void)
+000A4660,Side::AsPointer(int sideId),Side::AsPointer(int sideId)
+000A46B0,"Unit::AsPointer(int sideId, int objectIndex)","Unit::AsPointer(int sideId, int objectIndex)"
+000A4740,"Unit::AsPointer2(int sideId, int objectIndex)","Unit::AsPointer2(int sideId, int objectIndex)"
+000A4900,EnemyUnitInRange,EnemyUnitInRange
+000A54A0,GetNextUnitOnTile,GetNextUnitOnTile
+000A61D0,CheckIfDuneCDIsInDrive bool,CheckIfDuneCDIsInDrive bool
+000A656C,DirectPlayCreate(int_int_int),DirectPlayCreate(int_int_int)
+000A6572,DirectPlayLobbyCreateA(int_int_int_int_int),DirectPlayLobbyCreateA(int_int_int_int_int)
+000A6578,DirectDrawCreate(int_int_int),DirectDrawCreate(int_int_int)
+000A657E,DirectSoundCreate(int_int_int),DirectSoundCreate(int_int_int)
+000ABCC0,std::basic_streambufchar_std::char_traitschar::underflow(void),std::basic_streambufchar_std::char_traitschar::underflow(void)
+000B0670,_sprintf,_sprintf
+000B06E0,operator new(uint),operator new(uint)
+000B06F0,operator delete(void *),operator delete(void *)
+000B0700,_atol,_atol
+000B07A0,_atoi,_atoi
+000B07B0,_strncpy,_strncpy
+000B08B0,_strtok,_strtok
+000B0990,_JumpToContinuation(void *_EHRegistrationNode *),_JumpToContinuation(void *_EHRegistrationNode *)
+000B09E0,_UnwindNestedFrames(EHRegistrationNode *_EHExceptionRecord *),_UnwindNestedFrames(EHRegistrationNode *_EHExceptionRecord *)
+000B0A0C,$ReturnPoint$16567,$ReturnPoint$16567
+000B0A40,___CxxFrameHandler,___CxxFrameHandler
+000B0A80,_CallCatchBlock2(EHRegistrationNode *__s_FuncInfo const *_void *_int_ulong),_CallCatchBlock2(EHRegistrationNode *__s_FuncInfo const *_void *_int_ulong)
+000B0AE0,CatchGuardHandler(EHExceptionRecord *_CatchGuardRN *_void *_void *),CatchGuardHandler(EHExceptionRecord *_CatchGuardRN *_void *_void *)
+000B0B10,unknown_libname_4,unknown_libname_4
+000B0BAA,unknown_libname_5,unknown_libname_5
+000B0BE0,TranslatorGuardHandler(EHExceptionRecord *_TranslatorGuardRN *_void *_void *),TranslatorGuardHandler(EHExceptionRecord *_TranslatorGuardRN *_void *_void *)
+000B0C70,_GetRangeOfTrysToCheck(_s_FuncInfo const *_int_int_uint *_uint *),_GetRangeOfTrysToCheck(_s_FuncInfo const *_int_int_uint *_uint *)
+000B0CF0,__global_unwind2,__global_unwind2
+000B0D10,__unwind_handler,__unwind_handler
+000B0D32,__local_unwind2,__local_unwind2
+000B0D8A,__NLG_Return2,__NLG_Return2
+000B0D9A,__abnormal_termination,__abnormal_termination
+000B0DBD,__NLG_Notify1,__NLG_Notify1
+000B0DC6,__NLG_Notify,__NLG_Notify
+000B0DD9,__NLG_Dispatch,__NLG_Dispatch
+000B0DE0,_sscanf,_sscanf
+000B0E30,_malloc,_malloc
+000B0E50,__nh_malloc,__nh_malloc
+000B0EA0,__heap_alloc,__heap_alloc
+000B0EE0,_free,_free
+000B0F30,__fpmath,__fpmath
+000B0F60,__cfltcvt_init,__cfltcvt_init
+000B0FA0,__fsopen,__fsopen
+000B0FD0,_fopen,_fopen
+000B0FF0,_fclose,_fclose
+000B1070,_fread,_fread
+000B11B0,_fwrite,_fwrite
+000B1300,_fseek,_fseek
+000B13A0,_strncmp,_strncmp
+000B13E0,__alloca_probe,__alloca_probe
+000B1410,_realloc,_realloc
+000B15B0,_vsprintf,_vsprintf
+000B1640,__strlwr,__strlwr
+000B1700,_tolower,_tolower
+000B1810,_rand,_rand
+000B1840,__ftol,__ftol
+000B1870,_abort,_abort
+000B1890,__cinit,__cinit
+000B18C0,_exit,_exit
+000B18E0,__exit,__exit
+000B1900,_doexit,_doexit
+000B19B0,__initterm,__initterm
+000B19E0,_strchr,_strchr
+000B19E6,___from_strstr_to_strchr,___from_strstr_to_strchr
+000B1AA0,_fgets,_fgets
+000B1B20,_memcpy,_memcpy
+000B1E60,_clock,_clock
+000B1EE0,_fflush,_fflush
+000B1F30,__flush,__flush
+000B1FA0,__flushall,__flushall
+000B1FB0,_flsall,_flsall
+000B2030,_fprintf,_fprintf
+000B2070,_setvbuf,_setvbuf
+000B2130,_toupper,_toupper
+000B2230,_strstr,_strstr
+000B22B0,__findfirst,__findfirst
+000B23E0,__findnext,__findnext
+000B2500,__findclose,__findclose
+000B2520,___timet_from_ft,___timet_from_ft
+000B25B0,_remove,_remove
+000B25E0,_rename,_rename
+000B2620,_strcspn,_strcspn
+000B2660,_strncat,_strncat
+000B2790,_fputs,_fputs
+000B27E0,_isspace,_isspace
+000B2810,start,start
+000B29B0,__amsg_exit,__amsg_exit
+000B29E0,_strcpy,_strcpy
+000B29F0,_strcat,_strcat
+000B2AD0,_strcmp,_strcmp
+000B2B60,_strlen,_strlen
+000B2BE0,_memset,_memset
+000B2C40,__flsbuf,__flsbuf
+000B2D70,__output,__output
+000B2F70,$NORMAL_STATE$684,$NORMAL_STATE$684
+000B3700,_write_char,_write_char
+000B3750,_write_multi_char,_write_multi_char
+000B3790,_write_string,_write_string
+000B37D0,_get_int_arg,_get_int_arg
+000B37F0,_get_int64_arg,_get_int64_arg
+000B3810,_get_short_arg,_get_short_arg
+000B3830,__isctype,__isctype
+000B38D0,__allmul,__allmul
+000B3910,___InternalCxxFrameHandler,___InternalCxxFrameHandler
+000B39E0,FindHandler(EHExceptionRecord *_EHRegistrationNode *__CONTEXT *_void *__s_FuncInfo const *_uchar_int_EHRegistrationNode *),FindHandler(EHExceptionRecord *_EHRegistrationNode *__CONTEXT *_void *__s_FuncInfo const *_uchar_int_EHRegistrationNode *)
+000B3C90,FindHandlerForForeignException(EHExceptionRecord *_EHRegistrationNode *__CONTEXT *_void *__s_FuncInfo const *_int_int_EHRegistrationNode *),FindHandlerForForeignException(EHExceptionRecord *_EHRegistrationNode *__CONTEXT *_void *__s_FuncInfo const *_int_int_EHRegistrationNode *)
+000B3D60,___FrameUnwindToState,___FrameUnwindToState
+000B3E40,CatchIt(EHExceptionRecord *_EHRegistrationNode *__CONTEXT *_void *__s_FuncInfo const *__s_HandlerType const *__s_CatchableType const *__s_TryBlockMapEntry const *_int_EHRegistrationNode *),CatchIt(EHExceptionRecord *_EHRegistrationNode *__CONTEXT *_void *__s_FuncInfo const *__s_HandlerType const *__s_CatchableType const *__s_TryBlockMapEntry const *_int_EHRegistrationNode *)
+000B3ED0,CallCatchBlock(EHExceptionRecord *_EHRegistrationNode *__CONTEXT *__s_FuncInfo const *_void *_int_ulong),CallCatchBlock(EHExceptionRecord *_EHRegistrationNode *__CONTEXT *__s_FuncInfo const *_void *_int_ulong)
+000B4020,ExFilterRethrow(_EXCEPTION_POINTERS *),ExFilterRethrow(_EXCEPTION_POINTERS *)
+000B4050,BuildCatchObject(EHExceptionRecord *_EHRegistrationNode *__s_HandlerType const *__s_CatchableType const *),BuildCatchObject(EHExceptionRecord *_EHRegistrationNode *__s_HandlerType const *__s_CatchableType const *)
+000B4260,_DestructExceptionObject(EHExceptionRecord *_uchar),_DestructExceptionObject(EHExceptionRecord *_uchar)
+000B42E0,AdjustPointer(void *_PMD const &),AdjustPointer(void *_PMD const &)
+000B4310,unknown_libname_6,unknown_libname_6
+000B4337,unknown_libname_7,unknown_libname_7
+000B51C0,__hextodec,__hextodec
+000B5200,_fgetc,_fgetc
+000B5230,__un_inc,__un_inc
+000B5250,__whiteout,__whiteout
+000B52A0,__callnewh,__callnewh
+000B52C0,__heap_init,__heap_init
+000B5300,___sbh_new_region,___sbh_new_region
+000B5470,___sbh_release_region,___sbh_release_region
+000B54D0,___sbh_decommit_pages,___sbh_decommit_pages
+000B55A0,___sbh_find_block,___sbh_find_block
+000B5600,___sbh_free_block,___sbh_free_block
+000B5660,___sbh_alloc_block,___sbh_alloc_block
+000B58A0,___sbh_alloc_block_from_page,___sbh_alloc_block_from_page
+000B5A20,___sbh_resize_block,___sbh_resize_block
+000B5AF0,__setdefaultprecision,__setdefaultprecision
+000B5B10,__ms_p5_test_fdiv,__ms_p5_test_fdiv
+000B5B60,__ms_p5_mp_test_fdiv,__ms_p5_mp_test_fdiv
+000B5B90,__forcdecpt,__forcdecpt
+000B5BF0,__cropzeros,__cropzeros
+000B5C60,__positive,__positive
+000B5C80,__fassign,__fassign
+000B5CE0,__cftoe,__cftoe
+000B5E20,__cftof,__cftof
+000B5F20,__cftog,__cftog
+000B5FD0,__cftoe_g,__cftoe_g
+000B6000,__cftof_g,__cftof_g
+000B6030,__cfltcvt,__cfltcvt
+000B60A0,__shift,__shift
+000B60D0,__openfile,__openfile
+000B62A0,__getstream,__getstream
+000B6330,__close,__close
+000B6410,__freebuf,__freebuf
+000B6450,__filbuf,__filbuf
+000B6540,__read,__read
+000B67A0,__write,__write
+000B69C0,__lseek,__lseek
+000B6A80,_ftell,_ftell
+000B6C30,_asctime,_asctime
+000B6D20,_store_dt,_store_dt
+000B6D60,_localtime,_localtime
+000B6F50,___crtLCMapStringA,___crtLCMapStringA
+000B7170,_raise,_raise
+000B72F0,_siglookup,_siglookup
+000B7340,__FF_MSGBANNER,__FF_MSGBANNER
+000B7380,__NMSG_WRITE,__NMSG_WRITE
+000B7560,__ftime,__ftime
+000B7620,__commit,__commit
+000B7680,___initstdio,___initstdio
+000B7740,___endstdio,___endstdio
+000B7760,__stbuf,__stbuf
+000B7800,__ftbuf,__ftbuf
+000B7860,___loctotime_t,___loctotime_t
+000B7950,__dosmaperr,__dosmaperr
+000B79C0,__XcptFilter,__XcptFilter
+000B7B00,_xcptlookup,_xcptlookup
+000B7B50,__ismbblead,__ismbblead
+000B7B70,_x_ismbbtype,_x_ismbbtype
+000B7BB0,__setenvp,__setenvp
+000B7CA0,__setargv,__setargv
+000B7D40,_parse_cmdline,_parse_cmdline
+000B7F50,___crtGetEnvironmentStringsA,___crtGetEnvironmentStringsA
+000B80B0,__setmbcp,__setmbcp
+000B82A0,_getSystemCP,_getSystemCP
+000B82F0,_CPtoLCID,_CPtoLCID
+000B8350,_setSBCS,_setSBCS
+000B8380,___initmbctable,___initmbctable
+000B8390,__ioinit,__ioinit
+000B8598,unknown_libname_8,unknown_libname_8
+000B8655,unknown_libname_9,unknown_libname_9
+000B8670,__getbuf,__getbuf
+000B86D0,__isatty,__isatty
+000B8700,_wctomb,_wctomb
+000B8780,__aulldiv,__aulldiv
+000B87F0,__aullrem,__aullrem
+000B8870,___crtGetStringTypeA,___crtGetStringTypeA
+000B89A0,__CxxUnhandledExceptionFilter(_EXCEPTION_POINTERS *),__CxxUnhandledExceptionFilter(_EXCEPTION_POINTERS *)
+000B8A00,__CxxSetUnhandledExceptionFilter(void),__CxxSetUnhandledExceptionFilter(void)
+000B8A20,__CxxRestoreUnhandledExceptionFilter(void),__CxxRestoreUnhandledExceptionFilter(void)
+000B8A30,_ValidateRead(void const *_uint),_ValidateRead(void const *_uint)
+000B8A50,_ValidateWrite(void *_uint),_ValidateWrite(void *_uint)
+000B8A70,_ValidateExecute(int (*)(void)),_ValidateExecute(int (*)(void))
+000B8A90,_mbtowc,_mbtowc
+000B8B90,__allshl,__allshl
+000B8BB0,_ungetc,_ungetc
+000B8C40,__control87,__control87
+000B8C80,__controlfp,__controlfp
+000B8CA0,__abstract_cw,__abstract_cw
+000B8D40,__hw_cw,__hw_cw
+000B8DD0,__ZeroTail,__ZeroTail
+000B8E40,__IncMan,__IncMan
+000B8EB0,__RoundMan,__RoundMan
+000B8F50,__CopyMan,__CopyMan
+000B8F70,__FillZeroMan,__FillZeroMan
+000B8F80,__IsZeroMan,__IsZeroMan
+000B8FA0,__ShrMan,__ShrMan
+000B9060,__ld12cvt,__ld12cvt
+000B92F0,__fptostr,__fptostr
+000B9390,__fltout,__fltout
+000B9410,___dtold,___dtold
+000B94D0,__fptrap,__fptrap
+000B9500,__sopen,__sopen
+000B98C0,__alloc_osfhnd,__alloc_osfhnd
+000B9980,__set_osfhnd,__set_osfhnd
+000B9A30,__free_osfhnd,__free_osfhnd
+000B9AD0,__get_osfhandle,__get_osfhandle
+000B9B20,___tzset,___tzset
+000B9B40,__tzset,__tzset
+000BA060,_cvtdate,_cvtdate
+000BA200,_gmtime,_gmtime
+000BA360,___crtMessageBoxA,___crtMessageBoxA
+000BA3F0,_mktime,_mktime
+000BA400,__make_time_t,__make_time_t
+000BA640,_calloc,_calloc
+000BA6E0,__fcloseall,__fcloseall
+000BA750,_wcslen,_wcslen
+000BA770,___addl,___addl
+000BA7A0,___add_12,___add_12
+000BA810,___shl_12,___shl_12
+000BA840,___shr_12,___shr_12
+000BA870,___mtold12,___mtold12
+000BA970,___strgtold12,___strgtold12
+000BB100,_$I10_OUTPUT,_$I10_OUTPUT
+000BB490,__chsize,__chsize
+000BB610,_wcstombs,_wcstombs
+000BB800,_wcsncnt,_wcsncnt
+000BB840,_getenv,_getenv
+000BB8D0,___ld12mul,___ld12mul
+000BBB90,___multtenpow12,___multtenpow12
+000BBC20,__setmode,__setmode
+000BBCA0,__mbsnbicoll,__mbsnbicoll
+000BBCE0,___wtomb_environ,___wtomb_environ
+000BBD60,___crtCompareStringA,___crtCompareStringA
+000BC030,_strncnt,_strncnt
+000BC060,___crtsetenv,___crtsetenv
+000BC270,_findenv,_findenv
+000BC2F0,_copy_environ,_copy_environ
+000BC360,__mbschr,__mbschr
+000BC410,__strdup,__strdup
+000BC460,___dtoxmode,___dtoxmode
+000BC5B0,__stat,__stat
+000BCA30,_IsRootUNCName,_IsRootUNCName
+000BCB20,__strcmpi,__strcmpi
+000BCBB0,__strnicmp,__strnicmp
+000BCC60,__itoa,__itoa
+000BCCB0,_xtoa,_xtoa
+000BCD80,__filelength,__filelength
+000BCE20,__fileno,__fileno
+000BCE30,__mbsicmp,__mbsicmp
+000BD0A0,__mbsrchr,__mbsrchr
+000BD160,__fullpath,__fullpath
+000BD240,__getdrive,__getdrive
+000BD2A0,__mbctolower,__mbctolower
+000BD370,__mbspbrk,__mbspbrk
+000BD490,_strrchr,_strrchr
+000BD4C0,__getcwd,__getcwd
+000BD4E0,__getdcwd,__getdcwd
+000BD600,__validdrive,__validdrive
+000BD650,_strpbrk,_strpbrk
+000BD6A3,unknown_libname_10,unknown_libname_10
+000BD6C3,unknown_libname_11,unknown_libname_11
+000BD6FF,unknown_libname_12,unknown_libname_12
+000BD710,unknown_libname_13,unknown_libname_13
+000BD71B,SEH_403460,SEH_403460
+000BD7B4,unknown_libname_14,unknown_libname_14
+000BD7CB,unknown_libname_15,unknown_libname_15
+000BD7EB,unknown_libname_16,unknown_libname_16
+000BD80B,unknown_libname_17,unknown_libname_17
+000BD836,unknown_libname_18,unknown_libname_18
+000BD856,unknown_libname_19,unknown_libname_19
+000BD884,unknown_libname_20,unknown_libname_20
+000BD8A0,unknown_libname_21,unknown_libname_21
+000BD8C0,unknown_libname_22,unknown_libname_22
+000BD967,unknown_libname_23,unknown_libname_23
+000BD993,unknown_libname_24,unknown_libname_24
+000BD9A8,SEH_41ABD0,SEH_41ABD0
+000BD9D3,unknown_libname_25,unknown_libname_25
+000BD9E8,SEH_41AD20,SEH_41AD20
+000BDA13,unknown_libname_26,unknown_libname_26
+000BDA28,SEH_41AEC0,SEH_41AEC0
+000BDA40,unknown_libname_27,unknown_libname_27
+000BDA4B,SEH_437CE0,SEH_437CE0
+000BDA60,unknown_libname_28,unknown_libname_28
+000BDA6B,SEH_437E00,SEH_437E00
+000BDA80,unknown_libname_29,unknown_libname_29
+000BDA8B,SEH_437F30,SEH_437F30
+000BDAA0,unknown_libname_30,unknown_libname_30
+000BDAAB,SEH_438030,SEH_438030
+000BDAC0,unknown_libname_31,unknown_libname_31
+000BDACB,SEH_438180,SEH_438180
+000BDAE0,unknown_libname_32,unknown_libname_32
+000BDAEB,SEH_438290,SEH_438290
+000BDB00,unknown_libname_33,unknown_libname_33
+000BDB0B,SEH_438390,SEH_438390
+000BDB3C,unknown_libname_34,unknown_libname_34
+000BDB50,unknown_libname_35,unknown_libname_35
+000BDB5B,SEH_438AD0,SEH_438AD0
+000BDB70,unknown_libname_36,unknown_libname_36
+000BDB7B,SEH_438C10,SEH_438C10
+000BDB90,unknown_libname_37,unknown_libname_37
+000BDB9B,SEH_438D10,SEH_438D10
+000BDBB0,unknown_libname_38,unknown_libname_38
+000BDBBB,SEH_44A870,SEH_44A870
+000BDBDB,unknown_libname_39,unknown_libname_39
+000BDBF0,unknown_libname_40,unknown_libname_40
+000BDBFB,SEH_480F30,SEH_480F30
+000BDC1B,unknown_libname_41,unknown_libname_41
+000BDC38,unknown_libname_42,unknown_libname_42
+000BDC5B,unknown_libname_43,unknown_libname_43
+000BDC78,unknown_libname_44,unknown_libname_44
+000BDC9B,unknown_libname_45,unknown_libname_45
+000BDCB8,unknown_libname_46,unknown_libname_46
+000BDCF7,unknown_libname_47,unknown_libname_47
+000BDD18,unknown_libname_48,unknown_libname_48
+000BDD3B,unknown_libname_49,unknown_libname_49
+000BDD7B,unknown_libname_51,unknown_libname_51
+000BDD98,unknown_libname_52,unknown_libname_52
+000BDDB8,unknown_libname_53,unknown_libname_53
+000BDDD8,unknown_libname_54,unknown_libname_54
+000BDDFB,unknown_libname_55,unknown_libname_55
+000BDE18,unknown_libname_56,unknown_libname_56
+000BDE3B,unknown_libname_57,unknown_libname_57
+000BDE58,unknown_libname_58,unknown_libname_58
+000BDE98,unknown_libname_60,unknown_libname_60
+000BDEB0,unknown_libname_61,unknown_libname_61
+000BE170,riid,riid
+000BE210,rclsid,rclsid
+000BEB88,FunctionIdNameArray,FunctionIdNameArray
+000D7450,ProcName,ProcName
+000D746C,ModuleName,ModuleName
+000D77B8,VarName,VarName
+000D77EC,LibFileName,LibFileName
+000D783C,Control,Control
+000D83FE,OllyEnd,OllyEnd
+000D9198,Caption,Caption
+000D92C0,hFile,hFile
+000D931C,Text,Text
+000DB9D4,bool AllowFindUser,bool AllowFindUser
+000DB9D8,bool AllowPageUser,bool AllowPageUser
+000DB9E0,GameEndState,GameEndState
+000DC0D4,Delim,Delim
+000DD004,Str1,Str1
+000DD12C,ValueName,ValueName
+000DD138,SubKey,SubKey
+000DE610,int MissionNumber,int MissionNumber
+000DE68C,Source,Source
+000DEDB4,CreditsScreenTop,CreditsScreenTop
+000DEDB8,CreditsScreenWidth,CreditsScreenWidth
+000DEDBC,CreditsScreenBottom,CreditsScreenBottom
+000DFB08,int GameState,int GameState
+000E3AE8,UnknownNetVar2 OrderDelay?,UnknownNetVar2 OrderDelay?
+000E3AEC,SendRate,SendRate
+000E3AF0,UnknownNetVar4,UnknownNetVar4
+000E3AF4,UnknownNetVar5,UnknownNetVar5
+000E3B00,int NetUnitCount,int NetUnitCount
+000E3B04,char NetTechLevel,char NetTechLevel
+000E3B08,int NetStartingCredits,int NetStartingCredits
+000E3B0C,int NetAIPlayers,int NetAIPlayers
+000E3B10,int NetNetworkType,int NetNetworkType
+000E3B14,int MyCurrentFrameRate,int MyCurrentFrameRate
+000E3B18,int LimitedModelPct,int LimitedModelPct
+000E3B1C,UnknownNetVar3,UnknownNetVar3
+000E3B68,OutputString,OutputString
+000E41DC,OptionsBarHeight,OptionsBarHeight
+000E41E0,SideBarWidth,SideBarWidth
+000E41E4,MiniMapUIPosX,MiniMapUIPosX
+000E41EC,SideBarIconCount,SideBarIconCount
+000E41F8,SideBarIconHeight,SideBarIconHeight
+000E41FC,SideBarPanelLeftUIPosX,SideBarPanelLeftUIPosX
+000E4200,SideBarPanelsPosY,SideBarPanelsPosY
+000E4204,SideBarPanelRightUIPosX,SideBarPanelRightUIPosX
+000E420C,PowerBarUIPosX,PowerBarUIPosX
+000E4210,PowerBarUIPosY,PowerBarUIPosY
+000E4214,CreditsUIPosX,CreditsUIPosX
+000E4BF8,SubStr,SubStr
+000E5FBC,int CurrentCDTrack,int CurrentCDTrack
+000E5FC4,int SFXVolume,int SFXVolume
+000E5FC8,MusicVolume,MusicVolume
+000E7ACC,bool FirstTimePlay,bool FirstTimePlay
+000E7AD0,bool UseCampaignSelection,bool UseCampaignSelection
+000E7AD8,long *MissionNumber,long *MissionNumber
+000E7ADC,int *MissionNumber,int *MissionNumber
+000E7AFC,FileName,FileName
+000E7B0C,PathName,PathName
+000E8BDC,"bool UseBinaryMenuAndStringFiles  (true = use UIL UIB, false = use UID UII)","bool UseBinaryMenuAndStringFiles  (true = use UIL UIB, false = use UID UII)"
+000E8BE4,ForceNoCD 2 ?,ForceNoCD 2 ?
+000E8BEC,int MaxPlayers,int MaxPlayers
+000E8BF0,int DifficultyLevel,int DifficultyLevel
+000E8BF4,int NetSerialComPort,int NetSerialComPort
+000E9444,Data,Data
+000EB000,bool UseBinaryMapFiles?,bool UseBinaryMapFiles?
+000EB004,bool MoviesAllowed,bool MoviesAllowed
+000EB008,bool FullScreen,bool FullScreen
+000EB00C,bool AudioAllowed,bool AudioAllowed
+000EB010,bool VideoBackBuffer,bool VideoBackBuffer
+000EB014,bool DisableDebugFileFormats,bool DisableDebugFileFormats
+000EB018,int BitsPerPixel,int BitsPerPixel
+000EB01C,int GameBitsPerPixel,int GameBitsPerPixel
+000EB020,int ScreenWidth,int ScreenWidth
+000EB024,int ScreenHeight,int ScreenHeight
+000EB028,int GameWidth,int GameWidth
+000EB02C,int GameHeight,int GameHeight
+000EB030,int ScrollSize,int ScrollSize
+000EB038,WindowName,WindowName
+000EB048,MousePositionX,MousePositionX
+000EB04C,MousePositionY,MousePositionY
+000EB3FC,VolumeName,VolumeName
+000ED870,RandSeed,RandSeed
+000ED8A0,__wctype,__wctype
+000EDAA4,SrcSizeInBytes,SrcSizeInBytes
+000EDADC,lpMem,lpMem
+000EFB1C,lpBuffer,lpBuffer
+000F060C,Direct_Sound_Object,Direct_Sound_Object
+000F0EB8,__VQAClassObject,__VQAClassObject
+000F1018,char LoginName,char LoginName
+000F1340,Dest,Dest
+000F1440,char Password,char Password
+000F1D60,PageUser,PageUser
+000F1E50,PageSendMessage,PageSendMessage
+000F1F64,Addend,Addend
+000F2898,NetPlayersArray?,NetPlayersArray?
+000F29B8,NetGameRoomName,NetGameRoomName
+000F39C0,Handles,Handles
+000F39C8,hEvent,hEvent
+000F3B40,char GamePassword,char GamePassword
+000F3CA0,bool DontDoReconnect,bool DontDoReconnect
+000F3CA4,bool DoDisconnectInMain,bool DoDisconnectInMain
+000F3CAC,ProcessingWOLMessage bool,ProcessingWOLMessage bool
+000F3CBC,WOLLoginFailed bool,WOLLoginFailed bool
+000F3CCC,bool GotOfficialChatChannels,bool GotOfficialChatChannels
+000F3CE0,bool ShowLatency,bool ShowLatency
+000F3CF0,bool Microphone,bool Microphone
+000F3D00,bool LanguageFilter,bool LanguageFilter
+000F3D04,bool ShowAllGames,bool ShowAllGames
+000F3D14,Args,Args
+000F3D30,GameStartTickCount,GameStartTickCount
+000F3D34,GameEndTickCount,GameEndTickCount
+000F3D38,int WOLGameId,int WOLGameId
+000F3D3C,bool TournamentGame,bool TournamentGame
+000F3D40,bool PrivateGame,bool PrivateGame
+000F4094,Value,Value
+000F40E4,void *WOLInstance,void *WOLInstance
+000F4118,AIVariables,AIVariables
+00104030,TextQueueUnknown1,TextQueueUnknown1
+00104034,TextQueueUnknown2,TextQueueUnknown2
+00104038,TextQueueUnknown3,TextQueueUnknown3
+0010403C,TextQueueDurationArray?,TextQueueDurationArray?
+00104050,TextQueueUNKNOWNArray,TextQueueUNKNOWNArray
+00104064,TextQueueStringArray,TextQueueStringArray
+00113488,char *Resource_Path,char *Resource_Path
+00113520,MoviesResourcePath,
+001135B8,char *Music_Resource_Path,char *Music_Resource_Path
+00113650,char *Missions_Resource_Path,char *Missions_Resource_Path
+001136E8,char *Maps_Resource_Path,char *Maps_Resource_Path
+00113864,hrgn,hrgn
+00113A00,dunemapImagePointer,dunemapImagePointer
+00115BC0,int HighScore0,int HighScore0
+00115C9C,int HighScore1,int HighScore1
+00115D78,int HighScore2,int HighScore2
+00115E54,HighScore3,HighScore3
+00115F30,HighScore4,HighScore4
+0011600C,HighScore5,HighScore5
+00116204,DisableMultiplayerButton? bool,DisableMultiplayerButton? bool
+00116214,gCredits?,gCredits?
+00116288,String2,String2
+001162DC,SideBarLUpArrowVisible,SideBarLUpArrowVisible
+001162F4,SideBarLDownArrowVisible,SideBarLDownArrowVisible
+00116324,SideBarRDownArrowVisible,SideBarRDownArrowVisible
+001163B4,SideBarRUpArrowVisible,SideBarRUpArrowVisible
+001163FC,SideBarButtonMainMenuVisible,SideBarButtonMainMenuVisible
+00116414,SideBarButtonMainMenu2Visible,SideBarButtonMainMenu2Visible
+0011642C,SideBarButtonPurchaseVisible,SideBarButtonPurchaseVisible
+00116438,BuildingPlacementActive,BuildingPlacementActive
+00116458,LeftMouseButISDown bool,LeftMouseButISDown bool
+00116481,__Radar_Is_Online?,__Radar_Is_Online?
+001165C8,char *TilesetDataName,char *TilesetDataName
+001166A0,char *TilesetImageName,char *TilesetImageName
+001173F4,int Ticks,int Ticks
+00117500,AntiCheatArray,AntiCheatArray
+00117568,ToolTipActivatedInGame bool,ToolTipActivatedInGame bool
+001178A4,bool JumpToWOLLogin,bool JumpToWOLLogin
+001178B4,PointerToMainImage,PointerToMainImage
+001178BC,bool LoadSavedGame,bool LoadSavedGame
+001178C0,char *LoadFileID,char *LoadFileID
+001178C4,bool DebugMode,bool DebugMode
+001178C8,DebugModeBlocks,DebugModeBlocks
+00117DE8,gGameMapWidth,gGameMapWidth
+00117DEC,gGameMapHeight,gGameMapHeight
+00117DF0,GameMapData (tile),GameMapData (tile)
+00117DF4,GameMapData (special),GameMapData (special)
+00147DF0,gGameMap_map?,gGameMap_map?
+00148048,CrateCount,CrateCount
+002B63B0,hHeap,hHeap
+002B63C8,bool GameOver?,bool GameOver?
+002B63CC,ActiveEventCount,ActiveEventCount
+002B7058,MissionEvents,MissionEvents
+002B8260,ActiveConditionCount,ActiveConditionCount
+002B8268,gUnitsExist bool array,gUnitsExist bool array
+002B8270,MissionTimerTicks,MissionTimerTicks
+002B8274,bool Win,bool Win
+002B8278,bool Lose,bool Lose
+002B8280,MissionEventConditions,MissionEventConditions
+002B8288,MissionEventFlags,MissionEventFlags
+002B87C0,gBuildingsExist bool array,gBuildingsExist bool array
+002B87C8,NetPlayersTechLevelArray,NetPlayersTechLevelArray
+002B87D0,NetPlayersStartingCreditsArray,NetPlayersStartingCreditsArray
+002B8818,harvestUnloadDelay,harvestUnloadDelay
+002B881C,harvestBlobValue,harvestBlobValue
+002B8820,harvestLoadSpiceDelay,harvestLoadSpiceDelay
+002B8824,starportUpdateDelay,starportUpdateDelay
+002B8828,starportStockIncreaseDelay,starportStockIncreaseDelay
+002B882C,starportStockIncreaseProb,starportStockIncreaseProb
+002B8830,starportCostVariationPercent,starportCostVariationPercent
+002B8834,starportFrigateDelay,starportFrigateDelay
+002B8838,refineryExplosionOffsetX,refineryExplosionOffsetX
+002B883C,refineryExplosionOffsetY,refineryExplosionOffsetY
+002B8840,HarvesterDriveDistance,HarvesterDriveDistance
+002B8844,RepairDriveDistance,RepairDriveDistance
+002B8848,BuildingRepairValue,BuildingRepairValue
+002B884C,UnitRepairValue,UnitRepairValue
+002B8850,SinglePlayerDelay,SinglePlayerDelay
+002B8854,NumberOfFremen,NumberOfFremen
+002B8855,SandWormAppetite,SandWormAppetite
+002B8856,SandWormInitialSleep,SandWormInitialSleep
+002B8857,SandWormFedSleep,SandWormFedSleep
+002B8858,SandWormShotSleep,SandWormShotSleep
+002B8859,NumberOfCrates,NumberOfCrates
+002B885A,CratesPerPlayer,CratesPerPlayer
+002B885B,DevastatorExplodeDelay,DevastatorExplodeDelay
+002B885C,IgnoreDistance,IgnoreDistance
+002B8860,CrateCash,CrateCash
+002B8864,ShowWarnings,ShowWarnings
+002B8865,DeathHandAccuracy,DeathHandAccuracy
+002B93E8,UnknownNetVar1,UnknownNetVar1
+002B93F8,char NetPlayerName,char NetPlayerName
+002B9460,ReconnectTimeOutToPlayer,ReconnectTimeOutToPlayer
+002B9468,char NetSessionName,char NetSessionName
+002B9518,NetMessageString,NetMessageString
+002B9644,InitialConnectTimeOut,InitialConnectTimeOut
+002B97A8,char NetRejectPlayerName,char NetRejectPlayerName
+002B9818,,OrderDelayStuff?
+002B9830,int PulseCounter,int PulseCounter
+002B9834,bool NetCrates,bool NetCrates
+002B9838,int NetWorms,int NetWorms
+002B9840,int NetPlayerSide,int NetPlayerSide
+002B9844,char NetPlayerColour,char NetPlayerColour
+002B9848,char NetPlayerHandicap,char NetPlayerHandicap
+002B9864,int LimitedModelRate,LimitedModelRate
+002B98AC,bool NetworkLogEnabled,bool NetworkLogEnabled
+002B9900,File,File
+002D7DE8,DataTypesArray,DataTypesArray
+002D80B8,,Atreides Units
+002DC470,char MissionMapData,char MissionMapData
+002DC538,BattleFieldHeight,BattleFieldHeight
+002DC5C8,BuildingsOnMapArray?,BuildingsOnMapArray?
+002F9840,char MissionMap,char MissionMap
+0037E270,LightInfantryProductionSpeed,LightInfantryProductionSpeed
+00382AA0,SpawnLocationUsedBoolArray,SpawnLocationUsedBoolArray
+00386C48,ColorArray,ColorArray
+00386D48,BattleFieldWidth,BattleFieldWidth
+00395518,PlayerColorArray16bit,PlayerColorArray16bit
+0039555C,DstBuf,DstBuf
+00395564,Count,Count
+003955F8,SampleSizeArray (.wav),SampleSizeArray (.wav)
+00395600,bool MusicTrackOver?,bool MusicTrackOver?
+00395604,bool RepeatTrack,bool RepeatTrack
+00395608,SoundClassObject,SoundClassObject
+00395618,SampleDataPointer (.aud),SampleDataPointer (.aud)
+0039561C,SampleSize (.aud),SampleSize (.aud)
+00395628,SampleDataPointer (.wav),SampleDataPointer (.wav)
+00395634,char *CachedSamplesTable?,char *CachedSamplesTable?
+00395708,CampaignUIBdata,CampaignUIBdata
+0039759C,CUIManagerObject,CUIManagerObject
+003975A0,char *ColourTable,char *ColourTable
+003975A4,ColoursUIBItemCount,ColoursUIBItemCount
+003975A8,char *TextTable,char *TextTable
+003975AC,TextUIBItemCount,TextUIBItemCount
+003975B0,char *MenuTable,char *MenuTable
+003975B4,MenuUIBItemCount,MenuUIBItemCount
+003975B8,char *SampleTable,char *SampleTable
+003975BC,SampleUIBItemCount,SampleUIBItemCount
+003975C0,char *CampaignTable,char *CampaignTable
+003975C4,CampaignUIBItemCount,CampaignUIBItemCount
+003975D0,char NetIPAddress,char NetIPAddress
+00397638,char NetMap,char NetMap
+00397768,WigNetError,WigNetError
+003978F8,SendingToPlayer,SendingToPlayer
+00397960,char NetModemPhone,char NetModemPhone
+003979C8,LastUIError,LastUIError
+00397A30,SendingPageToPlayer,SendingPageToPlayer
+00397A98,CurrentSoundTrack,CurrentSoundTrack
+00397AA8,char NetMapDesc,char NetMapDesc
+00397B70,gDeadOrder bool array,gDeadOrder bool array
+00397C04,CasualtiesReceived,CasualtiesReceived
+00397C08,BuildingsLost,BuildingsLost
+00397C0C,SpiceHarvested,SpiceHarvested
+00397C10,CasualtiesInflicted,CasualtiesInflicted
+00397C14,BuildingsDestroyed,BuildingsDestroyed
+00397C18,UnitsOwned,UnitsOwned
+00397C1C,BuildingsOwned,BuildingsOwned
+00397DE8,bool DisconnectingWOL,bool DisconnectingWOL
+00397DF0,__bSpawned?,__bSpawned?
+00397E0C,bool StorePassword,bool StorePassword
+00397E1C,bool RestartGame,bool RestartGame
+00397E20,bool CancelConnect,bool CancelConnect
+00397E30,bool ForceNoCD,bool ForceNoCD
+00397E34,int GameType,int GameType
+00397E38,PlayersDeadCounter,PlayersDeadCounter
+00397E48,bool CallerIDOn,bool CallerIDOn
+00397E78,KeyMap2,KeyMap2
+00397E88,VK_SHIFT 2,VK_SHIFT 2
+00397E89,VK_CONTROL 2,VK_CONTROL 2
+00397E8A,VK_MENU 2,VK_MENU 2
+00397E93,VK_ESCAPE 2,VK_ESCAPE 2
+00397E9E,VK_UP 2,VK_UP 2
+00397EA0,VK_DOWN 2,VK_DOWN 2
+00397EC4,L key 2,L key 2
+00397ECF,W key 2,W key 2
+00397ED9,VK_NUMPAD1 2,VK_NUMPAD1 2
+00397EDA,VK_NUMPAD2 2,VK_NUMPAD2 2
+00397EDB,VK_NUMPAD3 2,VK_NUMPAD3 2
+00397EDD,VK_NUMPAD5 2,VK_NUMPAD5 2
+00398390,KeyMap1,KeyMap1
+003983AB,VK_ESCAPE,VK_ESCAPE
+003983B0,VK_SPACE,VK_SPACE
+003983B4,VK_HOME,VK_HOME
+003983B6,VK_UP,VK_UP
+003983B8,VK_DOWN,VK_DOWN
+003983D1,A key,A key
+003983D4,D key,D key
+003983D5,E key,E key
+003983D7,G key,G key
+003983D8,H key,H key
+003983DE,N key,N key
+003983E0,P key,P key
+003983E2,R key,R key
+003983E3,S key,S key
+003983E4,T key,T key
+003983E8,X key,X key
+003983E9,Y key,Y key
+00398405,VK_F6,VK_F6
+00398406,VK_F7,VK_F7
+00398407,VK_F8,VK_F8
+00398498,MousePositionX 2,MousePositionX 2
+0039849C,MousePositionY 2,MousePositionY 2
+003984B4,Force8BitMode,Force8BitMode
+003984B8,Force16BitMode,Force16BitMode
+003984C0,NetPlayerCount,NetPlayerCount
+003984C4,bool NetworkGame,bool NetworkGame
+003984C8,UseMemoryDebugString bool,UseMemoryDebugString bool
+003984CC,ConvertFilesToBinaryVersion,ConvertFilesToBinaryVersion
+003984D0,MissionDebugMode bool,MissionDebugMode bool
+003984D4,bool BitsPerPixelChanged,bool BitsPerPixelChanged
+003984D8,int MenuDraw::FromTopPixel,int MenuDraw::FromTopPixel
+003984E4,int Force480,int Force480
+003984EC,hWnd,hWnd
+003984F0,void *ProgramInstance,void *ProgramInstance
+003984F4,gDirectDraw,gDirectDraw
+00398510,WindowActivated,WindowActivated
+00398518,int FramesPerSecond,int FramesPerSecond
+00398538,BattleFieldPosX,BattleFieldPosX
+0039853C,BattleFieldPosY,BattleFieldPosY
+00398544,int MySideID,int MySideID
+00398630,NetPlayerNamesArray?,NetPlayerNamesArray?
+00398830,Diplomacy,Diplomacy
+003BCAC4,SiloRefineryCash,SiloRefineryCash
+003BCACC,StartingCredtis,StartingCredtis
+003BCAD0,CrateBonusCash?,CrateBonusCash?
+003BCE98,UnitsLeft?,UnitsLeft?
+003BCFEC,SpiceHarvested,SpiceHarvested
+003BCFF0,UnitsOwned,UnitsOwned
+003BCFF4,BuildingsOwned,BuildingsOwned
+003BD278,CasualtiesReceived,CasualtiesReceived
+003BD27C,BuildingsLost,BuildingsLost
+003BD500,CasualtiesInflicted,CasualtiesInflicted
+003BD504,BuildingsDestroyed,BuildingsDestroyed
+003E3454,SiloRefineryCashPlayer2,SiloRefineryCashPlayer2
+003E3458,,MoneyHarvestedPlayer2
+003E345C,StartingCredtisPlayer2,StartingCredtisPlayer2
+004CD4F0,HouseIndexAllocations,HouseIndexAllocations
+004CD514,OSBuild,OSBuild
+004CD51C,OSMajorVersion,OSMajorVersion
+004CD520,OSMinorVersion,OSMinorVersion
+004CD564,Memory,Memory
+004CD570,lp,lp
+004CD5D0,Locale,Locale
+004CD5E0,CodePage,CodePage
+004CD610,Filename,Filename
+004CD848,lpTopLevelExceptionFilter,lpTopLevelExceptionFilter
+004CD890,TimeZoneInformation,TimeZoneInformation
+004CDAA0,uNumber,uNumber
+004CEAC0,NumOfElements,NumOfElements

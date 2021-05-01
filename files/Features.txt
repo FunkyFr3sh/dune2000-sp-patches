@@ -1,0 +1,108 @@
+Features
+================================================================================
+
+1. Support for .ini file format
+
+2. dune2000.cfg has been replaced with dune2000.ini
+
+3. Fix for the "HelpURLError" caused by broken WOL installations
+
+4. Disabled the registration dialog in WOL since the registration goes automatically on the first login
+
+5. Raised the player limit for WOL games from 4 to 6
+
+6. In-game messages are now shown for a longer time (5x longer)
+
+7. Fixed up the original built in NoCD mode and made it configurable via dune2000.ini
+ - [Options] ForceNoCD= (Yes/No)
+
+8. Changed multiplayer variables
+ - (LAN/WOL) InitialConnectTimeOut = 15sec (original = 60sec)
+
+9. Added support for mouse wheel sidebar scrolling
+ 
+10. All hotkeys are now changeable via dune2000.ini (the hex value from the microsoft site needs to be converted to decimal)
+ - http://msdn.microsoft.com/en-us/library/windows/desktop/dd375731%28v=vs.85%29.aspx
+ - http://www.binaryhexconverter.com/hex-to-decimal-converter
+ - [Hotkeys] function= (virtual key decimal value)
+ - http://funkyfr3sh.cncnet.org/files/d2k/Dune2000Config.exe
+ 
+11. Added support for 5 mouse buttons (they have no function by default, configurable via dune2000.ini)
+ - VK_MBUTTON 0x04
+ - VK_XBUTTON1 0x05
+ - VK_XBUTTON2 0x06
+ 
+12. Hotkey sidebar scrolling can be slowed down now, configurable via dune2000.ini
+ - [Options] SlowSideBarScrolling= (Yes/No)
+
+13. Added 4 new hotkeys for map scrolling, configurable via dune2000.ini
+ - [Hotkeys] ScrollLeft= (virtual key decimal value) - default = numpad1 
+ - [Hotkeys] ScrollDown= (virtual key decimal value) - default = numpad2 
+ - [Hotkeys] ScrollRight= (virtual key decimal value) - default = numpad3
+ - [Hotkeys] ScrollUp= (virtual key decimal value) - default = numpad5
+ 
+14. Built-in high resolution patch, configurable via dune2000.ini
+ - [Options] GameWidth=
+ - [Options] GameHeight=
+ 
+15. All useful command line parameters are now configurable via dune2000.ini
+ - [Options] MoviesEnabled= (Yes/No)
+ - [Options] SoundsEnabled= (Yes/No)
+ - [Options] VideoBackBuffer= (Yes/No)
+
+16. New command line parameter "-window" to run the game in window mode
+
+17. Sub Houses Fix (allows you to play through the campaign using all available houses without game crashes)
+
+18. New command line parameters "-LAN" "-WOL" "-Skirmish" to jump right to the chosen menu
+
+19. Support for Online/LAN/Skirmish games via the improved CnCNet Multi-Player/Skirmish lobby www.cncnet.org
+ - Selectable Color/Faction/Difficult per AI player
+ - Automatic surrender on abort
+ - Turrets and Engineer can be disabled via extra game modes
+ - Multi-Player Co-Operation and Skirmish Mission script support 
+ - Support for Pre-Placed buildings/units in Multi-Player and Skirmish games
+ - Spectator support
+ - Anti-Cheat
+ - Live stats for Spectators
+ - Selectable Starting locations
+ - and more features...
+ 
+20. Custom/Random soundtracks for all GameTypes, configurable via map .ini files
+ - Plays up to 128 different random (*) soundtracks found in the music folder without the need to modify text.uib
+ - [Basic] Music=fremen.aud
+ - [Basic] Music=*
+
+21. New hotkey to play a random song, configurable via dune2000.ini
+ - [Hotkeys] PlayRandomSong= (virtual key decimal value) - default = OemPlus
+ 
+22. Multi-Language support, configurable via dune2000.ini
+ - [Options] Language=
+ - http://funkyfr3sh.cncnet.org/files/d2k/MultiLanguage.zip
+
+23. High FPS fix, the game will no longer use the frame rate to calculate the game speed on the highest speed setting
+
+24. Support for loading dxwnd.dll from http://sourceforge.net/projects/dxwnd/
+ - Window Mode (sizeable Window/Stretching)
+ - GDI Mode
+ 
+25. Mission Launching support via external clients
+ - Can load a separate text.uib file for each mission
+ - Supports true sub-house missions with units/buildings pre-placed for sub-houses
+ 
+26. Added support for loading rules.ini and map .ini files
+
+27. Infinite Spice setting, configurable via rules.ini and map .ini files
+
+28. Start with MCV map .ini setting
+ - [MultiPlayer] StartWithMCV=Yes/No
+
+29. Maps can now be configured to force certain settings to be turned on/off
+
+30. In-game text triggers can now be loaded from .ini files instead of text.uib
+
+31. Players can now exit the game instantly while the reconnect screen is showing in a Multi-Player game by pressing ESC
+
+32. Frame rate limiter - The game will no longer go above 60 FPS, this solves the lag in online games some players had, the fast spinning mouse cursor and high cpu usage
+
+33. Cannot Place Building Fix - Sometimes when you try to place a building the sidebar will ignore your click and you are unable to place it, this fix solves this problem

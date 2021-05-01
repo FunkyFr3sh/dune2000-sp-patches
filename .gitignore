@@ -1,0 +1,13 @@
+# object files
+*.o
+
+# patched machine code
+*.exe
+
+# configuration
+config.mk
+
+# misc junk
+move.cmd
+*~
+\#*\#

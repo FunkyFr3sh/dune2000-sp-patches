@@ -1,0 +1,6 @@
+# Nix GC Roots
+result*
+
+# misc junk
+*~
+\#*\#

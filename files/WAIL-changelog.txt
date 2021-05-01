@@ -1,0 +1,101 @@
+Changes from 3.6d to 3.6e (10-20-1997)
+
+    Now use the DSBCAPS_GETCURRENTPOSITION2 flag to work a little better with emulated DirectSound drivers.
+    Added a function called AIL_set_DirectSound_HWND that will allow you to explicitly set the HWND of your application. Call this function after AIL_waveOutOpen.
+    Fixed a few bugs in the Miles Xtra with opening digital audio cast members.
+    Fixed a bug in the Miles Xtra in the positioning command for streaming audio.
+    Fixed a crash when there was no event callback installed and an AIL_send_channel_voice_message call was issued with no sequence handle specified.
+
+Changes from 3.6c to 3.6d (08-25-1997)
+
+    Fixed a bug in AIL_minimum_sample_buffer_size that causes stuttering in the streaming API under DirectSound when the sound format didn't match the DirectSound output format.
+
+Changes from 3.6b to 3.6c (06-08-1997)
+
+    Fixed bug in the streaming API under Win32 where some wave files wouldn't open.
+
+Changes from 3.6a to 3.6b (03-07-1997)
+
+    Fixed bug in waveOut mixing code that could cause all sounds to stop under very high sound loads.
+    Fixed bug in red book volume control for CD devices that allowed stereo volume resolution.
+    Fixed some debug stuff that was left in the Quick example application.
+    Switched the newest Causeway (which works around a bug in the Ensoniq VIVO drivers).
+    Fixed a bug if you called AIL_start_sample or AIL_load_sample_buffer from an EOB or SOB callback (EOS and timer callbacks were fine).
+    MSS doesn't look for the application hwnd in AIL_digital_handle_reacquire again - it just uses the old one.
+
+Changes from 3.5f to 3.6a (01-25-1997)
+
+    Added a new high-level streaming API - stream disk files in 4 calls! Streams work just like samples - you can change the playback rate, volume, pan, loop count, etc.
+    Updated the timer system to work around the dreaded Microsoft VC debugger problem under Windows 95 and Windows NT (slowdowns and crashes when sitting on a breakpoint for a long time).
+    Added volume control functions for redbook audio (AIL_redbook_volume and AIL_redbook_set_volume). Uses MSCDEX for DOS, the mixer API for Win32, and the aux device calls for Win16.
+    Fixed a bug in the DOS redbook control functions that would sometimes cause a redbook track not to play (good catch - BullFrog!)
+    Integrated the Fatman's General MIDI FM patches directly into the library.
+    Added a new function to duplicate an existing quick handle (AIL_quick_copy). This function doesn't duplicate the audio memory - only the handle info.
+    Added two new functions to control the speed and volume of a quick handle (AIL_quick_set_speed and AIL_quick_set_volume).
+    Added a new function to return the digital and MIDI driver handles when you used the Quick API to init the system (AIL_quick_handles). This is handy because you can now use AIL_quick_startup to simplify initializing MSS, and still use the full API for everything else.
+    Fixed a bug in AIL_strnicmp that was causing a crash when loading data out of a 32-bit resource DLL file.
+    The MSS DLLs now check to see if they have been incorrectly installed in Windows or Windows system directory.
+    Added the AIL_get_preference function to the DOS API.
+    Took out the virtual memory feature of VTOR - use the Smacker utilities to convert huge wave files to RAWs.
+    Fixed a bug in AIL_file_read when an pointer was passed and the read failed.
+    Fixed a bug in AIL_file_write that would free the pointer if the write failed.
+    Fixed a bug in the quick API where the MIDI system occasionally fail to load under NT.
+    Various minor clean-ups in the Delphi interface units.
+
+Changes from 3.5e to 3.5f (10-22-1996)
+
+    Adjusted the method that the 16-bit DLL locks its memory for extreme low memory machines (Win3.x and Win32s).
+    Fixed potential crash when completely out of DOS memory in the 16-bit DLL (Win3.x and Win32s).
+    Preceded the system functions with `AIL_` to fix function name collisions with VFX from Miles Design. The old function names are still defined to match the new names, so no source should have to be changed.
+    Because of these function name changes and because Smacker dynamically links to MSS, you must update to at least Smacker version 2.2B for MSS 3.50F.
+
+Changes from 3.5d to 3.5e (08-18-1996)
+
+    Fixed bug in release/reacquire code for DirectSound.
+    Added new ESS drivers - now run under Win95 DOS box.
+
+Changes from 3.5c to 3.5d (09-14-1996)
+
+    Fixed unusual problem of DirectSound dropping samples when many samples are played at once.
+    Improved method that the background task uses for CPU-sharing, so that it is slightly faster.
+    Fixed bug in MIDI driver loading code - seen with Gravis driver & MidiForm.
+
+Changes from 3.5b to 3.5c (08-22-1996)
+
+    Added locking calls for volume and pan setting in the DirectSound code.
+    Added AIL_digital_handle_release and AIL_digital_handle_reacquire for focus control under Windows.
+    Added AIL_MIDI_handle_release and AIL_MIDI_handle_reacquire for focus control under Windows.
+    Added SMP_PLAYINGBUTRELEASED and SEQ_PLAYINGBUTRELEASED flags for HSAMPLE and HSEQUENCE status flags.
+    Added new macro, `AIL_DLL_version`, to return the current DLL version (doesn't actually call into the DLL, so it is always safe).
+    Fixed weirdness with the background task complaining about Bad Code Pointers.
+    Changed the way AIL_redbook_status works to speed it up.
+    Added AIL_serve calls in the redbook API to avoid stutters on slow CDs.
+    Changed standard types (S8, U8, etc) slightly (to defines)
+    Under DirectSound, you can now pass NULL for the lpFormat parameter - this tells MSS not to adjust the primary sound buffer.
+
+Changes from 3.5a to 3.5b (07-07-1996)
+
+    DOS version now has all of the features of the Windows version (red book support, quick-integration API, sub-block looping, etc).
+    Fixed error in linked list code of the quick API for Windows.
+    Fixed error in AIL_send_channel_voice_message when the driver handle is NULL.
+    Changed AIL_ms_count to call QueryPerformanceCounter under NT.
+    AIL_ms_count under DOS inside a Windows DOS box can read the Windows timer for millisecond accuracy.
+    Added `FILE_READ_WITH_SIZE` flag to FILE_READ function, so that it can return the size of the data read as the first four bytes of the returned pointer.
+    AIL.LIB can be used for register or stack based programs (there is no need to recompile for stack based programs anymore).
+    MSS can now be used with Watcom 9.5 to 10.6. RAD recommends version 10.6.
+    Added new AIL_set_driver_directory function to load drivers, .INI files, and patch files from alternate directory (MSS still always searches the current directory first).
+    You must now call AIL_startup before any other MSS calls (including FILE_read, MEM_alloc, etc).
+    Callbacks are now typed and must use the AILCALLBACK calling convention.
+    Added two new redbook functions. AIL_redbook_track returns the current playing track number. AIL_redbook_retract closes the CD drive door.
+    Timer callbacks now synchronize the callback frequency to AIL_ms_count. This improves MIDI playback drastically under DOS inside a Windows DOS box. It also prevents long-term timer counting drift if you use MSS timer to track time (use AIL_ms_count directly for best accuracy).
+    DDK has been integrated into the SDK for convenience.
+    All example programs and tools have been bound with the Causeway DOS extender.
+    Added new DOS drivers for the AMD Interwave and the NVidia multimedia card.
+    The VBL flag no longer used for delaying (in either the library or the drivers).
+    SetSound can display the current Windows 95 configuration when running in a Windows 95 DOS box.
+    Built-in Borland C support for both Windows and DOS PowerPack.
+    SoundFont support now supplied directly with MSS.
+    AILEXPORT has been renamed to AILCALLBACK for consistency with DOS.
+    Renamed main libraries and header to use MSS instead of AIL.
+    VTOR uses virtual memory so that large .WAVs or .VOCs can be converted. Under Windows and Windows 95 DOS boxes, virtual memory is limited to 16 MB, so you may have to run VTOR under normal DOS to convert really huge files.
+    Added 16- and 32-bit Delphi interface units.

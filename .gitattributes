@@ -1,0 +1,15 @@
+# Auto detect text files and perform newline normalization
+*	text=auto eol=auto
+
+*.asm	text
+*.inc	text
+
+*.cpp	text
+*.hpp	text
+
+*.c	text
+*.h	text
+
+*.cmd	text eol=clrf
+
+*.exe	-text

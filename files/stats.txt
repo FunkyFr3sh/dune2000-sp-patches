@@ -1,0 +1,35 @@
+SCR2 0/4/0/0/6/0/2/700
+1. FinishingPlace - 0=winner, highest number=died first
+2. buildings owned
+3. Buildings lost
+4. Buildings destroyed
+5. Units Owned
+6. casualties received
+7. casualties inflicted
+8. spice harvested
+
+PL_1 Shaokhan/Harkonnen/2/0
+1. Name
+2. Side
+3. Color
+4. Handicap
+
+Worms
+0=Off
+1=Low
+2=Medium
+3=High
+
+SDFX
+00 - ended normally
+01 - connection lost, out of sync, abort, resign
+
+GEND
+"END_STATUS : DRAW GAME"
+"END_STATUS : WASH GAME"
+"END_STATUS : CONNECTION LOST"
+"END_STATUS : OUT OF SYNC"
+"END_STATUS : OPPONENT SURRENDERED"
+"END_STATUS : I SURRENDERED"
+"END_STATUS : ENDED NORMALLY"
+"END_STATUS : UNKNOWN END STATE"
