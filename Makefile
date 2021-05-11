@@ -37,6 +37,8 @@ OBJS            ?= callsites.o \
 	src/extended-maps/show-message-event.o \
 	src/extended-maps/infinite-spice.o \
 	src/extended-maps/start-with-mcv.o \
+	src/extended-maps/static-crates.o \
+	src/extended-maps/static-crates-func.o \
 	\
 	src/fixes/rand-seed-fix.o \
 	src/fixes/map-reveal-fix.o \

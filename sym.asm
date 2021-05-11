@@ -293,6 +293,7 @@ setcglob 0x00402FF0, IsLocalIp
 setcglob 0x00411E70, IsCurrentlyShown
 setcglob 0x004A31D0, GameWindowProcedure
 setcglob 0x0042B590, Game__ShowErrorAndExit
+setcglob 0x0044E8E0, PlaceCrate
 
 ; winapi
 setcglob 0x008CF5EC, _imp__LoadLibraryA

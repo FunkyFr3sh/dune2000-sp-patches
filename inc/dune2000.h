@@ -156,6 +156,18 @@ enum CrateTypes
     CT_SPICEBLOOM3
 };
 
+enum CrateImages
+{
+    CI_BLUE_CRATE,
+    CI_RED_CRATE,
+    CI_GREEN_CRATE,
+    CI_PURPLE_CRATE,
+    CI_INVISIBLE,
+    CI_SMALL_BLOOM,
+    CI_MEDIUM_BLOOM,
+    CI_LARGE_BLOOM
+};
+
 // Side (HouseClass)
 #define HC_SIDEID 0x24252
 #define HC_CREDITS 0x2425C
@@ -319,3 +331,4 @@ void *Memory__HeapAllocWrapper(size_t size, char *debugString);
 //void Model__ExecuteGameEvent(GameEvent event);
 void Map__PlayerDefeated(uint8_t sideId);
 void Game__ShowErrorAndExit(char *caption, char *format, ...);
+void PlaceCrate(int x, int y, int timing, enum CrateTypes type, enum CrateImages image, int respawn_count);

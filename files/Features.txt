@@ -106,3 +106,5 @@ Features
 32. Frame rate limiter - The game will no longer go above 60 FPS, this solves the lag in online games some players had, the fast spinning mouse cursor and high cpu usage
 
 33. Cannot Place Building Fix - Sometimes when you try to place a building the sidebar will ignore your click and you are unable to place it, this fix solves this problem
+
+34. Static pre-placed crates in maps
