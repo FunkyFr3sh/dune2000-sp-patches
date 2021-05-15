@@ -7,7 +7,7 @@
 gfunction BlowUpEverything ; arg1 = sideId - All buildings/units of the chosen player will explode
 %define sideId esp+0x0AC
     sub esp, 0x0A8
-    mov edx, dword[GameTicks]
+    mov edx, dword[gGameTicks]
     mov al, byte[sideId]
     mov word[esp+0x18], 0
     lea ecx, [esp]

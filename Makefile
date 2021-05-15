@@ -29,21 +29,17 @@ OBJS            ?= callsites.o \
 	src/spawner/stats-func.o \
 	\
 	src/extended-maps/in-game-briefing.o \
-	src/extended-maps/event.o \
 	src/extended-maps/event-func.o \
 	src/extended-maps/rules.ini.o \
 	src/extended-maps/music-func.o \
 	src/extended-maps/music.o \
-	src/extended-maps/show-message-event.o \
 	src/extended-maps/infinite-spice.o \
 	src/extended-maps/start-with-mcv.o \
 	src/extended-maps/static-crates.o \
 	src/extended-maps/static-crates-func.o \
 	\
 	src/fixes/rand-seed-fix.o \
-	src/fixes/map-reveal-fix.o \
 	src/fixes/message-box-fix.o \
-	src/fixes/setcash-fix.o \
 	src/fixes/spam-fix.o \
 	src/fixes/sub-houses-fix.o \
 	src/fixes/wol-fixes.o \

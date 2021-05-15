@@ -53,7 +53,6 @@ cextern WriteStatsDmp
 cextern PlayRandomMusic
 cextern SetBattleFieldSize
 cextern FPSLimiter
-cextern ExecuteCustomEvent
 cextern LoadSavedGame
 cextern WriteSaveGame
 cextern GamePlayStart

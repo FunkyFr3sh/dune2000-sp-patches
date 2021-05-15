@@ -30,7 +30,7 @@ void WriteStatsDmp(const void *buffer, int length)
         memcpy(StatsDmpBuffer, buffer + 2, length - 2);
         
         WriteString("ACCN", NetPlayerName);
-        WriteUInt32("TICK", GameTicks);
+        WriteUInt32("TICK", gGameTicks);
         WriteUInt32("UNIT", (unsigned int)NetUnitCount);
         WriteUInt32("NUMP", NetPlayerCount);
         WriteUInt32("AIPL", NetAIPlayers);
@@ -87,7 +87,7 @@ static void WritePlayerCredits()
     {
         char id[5];
         sprintf(id, "CRD%d", i);
-        Side side = Side__AsPointer(i);
+        Side side = GetSide(i);
         uint32_t *siloCredits = (void *)side + HC_SILO_CREDITS;
         uint32_t *credits = (void *)side + HC_CREDITS;
         WriteUInt32(id, *siloCredits + *credits);

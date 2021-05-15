@@ -163,60 +163,54 @@ setcglob 0x006B8864, ShowWarnings
 setcglob 0x006B8865, DeathHandAccuracy
 
 ;others
-setcglob 0x004EB048, MousePositionX
-setcglob 0x004EB04C, MousePositionY
-
-setcglob 0x00798544, MySideID
-setcglob 0x006B8274, Win
-setcglob 0x006B8278, Lose
-setcglob 0x004E8BF0, DifficultyLevel
-setcglob 0x00797E34, GameType
 setcglob 0x004DB9E0, GameEndState
-setcglob 0x004DFB08, GameState
-setcglob 0x008CD51C, OSMajorVersion
-setcglob 0x008CD520, OSMinorVersion
-setcglob 0x004ED870, RandSeed
-setcglob 0x0079759C, CUIManagerObject
 setcglob 0x004DE610, MissionNumber
-setcglob 0x005173F4, GameTicks
-setcglob 0x006B9864, LimitedModelRate
-setcglob 0x005178B4, PointerToMainImage
-setcglob 0x005135B8, MusicResourcePath
-setcglob 0x00795608, SoundClassObject
-setcglob 0x006DC470, MissionMapData
-setcglob 0x005136E8, MapsResourcePath
-setcglob 0x00513650, MissionsResourcePath
-setcglob 0x00513488, ResourcePath
-setcglob 0x00513520, MoviesResourcePath
-setcglob 0x00798390, KeyIsDown1
-setcglob 0x00797E78, KeyIsDown2
-setcglob 0x00782AA0, SpawnLocationUsedBoolArray
-setcglob 0x00517DE8, gGameMapWidth
-setcglob 0x00517DEC, gGameMapHeight
-setcglob 0x00797A98, CurrentSoundTrack
-setcglob 0x006B87C0, gBuildingsExist
-setcglob 0x006B8268, gUnitsExist
-setcglob 0x004E3B14, MyCurrentFrameRate
-setcglob 0x006B9518, NetMessageString
 setcglob 0x004DEDB8, CreditsScreenWidth
 setcglob 0x004DEDB4, CreditsScreenTop
 setcglob 0x004DEDBC, CreditsScreenBottom
+setcglob 0x004DFB08, GameState
+setcglob 0x004E3B14, MyCurrentFrameRate
+setcglob 0x004E8BF0, DifficultyLevel
+setcglob 0x004EB048, MousePositionX
+setcglob 0x004EB04C, MousePositionY
+setcglob 0x004ED870, RandSeed
+setcglob 0x004F4118, gAIArray
+setcglob 0x00513488, ResourcePath
+setcglob 0x00513520, MoviesResourcePath
+setcglob 0x005135B8, MusicResourcePath
+setcglob 0x00513650, MissionsResourcePath
+setcglob 0x005136E8, MapsResourcePath
+setcglob 0x005173F4, gGameTicks
+setcglob 0x005178B4, PointerToMainImage
+setcglob 0x00517DE8, gGameMapWidth
+setcglob 0x00517DEC, gGameMapHeight
 setcglob 0x006B63C8, GameOver
+setcglob 0x006B8268, gUnitsExist
+setcglob 0x006B8270, gTimerValue
+setcglob 0x006B8274, gWin
+setcglob 0x006B8278, gLose
+setcglob 0x006B8280, gConditionArray
+setcglob 0x006B87C0, gBuildingsExist
+setcglob 0x006B87C8, gMiscData
+setcglob 0x006B9518, NetMessageString
+setcglob 0x006B9864, LimitedModelRate
+setcglob 0x006D7BA0, RadarMap1
+setcglob 0x006DC470, MissionMapData
+setcglob 0x00781E54, RadarMap2
+setcglob 0x00782AA0, SpawnLocationUsedBoolArray
+setcglob 0x00795608, SoundClassObject
+setcglob 0x0079759C, CUIManagerObject
+setcglob 0x00797A98, CurrentSoundTrack
+setcglob 0x00797E34, GameType
+setcglob 0x00797E78, KeyIsDown2
+setcglob 0x00798390, KeyIsDown1
 setcglob 0x007984D4, BitsPerPixelChanged
-setcglob 0x007984d8, MenuDraw_FromTopPixel		;       int MenuDraw::FromTopPixel
-setcglob 0x00798830, Diplomacy
+setcglob 0x007984D8, MenuDraw_FromTopPixel		;       int MenuDraw::FromTopPixel
 setcglob 0x00798510, WindowActivated
-
-;Side specifics
-setcglob 0x007BCACC, AtreidesMoney
-setcglob 0x007BCACC+(158096*1), HarkonnenMoney
-setcglob 0x007BCACC+(158096*2), OrdosMoney
-setcglob 0x007BCACC+(158096*3), EmperorMoney
-setcglob 0x007BCACC+(158096*4), FremenMoney
-setcglob 0x007BCACC+(158096*5), SmugglersMoney
-setcglob 0x007BCACC+(158096*6), MercenariesMoney
-setcglob 0x007BCACC+(158096*7), SandwormMoney
-
+setcglob 0x00798544, MySideID
+setcglob 0x00798830, gDiplomacy
+setcglob 0x008CD51C, OSMajorVersion
+setcglob 0x008CD520, OSMinorVersion
 
 ;; ### Functions ###
 
@@ -241,59 +235,75 @@ setcglob 0x004278A0, Display__DrawUpgradeSideBarMenu
 setcglob 0x00426E80, Display__DrawNormalSideBarMenu
 setcglob 0x00492A70, DrawMenu
 
-; rules
-setcglob 0x004544E0, Mission__LoadVarsFile
-
-
 ; Others
-setcglob 0x0048DC10, Data__GetTextId			; (char *key, int unk)
-setcglob 0x0048DCC0, Data__GetTextString			; (int id, int unk)
+setcglob 0x00402FF0, IsLocalIp
+setcglob 0x0040D2D0, WOL__SendGameResultsToServer
+setcglob 0x00411E70, IsCurrentlyShown
+setcglob 0x00417C40, WOL__StartGuestINetGame
+setcglob 0x00417E50, WOL__StartHostINetGame
 setcglob 0x004184A0, WOL__OpenWebsite				; (char *URL)
+setcglob 0x00425720, QueueMessage
+setcglob 0x0042B590, DebugFatal
+; Graphlib
 setcglob 0x0042DC00, Graphlib__TextOnScreen
 setcglob 0x0042DD50, Graphlib__DrawRightAlignedText
 setcglob 0x0042DD90, Graphlib__DrawTextWithBlackShadow
 setcglob 0x0042E450, Graphlib__LoadFontFile
-setcglob 0x00459450, Model__GenerateUnitMoveOrder
-setcglob 0x004596F0, Model__GenerateUnitAttackUnitOrder
-setcglob 0x00455FC0, Model__BuildBuildingPick
-setcglob 0x00455510, Model__HandleGameLoopEvents
-setcglob 0x0045BF00, Model__ExecuteGameEvent
-setcglob 0x0045B7E0, Model__ResetVars
-setcglob 0x00478C20, CUIManager__LoadDune2000Cfg
-setcglob 0x00478FA0, CUIManager__SaveDune2000Cfg
-setcglob 0x00482690, CUIManager__GetCD					 ;       Get_CD::Get_CD(void)
-setcglob 0x004734E0, CUIManager__JumpToMenu 				;(char *menu)
-setcglob 0x00480F30, CUIManager__CreateWigNet
-setcglob 0x00479E80, CUIManager__StartGame
-setcglob 0x004752C0, CUIManager__LoadMission
-setcglob 0x0047BAE0, CUIManager__SendInGameMsgTo
-setcglob 0x00454E00, Mission__LoadTechposFile
+; Map
+setcglob 0x0044C480, RevealMap
+setcglob 0x0044C4F0, Map__PlayerDefeated
+setcglob 0x0044C520, Map__SetDeadOrder
+setcglob 0x0044E3B0, RevealCircle
+setcglob 0x0044E8E0, PlaceCrate
+; Memory
+setcglob 0x0044F4D0, Memory__HeapAllocWrapper
+; Mission
 setcglob 0x0044F8E0, Mission__LoadObjectives
 setcglob 0x00453B90, Mission__CheckEvents
-setcglob 0x0040D2D0, WOL__SendGameResultsToServer
-setcglob 0x00417C40, WOL__StartGuestINetGame
-setcglob 0x00417E50, WOL__StartHostINetGame
+setcglob 0x004544E0, Mission__LoadVarsFile
+setcglob 0x00454E00, Mission__LoadTechposFile
+; Model
+setcglob 0x00455510, Model__HandleGameLoopEvents
+setcglob 0x00455870, Model__AddUnit
+setcglob 0x00455FC0, Model__BuildBuildingPick
+setcglob 0x00459450, Model__GenerateUnitMoveOrder
+setcglob 0x004596F0, Model__GenerateUnitAttackUnitOrder
+setcglob 0x0045B7E0, Model__ResetVars
+setcglob 0x0045BF00, Model__ExecuteGameEvent
+; Setup
 setcglob 0x00460C80, Setup__LoadUIBBFile
 setcglob 0x00460EC0, Setup__LoadUI_LanguageFile
 setcglob 0x00466140, Setup__LoadGraphicsFile
-setcglob 0x004A4660, Side__AsPointer ; (int house)
-setcglob 0x0046E6B0, Side__BlowupAll
-setcglob 0x0046EA50, Side__SurrenderAbort
-setcglob 0x004700E0, Sound__PlayMusic
+; CSide
+setcglob 0x0046BE50, CSide__update_list_of_available_buildings_and_units
+setcglob 0x0046E6B0, CSide__BlowupAll_surrender
+setcglob 0x0046EA50, CSide__SurrenderAbort
+setcglob 0x0046EB00, CSide__reset_enemy
+; Sound
+setcglob 0x0046F820, Sound__PlaySample
 setcglob 0x0046FD90, Sound__LoadMusicFile
 setcglob 0x004700B0, Sound__SetMusicVolume
-setcglob 0x0046F820, Sound__PlaySample
-setcglob 0x0044C520, Map__SetDeadOrder
-setcglob 0x0044C4F0, Map__PlayerDefeated
-setcglob 0x0044F4D0, Memory__HeapAllocWrapper
-setcglob 0x004BC5B0, stat
-setcglob 0x004A39E0, Parse_Command_Line
-setcglob 0x004B1890, cinit
-setcglob 0x00402FF0, IsLocalIp
-setcglob 0x00411E70, IsCurrentlyShown
+setcglob 0x004700E0, Sound__PlayMusic
+; CUIManager
+setcglob 0x004734E0, CUIManager__JumpToMenu 				;(char *menu)
+setcglob 0x004752C0, CUIManager__LoadMission
+setcglob 0x00478C20, CUIManager__LoadDune2000Cfg
+setcglob 0x00478FA0, CUIManager__SaveDune2000Cfg
+setcglob 0x00479E80, CUIManager__StartGame
+setcglob 0x0047BAE0, CUIManager__SendInGameMsgTo
+setcglob 0x00480F30, CUIManager__CreateWigNet
+setcglob 0x00482690, CUIManager__GetCD					 ;       Get_CD::Get_CD(void)
+; Data
+setcglob 0x0048DC10, Data__GetTextId			; (char *key, int unk)
+setcglob 0x0048DCC0, Data__GetTextString			; (int id, int unk)
+setcglob 0x0048DD90, Data__GetSoundTableID
+; Other
+setcglob 0x0049CA10, DestroyBuilding
 setcglob 0x004A31D0, GameWindowProcedure
-setcglob 0x0042B590, Game__ShowErrorAndExit
-setcglob 0x0044E8E0, PlaceCrate
+setcglob 0x004A39E0, Parse_Command_Line
+setcglob 0x004A4660, GetSide ; (int house)
+setcglob 0x004A60E0, FindNearestFreeTile
+setcglob 0x004B1890, cinit
 
 ; winapi
 setcglob 0x008CF5EC, _imp__LoadLibraryA
@@ -351,6 +361,7 @@ setcglob 0x004B1300, fseek
 setcglob 0x004B6A80, ftell
 setcglob 0x004BD490, strrchr
 setcglob 0x004B2030, fprintf
+setcglob 0x004BC5B0, stat
 
 ; imports
 ;Address  Ordinal Name                               Library 

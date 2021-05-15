@@ -54,8 +54,6 @@
 
 ; Side (HouseClass)
 %assign HC_SIDEID 0x24252
-%assign HC_CREDITS 0x2425C
-%assign HC_SILO_CREDITS 0x24254
 %assign HC_SPICE_HARVESTED 0x2477C
 %assign HC_BUILDINGS_DESTROYED 0x24C94
 %assign HC_UNITS_KILLED 0x24C90
@@ -147,8 +145,8 @@ cextern BattleFieldPosY
 cextern MousePositionX
 cextern MousePositionY
 cextern MySideID
-cextern Win
-cextern Lose
+cextern gWin
+cextern gLose
 cextern DifficultyLevel
 cextern GameType
 cextern GameState
@@ -171,10 +169,10 @@ cextern NetMessageString
 cextern CreditsScreenWidth
 cextern CreditsScreenTop
 cextern CreditsScreenBottom
-cextern GameTicks
+cextern gGameTicks
 cextern GameOver
 cextern RandSeed
-cextern Diplomacy
+cextern gDiplomacy
 cextern SoundClassObject
 cextern WindowActivated
 
@@ -197,7 +195,7 @@ cextern WOL__SendGameResultsToServer
 cextern Mission__LoadObjectives
 cextern DrawMenu
 cextern Data__GetTextId
-cextern Side__AsPointer
+cextern GetSide
 cextern Sound__PlayMusic
 cextern Sound__SetMusicVolume
 
