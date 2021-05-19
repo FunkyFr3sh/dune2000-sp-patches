@@ -103,7 +103,7 @@ void Mod__HandleEvent(EventData *event)
       if (event->amount == 0)
       {
         RevealMap();
-        Image__BlitClipTImage(RadarMap1, 0, 0, RadarMap2, 0, 0, 0);
+        BlitClipTImage1(_RadarMap1, 0, 0, _RadarMap2, 0, 0, 0);
       }
       else
         RevealCircle(event->xpos, event->ypos, event->amount);
@@ -140,7 +140,7 @@ void Mod__HandleEvent(EventData *event)
         unsigned char x = event->xpos;
         unsigned char y = event->ypos;
         FindNearestFreeTile(&x, &y, 12u);
-        Model__AddUnit(event->side_id, event->units[i], x, y, x, y, 0, 0);
+        ModelAddUnit(event->side_id, event->units[i], x, y, x, y, 0, 0);
       }
       break;
     }

@@ -1,10 +1,14 @@
 #include <stdbool.h>
 #include <stdint.h>
+#include "patch.h"
 
 // This header works with sym.asm which defines the Vanilla symbols
 // This header will be split up as it becomes larger
 
-// ### Side class structures ###
+typedef void TImage;
+typedef int eSideType;
+
+// ### Side class structs ###
 
 typedef enum UnitFlags
 {
@@ -41,6 +45,28 @@ typedef enum UnitFlags
   UnitFlags_40000000 = 0x40000000,
   UnitFlags_80000000 = 0x80000000,
 }UnitFlags;
+
+typedef enum UnitBehaviorType
+{
+  UnitBehaviorType_0 = 0,
+  UnitBehavior_HARVESTER = 1,
+  UnitBehavior_CARRYALL = 2,
+  UnitBehavior_ENGINEER = 3,
+  UnitBehavior_SABOTEUR = 4,
+  UnitBehavior_SANDWORM = 5,
+  UnitBehavior_MCV = 6,
+  UnitBehavior_DEVASTATOR = 7,
+  UnitBehavior_FRIGATE = 8,
+  UnitBehavior_ORNITHOPTER = 9,
+  UnitBehavior_DEATH_HAND = 10,
+  UnitBehavior_SARDAUKAR = 11,
+  UnitBehavior_FREMEN = 12,
+  UnitBehavior_FR_NON_STEALTH = 13,
+  UnitBehavior_THUMPER = 14,
+  UnitBehavior_BIRD = 15,
+  UnitBehavior_DEVIATOR = 16,
+  UnitBehavior_11 = 17,
+}UnitBehaviorType;
 
 typedef __int16 index;
 
@@ -552,7 +578,7 @@ typedef struct CSide
 
 typedef CSide *Side;
 
-// ### AI class structures ###
+// ### AI class structs ###
 
 typedef enum eTaskType
 {
@@ -787,7 +813,289 @@ typedef struct CAI_
   DefendAreaStruct __DefendAreas[5];
 }CAI_;
 
-// ### Structs ###
+// ### Templates.bin structs ###
+
+typedef struct UnitAtribStruct
+{
+  char __OwnerSide;
+  char __UnitType;
+  char __Armour;
+  char __TurningSpeed;
+  int __Strength;
+  int __Speed;
+  char __PrimaryWeapon;
+  char __SecondaryWeapon;
+  char __RateOfFire;
+  char __BarrelTurnSpeed;
+  char __ViewDistance;
+  char __IsInfantry;
+  char field_12;
+  char field_13;
+  int __UnitArt;
+  int __BarrelArt;
+  int __Cost;
+  int __BuildSpeed;
+  char __TechReq;
+  char __AvailableInStarport;
+  char __HasBarrel;
+  char __UpgradesNeeded;
+  int __PreReq1;
+  char __SideNeeded;
+  char __Behavior;
+  char c_field_2E;
+  char __DestroyAnim;
+  int __PreReq2;
+  char c_field_34;
+  char __CanCrush;
+  char __HealthbarSize;
+  char __ProjectileShootOffset;
+  int Flags;
+  char __DirectionFrames[32];
+  int __ReportingSounds[3][3];
+  int __ConfirmationSounds[3][3];
+  int __VoicePriority;
+  char __FireFlashAnim;
+  char __VehicleType;
+  char __MPOnly;
+  char field_AB[85];
+}UnitAtribStruct;
+
+typedef struct BuildingAtrbStruct
+{
+  int _____HitPoints;
+  char _____OwnerSide;
+  char Armour;
+  char _____BarrelRotationSpeed;
+  char _____RateOfFire;
+  int _____ScreenShake;
+  char _____PrimaryWeapon;
+  char _____SecondaryWeapon;
+  char _____SightRadius;
+  char _____ActLikeTurret;
+  char _____TechLevelBuild;
+  char _____TechLevelUpgrade[3];
+  int _____BuildingArt;
+  int _____BarrelArt;
+  int _____CostBuild;
+  int _____CostUpgrade1;
+  int _____CostUpgrade2;
+  int _____CostUpgrade3;
+  int _____BuildSpeedBuild;
+  int _____BuildSpeedUpgrade1;
+  int _____BuildSpeedUpgrade2;
+  int _____BuildSpeedUpgrade3;
+  int __PowerDrain;
+  int _____Prereq1BuildingType;
+  char __Prereq1OwnerSide;
+  char __Prereq1UpgradesNeeded;
+  char field_46;
+  char field_47;
+  int _____Prereq2BuildingType;
+  char _____Prereq2OwnerSide;
+  char _____Prereq2UpgradesNeeded;
+  char _____RequireEnoughPower;
+  char _____DeathExplosion;
+  int _____TilesOccupiedAll;
+  int _____TilesOccupiedSolid;
+  int _____Flags;
+  char __Behavior;
+  char _____SellPriority;
+  char ___c_field_5E_artflag;
+  char _____HealthBarSize;
+  char _____ExitPoint1X;
+  char _____ExitPoint1Y;
+  char _____ExitPoint2X;
+  char _____ExitPoint2Y;
+  char _____DirectionFrames[32];
+  char field_84;
+  char _____AnimationSpeed;
+  char _____ArtHeight;
+  char _____ArtWidth;
+  char GroupType;
+  char _____BuildupFramesToShow;
+  char _____BuildupArt;
+  char _____BuildingAnimation;
+  char _____explosionindex2;
+  char field_8D[127];
+}BuildingAtrbStruct;
+
+typedef struct ExploisonAtrbStruct
+{
+  char __Type;
+  char __FiringPattern;
+  char field_2;
+  char field_3;
+  int __Sound;
+}ExploisonAtrbStruct;
+
+typedef struct GroupIDsStruct
+{
+  char __carryall;
+  char Barracks;
+  char Wor;
+  char LightFactory;
+  char HeavyFactory;
+  char HighTech;
+  char AtHighTech;
+  char Refinery;
+  char Barrel;
+  char Scenery;
+  char AtPalace;
+  char HarkPalace;
+  char OrdPalace;
+  char Concrete1;
+  char Frigate;
+  char MCV;
+  char Harvester;
+  char Carryall;
+  char Ornithopter;
+  char DeathHand;
+  char Saboteur;
+  char Fremen;
+  char BARREL;
+  char CRATE;
+  char SARDDEATH;
+  char Debris[24];
+  char DebrisCount;
+  char SpiceExpl;
+  char Devastator;
+  char DHM;
+  char EX_CrateReveal;
+  char EX_CASH;
+  char EX_CrateNoMap;
+  char EX_CrateStealth;
+  char EX_PUFF;
+  char EX_WHITEN1;
+  char EX_SMOKE3;
+  char EX_FLASH;
+  char EX_DHM;
+  char EX_DEATHHAND;
+  char EX_SPICEBLOOM;
+  char EX_HARV;
+  char EX_HARVDUST0;
+  char EX_HARVDUST1;
+  char EX_HARVDUST2;
+  char EX_HARVDUST3;
+  char EX_HARVDUST4;
+  char EX_HARVDUST5;
+  char EX_HARVDUST6;
+  char EX_HARVDUST7;
+  char EX_WORMSN1;
+  char EX_WORMSN2;
+  char EX_WORMSN3;
+  char EX_WORMSN4;
+  char EX_WORMSN5;
+  char EX_WORMSN6;
+  char EX_THPUFF;
+  char EX_REF;
+  char EX_DEVSPARK1;
+  char EX_DEVSPARK2;
+  char EX_DEVSPARK3;
+  char EX_DEVDEATH;
+  char Concrete2;
+}GroupIDsStruct;
+
+// ### VARS.BIN structs ###
+
+typedef struct VariableStruct
+{
+  int harvestUnloadDelay;
+  int harvestBlobValue;
+  int harvestLoadSpiceDelay;
+  int starportUpdateDelay;
+  int starportStockIncreaseDelay;
+  int starportStockIncreaseProb;
+  int starportCostVariationPercent;
+  int starportFrigateDelay;
+  int refineryExplosionOffsetX;
+  int refineryExplosionOffsetY;
+  int HarvesterDriveDistance;
+  int RepairDriveDistance;
+  int BuildingRepairValue;
+  int UnitRepairValue;
+  int SinglePlayerDelay;
+  char NumberOfFremen;
+  char SandWormAppetite;
+  char SandWormInitialSleep;
+  char SandWormFedSleep;
+  char SandWormShotSleep;
+  char NumberOfCrates;
+  char CratesPerPlayer;
+  char DevastatorExplodeDelay;
+  int IgnoreDistance;
+  int CrateCash;
+  char ShowWarnings;
+  char DeathHandAccuracy;
+}VariableStruct;
+
+// ### MAP structs ###
+
+typedef enum TileFlags
+{
+  TileFlags_1_OWNER = 0x1,
+  TileFlags_2_OWNER = 0x2,
+  TileFlags_4_OWNER = 0x4,
+  TileFlags_8_OCC_UNIT = 0x8,
+  TileFlags_10_OCC_BUILDING = 0x10,
+  TileFlags_20_CSPOT_MID = 0x20,
+  TileFlags_40_CSPOT_TR = 0x40,
+  TileFlags_80_CSPOT_DR = 0x80,
+  TileFlags_100_CSPOT_DL = 0x100,
+  TileFlags_200_CSPOT_TL = 0x200,
+  TileFlags_400_HAS_WALL = 0x400,
+  TileFlags_800_HAS_CONCRETE = 0x800,
+  TileFlags_1000 = 0x1000,
+  TileFlags_2000_DRIVE_ON = 0x2000,
+  TileFlags_4000_WALK_ON = 0x4000,
+  TileFlags_8000_BUILD_ON = 0x8000,
+  TileFlags_10000_SANDY = 0x10000,
+  TileFlags_20000 = 0x20000,
+  TileFlags_40000 = 0x40000,
+  TileFlags_80000 = 0x80000,
+  TileFlags_100000_SPICE = 0x100000,
+  TileFlags_200000_SPICE = 0x200000,
+  TileFlags_400000_SPICE = 0x400000,
+  TileFlags_800000 = 0x800000,
+  TileFlags_1000000 = 0x1000000,
+  TileFlags_2000000 = 0x2000000,
+  TileFlags_4000000 = 0x4000000,
+  TileFlags_8000000 = 0x8000000,
+  TileFlags_10000000 = 0x10000000,
+  TileFlags_20000000_TERRAIN_TYPE2 = 0x20000000,
+  TileFlags_40000000_TERRAIN_TYPE2 = 0x40000000,
+  TileFlags_80000000_TERRAIN_TYPE2 = 0x80000000,
+}TileFlags;
+
+typedef struct GameMapTileStruct
+{
+  __int16 __tile_index;
+  __int16 w_field_2;
+  TileFlags __tile_bitflags;
+  char __shroud_flags;
+  unsigned __int8 c_field_9;
+}GameMapTileStruct;
+
+typedef struct GameMapStruct
+{
+  int width;
+  int height;
+  GameMapTileStruct map[16384];
+}GameMapStruct;
+
+typedef struct CrateStruct
+{
+  uint8_t __x;
+  uint8_t __y;
+  uint8_t __type;
+  uint8_t __is_active;
+  uint8_t __image;
+  uint8_t __times_to_respawn;
+  uint8_t field_6;
+  uint8_t field_7;
+  int32_t __timing;
+}CrateStruct;
+
+// ### MIS file structs ###
 
 typedef struct MiscData
 {
@@ -941,7 +1249,7 @@ enum EventConditions
     EC_FLAG
 };
 
-enum CrateTypes
+typedef enum eCrateType
 {
     CT_CASH,
     CT_EXPLODE,
@@ -950,13 +1258,13 @@ enum CrateTypes
     CT_UNIT,
     CT_STEALTH,
     CT_UNSUPPORTED6,
-    CT_UNSUPPORTED7,
-    CT_SPICEBLOOM,
-    CT_SPICEBLOOM2,
-    CT_SPICEBLOOM3
-};
+    CT_SPICE_BLOOM_SPAWNER,
+    CT_SPICE_BLOOM_SMALL,
+    CT_SPICE_BLOOM_MEDIUM,
+    CT_SPICE_BLOOM_LARGE
+}eCrateType;
 
-enum CrateImages
+typedef enum eCrateImage
 {
     CI_BLUE_CRATE,
     CI_RED_CRATE,
@@ -966,7 +1274,7 @@ enum CrateImages
     CI_SMALL_BLOOM,
     CI_MEDIUM_BLOOM,
     CI_LARGE_BLOOM
-};
+}eCrateImage;
 
 // Side (HouseClass)
 #define HC_SIDEID 0x24252
@@ -1069,49 +1377,60 @@ extern unsigned char MissionNumber;
 
 
 
-extern int              GameState;
+extern int                  GameState;
 
-extern short            DifficultyLevel;
-extern int              MousePositionX;
-extern int              MousePositionY;
-extern int              RandSeed;
-extern CAI_             gAIArray[];
-extern char             ResourcePath[];
-extern char             MoviesResourcePath[];
-extern char             MusicResourcePath[];
-extern char             MissionsResourcePath[];
-extern char             MapsResourcePath[];
-extern unsigned int     gGameTicks;
+extern short                DifficultyLevel;
+extern int                  MousePositionX;
+extern int                  MousePositionY;
+extern int                  RandSeed;
+extern CAI_                 gAIArray[];
+extern char                 ResourcePath[];
+extern char                 MoviesResourcePath[];
+extern char                 MusicResourcePath[];
+extern char                 MissionsResourcePath[];
+extern char                 MapsResourcePath[];
+extern unsigned int         gGameTicks;
+extern char                 _cheatstates[8];
 
-extern int              gGameMapWidth;
-extern int              gGameMapHeight;
+extern CrateStruct          gCrates[30];
+extern GameMapStruct        gGameMap;
+extern int                  gGameMapWidth;
+extern int                  gGameMapHeight;
+extern int                  _CellNumbersWidthSpan[128];
+extern int                  _mapvisstate_548010;
 
-extern bool             gUnitsExist[];
-extern int              gTimerValue;
-extern bool             gWin;
-extern bool             gLose;
-extern ConditionData    gConditionArray[];
-extern bool             gBuildingsExist[];
-extern MiscData         gMiscData;
-
-
-extern void *           RadarMap1;
-
-extern void *           RadarMap2;
-extern bool             SpawnLocationUsedBoolArray[];
-extern int              SoundClassObject;
-extern int              CUIManagerObject;
-
-extern int              GameType;
+extern bool                 gUnitsExist[];
+extern int                  gTimerValue;
+extern bool                 gWin;
+extern bool                 gLose;
+extern ConditionData        gConditionArray[];
+extern bool                 gBuildingsExist[];
+extern MiscData             gMiscData;
+extern VariableStruct       _gVariables;
 
 
-extern bool             BitsPerPixelChanged;
+extern GroupIDsStruct       _templates_GroupIDs;
+extern void *               _RadarMap1;
+extern char                 _templates_UnitTypeCount;
+
+extern UnitAtribStruct      _templates_unitattribs[60];
+extern void *               _RadarMap2;
+extern ExploisonAtrbStruct  _templates_explosionattribs[64];
+extern bool                 SpawnLocationUsedBoolArray[];
+extern int                  SoundClassObject;
+extern int                  CUIManagerObject;
+
+extern int                  GameType;
 
 
-extern unsigned char    MySideID;
-extern unsigned char    gDiplomacy[8][8];
-extern int              OSMajorVersion;
-extern int              OSMinorVersion;
+extern bool                 BitsPerPixelChanged;
+
+
+extern unsigned char        MySideID;
+extern unsigned char        gSideId;
+extern unsigned char        gDiplomacy[8][8];
+extern int                  OSMajorVersion;
+extern int                  OSMinorVersion;
 
 // ### Functions ###
 
@@ -1133,12 +1452,21 @@ void            Graphlib__TextOnScreen(int *image, char *text, int x, int y, boo
 void            Graphlib__DrawRightAlignedText(int *image, char *text, int x, int y, bool bold_unk, int color_unk, int unk2);
 void            Graphlib__DrawTextWithBlackShadow(int *image, char *text, int x, int y, int unk, int color_unk);
 void            Graphlib__LoadFontFile();
+// Image
+void            BlitClipTImage1(TImage *lpTITo, int toX, int toY, TImage *lpTIFrom, RECT *rect, bool trans, int a7);
+void            ClearTImage(TImage *a1, int color, int unusable);
+// Other
+int             GetRandomValue(char *, int);
 // Map
 int             RevealMap();
 void            Map__PlayerDefeated(uint8_t sideId);
 
 void            RevealCircle(int x, int y, int size);
-void            PlaceCrate(int x, int y, int timing, enum CrateTypes type, enum CrateImages image, int respawn_count);
+void            PlaceCrate(int x, int y, int timing, eCrateType type, eCrateImage image, int respawn_count);
+eCrateType      GetCrateFromMap(int x, int y);
+void            SpiceMound(unsigned __int8 xpos, unsigned __int8 ypos, int range);
+void            RecycleCrate(unsigned __int8 index);
+int             GetMapVisState();
 // Memory
 void *          Memory__HeapAllocWrapper(size_t size, char *debugString);
 // Mission
@@ -1148,8 +1476,9 @@ void            Mission__LoadVarsFile();
 
 // Model
 
-index           Model__AddUnit(unsigned char side, unsigned char type, unsigned char add_at_x, unsigned char add_at_y, unsigned char move_to_x, unsigned char move_to_y, int pixel_offset_x, int pixel_offset_y);
+index           ModelAddUnit(unsigned char side, unsigned char type, unsigned char add_at_x, unsigned char add_at_y, unsigned char move_to_x, unsigned char move_to_y, int pixel_offset_x, int pixel_offset_y);
 
+signed __int16  ModelAddExplosion(int side, unsigned __int8 explosionType, unsigned __int16 x, unsigned __int16 y, int a5, int a6, char a7, int a8, int a9);
 int             Model__GenerateUnitMoveOrder(int,int,int);
 int             Model__GenerateUnitAttackUnitOrder(int,int,int);
 void            Model__ResetVars();
@@ -1160,10 +1489,13 @@ void            Setup__LoadUIBBFile();
 
 // CSide
 void __thiscall CSide__update_list_of_available_buildings_and_units(CSide *side);
+uint8_t __thiscall CSide__MyVersionOfUnit(CSide *this, char unit, bool bool1);
+void __thiscall CSide_add_cash_drip(CSide *this, int a2);
 void __thiscall CSide__BlowupAll_surrender(CSide *side);
 void            CSide__SurrenderAbort(bool unknown);
 void __thiscall CSide__reset_enemy(CSide *this, char a2);
 // Sound
+void            PlaySoundAt(int id, unsigned __int8 xpos, unsigned __int8 ypos);
 void            Sound__PlaySample(int id, char state, int time, int priority);
 void __thiscall Sound__LoadMusicFile(int this, char *fileName);
 void __thiscall Sound__SetMusicVolume(int soundClassObject, int volume);
@@ -1183,6 +1515,9 @@ char *          Data__GetTextString(int stringId, bool showError);
 int             Data__GetSoundTableID(const char *key);
 // Other
 void            DestroyBuilding(int side, int objIndex, char a3);
+char            DamageTiles(unsigned int xpos, unsigned int ypos, unsigned int a3, unsigned __int8 bulletType, int ai_side, __int16 ai_index, char a7);
+void            MakeUnitsStealthInRange(unsigned __int8 x, unsigned __int8 y, eSideType side);
+int             side_mapvis_49F4D0(eSideType side);
 
 
 CSide *         GetSide(int sideId);

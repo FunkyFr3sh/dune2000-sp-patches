@@ -48,7 +48,7 @@ bool PlaceStaticCrate(int special_value, int x, int y)
         case 46:
         {
             // Static one-time spice bloom
-            PlaceCrate(x, y, INT32_MAX, CT_SPICEBLOOM3, CI_LARGE_BLOOM, 0);
+            PlaceCrate(x, y, INT32_MAX, CT_SPICE_BLOOM_LARGE, CI_LARGE_BLOOM, 0);
             break;
         }
         default:
