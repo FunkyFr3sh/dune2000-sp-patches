@@ -10,13 +10,13 @@ CALL(0x00480E20, _FakeData__GetTextString_Briefing);
 
 char *FakeData__GetTextString_Briefing(int stringId, bool showError)
 {
-    static char result[4096];
+    static char result[65536];
     if (MissionNumber == 0 && SpawnerActive && GameType == GT_SINGLEPLAYER)
     {
         char mapIniPath[256];
         sprintf(mapIniPath, ".\\%s%s", MissionsResourcePath, PathChangeExtension(MissionMap, ".ini"));
     
-        IniGetString("Basic", "Briefing", "", result, 4096, mapIniPath);
+        IniGetString("Basic", "Briefing", "", result, 65536, mapIniPath);
         
         for (uint32_t i = 0; i < strlen(result); i++)
         {
