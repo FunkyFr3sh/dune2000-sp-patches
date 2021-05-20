@@ -483,11 +483,11 @@ typedef struct CSide
   char c_field_24251;
   char __ai_id;
   char fHouseID;
-  uint32_t SpiceReal;
+  int32_t SpiceReal;
   int32_t __MaxStorage;
-  uint32_t CashReal;
+  int32_t CashReal;
   int32_t CashDrip;
-  uint32_t SpiceDrip;
+  int32_t SpiceDrip;
   int32_t unit_ar_field_24268_delivery[60];
   int32_t unit_ar_field_24358_delivery[60];
   int32_t starport_unit_ar_field_24448_cash[60];

@@ -72,11 +72,25 @@ void Mod__HandleEvent(EventData *event)
     case ET_SETCASH:
     {
       CSide *side = GetSide(event->side_id);
-      int actual_cash = side->SpiceReal + side->CashReal;
-      int target_drip = event->value;
-      if (actual_cash + side->CashDrip + target_drip < 0)
-           target_drip += (actual_cash + side->CashDrip + target_drip) * -1; 
-      side->CashDrip += target_drip;
+      int actual_cash = side->SpiceReal + side->SpiceDrip + side->CashReal + side->CashDrip;
+      int cost = actual_cash - event->value;
+      if ( cost > actual_cash )
+      {
+        cost = actual_cash; 
+      }
+      if (cost <= 0)
+      {
+        side->CashDrip -= cost;
+      }
+      else if ( side->SpiceDrip + side->SpiceReal <= cost )
+      {
+        side->CashDrip -= cost - (side->SpiceReal + side->SpiceDrip);
+        side->SpiceDrip = -side->SpiceReal;
+      }
+      else
+      {
+        side->SpiceDrip -= cost;
+      }
       break;
     }
     case ET_SETTECH:
