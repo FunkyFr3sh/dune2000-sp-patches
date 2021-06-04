@@ -8,7 +8,7 @@ hack 0x00469A8E, 0x00469A95
     push eax ; y
     push ebx ; x
     push edi ; special_value
-    call PlaceStaticCrate
+    call HandleSpecialValue
     add esp, 12
     test eax, eax
     jnz 0x469AEA ; skip the original logic

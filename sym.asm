@@ -207,6 +207,7 @@ setcglob 0x006DC470, MissionMapData
 setcglob 0x0077E250, _templates_unitattribs
 setcglob 0x00781E54, _RadarMap2
 setcglob 0x00781E58, _templates_explosionattribs
+setcglob 0x00782068, _templates_bulletattribs
 setcglob 0x00782AA0, SpawnLocationUsedBoolArray
 setcglob 0x00795608, SoundClassObject
 setcglob 0x0079759C, CUIManagerObject
@@ -270,6 +271,7 @@ setcglob 0x0044C480, RevealMap
 setcglob 0x0044C4F0, Map__PlayerDefeated
 setcglob 0x0044C520, Map__SetDeadOrder
 setcglob 0x0044E3B0, RevealCircle
+setcglob 0x0044E790, GetFreeCrateIndex
 setcglob 0x0044E8E0, PlaceCrate
 setcglob 0x0044E9D0, GetCrateFromMap
 setcglob 0x0044EF10, SpiceMound

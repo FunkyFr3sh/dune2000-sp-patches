@@ -919,6 +919,23 @@ typedef struct BuildingAtrbStruct
   char field_8D[127];
 }BuildingAtrbStruct;
 
+typedef struct BullAtrbStruct
+{
+  int __ProjectileSpeed;
+  int __Damage;
+  int Flags;
+  int __FiringSound;
+  char __ProjectileArt;
+  char __HitExplosion;
+  char __TrailExplosion;
+  char c_field_13;
+  char AntiAircraft;
+  char Warhead;
+  char field_16;
+  char field_17;
+  int __Range;
+}BullAtrbStruct;
+
 typedef struct ExploisonAtrbStruct
 {
   char __Type;
@@ -1090,7 +1107,7 @@ typedef struct CrateStruct
   uint8_t __is_active;
   uint8_t __image;
   uint8_t __times_to_respawn;
-  uint8_t field_6;
+  uint8_t ext_data_field; // Field for extended crate functionality (mod)
   uint8_t field_7;
   int32_t __timing;
 }CrateStruct;
@@ -1416,6 +1433,7 @@ extern char                 _templates_UnitTypeCount;
 extern UnitAtribStruct      _templates_unitattribs[60];
 extern void *               _RadarMap2;
 extern ExploisonAtrbStruct  _templates_explosionattribs[64];
+extern BullAtrbStruct       _templates_bulletattribs[64];
 extern bool                 SpawnLocationUsedBoolArray[];
 extern int                  SoundClassObject;
 extern int                  CUIManagerObject;
@@ -1462,6 +1480,7 @@ int             RevealMap();
 void            Map__PlayerDefeated(uint8_t sideId);
 
 void            RevealCircle(int x, int y, int size);
+char            GetFreeCrateIndex();
 void            PlaceCrate(int x, int y, int timing, eCrateType type, eCrateImage image, int respawn_count);
 eCrateType      GetCrateFromMap(int x, int y);
 void            SpiceMound(unsigned __int8 xpos, unsigned __int8 ypos, int range);

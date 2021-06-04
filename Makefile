@@ -35,8 +35,8 @@ OBJS            ?= callsites.o \
 	src/extended-maps/music.o \
 	src/extended-maps/infinite-spice.o \
 	src/extended-maps/start-with-mcv.o \
-	src/extended-maps/static-crates.o \
-	src/extended-maps/static-crates-func.o \
+	src/extended-maps/special-values.o \
+	src/extended-maps/special-values-func.o \
 	src/extended-maps/crates.o \
 	\
 	src/fixes/rand-seed-fix.o \

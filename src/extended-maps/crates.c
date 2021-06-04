@@ -16,34 +16,20 @@ CALL(0x00494480, _Mod__PickupCrate);
 
 bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
 {
-  bool result; // al
-  int ypos; // ecx
-  int xpos; // edx
-  int crate_cash; // ST20_4
-  CSide *side; // eax MAPDST
   int v8; // edi
   int v9; // edx
   int *v10; // esi
   int v11; // ecx
   char *v12; // eax
-  unsigned int random; // eax MAPDST
-  char v15; // ST1C_1
-  CSide *v16; // eax
-  char v17; // al
-  unsigned int v19; // ebp
-  char v21; // ST1C_1
-  unsigned __int8 v23; // ST10_1 MAPDST
-  unsigned __int8 v24; // ST0C_1 MAPDST
-  unsigned __int8 unit_version; // al MAPDST
-  unsigned __int8 v27; // ST18_1
-  unsigned __int8 unit_type; // [esp+10h] [ebp+8h] MAPDST
 
+  int xpos = unit->BlockToX;
+  int ypos = unit->BlockToY;
+  // Sandworm cannot pickup crates
   if ( _templates_unitattribs[unit->Type].__Behavior == UnitBehavior_SANDWORM )
   {
     return 0;
   }
-  ypos = unit->BlockToY;
-  xpos = unit->BlockToX;
+  // There is no crate on the target tile
   if ( !(gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]].__tile_bitflags & TileFlags_1000) )
   {
     return 0;
@@ -79,27 +65,39 @@ bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
     }
   }
   // Do crate action
+  CSide *side = GetSide(side_id);
   switch ( crate_type )
   {
     case CT_CASH:
-      crate_cash = _gVariables.CrateCash;
-      side = GetSide(side_id);
+    {
+      // Extended behavior: amount of cash = ext_data_field * 100;
+      int crate_cash = crate->ext_data_field ? crate->ext_data_field * 100 : _gVariables.CrateCash;
       CSide_add_cash_drip(side, crate_cash);
       if ( _templates_GroupIDs.EX_CASH == -1 )
       {
         return 0;
       }
       ModelAddExplosion(side_id, _templates_GroupIDs.EX_CASH, 32 * unit->BlockToX + 16, 32 * unit->BlockToY + 16, 0, 0, 0, 0, 0);
-      if ( side_id != gSideId )
+      if ( side_id == gSideId )
       {
-        return 0;
+        PlaySoundAt(_templates_explosionattribs[(int)_templates_GroupIDs.EX_CASH].__Sound, unit->BlockToX, unit->BlockToY);
       }
-      PlaySoundAt(_templates_explosionattribs[(int)_templates_GroupIDs.EX_CASH].__Sound, unit->BlockToX, unit->BlockToY);
       return 0;
+    }
     case CT_EXPLODE:
+    {
+      // Extended data: SEWWWWWW
+      // S = Use specific weapon? (1 = yes, 0 = no)
+      // E = Use weapon's hit explosion? (1 = yes, 0 = no)
+      // W = Weapon type (0-64)
+      
+      // Extended behavior: custom weapon and use of hit explosion
+      int weapon_id = (crate->ext_data_field & 0x80) ? crate->ext_data_field & 0x3f : _templates_GroupIDs.CRATE;
+      int explosion_id = (crate->ext_data_field & 0x40) ? _templates_bulletattribs[weapon_id].__HitExplosion : _templates_GroupIDs.EX_WHITEN1;
+      
       ModelAddExplosion(
         side_id,
-        _templates_GroupIDs.EX_WHITEN1,
+        explosion_id,
         32 * unit->BlockToX + 16,
         32 * unit->BlockToY + 16,
         0,
@@ -109,14 +107,14 @@ bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
         0);
       if ( side_id == gSideId )
       {
-        PlaySoundAt(_templates_explosionattribs[(int)_templates_GroupIDs.EX_WHITEN1].__Sound, unit->BlockToX, unit->BlockToY);
+        PlaySoundAt(_templates_explosionattribs[explosion_id].__Sound, unit->BlockToX, unit->BlockToY);
       }
-      if ( _templates_GroupIDs.CRATE == -1 )
+      if ( weapon_id != -1 )
       {
-        return 0;
+        DamageTiles(32 * unit->BlockToX + 16, 32 * unit->BlockToY + 16, 0, weapon_id, side_id, 0xFFFF, 0);
       }
-      DamageTiles(32 * unit->BlockToX + 16, 32 * unit->BlockToY + 16, 0, _templates_GroupIDs.CRATE, side_id, 0xFFFF, 0);
       return 0;
+    }
     case CT_REVEAL:
       if ( _templates_GroupIDs.EX_CrateReveal == -1 )
       {
@@ -204,57 +202,56 @@ LABEL_17:
       side_mapvis_49F4D0(side_id);
       return 0;
     case CT_UNIT:
+    {
+      // Extended data: VIUUUUUU
+      // V = Call MyVersionOfUnit? (1 = yes, 0 = no)
+      // I = Infantry amount (0 = one infantry, 1 = five infantry)
+      // U = Unit type (0-64)
+      
+      // Specific unit = extended behavior
+      if (crate->ext_data_field)
+      {
+        int unit_type = crate->ext_data_field & 0x3f;
+        int unit_version = (crate->ext_data_field & 0x80) ? CSide__MyVersionOfUnit(side, unit_type, 0) : unit_type;
+        ModelAddUnit(side_id, unit_version, xpos, ypos, xpos, ypos, 0, 0);
+        if (_templates_unitattribs[unit_version].__IsInfantry && (crate->ext_data_field & 0x40))
+        {
+          for (int i = 1; i < 5; i++)
+            ModelAddUnit(side_id, unit_version, xpos, ypos, xpos, ypos, 0, 0);
+        }
+        return 1;
+      }
+      // Random unit = default behavior
+      int unit_type;
+      int unit_version;
+      int behavior;
       do
       {
-        do
-        {
-          random = GetRandomValue("C:\\MsDev\\Projects\\July2000\\code\\unit.cpp", 8928);
-          unit_type = random % _templates_UnitTypeCount;
-          v15 = random % _templates_UnitTypeCount;
-          v16 = GetSide(side_id);
-          v17 = _templates_unitattribs[CSide__MyVersionOfUnit(v16, v15, 0)].__Behavior;
-        }
-        while ( v17 == UnitBehavior_SANDWORM );
+        unit_type = GetRandomValue("C:\\MsDev\\Projects\\July2000\\code\\unit.cpp", 8928) % _templates_UnitTypeCount;
+        unit_version = CSide__MyVersionOfUnit(side, unit_type, 0);
+        behavior = _templates_unitattribs[unit_version].__Behavior;
       }
-      while ( v17 == UnitBehavior_FRIGATE
-           || v17 == UnitBehavior_ORNITHOPTER
-           || v17 == UnitBehavior_CARRYALL
-           || v17 == UnitBehavior_DEATH_HAND );
-      side = GetSide(side_id);
-      if ( _templates_unitattribs[CSide__MyVersionOfUnit(side, unit_type, 0)].__IsInfantry )
+      while ( behavior == UnitBehavior_SANDWORM
+           || behavior == UnitBehavior_FRIGATE
+           || behavior == UnitBehavior_ORNITHOPTER
+           || behavior == UnitBehavior_CARRYALL
+           || behavior == UnitBehavior_DEATH_HAND );
+      ModelAddUnit(side_id, unit_version, xpos, ypos, xpos, ypos, 0, 0);
+      if ( _templates_unitattribs[unit_version].__IsInfantry )
       {
-        v19 = 0;
-        do
+        for (int i = 1; i < 5; i++)
         {
           do
           {
-            random = GetRandomValue("C:\\MsDev\\Projects\\July2000\\code\\unit.cpp", 8939);
-            unit_type = random % _templates_UnitTypeCount;
-            v21 = random % _templates_UnitTypeCount;
-            side = GetSide(side_id);
+            unit_type = GetRandomValue("C:\\MsDev\\Projects\\July2000\\code\\unit.cpp", 8939) % _templates_UnitTypeCount;
+            unit_version = CSide__MyVersionOfUnit(side, unit_type, 0);
           }
-          while ( !_templates_unitattribs[CSide__MyVersionOfUnit(side, v21, 0)].__IsInfantry );
-          v23 = unit->BlockToY;
-          v24 = unit->BlockToX;
-          side = GetSide(side_id);
-          unit_version = CSide__MyVersionOfUnit(side, unit_type, 0);
-          ModelAddUnit(side_id, unit_version, v24, v23, v24, v23, 0, 0);
-          ++v19;
+          while ( !_templates_unitattribs[unit_version].__IsInfantry );  
+          ModelAddUnit(side_id, unit_version, xpos, ypos, xpos, ypos, 0, 0);
         }
-        while ( v19 < 5 );
-        result = 1;
       }
-      else
-      {
-        v27 = unit->BlockToY;
-        v23 = unit->BlockToY;
-        v24 = unit->BlockToX;
-        side = GetSide(side_id);
-        unit_version = CSide__MyVersionOfUnit(side, unit_type, 0);
-        ModelAddUnit(side_id, unit_version, v24, v23, v24, v27, 0, 0);
-        result = 1;
-      }
-      return result;
+      return 1;
+    }
     case CT_STEALTH:
       MakeUnitsStealthInRange(unit->BlockToX, unit->BlockToY, side_id);
       if ( _templates_GroupIDs.EX_CrateStealth == -1 )
@@ -271,11 +268,10 @@ LABEL_17:
         0,
         0,
         0);
-      if ( side_id != gSideId )
+      if ( side_id == gSideId )
       {
-        return 0;
+        PlaySoundAt(_templates_explosionattribs[(int)_templates_GroupIDs.EX_CrateStealth].__Sound, unit->BlockToX, unit->BlockToY);
       }
-      PlaySoundAt(_templates_explosionattribs[(int)_templates_GroupIDs.EX_CrateStealth].__Sound, unit->BlockToX, unit->BlockToY);
       return 0;
     case CT_UNSUPPORTED6:
       DebugFatal("UNIT.CPP", "Someone picked up an unsupported crate type (%d)", crate_type);
@@ -284,16 +280,16 @@ LABEL_17:
       return 0;
     case CT_SPICE_BLOOM_SMALL:
       SpiceMound(unit->BlockToX, unit->BlockToY, 4);
-      result = 0;
+      return 0;
       break;
     case CT_SPICE_BLOOM_MEDIUM:
       SpiceMound(unit->BlockToX, unit->BlockToY, 5);
-      result = 0;
+      return 0;
       break;
     case CT_SPICE_BLOOM_LARGE:
       SpiceMound(unit->BlockToX, unit->BlockToY, 6);
-      result = 0;
+      return 0;
       break;
   }
-  return result;
+  return 0;
 }
