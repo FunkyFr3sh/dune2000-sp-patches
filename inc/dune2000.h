@@ -1534,6 +1534,7 @@ char *          Data__GetTextString(int stringId, bool showError);
 int             Data__GetSoundTableID(const char *key);
 // Other
 void            DestroyBuilding(int side, int objIndex, char a3);
+void            DestroyUnit(eSideType side, __int16 index);
 char            DamageTiles(unsigned int xpos, unsigned int ypos, unsigned int a3, unsigned __int8 bulletType, int ai_side, __int16 ai_index, char a7);
 void            MakeUnitsStealthInRange(unsigned __int8 x, unsigned __int8 y, eSideType side);
 int             side_mapvis_49F4D0(eSideType side);

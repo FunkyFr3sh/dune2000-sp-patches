@@ -6,6 +6,9 @@
 #include "ini.h"
 #include "utils.h"
 
+void HandleExplosionCrate(CrateStruct *crate, Unit *unit, unsigned char side_id);
+void HandleSpiceBloomCrate(CrateStruct *crate, Unit *unit, unsigned char side_id);
+
 // Fix disappearing crates when AI-controlled unit is nearby
 CLEAR(0x0044EA24, 0x90, 0x0044EA29); // Clear call to RecycleCrate in function GetCrateFromMap
 CLEAR(0x0044EA42, 0x90, 0x0044EA49); // Clear deactivation of crate in function GetCrateFromMap 
@@ -50,8 +53,13 @@ bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
   {
     return 0;
   }
-  // Remove crate from map
   int crate_type = crate->__type;
+  // Guard against "Tile already occupied with unit" error
+  if (crate_type == CT_UNIT && gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]].__tile_bitflags & TileFlags_8_OCC_UNIT)
+  {
+    return 0;
+  }
+  // Remove crate from map
   if ( crate_type != CT_SPICE_BLOOM_SPAWNER )
   {
     if (crate_type > CT_SPICE_BLOOM_SPAWNER && crate_type <= CT_SPICE_BLOOM_LARGE )
@@ -86,33 +94,7 @@ bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
     }
     case CT_EXPLODE:
     {
-      // Extended data: SEWWWWWW
-      // S = Use specific weapon? (1 = yes, 0 = no)
-      // E = Use weapon's hit explosion? (1 = yes, 0 = no)
-      // W = Weapon type (0-64)
-      
-      // Extended behavior: custom weapon and use of hit explosion
-      int weapon_id = (crate->ext_data_field & 0x80) ? crate->ext_data_field & 0x3f : _templates_GroupIDs.CRATE;
-      int explosion_id = (crate->ext_data_field & 0x40) ? _templates_bulletattribs[weapon_id].__HitExplosion : _templates_GroupIDs.EX_WHITEN1;
-      
-      ModelAddExplosion(
-        side_id,
-        explosion_id,
-        32 * unit->BlockToX + 16,
-        32 * unit->BlockToY + 16,
-        0,
-        0,
-        0,
-        0,
-        0);
-      if ( side_id == gSideId )
-      {
-        PlaySoundAt(_templates_explosionattribs[explosion_id].__Sound, unit->BlockToX, unit->BlockToY);
-      }
-      if ( weapon_id != -1 )
-      {
-        DamageTiles(32 * unit->BlockToX + 16, 32 * unit->BlockToY + 16, 0, weapon_id, side_id, 0xFFFF, 0);
-      }
+      HandleExplosionCrate(crate, unit, side_id);
       return 0;
     }
     case CT_REVEAL:
@@ -203,10 +185,10 @@ LABEL_17:
       return 0;
     case CT_UNIT:
     {
-      // Extended data: VIUUUUUU
+      // Extension data: VIUUUUUU
       // V = Call MyVersionOfUnit? (1 = yes, 0 = no)
       // I = Infantry amount (0 = one infantry, 1 = five infantry)
-      // U = Unit type (0-64)
+      // U = Unit type (0-59)
       
       // Specific unit = extended behavior
       if (crate->ext_data_field)
@@ -279,17 +261,127 @@ LABEL_17:
     case CT_SPICE_BLOOM_SPAWNER:
       return 0;
     case CT_SPICE_BLOOM_SMALL:
-      SpiceMound(unit->BlockToX, unit->BlockToY, 4);
-      return 0;
-      break;
     case CT_SPICE_BLOOM_MEDIUM:
-      SpiceMound(unit->BlockToX, unit->BlockToY, 5);
-      return 0;
-      break;
     case CT_SPICE_BLOOM_LARGE:
-      SpiceMound(unit->BlockToX, unit->BlockToY, 6);
+      HandleSpiceBloomCrate(crate, unit, side_id);
       return 0;
       break;
   }
   return 0;
 }
+
+void HitCrate(int crate_index)
+{
+  CrateStruct *crate = &gCrates[crate_index];
+  // Spice bloom
+  if (crate->__type >= CT_SPICE_BLOOM_SMALL && crate->__type <= CT_SPICE_BLOOM_LARGE)
+  {
+    RecycleCrate(crate_index);
+    HandleSpiceBloomCrate(crate, NULL, gSideId);
+    return;
+  }
+  // Explosion crate
+  if (crate->__type == CT_EXPLODE && crate->ext_data_field & 128)
+  {
+    // Remove crate
+    crate->__is_active = 0;
+    gGameMap.map[crate->__x + _CellNumbersWidthSpan[crate->__y]].__tile_bitflags &= ~TileFlags_1000;
+    // Do damage
+    HandleExplosionCrate(crate, NULL, gSideId);
+    return;
+  }
+}
+
+void HandleExplosionCrate(CrateStruct *crate, Unit *unit, unsigned char side_id)
+{
+  // Extension data: DAWWWWWW
+  // D = Can be destroyed when shot? (1 = yes, 0 = no)
+  // A = Area of effect (0 = center of tile, 1 = edge of tile nearest to the unit picking up the crate)
+  // W = Weapon type (0-63)
+
+  int xpos = crate->__x;
+  int ypos = crate->__y;
+  
+  int weapon_id = _templates_GroupIDs.CRATE;
+  int explosion_id = _templates_GroupIDs.EX_WHITEN1;
+  
+  // Extended behavior: custom weapon and use of hit explosion
+  if (crate->ext_data_field)
+  {
+    weapon_id = crate->ext_data_field & 0x3f;
+    if (_templates_bulletattribs[weapon_id].__HitExplosion != -1)
+    {
+      explosion_id = _templates_bulletattribs[weapon_id].__HitExplosion;
+    }
+  }
+  
+  int target_x = 32 * xpos + 16;
+  int target_y = 32 * ypos + 16;
+
+  // Extended behavior: make the damage closer to the unit picking up the crate 
+  if (crate->ext_data_field & 64 && unit)
+  {
+    if (unit->BlockFromX < xpos)
+      target_x -= 16;
+    else if (unit->BlockFromX > xpos)
+      target_x += 15;
+    if (unit->BlockFromY < ypos)
+      target_y -= 16;
+    else if (unit->BlockFromY > ypos)
+      target_y += 15;
+  }
+  
+  ModelAddExplosion(
+    side_id,
+    explosion_id,
+    target_x,
+    target_y,
+    0,
+    0,
+    0,
+    0,
+    0);
+  if ( side_id == gSideId )
+  {
+    PlaySoundAt(_templates_explosionattribs[explosion_id].__Sound, xpos, ypos);
+  }
+  if ( weapon_id != -1 )
+  {
+    DamageTiles(target_x, target_y, 0, weapon_id, side_id, 0xFFFF, 0);
+  }  
+}
+
+void HandleSpiceBloomCrate(CrateStruct *crate, Unit *unit, unsigned char side_id)
+{
+  // Extension data: -URRRRRR
+  // U = Always destroy unit which moved on spice bloom (1 = yes, 0 = no)
+  // R = Custom range (0-63)
+
+  int range = 0;
+  switch (crate->__type)
+  {
+    case CT_SPICE_BLOOM_SMALL:
+      range = 4;
+      break;
+    case CT_SPICE_BLOOM_MEDIUM:
+      range = 5;
+      break;
+    case CT_SPICE_BLOOM_LARGE:
+      range = 6;
+      break;
+  }
+  
+  // Extended behavior: custom range
+  if (crate->ext_data_field)
+  {
+    range = crate->ext_data_field & 0x3f;
+  }
+  // Extended behavior: destroy unit
+  if (crate->ext_data_field & 64 && unit)
+  {
+    DestroyUnit(side_id, unit->MyIndex);
+  }
+  
+  SpiceMound(crate->__x, crate->__y, range);
+}
+

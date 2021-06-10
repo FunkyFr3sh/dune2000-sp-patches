@@ -325,6 +325,7 @@ setcglob 0x0048DCC0, Data__GetTextString			; (int id, int unk)
 setcglob 0x0048DD90, Data__GetSoundTableID
 ; Other
 setcglob 0x0049CA10, DestroyBuilding
+setcglob 0x0049CDE0, DestroyUnit
 setcglob 0x0049D2E0, DamageTiles
 setcglob 0x0049F1B0, MakeUnitsStealthInRange
 setcglob 0x0049F4D0, side_mapvis_49F4D0

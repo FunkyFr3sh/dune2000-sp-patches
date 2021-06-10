@@ -58,3 +58,4 @@ cextern WriteSaveGame
 cextern GamePlayStart
 cextern fake_GetTickCount
 cextern HandleSpecialValue
+cextern HitCrate
