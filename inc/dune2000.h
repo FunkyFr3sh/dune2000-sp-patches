@@ -1397,6 +1397,7 @@ extern unsigned char MissionNumber;
 extern int                  GameState;
 
 extern short                DifficultyLevel;
+extern int                  gBitsPerPixel;
 extern int                  MousePositionX;
 extern int                  MousePositionY;
 extern int                  RandSeed;
@@ -1408,12 +1409,16 @@ extern char                 MissionsResourcePath[];
 extern char                 MapsResourcePath[];
 extern unsigned int         gGameTicks;
 extern char                 _cheatstates[8];
+extern char                 _radarcolor_byte_517780_spicecolor;
+extern short                _radarcolor_word_517898_spicecolor;
 
+extern short                _ScreenShakes;
 extern CrateStruct          gCrates[30];
 extern GameMapStruct        gGameMap;
 extern int                  gGameMapWidth;
 extern int                  gGameMapHeight;
 extern int                  _CellNumbersWidthSpan[128];
+extern char *               _ptr_circle_1x1grid;
 extern int                  _mapvisstate_548010;
 
 extern bool                 gUnitsExist[];
@@ -1483,6 +1488,7 @@ void            RevealCircle(int x, int y, int size);
 char            GetFreeCrateIndex();
 void            PlaceCrate(int x, int y, int timing, eCrateType type, eCrateImage image, int respawn_count);
 eCrateType      GetCrateFromMap(int x, int y);
+void            UpdateSpiceInRegion(RECT *a1);
 void            SpiceMound(unsigned __int8 xpos, unsigned __int8 ypos, int range);
 void            RecycleCrate(unsigned __int8 index);
 int             GetMapVisState();
@@ -1505,6 +1511,8 @@ void            Model__ExecuteGameEvent(GameEvent event);
 // Setup
 void            Setup__LoadUIBBFile();
 
+void            SetPixelOnRadar8(unsigned __int8 x, unsigned __int8 y, char color);
+void            SetPixelOnRadar16(unsigned __int8 x, unsigned __int8 y, __int16 color);
 
 // CSide
 void __thiscall CSide__update_list_of_available_buildings_and_units(CSide *side);

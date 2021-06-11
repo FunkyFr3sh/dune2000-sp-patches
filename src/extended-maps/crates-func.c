@@ -7,7 +7,7 @@
 #include "utils.h"
 
 void HandleExplosionCrate(CrateStruct *crate, Unit *unit, unsigned char side_id);
-void HandleSpiceBloomCrate(CrateStruct *crate, Unit *unit, unsigned char side_id);
+void HandleSpiceBloomCrate(CrateStruct *crate, int crate_type, Unit *unit, unsigned char side_id);
 
 // Fix disappearing crates when AI-controlled unit is nearby
 CLEAR(0x0044EA24, 0x90, 0x0044EA29); // Clear call to RecycleCrate in function GetCrateFromMap
@@ -263,7 +263,7 @@ LABEL_17:
     case CT_SPICE_BLOOM_SMALL:
     case CT_SPICE_BLOOM_MEDIUM:
     case CT_SPICE_BLOOM_LARGE:
-      HandleSpiceBloomCrate(crate, unit, side_id);
+      HandleSpiceBloomCrate(crate, crate_type, unit, side_id);
       return 0;
       break;
   }
@@ -273,11 +273,12 @@ LABEL_17:
 void HitCrate(int crate_index)
 {
   CrateStruct *crate = &gCrates[crate_index];
+  int crate_type = crate->__type;
   // Spice bloom
-  if (crate->__type >= CT_SPICE_BLOOM_SMALL && crate->__type <= CT_SPICE_BLOOM_LARGE)
+  if (crate_type >= CT_SPICE_BLOOM_SMALL && crate_type <= CT_SPICE_BLOOM_LARGE && !(crate->ext_data_field & 128))
   {
     RecycleCrate(crate_index);
-    HandleSpiceBloomCrate(crate, NULL, gSideId);
+    HandleSpiceBloomCrate(crate, crate_type, NULL, gSideId);
     return;
   }
   // Explosion crate
@@ -351,37 +352,157 @@ void HandleExplosionCrate(CrateStruct *crate, Unit *unit, unsigned char side_id)
   }  
 }
 
-void HandleSpiceBloomCrate(CrateStruct *crate, Unit *unit, unsigned char side_id)
+bool notspiceon(int x, int y)
 {
-  // Extension data: -URRRRRR
-  // U = Always destroy unit which moved on spice bloom (1 = yes, 0 = no)
-  // R = Custom range (0-63)
+  x = MAX(x, 0);
+  y = MAX(y, 0);
+  x = MIN(x, gGameMapWidth - 1);
+  y = MIN(y, gGameMapHeight - 1);
+  return (gGameMap.map[x + _CellNumbersWidthSpan[y]].__tile_bitflags & (TileFlags_100000_SPICE | TileFlags_200000_SPICE | TileFlags_400000_SPICE)) == 0;
+}
 
-  int range = 0;
-  switch (crate->__type)
-  {
-    case CT_SPICE_BLOOM_SMALL:
-      range = 4;
-      break;
-    case CT_SPICE_BLOOM_MEDIUM:
-      range = 5;
-      break;
-    case CT_SPICE_BLOOM_LARGE:
-      range = 6;
-      break;
-  }
+void HandleSpiceBloomCrate(CrateStruct *crate, int crate_type, Unit *unit, unsigned char side_id)
+{
+  // Extension data: DUMMRRRR
+  // D = Can NOT be destroyed when shot? (1 = yes, 0 = no)
+  // U = Always destroy unit which moved on spice bloom? (1 = yes, 0 = no)
+  // M = Spice bloom mode: 
+  //     0 = Classic spice bloom
+  //     1 = Instant spice bloom: square, do not create thick spice, no sound
+  //     2 = Instant spice bloom: circle, do not create thick spice, no sound
+  //     3 = Instant spice bloom (Dune 2 style): circle, create thick spice when overlap with existing spice, screen shakes, play sound
+  // R = Custom range 
+  //     For classic spice bloom it can be 0-15 (4 bits)
+  //     For instant spice bloom it can be 0-7  (3 bits)
+  //     For instant spice bloom the 4th bit functions as randomizer (spice will be randomly scattered rather than filling whole area)
+  //     If crate type is Medium spice bloom then range is increased by 1
+  //     If crate type is Large spice bloom then range is increased by 2
+  //     For instant circle spice blooms the maximum range is 7 (limitation of CIRCLES.BIN)
+  //     For classic spice bloom the maximum range that can be specified is 17 (15 + 2 if Large spice bloom)
+
   
+  // Extended behavior: spice bloom mode
+  int mode = (crate->ext_data_field >> 4) & 3;
+
+  // Default range for vanilla small spice bloom
+  int range = 4;
   // Extended behavior: custom range
   if (crate->ext_data_field)
-  {
-    range = crate->ext_data_field & 0x3f;
-  }
+    range = (mode == 0)?crate->ext_data_field & 15:crate->ext_data_field & 7;
+  // Range is bigger for medium and large blooms 
+  if (crate_type == CT_SPICE_BLOOM_MEDIUM)
+    range += 1;
+  if (crate_type == CT_SPICE_BLOOM_LARGE)
+    range += 2;
+  
   // Extended behavior: destroy unit
   if (crate->ext_data_field & 64 && unit)
   {
     DestroyUnit(side_id, unit->MyIndex);
   }
   
-  SpiceMound(crate->__x, crate->__y, range);
+  int xpos = crate->__x;
+  int ypos = crate->__y;
+  
+  // Extended behavior: instant spice blooms
+  if (mode != 0)
+  {
+    // Get the circle
+    char *circle = NULL;
+    if (mode == 2 || mode == 3)
+    {
+      range = MIN(range, 7);
+      char **circle_ptr = &_ptr_circle_1x1grid;
+      circle = circle_ptr[range];
+    }
+    
+    // Add spice on tiles
+    for (int y = 0; y <= range * 2; y++)
+    {
+      int yy = ypos + y - range;
+      if (yy < 0 || yy >= gGameMapHeight)
+        continue;
+      for (int x = 0; x <= range * 2; x++)
+      {
+        int xx = xpos + x - range;
+        if (xx < 0 || xx >= gGameMapWidth)
+          continue;
+        if (circle && circle[x + y * (range * 2 + 1)])
+          continue;
+        GameMapTileStruct *tile = &gGameMap.map[xx + _CellNumbersWidthSpan[yy]];
+        if (!(tile->__tile_bitflags & TileFlags_10000_SANDY))
+          continue;
+        // Use randomizer
+        if (crate->ext_data_field & 8 && !(xx == xpos && yy == ypos) && (rand() % 100) < 40)
+          continue;
+        // Update pixels on radar
+        if ( gBitsPerPixel == 16 )
+          SetPixelOnRadar16(xx, yy, _radarcolor_word_517898_spicecolor);
+        else
+          SetPixelOnRadar8(xx, yy, _radarcolor_byte_517780_spicecolor);
+        // Add two pieces of spice
+        int spice_amount = (tile->__tile_bitflags >> 20) & 7;
+        spice_amount = MIN(spice_amount + 2, (mode == 3)?4:2);
+        tile->__tile_bitflags &= ~(TileFlags_100000_SPICE | TileFlags_200000_SPICE | TileFlags_400000_SPICE);
+        tile->__tile_bitflags |= (spice_amount << 20);
+      }
+    }
+    // Dune 2 style spice bloom
+    if (mode == 3)
+    {
+      // Second pass: Correct tiles with more than two pieces of spice where not all surrounding tiles have spice
+      for (int y = 0; y <= range * 2; y++)
+      {
+        int yy = ypos + y - range;
+        if (yy < 0 || yy >= gGameMapHeight)
+          continue;
+        for (int x = 0; x <= range * 2; x++)
+        {
+          int xx = xpos + x - range;
+          if (xx < 0 || xx >= gGameMapWidth)
+            continue;
+          if (circle && circle[x + y * (range * 2 + 1)])
+            continue;
+          GameMapTileStruct *tile = &gGameMap.map[xx + _CellNumbersWidthSpan[yy]];
+          if (!(tile->__tile_bitflags & TileFlags_10000_SANDY))
+            continue;
+          // Check spice amount and surrounding tiles
+          int spice_amount = (tile->__tile_bitflags >> 20) & 7;
+          if (spice_amount > 2 &&
+            (  notspiceon(xx - 1, yy - 1)
+            || notspiceon(xx, yy - 1)
+            || notspiceon(xx + 1, yy - 1)
+            || notspiceon(xx - 1, yy)
+            || notspiceon(xx + 1, yy)
+            || notspiceon(xx - 1, yy + 1)
+            || notspiceon(xx, yy + 1)
+            || notspiceon(xx + 1, yy + 1)
+            ))
+          {
+            // Reset spice to 2 pieces
+            tile->__tile_bitflags &= ~(TileFlags_100000_SPICE | TileFlags_200000_SPICE | TileFlags_400000_SPICE);
+            tile->__tile_bitflags |= TileFlags_200000_SPICE;
+          }
+        }
+      }
+      // Shake screen
+      _ScreenShakes = 10;
+      // Play sound
+      int sample_id = Data__GetSoundTableID("S_SPICEMOUND");
+      PlaySoundAt(sample_id, xpos, ypos);
+    }
+    // Update spice visuals
+    RECT r;
+    r.left = MAX(xpos - range - 1, 0);
+    r.top = MAX(ypos - range - 1, 0);
+    r.right = MIN(xpos + range + 2, gGameMapWidth);
+    r.bottom = MIN(ypos + range + 2, gGameMapHeight);
+    UpdateSpiceInRegion(&r);
+  }
+  // Standard behavior: original spice bloom
+  else
+  {
+    SpiceMound(xpos, ypos, range);
+  }
 }
 

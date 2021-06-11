@@ -171,6 +171,7 @@ setcglob 0x004DEDBC, CreditsScreenBottom
 setcglob 0x004DFB08, GameState
 setcglob 0x004E3B14, MyCurrentFrameRate
 setcglob 0x004E8BF0, DifficultyLevel
+setcglob 0x004EB018, gBitsPerPixel
 setcglob 0x004EB048, MousePositionX
 setcglob 0x004EB04C, MousePositionY
 setcglob 0x004ED870, RandSeed
@@ -182,12 +183,16 @@ setcglob 0x00513650, MissionsResourcePath
 setcglob 0x005136E8, MapsResourcePath
 setcglob 0x005173F4, gGameTicks
 setcglob 0x00517500, _cheatstates
+setcglob 0x00517780, _radarcolor_byte_517780_spicecolor
+setcglob 0x00517898, _radarcolor_word_517898_spicecolor
 setcglob 0x005178B4, PointerToMainImage
+setcglob 0x005178D8, _ScreenShakes
 setcglob 0x00517B98, gCrates
 setcglob 0x00517DE8, gGameMap
 setcglob 0x00517DE8, gGameMapWidth
 setcglob 0x00517DEC, gGameMapHeight
 setcglob 0x00547DF0, _CellNumbersWidthSpan
+setcglob 0x00547FF0, _ptr_circle_1x1grid
 setcglob 0x00548010, _mapvisstate_548010
 setcglob 0x006B63C8, GameOver
 setcglob 0x006B8268, gUnitsExist
@@ -274,6 +279,7 @@ setcglob 0x0044E3B0, RevealCircle
 setcglob 0x0044E790, GetFreeCrateIndex
 setcglob 0x0044E8E0, PlaceCrate
 setcglob 0x0044E9D0, GetCrateFromMap
+setcglob 0x0044EC50, UpdateSpiceInRegion
 setcglob 0x0044EF10, SpiceMound
 setcglob 0x0044F110, RecycleCrate
 setcglob 0x0044F440, GetMapVisState
@@ -296,6 +302,8 @@ setcglob 0x0045BF00, Model__ExecuteGameEvent
 ; Setup
 setcglob 0x00460C80, Setup__LoadUIBBFile
 setcglob 0x00460EC0, Setup__LoadUI_LanguageFile
+setcglob 0x00462010, SetPixelOnRadar8
+setcglob 0x004620B0, SetPixelOnRadar16
 setcglob 0x00466140, Setup__LoadGraphicsFile
 ; CSide
 setcglob 0x0046BE50, CSide__update_list_of_available_buildings_and_units

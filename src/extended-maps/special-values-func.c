@@ -8,11 +8,24 @@ void PlaceStaticCrateExt(uint8_t x, uint8_t y, eCrateType type, eCrateImage imag
     gCrates[index].__is_active = 1;
     gCrates[index].__x = x;
     gCrates[index].__y = y;
-    gCrates[index].__timing = INT32_MAX;
     gCrates[index].__type = type;
     gCrates[index].__image = image;
+    gCrates[index].__timing = INT32_MAX;
     gCrates[index].__times_to_respawn = 0;
     gCrates[index].ext_data_field = ext_data_field;
+    if (type == CT_SPICE_BLOOM_SPAWNER)
+    {
+      gCrates[index].__image = 4;
+      gCrates[index].__timing = rand() % 1000 + 2000;
+      if (image & 1)
+        gCrates[index].__times_to_respawn = 255;
+      if ((image & 6) == 2)
+        gGameMap.map[x + _CellNumbersWidthSpan[y]].__tile_bitflags |= TileFlags_200000_SPICE;
+      else if ((image & 6) == 4)
+        gGameMap.map[x + _CellNumbersWidthSpan[y]].__tile_bitflags |= TileFlags_400000_SPICE;
+      else if ((image & 6) == 6)
+        gCrates[index].__timing = 1;
+    }
     gGameMap.map[x + _CellNumbersWidthSpan[y]].__tile_bitflags |= TileFlags_1000;
   }
 }
