@@ -1,5 +1,6 @@
-#define MIN(a,b) (((a)<(b))?(a):(b))
-#define MAX(a,b) (((a)>(b))?(a):(b))
+#define HLIMIT(a,b) (((a)<(b))?(a):(b))
+#define LLIMIT(a,b) (((a)>(b))?(a):(b))
+#define LIMIT(a,b,c) LLIMIT(HLIMIT(a,c),b)
 
 bool DirectoryExists(const char *path);
 

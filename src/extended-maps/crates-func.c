@@ -19,12 +19,6 @@ CALL(0x00494480, _Mod__PickupCrate);
 
 bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
 {
-  int v8; // edi
-  int v9; // edx
-  int *v10; // esi
-  int v11; // ecx
-  char *v12; // eax
-
   int xpos = unit->BlockToX;
   int ypos = unit->BlockToY;
   // Sandworm cannot pickup crates
@@ -60,7 +54,8 @@ bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
     return 0;
   }
   // Remove crate from map
-  if ( crate_type != CT_SPICE_BLOOM_SPAWNER )
+  // Spice bloom spawner and stealth crate removal is handled elsewhere
+  if ( crate_type != CT_SPICE_BLOOM_SPAWNER && crate_type != CT_STEALTH )
   {
     if (crate_type > CT_SPICE_BLOOM_SPAWNER && crate_type <= CT_SPICE_BLOOM_LARGE )
     {
@@ -81,14 +76,13 @@ bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
       // Extended behavior: amount of cash = ext_data_field * 100;
       int crate_cash = crate->ext_data_field ? crate->ext_data_field * 100 : _gVariables.CrateCash;
       CSide_add_cash_drip(side, crate_cash);
-      if ( _templates_GroupIDs.EX_CASH == -1 )
+      if ( _templates_GroupIDs.EX_CASH != -1 )
       {
-        return 0;
-      }
-      ModelAddExplosion(side_id, _templates_GroupIDs.EX_CASH, 32 * unit->BlockToX + 16, 32 * unit->BlockToY + 16, 0, 0, 0, 0, 0);
-      if ( side_id == gSideId )
-      {
-        PlaySoundAt(_templates_explosionattribs[(int)_templates_GroupIDs.EX_CASH].__Sound, unit->BlockToX, unit->BlockToY);
+        ModelAddExplosion(side_id, _templates_GroupIDs.EX_CASH, 32 * unit->BlockToX + 16, 32 * unit->BlockToY + 16, 0, 0, 0, 0, 0);
+        if ( side_id == gSideId )
+        {
+          PlaySoundAt(_templates_explosionattribs[(int)_templates_GroupIDs.EX_CASH].__Sound, unit->BlockToX, unit->BlockToY);
+        }
       }
       return 0;
     }
@@ -98,97 +92,86 @@ bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
       return 0;
     }
     case CT_REVEAL:
-      if ( _templates_GroupIDs.EX_CrateReveal == -1 )
+    {
+      // Extension data: XXXYYYRR
+      // X = Relative X-offset (3-bit value, possible offsets: 0, 4, 8, 12, -16, -12, -8, -4)
+      // Y = Relative Y-offset (3-bit value, possible offsets: 0, 4, 8, 12, -16, -12, -8, -4)
+      // R = Range (2-bit value, possible ranges: 4, 5, 6, 7)
+      // Reveal all map (default behavior) if extension data is zero
+      
+      // Extended behavior
+      if (crate->ext_data_field)
       {
-        goto LABEL_12;
-      }
-      ModelAddExplosion(
-        side_id,
-        _templates_GroupIDs.EX_CrateReveal,
-        32 * unit->BlockToX + 16,
-        32 * unit->BlockToY + 16,
-        0,
-        0,
-        0,
-        0,
-        0);
-      if ( side_id != gSideId )
-      {
-        return 0;
-      }
-      PlaySoundAt(_templates_explosionattribs[(int)_templates_GroupIDs.EX_CrateReveal].__Sound, unit->BlockToX, unit->BlockToY);
-LABEL_12:
-      if ( side_id != gSideId )
-      {
-        return 0;
-      }
-      RevealMap();
-      BlitClipTImage1(_RadarMap1, 0, 0, _RadarMap2, 0, 0, 0);
-      return 0;
-    case CT_NOMAP:
-      if ( _templates_GroupIDs.EX_CrateNoMap == -1 )
-      {
-        goto LABEL_17;
-      }
-      ModelAddExplosion(
-        side_id,
-        _templates_GroupIDs.EX_CrateNoMap,
-        32 * unit->BlockToX + 16,
-        32 * unit->BlockToY + 16,
-        0,
-        0,
-        0,
-        0,
-        0);
-      if ( side_id != gSideId )
-      {
-        return 0;
-      }
-      PlaySoundAt(_templates_explosionattribs[(int)_templates_GroupIDs.EX_CrateNoMap].__Sound, unit->BlockToX, unit->BlockToY);
-LABEL_17:
-      if ( side_id != gSideId )
-      {
-        return 0;
-      }
-      ClearTImage(_RadarMap1, 0, 0);
-      if ( GetMapVisState() != _mapvisstate_548010 )
-      {
-        _cheatstates[gSideId] |= 1u;
-      }
-      v8 = 0;
-      if ( gGameMap.height > 0 )
-      {
-        v9 = gGameMap.width;
-        v10 = _CellNumbersWidthSpan;
-        do
+        if ( side_id != gSideId )
         {
-          v11 = 0;
-          if ( v9 > 0 )
-          {
-            v12 = &gGameMap.map[*v10].__shroud_flags;
-            do
-            {
-              *v12 = 1;
-              v9 = gGameMap.width;
-              ++v11;
-              v12 += 12;
-            }
-            while ( v11 < gGameMap.width );
-          }
-          ++v8;
-          ++v10;
+          return 0;
         }
-        while ( v8 < gGameMap.height );
+        int xx = (crate->ext_data_field >> 5) & 7;
+        if (xx & 4)
+          xx |= 0xfffffffc;
+        xx = LIMIT(xpos + (xx * 4), 0, gGameMapWidth - 1);
+        int yy = (crate->ext_data_field >> 2) & 7;
+        if (yy & 4)
+          yy |= 0xfffffffc;
+        yy = LIMIT(ypos + (yy * 4), 0, gGameMapHeight - 1);
+        int range = (crate->ext_data_field & 3) + 4;
+        RevealCircle(xx, yy, range);
       }
-      _mapvisstate_548010 = GetMapVisState();
-      side_mapvis_49F4D0(side_id);
+      // Default behavior
+      else
+      {
+        if ( _templates_GroupIDs.EX_CrateReveal != -1 )
+        {
+          ModelAddExplosion(side_id, _templates_GroupIDs.EX_CrateReveal, 32 * unit->BlockToX + 16, 32 * unit->BlockToY + 16, 0, 0, 0, 0, 0);
+          if (side_id == gSideId)
+          {
+            PlaySoundAt(_templates_explosionattribs[(int)_templates_GroupIDs.EX_CrateReveal].__Sound, xpos, ypos);
+          }
+        }
+        if ( side_id == gSideId )
+        {
+          RevealMap();
+          BlitClipTImage1(_RadarMap1, 0, 0, _RadarMap2, 0, 0, 0);
+        }
+      }
       return 0;
+    }
+    case CT_NOMAP:
+    {
+      if ( _templates_GroupIDs.EX_CrateNoMap != -1 )
+      {
+        ModelAddExplosion(side_id, _templates_GroupIDs.EX_CrateNoMap, 32 * unit->BlockToX + 16, 32 * unit->BlockToY + 16, 0, 0, 0, 0, 0);
+        if ( side_id == gSideId )
+        {
+          PlaySoundAt(_templates_explosionattribs[(int)_templates_GroupIDs.EX_CrateNoMap].__Sound, unit->BlockToX, unit->BlockToY);
+        }
+      }
+      if ( side_id == gSideId )
+      {
+        ClearTImage(_RadarMap1, 0, 0);
+        if ( GetMapVisState() != _mapvisstate_548010 )
+        {
+          _cheatstates[gSideId] |= 1u;
+        }
+        for (int y = 0; y < gGameMap.height; y++)
+        {
+          for (int x = 0; x < gGameMap.width; x++)
+          {
+            gGameMap.map[x + _CellNumbersWidthSpan[y]].__shroud_flags = 1;
+          }
+        }
+        _mapvisstate_548010 = GetMapVisState();
+        RevealTilesSeenByBuildingsAndUnits(side_id);
+      }
+      return 0;
+    }
     case CT_UNIT:
     {
       // Extension data: VIUUUUUU
       // V = Call MyVersionOfUnit? (1 = yes, 0 = no)
       // I = Infantry amount (0 = one infantry, 1 = five infantry)
       // U = Unit type (0-59)
+      // Give random unit (default behavior) if extension data is zero
       
       // Specific unit = extended behavior
       if (crate->ext_data_field)
@@ -235,26 +218,116 @@ LABEL_17:
       return 1;
     }
     case CT_STEALTH:
-      MakeUnitsStealthInRange(unit->BlockToX, unit->BlockToY, side_id);
-      if ( _templates_GroupIDs.EX_CrateStealth == -1 )
+    {
+      // Extension data: SP-MMMEE
+      // S = Play pickup animation and sound? (1 = yes, 0 = no)
+      // P = Always pickup? (0 = Pickup the crate only if it has any actual effect, 1 = Pick up crate always)
+      // - = Unused (reserved)
+      // M = Crate mode:
+      //     0 = Make unit stealth
+      //     1 = Restore full health
+      //     2 = Restore 50% health
+      //     3 = Restore 25% health
+      //     4 = Change unit type: 
+      //         The target type for specific unit type is specified in unit definition in templates.bin:
+      //         byte 0xAB: UnitUpgradeAllowed (1 = yes, 0 = no)
+      //         byte 0xAC: UnitUpgradeTargetType
+      //     5, 6, 7 = Unused (reserved)      
+      // E = Range of effect (0 = only the unit picking up crate, 1/2/3 = units max. 1/2/3 tiles far from the crate)
+      // Make units stealth in range of 2, always pickup (default behavior) if extension data is zero
+      
+      // Values for the default behavior
+      bool play_animation = true;
+      bool always_pickup = true;
+      int mode = 0;
+      int range = 2;
+      
+      // Extened behavior
+      if (crate->ext_data_field)
       {
-        return 0;
+        play_animation = (crate->ext_data_field & 128) != 0;
+        always_pickup = (crate->ext_data_field & 64) != 0;
+        mode = (crate->ext_data_field >> 2) & 7;
+        range = crate->ext_data_field & 3;
       }
-      ModelAddExplosion(
-        side_id,
-        _templates_GroupIDs.EX_CrateStealth,
-        32 * unit->BlockToX + 16,
-        32 * unit->BlockToY + 16,
-        0,
-        0,
-        0,
-        0,
-        0);
-      if ( side_id == gSideId )
+      
+      bool crate_used = always_pickup;
+      
+      // Do the action
+      for (Unit *u = GetSide(side_id)->_Units_8; u; u = u->Next)
       {
-        PlaySoundAt(_templates_explosionattribs[(int)_templates_GroupIDs.EX_CrateStealth].__Sound, unit->BlockToX, unit->BlockToY);
+        if ((range == 0 && u == unit) || ((range > 0) && (abs(u->BlockFromX - xpos) <= range) && (abs(u->BlockFromY - ypos) <= range)))
+        {
+          switch (mode)
+          {
+            case 0:
+              // Make unit stealth
+              if ( _templates_unitattribs[u->Type].__Behavior == UnitBehavior_SABOTEUR )
+              {
+                u->__SpecialVal_S = -96;
+                crate_used = true;
+              }
+              else if ( !Unit_49F5F0(u) )
+              {
+                u->Flags |= UFLAGS_10_STEALTH;
+                u->S_c_field_31 = 0;
+                crate_used = true;
+              }
+              break;
+            case 1:
+              if (u->Health == _templates_unitattribs[u->Type].__Strength)
+                continue;
+              u->Health = _templates_unitattribs[u->Type].__Strength;
+              crate_used = true;
+              break;
+            case 2:
+              if (u->Health == _templates_unitattribs[u->Type].__Strength)
+                continue;
+              u->Health = HLIMIT(u->Health + _templates_unitattribs[u->Type].__Strength / 2, _templates_unitattribs[u->Type].__Strength);
+              crate_used = true;
+              break;
+            case 3:
+              if (u->Health == _templates_unitattribs[u->Type].__Strength)
+                continue;
+              u->Health = HLIMIT(u->Health + _templates_unitattribs[u->Type].__Strength / 4, _templates_unitattribs[u->Type].__Strength);
+              crate_used = true;
+              break;
+            case 4:
+              // Change unit type
+              if (!_templates_unitattribs[u->Type].UnitUpgradeAllowed)
+                continue;
+              int target_type = _templates_unitattribs[u->Type].UnitUpgradeTargetType;
+              u->Health = LLIMIT(u->Health + _templates_unitattribs[target_type].__Strength - _templates_unitattribs[u->Type].__Strength, 1);
+              u->Flags = (u->Flags & (~_templates_unitattribs[u->Type].Flags)) | _templates_unitattribs[target_type].Flags;
+              u->Speed = _templates_unitattribs[target_type].__Speed;
+              u->Type = target_type;
+              crate_used = true;
+              break;
+            default:
+              DebugFatal("crates-func.c", "Unit powerup crate mode %d not implemented", mode);
+          }
+        }
       }
+      
+      // Play pickup animation and sound
+      if (play_animation && crate_used && _templates_GroupIDs.EX_CrateStealth != -1)
+      {
+        ModelAddExplosion(side_id, _templates_GroupIDs.EX_CrateStealth, 32 * unit->BlockToX + 16, 32 * unit->BlockToY + 16, 0, 0, 0, 0, 0);
+        if ( side_id == gSideId )
+        {
+          PlaySoundAt(_templates_explosionattribs[(int)_templates_GroupIDs.EX_CrateStealth].__Sound, unit->BlockToX, unit->BlockToY);
+        }
+      }
+      
+      // Remove the crate here
+      if (crate_used)
+      {
+        crate->__is_active = 0;
+        gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]].__tile_bitflags &= ~TileFlags_1000;        
+      }
+      
       return 0;
+    }
     case CT_UNSUPPORTED6:
       DebugFatal("UNIT.CPP", "Someone picked up an unsupported crate type (%d)", crate_type);
       return 0;
@@ -299,6 +372,7 @@ void HandleExplosionCrate(CrateStruct *crate, Unit *unit, unsigned char side_id)
   // D = Can be destroyed when shot? (1 = yes, 0 = no)
   // A = Area of effect (0 = center of tile, 1 = edge of tile nearest to the unit picking up the crate)
   // W = Weapon type (0-63)
+  // Use default crate weapon (default behavior) if extension data is zero
 
   int xpos = crate->__x;
   int ypos = crate->__y;
@@ -332,16 +406,7 @@ void HandleExplosionCrate(CrateStruct *crate, Unit *unit, unsigned char side_id)
       target_y += 15;
   }
   
-  ModelAddExplosion(
-    side_id,
-    explosion_id,
-    target_x,
-    target_y,
-    0,
-    0,
-    0,
-    0,
-    0);
+  ModelAddExplosion(side_id, explosion_id, target_x, target_y, 0, 0, 0, 0, 0);
   if ( side_id == gSideId )
   {
     PlaySoundAt(_templates_explosionattribs[explosion_id].__Sound, xpos, ypos);
@@ -354,10 +419,8 @@ void HandleExplosionCrate(CrateStruct *crate, Unit *unit, unsigned char side_id)
 
 bool notspiceon(int x, int y)
 {
-  x = MAX(x, 0);
-  y = MAX(y, 0);
-  x = MIN(x, gGameMapWidth - 1);
-  y = MIN(y, gGameMapHeight - 1);
+  x = LIMIT(x, 0, gGameMapWidth - 1);
+  y = LIMIT(y, 0, gGameMapHeight - 1);
   return (gGameMap.map[x + _CellNumbersWidthSpan[y]].__tile_bitflags & (TileFlags_100000_SPICE | TileFlags_200000_SPICE | TileFlags_400000_SPICE)) == 0;
 }
 
@@ -379,6 +442,7 @@ void HandleSpiceBloomCrate(CrateStruct *crate, int crate_type, Unit *unit, unsig
   //     If crate type is Large spice bloom then range is increased by 2
   //     For instant circle spice blooms the maximum range is 7 (limitation of CIRCLES.BIN)
   //     For classic spice bloom the maximum range that can be specified is 17 (15 + 2 if Large spice bloom)
+  // Classic spice bloom (default behavior) if extension data is zero
 
   
   // Extended behavior: spice bloom mode
@@ -411,7 +475,7 @@ void HandleSpiceBloomCrate(CrateStruct *crate, int crate_type, Unit *unit, unsig
     char *circle = NULL;
     if (mode == 2 || mode == 3)
     {
-      range = MIN(range, 7);
+      range = HLIMIT(range, 7);
       char **circle_ptr = &_ptr_circle_1x1grid;
       circle = circle_ptr[range];
     }
@@ -442,7 +506,7 @@ void HandleSpiceBloomCrate(CrateStruct *crate, int crate_type, Unit *unit, unsig
           SetPixelOnRadar8(xx, yy, _radarcolor_byte_517780_spicecolor);
         // Add two pieces of spice
         int spice_amount = (tile->__tile_bitflags >> 20) & 7;
-        spice_amount = MIN(spice_amount + 2, (mode == 3)?4:2);
+        spice_amount = HLIMIT(spice_amount + 2, (mode == 3)?4:2);
         tile->__tile_bitflags &= ~(TileFlags_100000_SPICE | TileFlags_200000_SPICE | TileFlags_400000_SPICE);
         tile->__tile_bitflags |= (spice_amount << 20);
       }
@@ -493,10 +557,10 @@ void HandleSpiceBloomCrate(CrateStruct *crate, int crate_type, Unit *unit, unsig
     }
     // Update spice visuals
     RECT r;
-    r.left = MAX(xpos - range - 1, 0);
-    r.top = MAX(ypos - range - 1, 0);
-    r.right = MIN(xpos + range + 2, gGameMapWidth);
-    r.bottom = MIN(ypos + range + 2, gGameMapHeight);
+    r.left = LLIMIT(xpos - range - 1, 0);
+    r.top = LLIMIT(ypos - range - 1, 0);
+    r.right = HLIMIT(xpos + range + 2, gGameMapWidth);
+    r.bottom = HLIMIT(ypos + range + 2, gGameMapHeight);
     UpdateSpiceInRegion(&r);
   }
   // Standard behavior: original spice bloom

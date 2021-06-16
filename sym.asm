@@ -336,7 +336,8 @@ setcglob 0x0049CA10, DestroyBuilding
 setcglob 0x0049CDE0, DestroyUnit
 setcglob 0x0049D2E0, DamageTiles
 setcglob 0x0049F1B0, MakeUnitsStealthInRange
-setcglob 0x0049F4D0, side_mapvis_49F4D0
+setcglob 0x0049F4D0, RevealTilesSeenByBuildingsAndUnits
+setcglob 0x0049F5F0, Unit_49F5F0
 setcglob 0x004A31D0, GameWindowProcedure
 setcglob 0x004A39E0, Parse_Command_Line
 setcglob 0x004A4660, GetSide ; (int house)

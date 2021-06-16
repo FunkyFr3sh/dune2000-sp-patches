@@ -857,7 +857,10 @@ typedef struct UnitAtribStruct
   char __FireFlashAnim;
   char __VehicleType;
   char __MPOnly;
-  char field_AB[85];
+  // Additional fields for extended functionality (mod)
+  char UnitUpgradeAllowed;
+  unsigned char UnitUpgradeTargetType;
+  char field_AD[83];
 }UnitAtribStruct;
 
 typedef struct BuildingAtrbStruct
@@ -1545,7 +1548,8 @@ void            DestroyBuilding(int side, int objIndex, char a3);
 void            DestroyUnit(eSideType side, __int16 index);
 char            DamageTiles(unsigned int xpos, unsigned int ypos, unsigned int a3, unsigned __int8 bulletType, int ai_side, __int16 ai_index, char a7);
 void            MakeUnitsStealthInRange(unsigned __int8 x, unsigned __int8 y, eSideType side);
-int             side_mapvis_49F4D0(eSideType side);
+int             RevealTilesSeenByBuildingsAndUnits(eSideType side);
+bool            Unit_49F5F0(Unit *unit);
 
 
 CSide *         GetSide(int sideId);
