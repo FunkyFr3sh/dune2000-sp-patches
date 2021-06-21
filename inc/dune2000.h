@@ -975,7 +975,8 @@ typedef struct GroupIDsStruct
   char BARREL;
   char CRATE;
   char SARDDEATH;
-  char Debris[24];
+  char Debris[8]; // Array stripped from 24 to 8 members (mod)
+  char CrateAnimations[16]; // Free bytes reused for more customized crate pick-up animations (mod)
   char DebrisCount;
   char SpiceExpl;
   char Devastator;
@@ -1276,8 +1277,8 @@ typedef enum eCrateType
     CT_REVEAL,
     CT_NOMAP,
     CT_UNIT,
-    CT_STEALTH,
-    CT_UNSUPPORTED6,
+    CT_POWERUP, // Extended crate type, originally STEALTH type
+    CT_EXECUTE_EVENT, // New crate type (mod), originally UNSUPPORTED6 type
     CT_SPICE_BLOOM_SPAWNER,
     CT_SPICE_BLOOM_SMALL,
     CT_SPICE_BLOOM_MEDIUM,
@@ -1424,6 +1425,7 @@ extern int                  _CellNumbersWidthSpan[128];
 extern char *               _ptr_circle_1x1grid;
 extern int                  _mapvisstate_548010;
 
+extern EventData            _gEventArray[64];
 extern bool                 gUnitsExist[];
 extern int                  gTimerValue;
 extern bool                 gWin;

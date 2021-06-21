@@ -5,6 +5,7 @@
 #include "patch.h"
 #include "ini.h"
 #include "utils.h"
+#include "event-func.h"
 
 void HandleExplosionCrate(CrateStruct *crate, Unit *unit, unsigned char side_id);
 void HandleSpiceBloomCrate(CrateStruct *crate, int crate_type, Unit *unit, unsigned char side_id);
@@ -55,7 +56,7 @@ bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
   }
   // Remove crate from map
   // Spice bloom spawner and stealth crate removal is handled elsewhere
-  if ( crate_type != CT_SPICE_BLOOM_SPAWNER && crate_type != CT_STEALTH )
+  if ( crate_type != CT_SPICE_BLOOM_SPAWNER && crate_type != CT_POWERUP )
   {
     if (crate_type > CT_SPICE_BLOOM_SPAWNER && crate_type <= CT_SPICE_BLOOM_LARGE )
     {
@@ -217,8 +218,9 @@ bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
       }
       return 1;
     }
-    case CT_STEALTH:
+    case CT_POWERUP:
     {
+      // Originally stealth-type crate
       // Extension data: SP-MMMEE
       // S = Play pickup animation and sound? (1 = yes, 0 = no)
       // P = Always pickup? (0 = Pickup the crate only if it has any actual effect, 1 = Pick up crate always)
@@ -241,6 +243,7 @@ bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
       bool always_pickup = true;
       int mode = 0;
       int range = 2;
+      int explosion_id = _templates_GroupIDs.EX_CrateStealth;
       
       // Extened behavior
       if (crate->ext_data_field)
@@ -249,6 +252,9 @@ bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
         always_pickup = (crate->ext_data_field & 64) != 0;
         mode = (crate->ext_data_field >> 2) & 7;
         range = crate->ext_data_field & 3;
+        explosion_id = _templates_GroupIDs.CrateAnimations[mode];
+        if (crate->ext_data_field & 32)
+          DebugFatal("crates-func.c", "Unused bit in ext_data_field is set to 1", mode);
       }
       
       bool crate_used = always_pickup;
@@ -310,12 +316,12 @@ bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
       }
       
       // Play pickup animation and sound
-      if (play_animation && crate_used && _templates_GroupIDs.EX_CrateStealth != -1)
+      if (play_animation && crate_used && explosion_id != -1)
       {
-        ModelAddExplosion(side_id, _templates_GroupIDs.EX_CrateStealth, 32 * unit->BlockToX + 16, 32 * unit->BlockToY + 16, 0, 0, 0, 0, 0);
+        ModelAddExplosion(side_id, explosion_id, 32 * unit->BlockToX + 16, 32 * unit->BlockToY + 16, 0, 0, 0, 0, 0);
         if ( side_id == gSideId )
         {
-          PlaySoundAt(_templates_explosionattribs[(int)_templates_GroupIDs.EX_CrateStealth].__Sound, unit->BlockToX, unit->BlockToY);
+          PlaySoundAt(_templates_explosionattribs[explosion_id].__Sound, unit->BlockToX, unit->BlockToY);
         }
       }
       
@@ -328,9 +334,12 @@ bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
       
       return 0;
     }
-    case CT_UNSUPPORTED6:
-      DebugFatal("UNIT.CPP", "Someone picked up an unsupported crate type (%d)", crate_type);
+    case CT_EXECUTE_EVENT:
+    {
+      // New crate type: execute event
+      ExecuteEvent(crate->ext_data_field);  
       return 0;
+    }
     case CT_SPICE_BLOOM_SPAWNER:
       return 0;
     case CT_SPICE_BLOOM_SMALL:
@@ -339,6 +348,8 @@ bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
       HandleSpiceBloomCrate(crate, crate_type, unit, side_id);
       return 0;
       break;
+    default:
+      DebugFatal("UNIT.CPP", "Someone picked up an unsupported crate type (%d)", crate_type);
   }
   return 0;
 }

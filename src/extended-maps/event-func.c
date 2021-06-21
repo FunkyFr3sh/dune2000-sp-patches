@@ -96,7 +96,8 @@ void Mod__HandleEvent(EventData *event)
     case ET_SETTECH:
     {
       gMiscData.Tech[event->side_id] = event->value;
-      CSide__update_list_of_available_buildings_and_units(GetSide(event->side_id));
+      // For future - make this optional - this event will immediately update available buildings and units
+      //CSide__update_list_of_available_buildings_and_units(GetSide(event->side_id));
       break;
     }
     case ET_WIN:
@@ -173,4 +174,9 @@ void Mod__HandleEvent(EventData *event)
     default:
       DebugFatal("Mission.cpp", "Unknown event type %d", event->event_type);
   }
+}
+
+void ExecuteEvent(int event_index)
+{
+  Mod__HandleEvent(&_gEventArray[event_index]);
 }

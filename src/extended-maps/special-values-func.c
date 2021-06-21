@@ -87,12 +87,7 @@ bool HandleSpecialValue(int special_value, int x, int y)
         }
         case 13:
         {
-            PlaceStaticCrateExt(x, y, CT_STEALTH, CI_PURPLE_CRATE, 0);
-            break;
-        }
-        case 15:
-        {
-            PlaceStaticCrateExt(x, y, CT_UNSUPPORTED6, CI_PURPLE_CRATE, 0);
+            PlaceStaticCrateExt(x, y, CT_POWERUP, CI_PURPLE_CRATE, 0);
             break;
         }
         case 16:

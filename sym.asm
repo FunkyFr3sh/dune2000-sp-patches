@@ -195,6 +195,7 @@ setcglob 0x00547DF0, _CellNumbersWidthSpan
 setcglob 0x00547FF0, _ptr_circle_1x1grid
 setcglob 0x00548010, _mapvisstate_548010
 setcglob 0x006B63C8, GameOver
+setcglob 0x006B7058, _gEventArray
 setcglob 0x006B8268, gUnitsExist
 setcglob 0x006B8270, gTimerValue
 setcglob 0x006B8274, gWin
