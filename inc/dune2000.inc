@@ -145,6 +145,7 @@ cextern BattleFieldPosY
 cextern MousePositionX
 cextern MousePositionY
 cextern MySideID
+cextern gSideId
 cextern gWin
 cextern gLose
 cextern DifficultyLevel
@@ -198,6 +199,7 @@ cextern Data__GetTextId
 cextern GetSide
 cextern Sound__PlayMusic
 cextern Sound__SetMusicVolume
+cextern GetBuildingCost
 
 ;imports
 cextern _imp__GetTickCount

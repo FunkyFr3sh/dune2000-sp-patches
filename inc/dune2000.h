@@ -1484,6 +1484,7 @@ void            Graphlib__LoadFontFile();
 void            BlitClipTImage1(TImage *lpTITo, int toX, int toY, TImage *lpTIFrom, RECT *rect, bool trans, int a7);
 void            ClearTImage(TImage *a1, int color, int unusable);
 // Other
+
 int             GetRandomValue(char *, int);
 // Map
 int             RevealMap();

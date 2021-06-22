@@ -271,6 +271,7 @@ setcglob 0x0042E450, Graphlib__LoadFontFile
 setcglob 0x004305F0, BlitClipTImage1
 setcglob 0x00430860, ClearTImage
 ; Other
+setcglob 0x00442BE0, GetBuildingCost
 setcglob 0x00448460, GetRandomValue
 ; Map
 setcglob 0x0044C480, RevealMap
