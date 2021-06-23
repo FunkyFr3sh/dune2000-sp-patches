@@ -55,6 +55,7 @@ OBJS            ?= callsites.o \
 	src/fixes/resolution-fix.o \
 	src/fixes/upgrade-cost-fix.o \
 	src/fixes/damage-position-fix.o \
+	src/fixes/selfdestruct-sound-fix.o \
 	\
 	src/hotkeys/hotkeys.o \
 	src/hotkeys/hotkeys-func.o \

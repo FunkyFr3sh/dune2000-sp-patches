@@ -200,6 +200,8 @@ cextern GetSide
 cextern Sound__PlayMusic
 cextern Sound__SetMusicVolume
 cextern GetBuildingCost
+cextern ModelAddExplosion
+cextern PlaySoundAt
 
 ;imports
 cextern _imp__GetTickCount
