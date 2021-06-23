@@ -54,6 +54,7 @@ OBJS            ?= callsites.o \
 	src/fixes/gettickcount-fix.o \
 	src/fixes/resolution-fix.o \
 	src/fixes/upgrade-cost-fix.o \
+	src/fixes/damage-position-fix.o \
 	\
 	src/hotkeys/hotkeys.o \
 	src/hotkeys/hotkeys-func.o \
