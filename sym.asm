@@ -176,6 +176,7 @@ setcglob 0x004EB048, MousePositionX
 setcglob 0x004EB04C, MousePositionY
 setcglob 0x004ED870, RandSeed
 setcglob 0x004F4118, gAIArray
+setcglob 0x00504030, _gMessageData
 setcglob 0x00513488, ResourcePath
 setcglob 0x00513520, MoviesResourcePath
 setcglob 0x005135B8, MusicResourcePath

@@ -1125,6 +1125,17 @@ typedef struct MiscData
   char Empty[40];
 }MiscData;
 
+typedef struct MessageData
+{
+  int __index;
+  int __slot;
+  int __slot2;
+  int __ticks[5];
+  int __type[4];
+  char field_30[4];
+  char __messages[5][128];
+}MessageData;
+
 typedef struct EventData
 {
     uint32_t xpos;
@@ -1406,6 +1417,7 @@ extern int                  MousePositionX;
 extern int                  MousePositionY;
 extern int                  RandSeed;
 extern CAI_                 gAIArray[];
+extern MessageData          _gMessageData;
 extern char                 ResourcePath[];
 extern char                 MoviesResourcePath[];
 extern char                 MusicResourcePath[];

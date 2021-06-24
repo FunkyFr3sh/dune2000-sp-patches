@@ -134,6 +134,8 @@ void Mod__HandleEvent(EventData *event)
       // Play message sound
       int sample_id = Data__GetSoundTableID("S_CHATMSG");
       Sound__PlaySample(sample_id, 0, 0, 0);
+      // Remember the current free message slot
+      int message_slot = _gMessageData.__slot;
       // Attempt to get custom text from mission ini file
       char mapIniPath[256];
       char id[12];
@@ -146,6 +148,8 @@ void Mod__HandleEvent(EventData *event)
       else 
       // Get text from string table
         QueueMessage(Data__GetTextString(event->message_index, 1), -1);
+      // Set customized message duration
+      _gMessageData.__ticks[message_slot] = gGameTicks + ((event->value)?event->value:400);
       break;
     }
     case ET_ADDUNITS:
