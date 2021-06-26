@@ -7,6 +7,20 @@ sstring EmptyString, ""
 ; On the score screen there's a check to see if you have a > 2 side, jump past it!
 @CLEAR 0x0043DA29, 0x90, 0x0043DA41 ; SubHousesScoreFix
 
+; Skip the error message "Unknown side %d for losing movie" when losing a mission playing as side > 2
+@CLEAR 0x0043C111, 0x90, 0x0043C124 ; LoadMovie
+
+; Fix the error "CreateGlobe()", "Do not recognise gSideId %d" - reset Side ID to 2 if it's higher than 2 before calling CreateGlobe
+hack 0x00436162, 0x00436167 ; CInterface::CInterface
+    xor eax, eax
+    mov al, [gSideId]
+    cmp eax, 2
+    jbe .Skip
+    mov byte [gSideId], 2
+.Skip:
+    call CreateGlobe
+    jmp hackend
+
 ; For playing a unit response, there's another check to see if your side is > 2, if so we should default it to 2 (Ordos)
 hack 0x0049F25C, 0x0049F26E ; SubHousesPlayUnitResponseFix
     mov ebx,0x00000002

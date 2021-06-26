@@ -1487,6 +1487,7 @@ void            WOL__StartHostINetGame();
 void            WOL__OpenWebsite(char *URL);
 void            QueueMessage(const char *message, int type);
 void            DebugFatal(char *caption, char *format, ...);
+
 // Graphlib
 void            Graphlib__TextOnScreen(int *image, char *text, int x, int y, bool bold_unk, int color_unk, int unk2);
 void            Graphlib__DrawRightAlignedText(int *image, char *text, int x, int y, bool bold_unk, int color_unk, int unk2);

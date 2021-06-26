@@ -202,6 +202,7 @@ cextern Sound__SetMusicVolume
 cextern GetBuildingCost
 cextern ModelAddExplosion
 cextern PlaySoundAt
+cextern CreateGlobe
 
 ;imports
 cextern _imp__GetTickCount

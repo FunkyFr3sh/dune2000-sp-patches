@@ -263,6 +263,7 @@ setcglob 0x00417E50, WOL__StartHostINetGame
 setcglob 0x004184A0, WOL__OpenWebsite				; (char *URL)
 setcglob 0x00425720, QueueMessage
 setcglob 0x0042B590, DebugFatal
+setcglob 0x0042BC60, CreateGlobe
 ; Graphlib
 setcglob 0x0042DC00, Graphlib__TextOnScreen
 setcglob 0x0042DD50, Graphlib__DrawRightAlignedText
