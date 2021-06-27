@@ -10,10 +10,28 @@
 void HandleExplosionCrate(CrateStruct *crate, Unit *unit, unsigned char side_id);
 void HandleSpiceBloomCrate(CrateStruct *crate, int crate_type, Unit *unit, unsigned char side_id);
 
-// Fix disappearing crates when AI-controlled unit is nearby
-CLEAR(0x0044EA24, 0x90, 0x0044EA29); // Clear call to RecycleCrate in function GetCrateFromMap
-CLEAR(0x0044EA42, 0x90, 0x0044EA49); // Clear deactivation of crate in function GetCrateFromMap 
-CLEAR(0x0044EA5F, 0x90, 0x0044EA66);
+// Custom implementation of function GetCrateFromMap
+// This fixes bug with disappearing crates when AI-controlled unit is nearby
+CALL(0x0041FB65, _Mod__GetCrateFromMap);
+
+unsigned char Mod__GetCrateFromMap(int xpos, int ypos)
+{
+  for (int i = 0; i < 30; i++)
+  {
+    if (gCrates[i].__x == xpos && gCrates[i].__y == ypos && gCrates[i].__is_active)
+    {
+      unsigned char crate_type = gCrates[i].__type;
+      // AI won't attempt to collect explosive crates with non zero extension data - these are considered as statically placed mines
+      if (crate_type == CT_EXPLODE && gCrates[i].ext_data_field)
+        return 11;
+      // AI won't attempt to collect crates with one-white-pixel sprite - these are considered as "invisible"
+      if (gCrates[i].__image == 4)
+        return 11;
+      return crate_type;
+    }
+  }
+  return 11;
+}
 
 // Custom implementation of function PickupCrate
 CALL(0x00494480, _Mod__PickupCrate);
