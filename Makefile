@@ -58,6 +58,7 @@ OBJS            ?= callsites.o \
 	src/fixes/selfdestruct-sound-fix.o \
 	src/fixes/damaged-unit-speed-fix.o \
 	src/fixes/deploy-mcv-on-crate-fix.o \
+	src/fixes/invulnerable-infantry-fix.o \
 	\
 	src/hotkeys/hotkeys.o \
 	src/hotkeys/hotkeys-func.o \

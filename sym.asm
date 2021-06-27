@@ -339,6 +339,7 @@ setcglob 0x0048DD90, Data__GetSoundTableID
 setcglob 0x0049CA10, DestroyBuilding
 setcglob 0x0049CDE0, DestroyUnit
 setcglob 0x0049D2E0, DamageTiles
+setcglob 0x0049D280, Unit_49D280_occupiedbybuilding
 setcglob 0x0049F1B0, MakeUnitsStealthInRange
 setcglob 0x0049F4D0, RevealTilesSeenByBuildingsAndUnits
 setcglob 0x0049F5F0, Unit_49F5F0

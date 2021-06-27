@@ -203,6 +203,7 @@ cextern GetBuildingCost
 cextern ModelAddExplosion
 cextern PlaySoundAt
 cextern CreateGlobe
+cextern Unit_49D280_occupiedbybuilding
 
 ;imports
 cextern _imp__GetTickCount
