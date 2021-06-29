@@ -81,6 +81,7 @@ OBJS            ?= callsites.o \
 	src/window-procedure.o \
 	src/no-cd.o \
 	src/version.o \
+	src/ai-debug.o \
 	\
 	utils/stdio.o \
 	utils/utils.o \
