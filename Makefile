@@ -60,6 +60,7 @@ OBJS            ?= callsites.o \
 	src/fixes/deploy-mcv-on-crate-fix.o \
 	src/fixes/invulnerable-infantry-fix.o \
 	src/fixes/ai-build-concrete-fix.o \
+	src/fixes/ai-upgrade-buildings-fix.o \
 	\
 	src/hotkeys/hotkeys.o \
 	src/hotkeys/hotkeys-func.o \
