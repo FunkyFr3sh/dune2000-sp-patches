@@ -144,12 +144,13 @@ void Mod__HandleEvent(EventData *event)
       sprintf(id, "%d", event->message_index);
       IniGetString("Text", id, "", custom_text, 512, mapIniPath);
       if (strlen(custom_text) > 0) 
-          QueueMessage(custom_text, -1);
+        QueueMessage(custom_text, -1);
       else 
-      // Get text from string table
+        // Get text from string table
         QueueMessage(Data__GetTextString(event->message_index, 1), -1);
       // Set customized message duration
-      _gMessageData.__ticks[message_slot] = gGameTicks + ((event->value)?event->value:400);
+      if (event->value)
+        _gMessageData.__ticks[message_slot] = gGameTicks + event->value;
       break;
     }
     case ET_ADDUNITS:
