@@ -62,6 +62,7 @@ OBJS            ?= callsites.o \
 	src/fixes/ai-build-concrete-fix.o \
 	src/fixes/ai-upgrade-buildings-fix.o \
 	src/fixes/ai-starport-bug-fix.o \
+	src/fixes/ai-reset-berserk-when-got-mcv.o \
 	\
 	src/hotkeys/hotkeys.o \
 	src/hotkeys/hotkeys-func.o \

@@ -663,7 +663,7 @@ typedef struct DefendAreaStruct
 
 typedef struct CAI_
 {
-  char AISide;
+  uint8_t AISide;
   char __IsAI;
   char c_field_2_BestTargetSide;
   char EnablePractice;
