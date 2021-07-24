@@ -211,11 +211,13 @@ setcglob 0x006D60D8, _templates_GroupIDs
 setcglob 0x006D7BA0, _RadarMap1
 setcglob 0x006D9B50, _templates_UnitTypeCount
 setcglob 0x006DC470, MissionMapData
+setcglob 0x006DC540, _templates_buildattribs
 setcglob 0x0077E250, _templates_unitattribs
 setcglob 0x00781E54, _RadarMap2
 setcglob 0x00781E58, _templates_explosionattribs
 setcglob 0x00782068, _templates_bulletattribs
 setcglob 0x00782AA0, SpawnLocationUsedBoolArray
+setcglob 0x00795538, gUnitTypeNum
 setcglob 0x00795608, SoundClassObject
 setcglob 0x0079759C, CUIManagerObject
 setcglob 0x00797A98, CurrentSoundTrack
@@ -228,6 +230,7 @@ setcglob 0x00798510, WindowActivated
 setcglob 0x00798544, MySideID
 setcglob 0x00798544, gSideId
 setcglob 0x00798830, gDiplomacy
+setcglob 0x008CD4F0, _IRValues
 setcglob 0x008CD51C, OSMajorVersion
 setcglob 0x008CD520, OSMinorVersion
 
@@ -273,6 +276,7 @@ setcglob 0x0042E450, Graphlib__LoadFontFile
 setcglob 0x004305F0, BlitClipTImage1
 setcglob 0x00430860, ClearTImage
 ; Other
+setcglob 0x00442BB0, w__GetUnitCost
 setcglob 0x00442BE0, GetBuildingCost
 setcglob 0x00448460, GetRandomValue
 ; Map
@@ -336,6 +340,7 @@ setcglob 0x0048DC10, Data__GetTextId			; (char *key, int unk)
 setcglob 0x0048DCC0, Data__GetTextString			; (int id, int unk)
 setcglob 0x0048DD90, Data__GetSoundTableID
 ; Other
+setcglob 0x004979A0, GetRandomAdjacentTile
 setcglob 0x0049CA10, DestroyBuilding
 setcglob 0x0049CDE0, DestroyUnit
 setcglob 0x0049D2E0, DamageTiles

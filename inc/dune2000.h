@@ -143,6 +143,42 @@ typedef struct Unit
   int32_t ObjectType;
 }Unit;
 
+typedef enum BuildingFlags
+{
+  BFLAGS_1_REPAIRING = 0x1,
+  BuildingFlags_2 = 0x2,
+  BuildingFlags_4 = 0x4,
+  BuildingFlags_8 = 0x8,
+  BFLAGS_10_ANIM_PERMANENT = 0x10,
+  BuildingFlags_20 = 0x20,
+  BFLAGS_40_HAS_ANIMATION = 0x40,
+  BuildingFlags_80 = 0x80,
+  BuildingFlags_100 = 0x100,
+  BFLAGS_200_SELECTABLE_REPAIRABLE = 0x200,
+  BFLAGS_400_CAN_BE_CAPTURED = 0x400,
+  BuildingFlags_800 = 0x800,
+  BuildingFlags_1000 = 0x1000,
+  BuildingFlags_2000 = 0x2000,
+  BuildingFlags_4000 = 0x4000,
+  BuildingFlags_8000 = 0x8000,
+  BuildingFlags_10000 = 0x10000,
+  BuildingFlags_20000 = 0x20000,
+  BuildingFlags_40000 = 0x40000,
+  BuildingFlags_80000 = 0x80000,
+  BuildingFlags_100000 = 0x100000,
+  BFLAGS_200000_HAS_SKIRT = 0x200000,
+  BFLAGS_400000_NO_CONCRETE = 0x400000,
+  BFLAGS_800000_ANIM_ALPHA = 0x800000,
+  BuildingFlags_1000000 = 0x1000000,
+  BuildingFlags_2000000 = 0x2000000,
+  BuildingFlags_4000000 = 0x4000000,
+  BuildingFlags_8000000 = 0x8000000,
+  BuildingFlags_10000000 = 0x10000000,
+  BuildingFlags_20000000 = 0x20000000,
+  BuildingFlags_40000000 = 0x40000000,
+  BuildingFlags_80000000 = 0x80000000,
+}BuildingFlags;
+
 typedef struct Building
 {
   int32_t dw_field_0_x;
@@ -912,8 +948,8 @@ typedef struct BuildingAtrbStruct
   char _____DirectionFrames[32];
   char field_84;
   char _____AnimationSpeed;
-  char _____ArtHeight;
-  char _____ArtWidth;
+  uint8_t _____ArtHeight;
+  uint8_t _____ArtWidth;
   char GroupType;
   char _____BuildupFramesToShow;
   char _____BuildupArt;
@@ -1452,11 +1488,13 @@ extern GroupIDsStruct       _templates_GroupIDs;
 extern void *               _RadarMap1;
 extern char                 _templates_UnitTypeCount;
 
+extern BuildingAtrbStruct   _templates_buildattribs[100];
 extern UnitAtribStruct      _templates_unitattribs[60];
 extern void *               _RadarMap2;
 extern ExploisonAtrbStruct  _templates_explosionattribs[64];
 extern BullAtrbStruct       _templates_bulletattribs[64];
 extern bool                 SpawnLocationUsedBoolArray[];
+extern unsigned char        gUnitTypeNum;
 extern int                  SoundClassObject;
 extern int                  CUIManagerObject;
 
@@ -1469,6 +1507,7 @@ extern bool                 BitsPerPixelChanged;
 extern unsigned char        MySideID;
 extern unsigned char        gSideId;
 extern unsigned char        gDiplomacy[8][8];
+extern unsigned char        _IRValues[8];
 extern int                  OSMajorVersion;
 extern int                  OSMinorVersion;
 
@@ -1497,7 +1536,8 @@ void            Graphlib__LoadFontFile();
 void            BlitClipTImage1(TImage *lpTITo, int toX, int toY, TImage *lpTIFrom, RECT *rect, bool trans, int a7);
 void            ClearTImage(TImage *a1, int color, int unusable);
 // Other
-
+unsigned int    w__GetUnitCost(int type, eSideType side);
+unsigned int    GetBuildingCost(int building_type, int num_upgrades, eSideType side_id);
 int             GetRandomValue(char *, int);
 // Map
 int             RevealMap();
@@ -1560,6 +1600,7 @@ void            CUIManager__GetCD(char *arg);
 char *          Data__GetTextString(int stringId, bool showError);
 int             Data__GetSoundTableID(const char *key);
 // Other
+bool            GetRandomAdjacentTile(unsigned __int8 *x_ptr, unsigned __int8 *y_ptr);
 void            DestroyBuilding(int side, int objIndex, char a3);
 void            DestroyUnit(eSideType side, __int16 index);
 char            DamageTiles(unsigned int xpos, unsigned int ypos, unsigned int a3, unsigned __int8 bulletType, int ai_side, __int16 ai_index, char a7);

@@ -39,6 +39,7 @@ OBJS            ?= callsites.o \
 	src/extended-maps/special-values-func.o \
 	src/extended-maps/crates.o \
 	src/extended-maps/crates-func.o \
+	src/extended-maps/release-infantry.o \
 	\
 	src/fixes/rand-seed-fix.o \
 	src/fixes/message-box-fix.o \
