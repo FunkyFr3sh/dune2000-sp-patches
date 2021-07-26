@@ -5,6 +5,7 @@ void LoadRulesFromMap();
 extern LPCTSTR rulesIni;
 extern LPCTSTR rulesSpawnIni;
 
+// Original rules
 extern int harvestUnloadDelay;
 extern int harvestBlobValue;
 extern int harvestLoadSpiceDelay;
@@ -32,3 +33,8 @@ extern int IgnoreDistance;
 extern int CrateCash;
 extern bool ShowWarnings;
 extern uint8_t DeathHandAccuracy;
+
+// Newly added rules
+extern bool    rulesExt__InfiniteSpice;
+extern uint8_t rulesExt__infantryReleaseLimit;
+extern uint8_t rulesExt__infantryReleaseChance;

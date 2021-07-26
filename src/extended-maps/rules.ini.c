@@ -10,6 +10,11 @@
 LPCTSTR rulesIni = ".\\rules.ini";
 LPCTSTR rulesSpawnIni = ".\\rules-spawn.ini";
 
+// Newly added rules
+bool    rulesExt__InfiniteSpice         = false;
+uint8_t rulesExt__infantryReleaseLimit  = 4;
+uint8_t rulesExt__infantryReleaseChance = 5;
+
 static void LoadVars(LPCTSTR fileName);
 
 void LoadRulesFromMap()
@@ -51,5 +56,7 @@ static void LoadVars(LPCTSTR fileName)
     ShowWarnings = IniGetBool("Vars", "ShowWarnings", ShowWarnings, fileName);
     DeathHandAccuracy = IniGetInt("Vars", "DeathHandAccuracy", DeathHandAccuracy, fileName);
     
-    InfiniteSpice = IniGetBool("Vars", "InfiniteSpice", fileName == rulesSpawnIni || fileName == rulesIni ? false : InfiniteSpice, fileName);
+    rulesExt__InfiniteSpice = IniGetBool("Vars", "InfiniteSpice", fileName == rulesSpawnIni || fileName == rulesIni ? false : rulesExt__InfiniteSpice, fileName);
+    rulesExt__infantryReleaseLimit = IniGetInt("Vars", "infantryReleaseLimit", rulesExt__infantryReleaseLimit, fileName);
+    rulesExt__infantryReleaseChance = IniGetInt("Vars", "infantryReleaseChance", rulesExt__infantryReleaseChance, fileName);
 }

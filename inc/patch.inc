@@ -36,11 +36,14 @@ cextern VQADisplayModeWidth
 cextern VQADisplayModeHeight
 
 cextern DisableMaxWindowedMode
-cextern InfiniteSpice
 cextern GameLanguage
 cextern TextUib
 cextern RandomMusicEnabled
 cextern nextGameTick
+
+; ### Extra rules ###
+
+cextern rulesExt__InfiniteSpice
 
 ; ### Functions ###
 

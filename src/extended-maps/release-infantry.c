@@ -1,9 +1,12 @@
 #include "macros/patch.h"
 #include "dune2000.h"
 #include "utils.h"
+#include "rules.h"
 
 // Add support for different type of infantry released from destroyed/sold building for different side
-// (This is driven by Owner side setting for unit types - the first infantry owned by a side matches) 
+// (This is driven by Owner side setting for unit types - the first infantry owned by a side matches)
+// Add custumizable max. number of infantry to be released from destroyed/sold building and customizable chance
+// (This is driven by infantryReleaseLimit and infantryReleaseChance rules)
 
 // Custom implementation of function ReleaseInfantryFromBuilding
 CALL(0x0049B9E8, _Mod__ReleaseInfantryFromBuilding);
@@ -55,8 +58,8 @@ void Mod__ReleaseInfantryFromBuilding(Building *building, unsigned char side_id)
   int tiles_occupied_solid_bitmask = _templates_buildattribs[building->Type]._____TilesOccupiedSolid;
   int building_cost = GetBuildingCost(building->Type, 0, side_id);
   int unit_cost = w__GetUnitCost(unit_type, side_id);
-  int infantry_limit = 4; // TODO rule
-  int spawn_chance = 5; // TODO rule
+  int infantry_limit = rulesExt__infantryReleaseLimit; // Rule
+  int spawn_chance = rulesExt__infantryReleaseChance; // Rule
   int num_infantry_to_release = building_cost / 3 / (unit_cost?unit_cost:1);
   num_infantry_to_release = HLIMIT(num_infantry_to_release, infantry_limit);
   int max_retries = infantry_limit * spawn_chance;

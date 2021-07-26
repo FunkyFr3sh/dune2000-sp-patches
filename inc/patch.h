@@ -100,7 +100,6 @@ extern bool JumpToLAN;
 extern bool JumpToGame;
 
 extern bool DisableMaxWindowedMode;
-extern bool InfiniteSpice;
 extern char GameLanguage[];
 extern bool MouseWheelTriggered;
 extern bool UseImprovedFPSLimiter;
