@@ -1152,6 +1152,14 @@ typedef struct CrateStruct
   int32_t __timing;
 }CrateStruct;
 
+// ### TEXT.UIB file structs ###
+
+typedef struct TextTableStruct
+{
+  char *id;
+  char *text;
+}TextTableStruct;
+
 // ### MIS file structs ###
 
 typedef struct MiscData
@@ -1496,6 +1504,7 @@ extern BullAtrbStruct       _templates_bulletattribs[64];
 extern bool                 SpawnLocationUsedBoolArray[];
 extern unsigned char        gUnitTypeNum;
 extern int                  SoundClassObject;
+extern TextTableStruct **   gTextTable;
 extern int                  CUIManagerObject;
 
 extern int                  GameType;

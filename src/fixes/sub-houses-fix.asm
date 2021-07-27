@@ -1,6 +1,7 @@
 %include "macros/patch.inc"
 %include "macros/datatypes.inc"
 %include "dune2000.inc"
+%include "inc/utils.inc"
 
 sstring EmptyString, ""
 
@@ -78,6 +79,34 @@ hack 0x00435F1A, 0x00435F20 ; LoadCustomInGameBriefingMenuFiles
     xor ecx, ecx
     jmp 0x00435F20
     
+; Fix in-game briefing lockup: Default to IGA0MIS.UIL file if respective UIL file does not exist
+sstring DefaultBriefingUilFileName, "IGA0MIS.UIL"
+sstring BriefingUilFilePathFormat, ".\\%sUI_DATA\\%s"
+sbyte BriefingUilFilePath, 0, 256
+hack 0x00435F36, 0x00435F3C ; CInterface::CInterface
+    mov eax, [ebp+654h] ; instruction replaced by the long jump
+    ;sprintf(BriefingUilFilePath, ".\\%sUI_DATA\\%s", ResourcePath, eax);
+    push eax
+    push ResourcePath
+    push BriefingUilFilePathFormat
+    push BriefingUilFilePath
+    call sprintf
+    add esp, 16
+    push BriefingUilFilePath
+    call FileExists
+    add esp, 4
+    test eax, eax
+    jz .dontexists
+    mov eax, [ebp+654h]
+    jmp hackend
+.dontexists:
+    mov eax, [ebp+654h]
+    push DefaultBriefingUilFileName
+    push eax
+    call strcpy
+    pop eax
+    add esp, 4
+    jmp hackend
 
 @CLEAR 0x0048DE1E, 0x90, 0x0048DE33 ; Don't exit if sound does not exist
 @PATCH 0x0048DE1E

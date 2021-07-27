@@ -219,6 +219,7 @@ setcglob 0x00782068, _templates_bulletattribs
 setcglob 0x00782AA0, SpawnLocationUsedBoolArray
 setcglob 0x00795538, gUnitTypeNum
 setcglob 0x00795608, SoundClassObject
+setcglob 0x007975A8, gTextTable
 setcglob 0x0079759C, CUIManagerObject
 setcglob 0x00797A98, CurrentSoundTrack
 setcglob 0x00797E34, GameType
