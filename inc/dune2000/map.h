@@ -38,11 +38,11 @@ typedef enum TileFlags
 
 typedef struct GameMapTileStruct
 {
-  __int16 __tile_index;
-  __int16 w_field_2;
+  uint16_t  __tile_index;
+  uint16_t  back_up_tile_index; // Field for preservation of tile underneath spice or concrete tile (mod)
   TileFlags __tile_bitflags;
-  char __shroud_flags;
-  unsigned __int8 c_field_9;
+  uint8_t   __shroud_flags;
+  uint8_t   c_field_9;
 }GameMapTileStruct;
 
 typedef struct GameMapStruct
