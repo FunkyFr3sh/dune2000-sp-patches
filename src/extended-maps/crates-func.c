@@ -523,7 +523,7 @@ void HandleSpiceBloomCrate(CrateStruct *crate, int crate_type, Unit *unit, unsig
         if (circle && circle[x + y * (range * 2 + 1)])
           continue;
         GameMapTileStruct *tile = &gGameMap.map[xx + _CellNumbersWidthSpan[yy]];
-        if (!(tile->__tile_bitflags & TileFlags_10000_SANDY))
+        if ((tile->__tile_bitflags & (TileFlags_10000_SANDY | TileFlags_10_OCC_BUILDING | TileFlags_800_HAS_CONCRETE)) != TileFlags_10000_SANDY)
           continue;
         // Use randomizer
         if (crate->ext_data_field & 8 && !(xx == xpos && yy == ypos) && (rand() % 100) < 40)
@@ -557,7 +557,7 @@ void HandleSpiceBloomCrate(CrateStruct *crate, int crate_type, Unit *unit, unsig
           if (circle && circle[x + y * (range * 2 + 1)])
             continue;
           GameMapTileStruct *tile = &gGameMap.map[xx + _CellNumbersWidthSpan[yy]];
-          if (!(tile->__tile_bitflags & TileFlags_10000_SANDY))
+          if ((tile->__tile_bitflags & (TileFlags_10000_SANDY | TileFlags_10_OCC_BUILDING | TileFlags_800_HAS_CONCRETE)) != TileFlags_10000_SANDY)
             continue;
           // Check spice amount and surrounding tiles
           int spice_amount = (tile->__tile_bitflags >> 20) & 7;

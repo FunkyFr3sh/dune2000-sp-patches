@@ -41,6 +41,7 @@ OBJS            ?= callsites.o \
 	src/extended-maps/crates-func.o \
 	src/extended-maps/release-infantry.o \
 	src/extended-maps/preserve-sand-rock-tiles.o \
+	src/extended-maps/spice-on-buildable-tiles.o \
 	\
 	src/fixes/rand-seed-fix.o \
 	src/fixes/message-box-fix.o \
@@ -59,7 +60,6 @@ OBJS            ?= callsites.o \
 	src/fixes/damage-position-fix.o \
 	src/fixes/selfdestruct-sound-fix.o \
 	src/fixes/damaged-unit-speed-fix.o \
-	src/fixes/deploy-mcv-on-crate-fix.o \
 	src/fixes/invulnerable-infantry-fix.o \
 	src/fixes/ai-build-concrete-fix.o \
 	src/fixes/ai-upgrade-buildings-fix.o \
