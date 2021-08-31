@@ -5,7 +5,8 @@
 #include "patch.h"
 #include "ini.h"
 #include "utils.h"
-#include "event-func.h"
+#include "../event-system/event-core.h"
+#include "../event-system/event-actions.h"
 
 void HandleExplosionCrate(CrateStruct *crate, Unit *unit, unsigned char side_id);
 void HandleSpiceBloomCrate(CrateStruct *crate, int crate_type, Unit *unit, unsigned char side_id);
@@ -167,20 +168,7 @@ bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
       }
       if ( side_id == gSideId )
       {
-        ClearTImage(_RadarMap1, 0, 0);
-        if ( GetMapVisState() != _mapvisstate_548010 )
-        {
-          _cheatstates[gSideId] |= 1u;
-        }
-        for (int y = 0; y < gGameMap.height; y++)
-        {
-          for (int x = 0; x < gGameMap.width; x++)
-          {
-            gGameMap.map[x + _CellNumbersWidthSpan[y]].__shroud_flags = 1;
-          }
-        }
-        _mapvisstate_548010 = GetMapVisState();
-        RevealTilesSeenByBuildingsAndUnits(side_id);
+        EvAct_HideMap();
       }
       return 0;
     }
@@ -446,13 +434,6 @@ void HandleExplosionCrate(CrateStruct *crate, Unit *unit, unsigned char side_id)
   }  
 }
 
-bool notspiceon(int x, int y)
-{
-  x = LIMIT(x, 0, gGameMapWidth - 1);
-  y = LIMIT(y, 0, gGameMapHeight - 1);
-  return (gGameMap.map[x + _CellNumbersWidthSpan[y]].__tile_bitflags & (TileFlags_100000_SPICE | TileFlags_200000_SPICE | TileFlags_400000_SPICE)) == 0;
-}
-
 void HandleSpiceBloomCrate(CrateStruct *crate, int crate_type, Unit *unit, unsigned char side_id)
 {
   // Extension data: DUMMRRRR
@@ -497,105 +478,6 @@ void HandleSpiceBloomCrate(CrateStruct *crate, int crate_type, Unit *unit, unsig
   int xpos = crate->__x;
   int ypos = crate->__y;
   
-  // Extended behavior: instant spice blooms
-  if (mode != 0)
-  {
-    // Get the circle
-    char *circle = NULL;
-    if (mode == 2 || mode == 3)
-    {
-      range = HLIMIT(range, 7);
-      char **circle_ptr = &_ptr_circle_1x1grid;
-      circle = circle_ptr[range];
-    }
-    
-    // Add spice on tiles
-    for (int y = 0; y <= range * 2; y++)
-    {
-      int yy = ypos + y - range;
-      if (yy < 0 || yy >= gGameMapHeight)
-        continue;
-      for (int x = 0; x <= range * 2; x++)
-      {
-        int xx = xpos + x - range;
-        if (xx < 0 || xx >= gGameMapWidth)
-          continue;
-        if (circle && circle[x + y * (range * 2 + 1)])
-          continue;
-        GameMapTileStruct *tile = &gGameMap.map[xx + _CellNumbersWidthSpan[yy]];
-        if ((tile->__tile_bitflags & (TileFlags_10000_SANDY | TileFlags_10_OCC_BUILDING | TileFlags_800_HAS_CONCRETE)) != TileFlags_10000_SANDY)
-          continue;
-        // Use randomizer
-        if (crate->ext_data_field & 8 && !(xx == xpos && yy == ypos) && (rand() % 100) < 40)
-          continue;
-        // Update pixels on radar
-        if ( gBitsPerPixel == 16 )
-          SetPixelOnRadar16(xx, yy, _radarcolor_word_517898_spicecolor);
-        else
-          SetPixelOnRadar8(xx, yy, _radarcolor_byte_517780_spicecolor);
-        // Add two pieces of spice
-        int spice_amount = (tile->__tile_bitflags >> 20) & 7;
-        spice_amount = HLIMIT(spice_amount + 2, (mode == 3)?4:2);
-        tile->__tile_bitflags &= ~(TileFlags_100000_SPICE | TileFlags_200000_SPICE | TileFlags_400000_SPICE);
-        tile->__tile_bitflags |= (spice_amount << 20);
-      }
-    }
-    // Dune 2 style spice bloom
-    if (mode == 3)
-    {
-      // Second pass: Correct tiles with more than two pieces of spice where not all surrounding tiles have spice
-      for (int y = 0; y <= range * 2; y++)
-      {
-        int yy = ypos + y - range;
-        if (yy < 0 || yy >= gGameMapHeight)
-          continue;
-        for (int x = 0; x <= range * 2; x++)
-        {
-          int xx = xpos + x - range;
-          if (xx < 0 || xx >= gGameMapWidth)
-            continue;
-          if (circle && circle[x + y * (range * 2 + 1)])
-            continue;
-          GameMapTileStruct *tile = &gGameMap.map[xx + _CellNumbersWidthSpan[yy]];
-          if ((tile->__tile_bitflags & (TileFlags_10000_SANDY | TileFlags_10_OCC_BUILDING | TileFlags_800_HAS_CONCRETE)) != TileFlags_10000_SANDY)
-            continue;
-          // Check spice amount and surrounding tiles
-          int spice_amount = (tile->__tile_bitflags >> 20) & 7;
-          if (spice_amount > 2 &&
-            (  notspiceon(xx - 1, yy - 1)
-            || notspiceon(xx, yy - 1)
-            || notspiceon(xx + 1, yy - 1)
-            || notspiceon(xx - 1, yy)
-            || notspiceon(xx + 1, yy)
-            || notspiceon(xx - 1, yy + 1)
-            || notspiceon(xx, yy + 1)
-            || notspiceon(xx + 1, yy + 1)
-            ))
-          {
-            // Reset spice to 2 pieces
-            tile->__tile_bitflags &= ~(TileFlags_100000_SPICE | TileFlags_200000_SPICE | TileFlags_400000_SPICE);
-            tile->__tile_bitflags |= TileFlags_200000_SPICE;
-          }
-        }
-      }
-      // Shake screen
-      _ScreenShakes = 10;
-      // Play sound
-      int sample_id = Data__GetSoundTableID("S_SPICEMOUND");
-      PlaySoundAt(sample_id, xpos, ypos);
-    }
-    // Update spice visuals
-    RECT r;
-    r.left = LLIMIT(xpos - range - 1, 0);
-    r.top = LLIMIT(ypos - range - 1, 0);
-    r.right = HLIMIT(xpos + range + 2, gGameMapWidth);
-    r.bottom = HLIMIT(ypos + range + 2, gGameMapHeight);
-    UpdateSpiceInRegion(&r);
-  }
-  // Standard behavior: original spice bloom
-  else
-  {
-    SpiceMound(xpos, ypos, range);
-  }
+  EvAct_SpiceBloom(xpos, ypos, range, mode, (crate->ext_data_field & 8) == 8);
 }
 

@@ -42,7 +42,7 @@ typedef struct GameMapTileStruct
   uint16_t  back_up_tile_index; // Field for preservation of tile underneath spice or concrete tile (mod)
   TileFlags __tile_bitflags;
   uint8_t   __shroud_flags;
-  uint8_t   c_field_9;
+  uint8_t   __damage;
 }GameMapTileStruct;
 
 typedef struct GameMapStruct

@@ -6,6 +6,7 @@
 // This header will be split up as it becomes larger
 
 typedef void TImage;
+typedef int16_t _WORD;
 
 #include "dune2000/side.h"
 #include "dune2000/ai.h"
@@ -233,12 +234,17 @@ extern GroupIDsStruct       _templates_GroupIDs;
 extern void *               _RadarMap1;
 extern char                 _templates_UnitTypeCount;
 
+extern int                  _ViewportHeight;
 extern BuildingAtrbStruct   _templates_buildattribs[100];
+extern int                  _sinValues[16384];
+extern int                  _cosValues[16384];
 extern UnitAtribStruct      _templates_unitattribs[60];
 extern void *               _RadarMap2;
 extern ExploisonAtrbStruct  _templates_explosionattribs[64];
 extern BullAtrbStruct       _templates_bulletattribs[64];
 extern bool                 SpawnLocationUsedBoolArray[];
+extern int                  _ViewportWidth;
+extern unsigned int         _TileBitflags[800];
 extern unsigned char        gUnitTypeNum;
 extern int                  SoundClassObject;
 extern TextTableStruct **   gTextTable;
@@ -250,6 +256,8 @@ extern int                  GameType;
 extern bool                 BitsPerPixelChanged;
 
 
+extern int                  _ViewportXPos;
+extern int                  _ViewportYPos;
 extern unsigned char        MySideID;
 extern unsigned char        gSideId;
 extern unsigned char        gDiplomacy[8][8];
@@ -308,7 +316,10 @@ void            Mission__LoadVarsFile();
 
 index           ModelAddUnit(unsigned char side, unsigned char type, unsigned char add_at_x, unsigned char add_at_y, unsigned char move_to_x, unsigned char move_to_y, int pixel_offset_x, int pixel_offset_y);
 
-signed __int16  ModelAddExplosion(int side, unsigned __int8 explosionType, unsigned __int16 x, unsigned __int16 y, int a5, int a6, char a7, int a8, int a9);
+void            ModelAddConcrete(eSideType side_id, char building_type, unsigned __int8 xpos, int ypos, int a5, int tilebitmask);
+signed __int16  ModelAddBuilding(eSideType side_id, char building_type, unsigned __int8 x, unsigned __int8 y, int initialsetup, bool captured, bool captured2);
+signed __int16  ModelAddBullet(unsigned __int8 side_id, unsigned __int8 bulletype, int a3, __int16 firer, unsigned __int16 source_x, unsigned __int16 source_y, unsigned __int16 target_x, unsigned __int16 target_y, __int16 homing_index, char homing_side);
+signed __int16  ModelAddExplosion(int side_id, unsigned __int8 explosionType, unsigned __int16 x, unsigned __int16 y, int a5, int a6, char a7, int a8, int a9);
 int             Model__GenerateUnitMoveOrder(int,int,int);
 int             Model__GenerateUnitAttackUnitOrder(int,int,int);
 void            Model__ResetVars();
@@ -357,6 +368,9 @@ bool            Unit_49F5F0(Unit *unit);
 
 
 CSide *         GetSide(int sideId);
+Unit *          GetUnitOnTile(unsigned int x, unsigned int y, eSideType *side, _WORD *index, bool bool1);
+Unit *          GetNextUnitOnTile(unsigned int x, unsigned int y, unsigned int side, _WORD *unit_index);
+bool            GetBuildingOnTile_0(int x, int y, Building **building_ptr, eSideType *side_id, _WORD *index);
 bool            FindNearestFreeTile(unsigned char *x, unsigned char *y, unsigned char a3);
 void            cinit();
 

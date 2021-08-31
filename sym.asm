@@ -211,12 +211,17 @@ setcglob 0x006D60D8, _templates_GroupIDs
 setcglob 0x006D7BA0, _RadarMap1
 setcglob 0x006D9B50, _templates_UnitTypeCount
 setcglob 0x006DC470, MissionMapData
+setcglob 0x006DC538, _ViewportHeight
 setcglob 0x006DC540, _templates_buildattribs
+setcglob 0x006E9840, _sinValues
+setcglob 0x00704A98, _cosValues
 setcglob 0x0077E250, _templates_unitattribs
 setcglob 0x00781E54, _RadarMap2
 setcglob 0x00781E58, _templates_explosionattribs
 setcglob 0x00782068, _templates_bulletattribs
 setcglob 0x00782AA0, SpawnLocationUsedBoolArray
+setcglob 0x00786D48, _ViewportWidth
+setcglob 0x00786FF8, _TileBitflags
 setcglob 0x00795538, gUnitTypeNum
 setcglob 0x00795608, SoundClassObject
 setcglob 0x007975A8, gTextTable
@@ -228,6 +233,8 @@ setcglob 0x00798390, KeyIsDown1
 setcglob 0x007984D4, BitsPerPixelChanged
 setcglob 0x007984D8, MenuDraw_FromTopPixel		;       int MenuDraw::FromTopPixel
 setcglob 0x00798510, WindowActivated
+setcglob 0x00798538, _ViewportXPos
+setcglob 0x0079853C, _ViewportYPos
 setcglob 0x00798544, MySideID
 setcglob 0x00798544, gSideId
 setcglob 0x00798830, gDiplomacy
@@ -303,6 +310,9 @@ setcglob 0x00454E00, Mission__LoadTechposFile
 setcglob 0x00455510, Model__HandleGameLoopEvents
 setcglob 0x00455870, ModelAddUnit
 setcglob 0x00455FC0, Model__BuildBuildingPick
+setcglob 0x00456210, ModelAddConcrete
+setcglob 0x004563B0, ModelAddBuilding
+setcglob 0x00456A30, ModelAddBullet
 setcglob 0x00456DF0, ModelAddExplosion
 setcglob 0x00459450, Model__GenerateUnitMoveOrder
 setcglob 0x004596F0, Model__GenerateUnitAttackUnitOrder
@@ -352,6 +362,9 @@ setcglob 0x0049F5F0, Unit_49F5F0
 setcglob 0x004A31D0, GameWindowProcedure
 setcglob 0x004A39E0, Parse_Command_Line
 setcglob 0x004A4660, GetSide ; (int house)
+setcglob 0x004A5270, GetUnitOnTile
+setcglob 0x004A54A0, GetNextUnitOnTile
+setcglob 0x004A5640, GetBuildingOnTile_0
 setcglob 0x004A60E0, FindNearestFreeTile
 setcglob 0x004B1890, cinit
 

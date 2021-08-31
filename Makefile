@@ -29,7 +29,6 @@ OBJS            ?= callsites.o \
 	src/spawner/stats-func.o \
 	\
 	src/extended-maps/in-game-briefing.o \
-	src/extended-maps/event-func.o \
 	src/extended-maps/rules.ini.o \
 	src/extended-maps/music-func.o \
 	src/extended-maps/music.o \
@@ -42,6 +41,11 @@ OBJS            ?= callsites.o \
 	src/extended-maps/release-infantry.o \
 	src/extended-maps/preserve-sand-rock-tiles.o \
 	src/extended-maps/spice-on-buildable-tiles.o \
+	src/extended-maps/keep-underneath-tile-flags.o \
+	src/extended-maps/restore-side-id-upon-restart.o \
+	\
+	src/event-system/event-core.o \
+	src/event-system/event-actions.o \
 	\
 	src/fixes/rand-seed-fix.o \
 	src/fixes/message-box-fix.o \
