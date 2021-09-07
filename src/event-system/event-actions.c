@@ -493,7 +493,8 @@ void ChangeMapTile(int xpos, int ypos, int new_tile_index)
     _WORD index;
     if (GetBuildingOnTile_0(xpos, ypos, &bld, &side_id, &index))
     {
-       DestroyBuilding(side_id, index, 0);
+      if (!(_templates_buildattribs[bld->Type]._____Flags & BFLAGS_400000_NO_CONCRETE))
+        DestroyBuilding(side_id, index, 0);
     }
   }
   // Destroy units on tile
