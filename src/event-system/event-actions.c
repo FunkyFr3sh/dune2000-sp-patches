@@ -233,13 +233,18 @@ void EvAct_DamageTiles(int xpos, int ypos, int pixel_x, int pixel_y, int spread_
 
 int EvAct_AddUnit(int xpos, int ypos, int side_id, int unit_type, int movement)
 {
-  TileFlags tileflags = gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]].__tile_bitflags;
+  GameMapTileStruct *tile = &gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]];
   // Do not add unit if tile is already occupied by unit
-  if (tileflags & TileFlags_8_OCC_UNIT)
+  if (tile->__tile_bitflags & TileFlags_8_OCC_UNIT)
     return -1;
   // Do not add next infantry if all 5 slots are already occupied
-  if (_templates_unitattribs[unit_type].__IsInfantry && ((tileflags & 0x3E0) == 0x3E0))
+  if (_templates_unitattribs[unit_type].__IsInfantry && ((tile->__tile_bitflags & 0x3E0) == 0x3E0))
     return -1;
+  // If tile is occupied by building belonging to different side, change owner side flags
+  bool occ_building = (tile->__tile_bitflags & TileFlags_10_OCC_BUILDING) != 0;
+  int orig_owner_side = tile->__tile_bitflags & 7;
+  if (occ_building && (orig_owner_side != side_id))
+    tile->__tile_bitflags = (tile->__tile_bitflags & ~7) | side_id;
   // Determine target spot to move unit onto
   unsigned char target_x = xpos;
   unsigned char target_y = ypos;
@@ -256,7 +261,11 @@ int EvAct_AddUnit(int xpos, int ypos, int side_id, int unit_type, int movement)
     case 9: target_x--; break;
   }
   // Add unit
-  return ModelAddUnit(side_id, unit_type, xpos, ypos, target_x, target_y, 0, 0);
+  int result = ModelAddUnit(side_id, unit_type, xpos, ypos, target_x, target_y, 0, 0);
+  // Revert back owner side attributes
+  if (occ_building && (orig_owner_side != side_id))
+    tile->__tile_bitflags = (tile->__tile_bitflags & ~7) | orig_owner_side;
+  return result;
 }
 
 int EvAct_AddBuilding(int xpos, int ypos, int side_id, int building_type, int method)
