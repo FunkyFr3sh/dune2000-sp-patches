@@ -69,7 +69,7 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_SETTECH:                EvAct_SetTech         (A_SIDE, A_BOOL, A_VALUE); break;
   case ET_WIN:                    if ( !gLose ) gWin = 1; break;
   case ET_LOSE:                   if ( !gWin ) gLose = 1; break;
-  case ET_SWITCH_SIDE:            EvAct_SwitchSide      (A_SIDE, A_ENUM, A_BOOL); break;
+  case ET_SWITCH_MY_SIDE:         EvAct_SwitchMySide    (A_SIDE, A_ENUM, A_BOOL); break;
   case ET_HIDE_MAP:               EvAct_HideMap         (); break;
   case ET_REVEAL:                 EvAct_RevealMap       (COORD0, A_AMNT); break;
   case ET_SHOWTIMER:              gTimerValue = A_VALUE; break;

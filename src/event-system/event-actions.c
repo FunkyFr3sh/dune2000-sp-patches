@@ -104,7 +104,7 @@ void EvAct_SetTech(int side_id, bool immediate_update, int value)
   }
 }
 
-void EvAct_SwitchSide(int side_id, int ai_switch, bool reveal_base)
+void EvAct_SwitchMySide(int side_id, int ai_switch, bool reveal_base)
 {
   if (ai_switch & 2)
     gAIArray[gSideId].__IsAI = 1;
@@ -288,7 +288,7 @@ int EvAct_AddBuilding(int xpos, int ypos, int side_id, int building_type, int me
     case 5: initialsetup = true; captured = true; break;
   }
   if (place_concrete)
-    ModelAddConcrete(side_id, 4, xpos, ypos, 0, _templates_buildattribs[building_type]._____TilesOccupiedAll);
+    ModelAddConcrete(side_id, CSide__MyVersionOfBuilding(GetSide(side_id), _templates_GroupIDs.Concrete1, 0), xpos, ypos, 0, _templates_buildattribs[building_type]._____TilesOccupiedAll);
   return ModelAddBuilding(side_id, building_type, xpos, ypos, initialsetup, captured, captured);
 }
 
@@ -341,7 +341,7 @@ int EvAct_AddCrate(int xpos, int ypos, int crate_type, int image, int ext_data, 
 void EvAct_AddConcrete(int xpos, int ypos, int width, int height, int side_id, int tilebitmask)
 {
   if (tilebitmask)
-    ModelAddConcrete(side_id, 4, xpos, ypos, 0, tilebitmask);
+    ModelAddConcrete(side_id, CSide__MyVersionOfBuilding(GetSide(side_id), _templates_GroupIDs.Concrete1, 0), xpos, ypos, 0, tilebitmask);
   else
   {
     for (int y = 0; y < height; y++)
@@ -494,38 +494,32 @@ void ChangeMapTile(int xpos, int ypos, int new_tile_index)
   bool kill_infantry =     no_walk_on  || occ_building || occ_unit || occ_infantry;
   bool kill_light_veh =    no_drive_on || occ_building || occ_unit || occ_infantry;
   bool kill_heavy_veh =    no_drive_on || occ_building || occ_unit;
-  // Destroy buildings and concrete on the tile
-  if (destroy_buildings)
+  // Destroy buildings on the tile
+  eSideType side_id = 0;
+  _WORD index;
+  Building *bld;
+  bool real_building_on_tile = false;
+  if ((tile->__tile_bitflags & TileFlags_10_OCC_BUILDING) && GetBuildingOnTile_0(xpos, ypos, &bld, &side_id, &index))
   {
-    Building *bld;
-    eSideType side_id;
-    _WORD index;
-    if (GetBuildingOnTile_0(xpos, ypos, &bld, &side_id, &index))
-    {
-      if (!(_templates_buildattribs[bld->Type]._____Flags & BFLAGS_400000_NO_CONCRETE))
-        DestroyBuilding(side_id, index, 0);
-    }
+    if (destroy_buildings && !(_templates_buildattribs[bld->Type]._____Flags & BFLAGS_400000_NO_CONCRETE))
+      DestroyBuilding(side_id, index, 0);
+    else
+      real_building_on_tile = true;
   }
   // Destroy units on tile
-  if (kill_infantry || kill_light_veh || kill_heavy_veh)
+  Unit *unit;
+  bool real_unit_on_tile = false;
+  if ((tile->__tile_bitflags & 0x3E8) && (GetUnitOnTile(32 * xpos, 32 * ypos, &side_id, &index, false)))
   {
-    Unit *unit;
-    eSideType side_id;
-    _WORD index;
-    if (GetUnitOnTile(32 * xpos, 32 * ypos, &side_id, &index, false))
+    index = -1;
+    while ((unit = GetNextUnitOnTile(xpos, ypos, side_id, &index)))
     {
-      index = -1;
-      while ((unit = GetNextUnitOnTile(xpos, ypos, side_id, &index)))
-      {
-        bool is_infantry = _templates_unitattribs[unit->Type].__IsInfantry;
-        bool is_heavy_veh = _templates_unitattribs[unit->Type].__CanCrush;
-        if (is_infantry && kill_infantry)
-          DestroyUnit(side_id, index);
-        if (!is_infantry && !is_heavy_veh && kill_light_veh)
-          DestroyUnit(side_id, index);
-        if (!is_infantry && is_heavy_veh && kill_heavy_veh)
-          DestroyUnit(side_id, index);
-      }
+      bool is_infantry = _templates_unitattribs[unit->Type].__IsInfantry;
+      bool is_heavy_veh = _templates_unitattribs[unit->Type].__CanCrush;
+      if ((is_infantry && kill_infantry) || (!is_infantry && !is_heavy_veh && kill_light_veh) || (!is_infantry && is_heavy_veh && kill_heavy_veh))
+        DestroyUnit(side_id, index);
+      else
+        real_unit_on_tile = true;
     }
   }
   // Remove concrete if new tile is not buildable
@@ -549,6 +543,9 @@ void ChangeMapTile(int xpos, int ypos, int new_tile_index)
   // Change attributes
   tile->__tile_bitflags &= ~_TileBitflags[old_tile_index];
   tile->__tile_bitflags |= _TileBitflags[new_tile_index];
+  // Restore building or unit owner attributes
+  if (real_building_on_tile || real_unit_on_tile)
+    tile->__tile_bitflags = (tile->__tile_bitflags & ~7) | side_id;
   // Reset tile damage
   tile->__damage = 0;
 };

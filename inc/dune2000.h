@@ -332,6 +332,7 @@ void            SetPixelOnRadar16(unsigned __int8 x, unsigned __int8 y, __int16 
 
 // CSide
 void __thiscall CSide__update_list_of_available_buildings_and_units(CSide *side);
+char __thiscall CSide__MyVersionOfBuilding(CSide *this, char building_type, bool bool1);
 uint8_t __thiscall CSide__MyVersionOfUnit(CSide *this, char unit, bool bool1);
 void __thiscall CSide_add_cash_drip(CSide *this, int a2);
 void __thiscall CSide__BlowupAll_surrender(CSide *side);

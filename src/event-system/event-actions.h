@@ -31,7 +31,7 @@ void EvAct_SetDiplomacy(int source_side, int target_side, int allegiance_type, b
 void EvAct_PlaySound(int sample_id, bool point_sound, int xpos, int ypos);
 void EvAct_SetCash(int side_id, eEventOperation operation, int value);
 void EvAct_SetTech(int side_id, bool immediate_update, int value);
-void EvAct_SwitchSide(int side_id, int ai_switch, bool reveal_base);
+void EvAct_SwitchMySide(int side_id, int ai_switch, bool reveal_base);
 void EvAct_HideMap();
 void EvAct_RevealMap(int xpos, int ypos, int radius);
 void EvAct_ShowMessage(int duration, ShowMessageEventData *data);
