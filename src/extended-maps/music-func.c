@@ -42,13 +42,17 @@ static void FindMusicFiles()
     char searchPath[256];
     sprintf(searchPath, "%s*.aud", MusicResourcePath);
     hFind = FindFirstFile(searchPath, &ffd);
-    if (hFind == INVALID_HANDLE_VALUE) return;
+    if (hFind == INVALID_HANDLE_VALUE)
+      return;
 
-    for (int i = 0; i < MUSIC_LIST_SIZE; i++)
+    do
     {
-        MusicListCount = i + 1;
-        if (!(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) strncpy(MusicList[i], ffd.cFileName, 128);
-        if (FindNextFile(hFind, &ffd) == 0) break;
+      if (MusicListCount == MUSIC_LIST_SIZE)
+        break;
+      if (!(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) && strcmpi(ffd.cFileName, "SCORE.AUD") && strcmpi(ffd.cFileName, "OPTIONS.AUD"))
+        strncpy(MusicList[MusicListCount++], ffd.cFileName, 128);
     }
+    while(FindNextFile(hFind, &ffd));
+
     FindClose(hFind);
 }
