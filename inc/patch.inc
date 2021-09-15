@@ -44,6 +44,7 @@ cextern nextGameTick
 ; ### Extra rules ###
 
 cextern rulesExt__InfiniteSpice
+cextern rulesExt__buildingsAlwaysNeedPrerequisites
 
 ; ### Functions ###
 

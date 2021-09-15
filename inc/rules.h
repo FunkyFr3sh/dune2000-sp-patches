@@ -38,3 +38,4 @@ extern uint8_t DeathHandAccuracy;
 extern bool    rulesExt__InfiniteSpice;
 extern uint8_t rulesExt__infantryReleaseLimit;
 extern uint8_t rulesExt__infantryReleaseChance;
+extern bool    rulesExt__buildingsAlwaysNeedPrerequisites;
