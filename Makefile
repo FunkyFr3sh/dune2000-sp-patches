@@ -44,6 +44,7 @@ OBJS            ?= callsites.o \
 	src/extended-maps/keep-underneath-tile-flags.o \
 	src/extended-maps/restore-side-id-upon-restart.o \
 	src/extended-maps/reset-available-buildings.o \
+	src/extended-maps/return-credits-to-spice-storage.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-actions.o \
