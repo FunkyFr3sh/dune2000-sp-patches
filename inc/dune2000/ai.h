@@ -162,7 +162,7 @@ typedef struct CAI_
   float FirePowerWeight[19];
   int CashStash[9];
   char Morale[19];
-  char field_108B;
+  char DontFaceUnitsAwayFromConYard; // Newly added parameter (mod)
   float DefendBuildingPriority[100];
   float AttackBuildingPriority[100];
   float BuildingRepairValue[100];

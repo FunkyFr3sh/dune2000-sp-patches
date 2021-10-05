@@ -100,7 +100,7 @@ hack 0x0040DAE9, 0x0040DAEF ; WriteStatsForAiPlayers1
     cmp byte[SpawnerActive], 1
     jnz .out
     mov cl, byte[NetPlayerCount]
-    add cl, byte[NetAIPlayers]
+    add cl, byte[gNetAIPlayers]
     jmp 0x0040DAEF
     
 .out:
@@ -112,7 +112,7 @@ hack 0x0040D763, 0x0040D769 ; WriteStatsForAiPlayers2
     cmp byte[SpawnerActive], 1
     jnz .out
     mov cl, byte[NetPlayerCount]
-    add cl, byte[NetAIPlayers]
+    add cl, byte[gNetAIPlayers]
     jmp 0x0040D769
     
 .out:
@@ -125,7 +125,7 @@ hack 0x0040D9DD, 0x0040D9E3 ; write FinishingPlace for AI players
 
     cmp byte[SpawnerActive], 1
     jnz hackend
-    add cl, byte[NetAIPlayers]
+    add cl, byte[gNetAIPlayers]
     jmp hackend
 
 
@@ -139,7 +139,7 @@ hack 0x0040D565, 0x0040D56B ; FixPlayerNames
     jge .IsAiPlayer
     cmp dword[GameType], GT_SKIRMISH
     jnz .out
-    mov ecx, NetPlayerName
+    mov ecx, gNetPlayerName
     jmp 0x0040D56B
     
 .IsAiPlayer:

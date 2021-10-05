@@ -1,7 +1,5 @@
 // ### Side class structs ###
 
-typedef int eSideType;
-
 typedef enum UnitFlags
 {
   UFLAGS_1 = 0x1,
@@ -170,6 +168,31 @@ typedef enum BuildingFlags
   BuildingFlags_40000000 = 0x40000000,
   BuildingFlags_80000000 = 0x80000000,
 }BuildingFlags;
+
+typedef enum BuildingBehaviorType
+{
+  BuildingBehavior_DEFAULT = 0x0,
+  BuildingBehavior_OUTPOST = 0x1,
+  BuildingBehavior_CONSTRUCTION = 0x2,
+  BuildingBehavior_WINDTRAP = 0x3,
+  BuildingBehavior_REFINERY = 0x4,
+  BuildingBehavior_SILO = 0x5,
+  BuildingBehavior_REPAIR = 0x6,
+  BuildingBehavior_LIGHT_FACTORY = 0x7,
+  BuildingBehavior_HEAVY_FACTORY = 0x8,
+  BuildingBehavior_HITEECH = 0x9,
+  BuildingBehavior_AT_HITEECH = 0xA,
+  BuildingBehavior_BARRACKS = 0xB,
+  BuildingBehavior_WOR = 0xC,
+  BuildingBehavior_STARPORT = 0xD,
+  BuildingBehavior_WALL = 0xE,
+  BuildingBehavior_CONCRETE = 0xF,
+  BuildingBehavior_TURRET = 0x10,
+  BuildingBehavior_HK_PALACE = 0x11,
+  BuildingBehavior_OR_PALACE = 0x12,
+  BuildingBehavior_A_PALACE = 0x13,
+  BuildingBehaviorType_14 = 0x14,
+}BuildingBehaviorType;
 
 typedef struct Building
 {

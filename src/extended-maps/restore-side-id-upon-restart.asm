@@ -5,11 +5,12 @@
 gbyte gOldSideId, 0
 
 ; Store the original side ID upon starting a map
-hack 0x00469790, 0x00469795 ; setupmapstuff
-    mov al, byte [gSideId]
-    mov byte [gOldSideId], al    
-    mov eax, 17C8h ; Instruction replaced by long jump
-    jmp hackend
+; Superseded by Mod__setupmapstuff
+;hack 0x00469790, 0x00469795 ; setupmapstuff
+;    mov al, byte [gSideId]
+;    mov byte [gOldSideId], al
+;    mov eax, 17C8h ; Instruction replaced by long jump
+;    jmp hackend
 
 ; Store the original side ID during loading saved game
 hack 0x00441BBB, 0x00441BC1 ; LoadGame

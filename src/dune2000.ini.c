@@ -12,19 +12,19 @@ LPCTSTR dune2000Ini = ".\\dune2000.ini";
 
 void SaveDune2000Ini()
 {
-    D2kIniSetInt("MultiPlayer", "UnitCount", NetUnitCount);
-    D2kIniSetInt("MultiPlayer", "TechLevel", NetTechLevel);
-    D2kIniSetInt("MultiPlayer", "StartingCredits", NetStartingCredits);
-    D2kIniSetInt("MultiPlayer", "AIPlayers", NetAIPlayers);
-    D2kIniSetBool("MultiPlayer", "Crates", NetCrates);
-    D2kIniSetInt("MultiPlayer", "Worms", NetWorms);
-    D2kIniSetString("MultiPlayer", "PlayerName", NetPlayerName);
-    D2kIniSetInt("MultiPlayer", "PlayerSide", NetPlayerSide);
-    D2kIniSetInt("MultiPlayer", "PlayerColor", NetPlayerColor);
-    D2kIniSetInt("MultiPlayer", "PlayerHandicap", NetPlayerHandicap);
-    D2kIniSetString("MultiPlayer", "IPAddress", NetIPAddress);
-    D2kIniSetString("MultiPlayer", "ModemPhone", NetModemPhone);
-    D2kIniSetInt("MultiPlayer", "SerialComPort", NetSerialComPort);
+    D2kIniSetInt("MultiPlayer", "UnitCount", gNetUnitCount);
+    D2kIniSetInt("MultiPlayer", "TechLevel", gNetTechLevel);
+    D2kIniSetInt("MultiPlayer", "StartingCredits", gNetStartingCredits);
+    D2kIniSetInt("MultiPlayer", "AIPlayers", gNetAIPlayers);
+    D2kIniSetBool("MultiPlayer", "Crates", gNetCrates);
+    D2kIniSetInt("MultiPlayer", "Worms", gNetWorms);
+    D2kIniSetString("MultiPlayer", "PlayerName", gNetPlayerName);
+    D2kIniSetInt("MultiPlayer", "PlayerSide", gNetPlayerSide);
+    D2kIniSetInt("MultiPlayer", "PlayerColor", gNetPlayerColor);
+    D2kIniSetInt("MultiPlayer", "PlayerHandicap", gNetPlayerHandicap);
+    D2kIniSetString("MultiPlayer", "IPAddress", gNetIPAddress);
+    D2kIniSetString("MultiPlayer", "ModemPhone", gNetModemPhone);
+    D2kIniSetInt("MultiPlayer", "SerialComPort", gNetSerialComPort);
 
     D2kIniSetBool("Options", "FirstTimePlay", FirstTimePlay);
     D2kIniSetInt("Options", "ScrollRate", ScrollRate);
@@ -101,19 +101,19 @@ void SaveDune2000Ini()
 
 void LoadDune2000Ini()
 {
-    NetUnitCount = D2kIniGetInt("MultiPlayer", "UnitCount", 10);
-    NetTechLevel = D2kIniGetInt("MultiPlayer", "TechLevel", 7);
-    NetStartingCredits = D2kIniGetInt("MultiPlayer", "StartingCredits", 7000);
-    NetAIPlayers = D2kIniGetInt("MultiPlayer", "AIPlayers", 0);
-    NetCrates = D2kIniGetBool("MultiPlayer", "Crates", false);
-    NetWorms = D2kIniGetInt("MultiPlayer", "Worms", 0);
-    D2kIniGetString("MultiPlayer", "PlayerName", "NONAME", NetPlayerName, 100);
-    NetPlayerSide = D2kIniGetInt("MultiPlayer", "PlayerSide", 0);
-    NetPlayerColor = D2kIniGetInt("MultiPlayer", "PlayerColor", 0);
-    NetPlayerHandicap = D2kIniGetInt("MultiPlayer", "PlayerHandicap", 0);
-    D2kIniGetString("MultiPlayer", "IPAddress", "", NetIPAddress, 100);
-    D2kIniGetString("MultiPlayer", "ModemPhone", "", NetModemPhone, 100);
-    NetSerialComPort = D2kIniGetInt("MultiPlayer", "SerialComPort", 1);
+    gNetUnitCount = D2kIniGetInt("MultiPlayer", "UnitCount", 10);
+    gNetTechLevel = D2kIniGetInt("MultiPlayer", "TechLevel", 7);
+    gNetStartingCredits = D2kIniGetInt("MultiPlayer", "StartingCredits", 7000);
+    gNetAIPlayers = D2kIniGetInt("MultiPlayer", "AIPlayers", 0);
+    gNetCrates = D2kIniGetBool("MultiPlayer", "Crates", false);
+    gNetWorms = D2kIniGetInt("MultiPlayer", "Worms", 0);
+    D2kIniGetString("MultiPlayer", "PlayerName", "NONAME", gNetPlayerName, 100);
+    gNetPlayerSide = D2kIniGetInt("MultiPlayer", "PlayerSide", 0);
+    gNetPlayerColor = D2kIniGetInt("MultiPlayer", "PlayerColor", 0);
+    gNetPlayerHandicap = D2kIniGetInt("MultiPlayer", "PlayerHandicap", 0);
+    D2kIniGetString("MultiPlayer", "IPAddress", "", gNetIPAddress, 100);
+    D2kIniGetString("MultiPlayer", "ModemPhone", "", gNetModemPhone, 100);
+    gNetSerialComPort = D2kIniGetInt("MultiPlayer", "SerialComPort", 1);
 
     FirstTimePlay = D2kIniGetBool("Options", "FirstTimePlay", true);
     ScrollRate = D2kIniGetInt("Options", "ScrollRate", 20);

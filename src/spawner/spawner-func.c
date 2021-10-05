@@ -29,7 +29,7 @@ void InitSpawner()
     DifficultyLevel = SpawnIniGetInt("Settings", "DifficultyLevel", 1);
     //stats hack
     NetPlayerCount = 1;
-    NetAIPlayers = 7;
+    gNetAIPlayers = 7;
 
     GameState = GS_MAINLOOP;
     CUIManager__LoadMission(CUIManagerObject, NetMap);

@@ -4,17 +4,18 @@
 ; (Buildings cannot be placed on spice, but can be placed on tiles where spice was harvested)
 
 ; Do not hard-change tile attributes to constant value for special values 1 and 2, but only set respective spice flag
-hack 0x00469836, 0x00469847 ; setupmapstuff
-    mov ecx, [eax+0x517DF4]
-    or ecx, 0x200000
-    mov [eax+0x517DF4], ecx
-    jmp hackend
-
-hack 0x00469852, 0x00469865 ; setupmapstuff
-    mov ecx, [eax+0x517DF4]
-    or ecx, 0x400000
-    mov [eax+0x517DF4], ecx
-    jmp hackend
+; Superseded by Mod__setupmapstuff
+;hack 0x00469836, 0x00469847 ; setupmapstuff
+;    mov ecx, [eax+0x517DF4]
+;    or ecx, 0x200000
+;    mov [eax+0x517DF4], ecx
+;    jmp hackend
+;
+;hack 0x00469852, 0x00469865 ; setupmapstuff
+;    mov ecx, [eax+0x517DF4]
+;    or ecx, 0x400000
+;    mov [eax+0x517DF4], ecx
+;    jmp hackend
     
 ; Display red building placement marker on tiles with spice
 @PATCH 0x00428B3C ; HandleConcretePlacement

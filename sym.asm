@@ -11,6 +11,7 @@
 ;;
 
 %include "macros/setsym.inc"
+%include "macros/extern.inc"
 
 setcglob 0x004B2810, start
 
@@ -33,19 +34,19 @@ setcglob 0x007984C0, NetPlayerCount
 setcglob 0x004F2898, NetPlayers
 
 ;Multiplayer settings
-setcglob 0x004E3B00, NetUnitCount
-setcglob 0x004E3B04, NetTechLevel
-setcglob 0x004E3B08, NetStartingCredits
-setcglob 0x004E3B0C, NetAIPlayers
-setcglob 0x006B9834, NetCrates
-setcglob 0x006B9838, NetWorms
-setcglob 0x006B93F8, NetPlayerName
-setcglob 0x006B9840, NetPlayerSide
-setcglob 0x006B9844, NetPlayerColor
-setcglob 0x006B9848, NetPlayerHandicap
-setcglob 0x007975D0, NetIPAddress
-setcglob 0x00797960, NetModemPhone
-setcglob 0x004E8BF4, NetSerialComPort
+setcglob 0x004E3B00, gNetUnitCount
+setcglob 0x004E3B04, gNetTechLevel
+setcglob 0x004E3B08, gNetStartingCredits
+setcglob 0x004E3B0C, gNetAIPlayers
+setcglob 0x006B9834, gNetCrates
+setcglob 0x006B9838, gNetWorms
+setcglob 0x006B93F8, gNetPlayerName
+setcglob 0x006B9840, gNetPlayerSide
+setcglob 0x006B9844, gNetPlayerColor
+setcglob 0x006B9848, gNetPlayerHandicap
+setcglob 0x007975D0, gNetIPAddress
+setcglob 0x00797960, gNetModemPhone
+setcglob 0x004E8BF4, gNetSerialComPort
 
 setcglob 0x00797638, NetMap
 setcglob 0x004F1018, LoginName
@@ -175,7 +176,7 @@ setcglob 0x004EB018, gBitsPerPixel
 setcglob 0x004EB048, MousePositionX
 setcglob 0x004EB04C, MousePositionY
 setcglob 0x004ED870, RandSeed
-setcglob 0x004F4118, gAIArray
+setcglob 0x004F4118, _gAIArray
 setcglob 0x00504030, _gMessageData
 setcglob 0x00513488, ResourcePath
 setcglob 0x00513520, MoviesResourcePath
@@ -205,31 +206,42 @@ setcglob 0x006B8280, gConditionArray
 setcglob 0x006B87C0, gBuildingsExist
 setcglob 0x006B87C8, gMiscData
 setcglob 0x006B8818, _gVariables
+setcglob 0x006B8868, _TechPosdata
 setcglob 0x006B9518, NetMessageString
 setcglob 0x006B9864, LimitedModelRate
 setcglob 0x006D60D8, _templates_GroupIDs
 setcglob 0x006D7BA0, _RadarMap1
+setcglob 0x006D7BA8, _SpawnLocations
+setcglob 0x006D7DE8, _tiledata
 setcglob 0x006D9B50, _templates_UnitTypeCount
 setcglob 0x006DC470, MissionMapData
 setcglob 0x006DC538, _ViewportHeight
 setcglob 0x006DC540, _templates_buildattribs
 setcglob 0x006E9840, _sinValues
+setcglob 0x006F9840, _MapName
 setcglob 0x00704A98, _cosValues
 setcglob 0x0077E250, _templates_unitattribs
 setcglob 0x00781E54, _RadarMap2
 setcglob 0x00781E58, _templates_explosionattribs
 setcglob 0x00782068, _templates_bulletattribs
-setcglob 0x00782AA0, SpawnLocationUsedBoolArray
+setcglob 0x00782AA0, _FreeSpawnLocations
 setcglob 0x00786D48, _ViewportWidth
+setcglob 0x00786FEC, _SpawnLocationCount
 setcglob 0x00786FF8, _TileBitflags
 setcglob 0x00795538, gUnitTypeNum
+setcglob 0x0079553C, gBuildingTypeNum
+setcglob 0x00795540, gBulletTypeNum
+setcglob 0x00795544, gExplosionTypeNum
 setcglob 0x00795608, SoundClassObject
 setcglob 0x007975A8, gTextTable
 setcglob 0x0079759C, CUIManagerObject
 setcglob 0x00797A98, CurrentSoundTrack
 setcglob 0x00797E34, GameType
+setcglob 0x00797E34, gGameType
 setcglob 0x00797E78, KeyIsDown2
 setcglob 0x00798390, KeyIsDown1
+setcglob 0x007984C0, gTotalPlayers
+setcglob 0x007984C4, _canQueue_IsMultiplayer
 setcglob 0x007984D4, BitsPerPixelChanged
 setcglob 0x007984D8, MenuDraw_FromTopPixel		;       int MenuDraw::FromTopPixel
 setcglob 0x00798510, WindowActivated
@@ -287,6 +299,7 @@ setcglob 0x00430860, ClearTImage
 setcglob 0x00442BB0, w__GetUnitCost
 setcglob 0x00442BE0, GetBuildingCost
 setcglob 0x00448460, GetRandomValue
+setcglob 0x0044B1F0, SetBuildingAsPrimary
 ; Map
 setcglob 0x0044C480, RevealMap
 setcglob 0x0044C4F0, Map__PlayerDefeated
@@ -323,6 +336,7 @@ setcglob 0x00460C80, Setup__LoadUIBBFile
 setcglob 0x00460EC0, Setup__LoadUI_LanguageFile
 setcglob 0x00462010, SetPixelOnRadar8
 setcglob 0x004620B0, SetPixelOnRadar16
+setcglob 0x00462140, radarmap
 setcglob 0x00466140, Setup__LoadGraphicsFile
 ; CSide
 setcglob 0x0046BE50, CSide__update_list_of_available_buildings_and_units
@@ -363,6 +377,8 @@ setcglob 0x0049F5F0, Unit_49F5F0
 setcglob 0x004A31D0, GameWindowProcedure
 setcglob 0x004A39E0, Parse_Command_Line
 setcglob 0x004A4660, GetSide ; (int house)
+setcglob 0x004A46B0, GetUnit
+setcglob 0x004A4740, GetBuilding
 setcglob 0x004A5270, GetUnitOnTile
 setcglob 0x004A54A0, GetNextUnitOnTile
 setcglob 0x004A5640, GetBuildingOnTile_0
@@ -624,3 +640,10 @@ setcglob 0x004BC5B0, stat
 ;008CF7A0         OleInitialize                      ole32   
 ;008CF7A4         CoCreateInstance                   ole32   
 ;008CF7A8         OleUninitialize                    ole32   
+
+;; ### C Compiler stuff ###
+
+cglobal __chkstk_ms
+
+__chkstk_ms:
+  ret

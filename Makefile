@@ -33,9 +33,6 @@ OBJS            ?= callsites.o \
 	src/extended-maps/music-func.o \
 	src/extended-maps/music.o \
 	src/extended-maps/infinite-spice.o \
-	src/extended-maps/start-with-mcv.o \
-	src/extended-maps/special-values.o \
-	src/extended-maps/special-values-func.o \
 	src/extended-maps/crates.o \
 	src/extended-maps/crates-func.o \
 	src/extended-maps/release-infantry.o \
@@ -45,6 +42,8 @@ OBJS            ?= callsites.o \
 	src/extended-maps/restore-side-id-upon-restart.o \
 	src/extended-maps/reset-available-buildings.o \
 	src/extended-maps/return-credits-to-spice-storage.o \
+	src/extended-maps/setupmapstuff.o \
+	src/extended-maps/ai-do-unit-facings.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-actions.o \

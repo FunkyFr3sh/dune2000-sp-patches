@@ -29,11 +29,11 @@ void WriteStatsDmp(const void *buffer, int length)
         StatsDmpLength = (unsigned short)length - 2;
         memcpy(StatsDmpBuffer, buffer + 2, length - 2);
         
-        WriteString("ACCN", NetPlayerName);
+        WriteString("ACCN", gNetPlayerName);
         WriteUInt32("TICK", gGameTicks);
-        WriteUInt32("UNIT", (unsigned int)NetUnitCount);
+        WriteUInt32("UNIT", (unsigned int)gNetUnitCount);
         WriteUInt32("NUMP", NetPlayerCount);
-        WriteUInt32("AIPL", NetAIPlayers);
+        WriteUInt32("AIPL", gNetAIPlayers);
         WriteUInt32("ENDS", SpawnerGameEndState);
         WritePlayerCredits();
         WriteUnitsOwned();
@@ -82,7 +82,7 @@ int GetAirUnitsOwned(int house)
 
 static void WritePlayerCredits()
 {
-    int playerCount = NetPlayerCount + NetAIPlayers;
+    int playerCount = NetPlayerCount + gNetAIPlayers;
     for (int i = 0; i < playerCount; i++)
     {
         char id[5];
@@ -96,7 +96,7 @@ static void WritePlayerCredits()
 
 static void WriteUnitsOwned()
 {
-    int playerCount = NetPlayerCount + NetAIPlayers;
+    int playerCount = NetPlayerCount + gNetAIPlayers;
     for (int i = 0; i < playerCount; i++)
     {
         char id[5];
@@ -107,7 +107,7 @@ static void WriteUnitsOwned()
 
 static void WriteBuildingsOwned()
 {
-    int playerCount = NetPlayerCount + NetAIPlayers;
+    int playerCount = NetPlayerCount + gNetAIPlayers;
     for (int i = 0; i < playerCount; i++)
     {
         char id[5];

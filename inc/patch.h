@@ -17,6 +17,7 @@ extern char MapScript[];
 extern char MapName[];
 extern bool UseDefaultWinLoseEvents;
 extern uint32_t SpawnerGameEndState;
+extern unsigned char gOldSideId;
 
 extern const char Cursor0Data[];
 extern const unsigned int Cursor0DataLength;

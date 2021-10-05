@@ -107,12 +107,12 @@ void EvAct_SetTech(int side_id, bool immediate_update, int value)
 void EvAct_SwitchMySide(int side_id, int ai_switch, bool reveal_base)
 {
   if (ai_switch & 2)
-    gAIArray[gSideId].__IsAI = 1;
+    _gAIArray[gSideId].__IsAI = 1;
   gSideId = side_id;
   if (reveal_base)
     RevealTilesSeenByBuildingsAndUnits(gSideId);
   if (ai_switch & 1)
-    gAIArray[gSideId].__IsAI = 0;
+    _gAIArray[gSideId].__IsAI = 0;
 }
 
 void EvAct_HideMap()

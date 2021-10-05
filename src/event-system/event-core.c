@@ -61,10 +61,10 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_STARPORT_DELIVERY:      EvAct_AddDelivery     (COORD0, A_SIDE, A_AMNT, A_BOOL, DELIVERYTYPE_STARPORT,  e->data); break;
   case ET_ALLEGIANCE:             EvAct_SetDiplomacy    (A_SIDE, A_ITEM, A_ENUM, A_BOOL); break;
   case ET_LEAVE:                  CSide__BlowupAll_surrender(GetSide(A_SIDE)); break;
-  case ET_BESERK:                 gAIArray[A_SIDE].__GoBeserk_OtherStates = 1; break;
+  case ET_BESERK:                 _gAIArray[A_SIDE].__GoBeserk_OtherStates = 1; break;
   case ET_PLAYSOUND:              EvAct_PlaySound       (A_VALUE, A_BOOL, COORD0); break;
-  case ET_SETBUILDRATE:           gAIArray[A_SIDE].UnitBuildRate = A_VALUE; break;
-  case ET_SETATTACKBUILDINGRATE:  gAIArray[A_SIDE].TimeBetweenBuildingAttacks = A_VALUE; break;
+  case ET_SETBUILDRATE:           _gAIArray[A_SIDE].UnitBuildRate = A_VALUE; break;
+  case ET_SETATTACKBUILDINGRATE:  _gAIArray[A_SIDE].TimeBetweenBuildingAttacks = A_VALUE; break;
   case ET_SETCASH:                EvAct_SetCash         (A_SIDE, A_ENUM, A_VALUE); break;
   case ET_SETTECH:                EvAct_SetTech         (A_SIDE, A_BOOL, A_VALUE); break;
   case ET_WIN:                    if ( !gLose ) gWin = 1; break;

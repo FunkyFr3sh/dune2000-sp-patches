@@ -80,19 +80,19 @@ cextern NetworkType
 cextern NetPlayerCount
 
 ;Multiplayer settings
-cextern NetUnitCount
-cextern NetTechLevel
-cextern NetStartingCredits
-cextern NetAIPlayers
-cextern NetCrates
-cextern NetWorms
-cextern NetPlayerName
-cextern NetPlayerSide
-cextern NetPlayerColor
-cextern NetPlayerHandicap
-cextern NetIPAddress
-cextern NetModemPhone
-cextern NetSerialComPort
+cextern gNetUnitCount
+cextern gNetTechLevel
+cextern gNetStartingCredits
+cextern gNetAIPlayers
+cextern gNetCrates
+cextern gNetWorms
+cextern gNetPlayerName
+cextern gNetPlayerSide
+cextern gNetPlayerColor
+cextern gNetPlayerHandicap
+cextern gNetIPAddress
+cextern gNetModemPhone
+cextern gNetSerialComPort
 cextern NetMap
 cextern NetPlayerNamesArray
 

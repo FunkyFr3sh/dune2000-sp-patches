@@ -6,7 +6,10 @@
 // This header will be split up as it becomes larger
 
 typedef void TImage;
+typedef char eBuildingGroupType;
+typedef int32_t _DWORD;
 typedef int16_t _WORD;
+typedef uint8_t _BYTE;
 
 #include "dune2000/side.h"
 #include "dune2000/ai.h"
@@ -32,6 +35,15 @@ typedef struct GameEvent // 168 byte
     //sideId 36
 }GameEvent;
 
+typedef struct TechPosEntry
+{
+  char UnitType_Atreides;
+  char UnitType_Harkonnen;
+  char UnitType_Ordos;
+  char PosX;
+  char PosY;
+} TechPosEntry;
+
 // ### Constants ###
 
 enum Sides
@@ -45,6 +57,20 @@ enum Sides
     SD_MERCENARIES,
     SD_SANDWORM
 };
+
+typedef enum eSideType
+{
+  SIDE_ATREIDES = 0x0,
+  SIDE_HARKONNEN = 0x1,
+  SIDE_ORDOS = 0x2,
+  SIDE_EMPEROR = 0x3,
+  SIDE_FREMEN = 0x4,
+  SIDE_SMUGGLER = 0x5,
+  SIDE_MERCENARY = 0x6,
+  SIDE_OTHER = 0x7,
+  SIDE_COUNT = 0x8,
+  SIDE_NONE = 0xFF,
+} eSideType;
 
 enum Colors
 {
@@ -79,6 +105,16 @@ enum GameTypes
     GT_MODEM,
     GT_WOL
 };
+
+typedef enum eGameType
+{
+  GAME_CAMPAIGN = 0x0,
+  GAME_SKIRMISH = 0x1,
+  GAME_NETWORK = 0x2,
+  GAME_SERIAL = 0x3,
+  GAME_MODEM = 0x4,
+  GAME_INTERNET = 0x5,
+} eGameType;
 
 enum GameStates
 {
@@ -115,19 +151,19 @@ enum GameStates
 
 //Multiplayer settings
 extern char NetworkGame;
-extern unsigned char NetUnitCount;
-extern unsigned char NetTechLevel;
-extern unsigned short NetStartingCredits;
-extern unsigned char NetAIPlayers;
-extern bool NetCrates;
-extern unsigned char NetWorms;
-extern char NetPlayerName[];
-extern unsigned char NetPlayerSide;
-extern unsigned char NetPlayerColor;
-extern unsigned char NetPlayerHandicap;
-extern char NetIPAddress[];
-extern char NetModemPhone[];
-extern unsigned char NetSerialComPort;
+extern unsigned char gNetUnitCount;
+extern unsigned char gNetTechLevel;
+extern unsigned short gNetStartingCredits;
+extern unsigned char gNetAIPlayers;
+extern bool gNetCrates;
+extern unsigned char gNetWorms;
+extern char gNetPlayerName[];
+extern unsigned char gNetPlayerSide;
+extern unsigned char gNetPlayerColor;
+extern unsigned char gNetPlayerHandicap;
+extern char gNetIPAddress[];
+extern char gNetModemPhone[];
+extern unsigned char gNetSerialComPort;
 extern char NetMap[];
 extern char LoginName[];
 extern int NetPlayerCount;
@@ -198,7 +234,7 @@ extern int                  gBitsPerPixel;
 extern int                  MousePositionX;
 extern int                  MousePositionY;
 extern int                  RandSeed;
-extern CAI_                 gAIArray[];
+extern CAI_                 _gAIArray[];
 extern MessageData          _gMessageData;
 extern char                 ResourcePath[];
 extern char                 MoviesResourcePath[];
@@ -228,31 +264,41 @@ extern ConditionData        gConditionArray[];
 extern bool                 gBuildingsExist[];
 extern MiscData             gMiscData;
 extern VariableStruct       _gVariables;
+extern TechPosEntry         _TechPosdata[10][10];
 
 
 extern GroupIDsStruct       _templates_GroupIDs;
 extern void *               _RadarMap1;
+extern POINT                _SpawnLocations[8];
+extern int                  _tiledata[1000];
 extern char                 _templates_UnitTypeCount;
 
 extern int                  _ViewportHeight;
 extern BuildingAtrbStruct   _templates_buildattribs[100];
 extern int                  _sinValues[16384];
+extern char                 _MapName[200];
 extern int                  _cosValues[16384];
 extern UnitAtribStruct      _templates_unitattribs[60];
 extern void *               _RadarMap2;
 extern ExploisonAtrbStruct  _templates_explosionattribs[64];
 extern BullAtrbStruct       _templates_bulletattribs[64];
-extern bool                 SpawnLocationUsedBoolArray[];
+extern char                 _FreeSpawnLocations[8];
 extern int                  _ViewportWidth;
+extern char                 _SpawnLocationCount;
 extern unsigned int         _TileBitflags[800];
 extern unsigned char        gUnitTypeNum;
+extern unsigned char        gBuildingTypeNum;
+extern unsigned char        gBulletTypeNum;
+extern unsigned char        gExplosionTypeNum;
 extern int                  SoundClassObject;
 extern TextTableStruct **   gTextTable;
 extern int                  CUIManagerObject;
 
 extern int                  GameType;
+extern eGameType            gGameType;
 
-
+extern unsigned char        gTotalPlayers;
+extern char                 _canQueue_IsMultiplayer;
 extern bool                 BitsPerPixelChanged;
 
 
@@ -293,6 +339,7 @@ void            ClearTImage(TImage *a1, int color, int unusable);
 unsigned int    w__GetUnitCost(int type, eSideType side);
 unsigned int    GetBuildingCost(int building_type, int num_upgrades, eSideType side_id);
 int             GetRandomValue(char *, int);
+void            SetBuildingAsPrimary(eSideType side_id, int building_index);
 // Map
 int             RevealMap();
 void            Map__PlayerDefeated(uint8_t sideId);
@@ -329,6 +376,7 @@ void            Setup__LoadUIBBFile();
 
 void            SetPixelOnRadar8(unsigned __int8 x, unsigned __int8 y, char color);
 void            SetPixelOnRadar16(unsigned __int8 x, unsigned __int8 y, __int16 color);
+void            radarmap();
 
 // CSide
 void __thiscall CSide__update_list_of_available_buildings_and_units(CSide *side);
@@ -369,6 +417,8 @@ bool            Unit_49F5F0(Unit *unit);
 
 
 CSide *         GetSide(int sideId);
+Unit *          GetUnit(eSideType side, index objIndex);
+Building *      GetBuilding(eSideType side, index objIndex);
 Unit *          GetUnitOnTile(unsigned int x, unsigned int y, eSideType *side, _WORD *index, bool bool1);
 Unit *          GetNextUnitOnTile(unsigned int x, unsigned int y, unsigned int side, _WORD *unit_index);
 bool            GetBuildingOnTile_0(int x, int y, Building **building_ptr, eSideType *side_id, _WORD *index);
