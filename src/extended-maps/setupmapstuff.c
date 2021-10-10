@@ -69,7 +69,7 @@ void Mod__setupmapstuff()
   signed int v56; // ecx
   char v57; // al
   int v58; // ebx
-  CAI *v59; // edi
+  CAI_ *v59; // edi
   unsigned __int8 total_players; // al
   char v61; // bl
   eSideType v62; // di
@@ -425,9 +425,9 @@ LABEL_52:
   v58 = (int)&_gAIArray[1];
   do
   {
-    v59 = (CAI *)v58;
+    v59 = (CAI_ *)v58;
     v58 += 7608;
-    memcpy(v59, _gAIArray, sizeof(CAI));
+    memcpy(v59, _gAIArray, sizeof(CAI_));
     *(_BYTE *)(v58 - 7608) = v57++;
   }
   while ( (unsigned __int8)v57 < 8u );
