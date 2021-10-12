@@ -254,15 +254,20 @@ extern int                  gGameMapHeight;
 extern int                  _CellNumbersWidthSpan[128];
 extern char *               _ptr_circle_1x1grid;
 extern int                  _mapvisstate_548010;
-
+extern char                 _NumCratesAllowed;
+extern char                 _GameOver;
+extern char                 _gEventCount;
+extern char                 _somebool_6B7050;
 extern EventData            _gEventArray[64];
-extern bool                 gUnitsExist[];
+extern char                 _persideflags_6B8258[8];
+extern char                 _gConditionCount;
+extern bool                 _gUnitsExist[8];
 extern int                  gTimerValue;
 extern bool                 gWin;
 extern bool                 gLose;
-extern ConditionData        gConditionArray[];
-extern bool                 gBuildingsExist[];
-extern MiscData             gMiscData;
+extern ConditionData        _gConditionArray[];
+extern bool                 _gBuildingsExist[8];
+extern MiscData             _gMiscData;
 extern VariableStruct       _gVariables;
 extern TechPosEntry         _TechPosdata[10][10];
 
@@ -306,7 +311,7 @@ extern int                  _ViewportXPos;
 extern int                  _ViewportYPos;
 extern unsigned char        MySideID;
 extern unsigned char        gSideId;
-extern unsigned char        gDiplomacy[8][8];
+extern char                 _gDiplomacy[8][8];
 extern unsigned char        _IRValues[8];
 extern int                  OSMajorVersion;
 extern int                  OSMinorVersion;
@@ -360,6 +365,7 @@ void            Mission__CheckEvents();
 void            Mission__LoadVarsFile();
 
 // Model
+bool            EvaluateIfBuildingsOrUnitsExistForSide(eSideType side_id, char buildings_or_units);
 
 index           ModelAddUnit(unsigned char side, unsigned char type, unsigned char add_at_x, unsigned char add_at_y, unsigned char move_to_x, unsigned char move_to_y, int pixel_offset_x, int pixel_offset_y);
 

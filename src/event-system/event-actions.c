@@ -39,7 +39,7 @@ void EvAct_AddDelivery(int xpos, int ypos, int side_id, int amount, int deploy_a
 
 void EvAct_SetDiplomacy(int source_side, int target_side, int allegiance_type, bool both_sided)
 {
-  gDiplomacy[source_side][target_side] = allegiance_type;
+  _gDiplomacy[source_side][target_side] = allegiance_type;
   if ( allegiance_type == 0 || allegiance_type == 2 )
   {
     CSide__reset_enemy(GetSide(source_side), target_side);
@@ -47,7 +47,7 @@ void EvAct_SetDiplomacy(int source_side, int target_side, int allegiance_type, b
   // Double-sided
   if (both_sided)
   {
-    gDiplomacy[target_side][source_side] = allegiance_type;
+    _gDiplomacy[target_side][source_side] = allegiance_type;
     if ( allegiance_type == 0 || allegiance_type == 2 )
     {
       CSide__reset_enemy(GetSide(target_side), source_side);
@@ -96,7 +96,7 @@ void EvAct_SetCash(int side_id, eEventOperation operation, int value)
 
 void EvAct_SetTech(int side_id, bool immediate_update, int value)
 {
-  gMiscData.Tech[side_id] = value;
+  _gMiscData.Tech[side_id] = value;
   // Immediately update available buildings and units
   if (immediate_update)
   {

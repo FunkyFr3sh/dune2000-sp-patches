@@ -8,25 +8,324 @@
 #include "event-core.h"
 #include "event-actions.h"
 
-CALL(0x00453F3C, _Mod__HandleEvent);
+CALL(0x00449A8D, _Mod__HandleConditionsAndEvents);
 
-void Mod__HandleEvent(EventData *event)
+void Mod__HandleConditionsAndEvents()
 {
-  ProcessEvent(event);
+  char v0; // bl
+  eSideType v1; // si
+  char v20; // bl
+  char (*v21)[8]; // ebp
+  char *v22; // edx
+  int v23; // esi
+  char v24; // al
+  int v25; // eax
+  char (*v26)[8]; // ecx
+  signed int v27; // edi
+  char v28; // dl
+  char v29; // [esp+12h] [ebp-46h]
+  char v30; // [esp+13h] [ebp-45h]
+  unsigned __int8 a1; // [esp+14h] [ebp-44h]
+  signed int v34; // [esp+18h] [ebp-40h]
+
+  v0 = gGameTicks & 0xF;
+  a1 = (unsigned __int8)(gGameTicks & 0xF) >> 1;
+  v1 = (unsigned __int8)(gGameTicks & 0xF) >> 1;
+  v30 = 0;
+  v29 = -1;
+  GetSide((eSideType)a1);
+  EvaluateIfBuildingsOrUnitsExistForSide(v1, v0 & 1);
+  if ( _canQueue_IsMultiplayer || gGameType == GAME_SKIRMISH )
+  {
+    v20 = 0;
+    v21 = _gDiplomacy;
+    _somebool_6B7050 = 0;
+    v22 = &_gAIArray[0].__IsAI;
+    v23 = 0;
+    v34 = 8;
+    do
+    {
+      v24 = _persideflags_6B8258[v23];
+      if ( !v24 || _gBuildingsExist[v23] )
+      {
+        v30 = 1;
+      }
+      else if ( _gUnitsExist[v23] )
+      {
+        v29 &= ~v24;
+      }
+      if ( _gUnitsExist[v23] || _gBuildingsExist[v23] )
+      {
+        v25 = 0;
+        v26 = v21;
+        v27 = 8;
+        do
+        {
+          if ( (_gUnitsExist[v25] || _gBuildingsExist[v25]) && (_gDiplomacy[v23][v25] || *(_BYTE *)v26) )
+          {
+            v20 = 1;
+          }
+          ++v25;
+          ++v26;
+          --v27;
+        }
+        while ( v27 );
+        if ( !*v22 )
+        {
+          _somebool_6B7050 = 1;
+        }
+      }
+      ++v23;
+      v21 = (char (*)[8])((char *)v21 + 1);
+      v22 += 7608;
+      --v34;
+    }
+    while ( v34 );
+    if ( v20 )
+    {
+      v28 = _GameOver;
+    }
+    else
+    {
+      v28 = 1;
+      _GameOver = 1;
+    }
+    if ( _gUnitsExist[(unsigned __int8)gSideId] || _gBuildingsExist[(unsigned __int8)gSideId] )
+    {
+      if ( v28 )
+      {
+        if ( !gLose )
+        {
+          gWin = 1;
+        }
+      }
+    }
+    else if ( !gWin )
+    {
+      gLose = 1;
+    }
+    if ( !v30 && !_NumCratesAllowed && !v28 )
+    {
+      if ( v29 == -3 )
+      {
+        _GameOver = 1;
+        if ( gSideId == a1 )
+        {
+          gWin = 1;
+        }
+        else
+        {
+          gLose = 1;
+        }
+      }
+      if ( v29 == -2 )
+      {
+        _GameOver = 1;
+        if ( gSideId == a1 )
+        {
+          gWin = 1;
+        }
+        else
+        {
+          gLose = 1;
+        }
+      }
+    }
+  }
+  else
+  {
+    char condition_results[48];
+    // Evaluate conditions
+    for (int condition_index = 0; condition_index < _gConditionCount; condition_index++)
+    {
+      condition_results[condition_index] = ProcessCondition(condition_index);
+    }
+    // Process events
+    for (int event_index = 0; event_index < _gEventCount; event_index++)
+    {
+      bool event_can_happen;
+      // OR-evaluation
+      if (_gEventArray[event_index].event_flags & EVENTFLAG_CONDITIONS_OR)
+      {
+        event_can_happen = false;
+        for (int i = 0; i < _gEventArray[event_index].num_conditions; i++)
+        {
+          if ( condition_results[(int)_gEventArray[event_index].condition_index[i]] != _gEventArray[event_index].condition_negation[i] )
+          {
+            event_can_happen = true;
+            break;
+          }
+        }
+      }
+      // AND-evaluation
+      else
+      {
+        event_can_happen = true;
+        for (int i = 0; i < _gEventArray[event_index].num_conditions; i++)
+        {
+          if ( condition_results[(int)_gEventArray[event_index].condition_index[i]] == _gEventArray[event_index].condition_negation[i] )
+          {
+            event_can_happen = false;
+            break;
+          }
+        }
+      }
+      // Execute event
+      if ( event_can_happen )
+      {
+        ProcessEvent(event_index);
+      }
+    }
+  }
 }
 
-void ExecuteEvent(int event_index)
+bool ProcessCondition(int condition_index)
 {
-  ProcessEvent(&_gEventArray[event_index]);
+  ConditionData *condition = &_gConditionArray[condition_index];
+  switch ( condition->__condition_type )
+  {
+    case COND_BUILDINGEXISTS:
+      for ( Building *building = GetSide(condition->__side_id)->_Buildings_10; building; building = building->Next )
+      {
+        if ( building->Type == condition->__building_type )
+        {
+          return true;
+        }
+      }
+      break;
+    case COND_UNITEXISTS:
+      for ( Unit *unit = GetSide(condition->__side_id)->_Units_8; unit; unit = unit->Next )
+      {
+        if ( unit->Type == condition->__unit_type_or_comparison_function )
+        {
+          return true;
+        }
+      }
+      break;
+    case COND_INTERVAL:
+    {
+      int remaining_time = condition->__start_delay;
+      if ( remaining_time )
+      {
+        condition->__start_delay = remaining_time - 1;
+      }
+      else
+      {
+        int remaining_runs = condition->__value;
+        if ( remaining_runs )
+        {
+          condition->__value = remaining_runs - 1;
+          condition->__start_delay = condition->__time_amount;
+          return true;
+        }
+      }
+      break;
+    }
+    case COND_TIMER:
+    {
+      unsigned int current_time = condition->__start_delay + 1;
+      condition->__start_delay = current_time;
+      switch ( condition->__unit_type_or_comparison_function )
+      {
+        case 0:
+          if ( current_time > condition->__time_amount )
+          {
+            return true;
+          }
+          break;
+        case 1:
+          if ( current_time < condition->__time_amount )
+          {
+            return true;
+          }
+          break;
+        case 2:
+          if ( current_time == condition->__time_amount )
+          {
+            return true;
+          }
+          break;
+        case 3:
+          if ( !(current_time % condition->__time_amount) )
+          {
+            return true;
+          }
+          break;
+      }
+      break;
+    }
+    case COND_CASUALTIES:
+    {
+      CSide *side = GetSide(condition->__side_id);
+      int units_lost = side->__units_lost;
+      if ( (unsigned int)units_lost > condition->__value )
+      {
+        unsigned int units_killed = side->__units_killed;
+        double v12;
+        if ( units_killed )
+        {
+          v12 = (double)(100 * units_lost / units_killed) * 0.0099999998;
+        }
+        else
+        {
+          v12 = (double)units_lost;
+        }
+        if ( v12 > condition->__casualties_ratio )
+        {
+          return true;
+        }
+      }
+      break;
+    }
+    case COND_BASEDESTROYED:
+      if ( !_gBuildingsExist[(unsigned __int8)condition->__side_id] )
+      {
+        return true;
+      }
+      break;
+    case COND_UNITSDESTROYED:
+      if ( !_gUnitsExist[(unsigned __int8)condition->__side_id] )
+      {
+        return true;
+      }
+      break;
+    case COND_REVEALED:
+    {
+      int remaining_runs = condition->__value;
+      if ( remaining_runs )
+      {
+        if ( !gGameMap.map[condition->__xpos + _CellNumbersWidthSpan[condition->__ypos]].__shroud_flags )
+        {
+          condition->__value = remaining_runs - 1;
+          return true;
+        }
+      }
+      break;
+    }
+    case COND_HARVESTED:
+    {
+      CSide *side = GetSide(gSideId);
+      if ( (unsigned int)(side->CashReal + side->SpiceReal) >= condition->__value )
+      {
+        return true;
+      }
+      break;
+    }
+    case COND_FLAG:
+      return condition->__value != 0;
+      break;
+  }
+  return false;  
 }
 
-void ProcessEvent(EventData *event)
+void ProcessEvent(int event_index)
 {
+  EventData *event = &_gEventArray[event_index];
   // Check if event is blocked and block it if auto-block is set
-  if (event->blocked_flags & EBF_BLOCKED)
+  if (event->event_flags & EVENTFLAG_BLOCKED)
     return;
-  if (event->blocked_flags & EBF_AUTO_BLOCK)
-    event->blocked_flags |= EBF_BLOCKED;
+  if (event->event_flags & EVENTFLAG_AUTO_BLOCK)
+    event->event_flags |= EVENTFLAG_BLOCKED;
   // Fill event context
   EventContext e;
   for (int i = 0; i < 4; i++)
@@ -76,7 +375,7 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_HIDETIMER:              gTimerValue = -1; break;
   case ET_SHOWMESSAGE:            EvAct_ShowMessage     (A_VALUE, (ShowMessageEventData *)&e->data[1]); break;
   case ET_UNIT_SPAWN:             EvAct_UnitSpawn       (COORD0, A_SIDE, A_AMNT, e->data); break;
-  case ET_SET_FLAG:               gConditionArray[A_SIDE].value = A_VALUE; break;
+  case ET_SET_FLAG:               _gConditionArray[A_SIDE].__value = A_VALUE; break;
   case ET_UN_BLOCK_EVENT:         EvAct_UnBlockEvent    (A_BOOL, A_VALUE); break;
   case ET_PLAY_MUSIC:             EvAct_PlayMusic       (e->data); break;
   case ET_DAMAGE_TILES:           EvAct_DamageTiles     (COORD0, COORD2, COORD3, A_SIDE, A_ITEM, A_ENUM, A_BOOL); break;

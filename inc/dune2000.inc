@@ -164,16 +164,16 @@ cextern MoviesResourcePath
 cextern gGameMapWidth
 cextern gGameMapHeight
 cextern CurrentSoundTrack
-cextern gBuildingsExist
-cextern gUnitsExist
+cextern _gBuildingsExist
+cextern _gUnitsExist
 cextern NetMessageString
 cextern CreditsScreenWidth
 cextern CreditsScreenTop
 cextern CreditsScreenBottom
 cextern gGameTicks
-cextern GameOver
+cextern _GameOver
 cextern RandSeed
-cextern gDiplomacy
+cextern _gDiplomacy
 cextern SoundClassObject
 cextern WindowActivated
 

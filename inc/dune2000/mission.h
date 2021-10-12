@@ -29,22 +29,22 @@ typedef struct EventData
   char condition_index[12];
   char coord_var_flags;
   char arg_var_flags;
-  char condition_not[12];
-  char conditions_and_or;
-  char blocked_flags;
+  char condition_negation[12];
+  char unused;
+  char event_flags;
   char data[25];
 } EventData;
 
 typedef struct ConditionData
 {
-  int32_t time_amount;
-  int32_t start_delay;
-  int32_t value;
-  uint32_t xpos;
-  uint32_t ypos;
-  float casualties_ratio;
-  char side_id;
-  char condition_type;
-  char building_type;
-  char unit_type_or_comparison_function;
+  uint32_t __time_amount;
+  uint32_t __start_delay;
+  uint32_t __value;
+  int __xpos;
+  int __ypos;
+  float __casualties_ratio;
+  char __side_id;
+  char __condition_type;
+  char __building_type;
+  char __unit_type_or_comparison_function;
 } ConditionData;

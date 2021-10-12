@@ -41,22 +41,23 @@ enum EventTypes
 
 enum ConditionTypes
 {
-  EC_BUILDINGEXISTS,
-  EC_UNITEXISTS,
-  EC_INTERVAL,
-  EC_TIMER,
-  EC_CASUALTIES,
-  EC_BASEDESTROYED,
-  EC_UNITSDESTROYED,
-  EC_REVEALED,
-  EC_HARVESTED,
-  EC_FLAG
+  COND_BUILDINGEXISTS,
+  COND_UNITEXISTS,
+  COND_INTERVAL,
+  COND_TIMER,
+  COND_CASUALTIES,
+  COND_BASEDESTROYED,
+  COND_UNITSDESTROYED,
+  COND_REVEALED,
+  COND_HARVESTED,
+  COND_FLAG
 };
 
-enum EventBlockedFlags
+enum EventFlags
 {
-  EBF_AUTO_BLOCK = 1,
-  EBF_BLOCKED = 2
+  EVENTFLAG_AUTO_BLOCK = 1,
+  EVENTFLAG_BLOCKED = 2,
+  EVENTFLAG_CONDITIONS_OR = 4
 };
 
 typedef struct EventContext
@@ -67,6 +68,6 @@ typedef struct EventContext
   char *data;
 } EventContext;
 
-void ExecuteEvent(int event_index);
-void ProcessEvent(EventData *event);
+bool ProcessCondition(int condition_index);
+void ProcessEvent(int event_index);
 void ExecuteEventAction(int event_type, EventContext *e);

@@ -196,15 +196,20 @@ setcglob 0x00517DEC, gGameMapHeight
 setcglob 0x00547DF0, _CellNumbersWidthSpan
 setcglob 0x00547FF0, _ptr_circle_1x1grid
 setcglob 0x00548010, _mapvisstate_548010
-setcglob 0x006B63C8, GameOver
+setcglob 0x00548048, _NumCratesAllowed
+setcglob 0x006B63C8, _GameOver
+setcglob 0x006B63CC, _gEventCount
+setcglob 0x006B7050, _somebool_6B7050
 setcglob 0x006B7058, _gEventArray
-setcglob 0x006B8268, gUnitsExist
+setcglob 0x006B8258, _persideflags_6B8258
+setcglob 0x006B8260, _gConditionCount
+setcglob 0x006B8268, _gUnitsExist
 setcglob 0x006B8270, gTimerValue
 setcglob 0x006B8274, gWin
 setcglob 0x006B8278, gLose
-setcglob 0x006B8280, gConditionArray
-setcglob 0x006B87C0, gBuildingsExist
-setcglob 0x006B87C8, gMiscData
+setcglob 0x006B8280, _gConditionArray
+setcglob 0x006B87C0, _gBuildingsExist
+setcglob 0x006B87C8, _gMiscData
 setcglob 0x006B8818, _gVariables
 setcglob 0x006B8868, _TechPosdata
 setcglob 0x006B9518, NetMessageString
@@ -249,7 +254,7 @@ setcglob 0x00798538, _ViewportXPos
 setcglob 0x0079853C, _ViewportYPos
 setcglob 0x00798544, MySideID
 setcglob 0x00798544, gSideId
-setcglob 0x00798830, gDiplomacy
+setcglob 0x00798830, _gDiplomacy
 setcglob 0x008CD4F0, _IRValues
 setcglob 0x008CD51C, OSMajorVersion
 setcglob 0x008CD520, OSMinorVersion
@@ -320,6 +325,7 @@ setcglob 0x00453B90, Mission__CheckEvents
 setcglob 0x004544E0, Mission__LoadVarsFile
 setcglob 0x00454E00, Mission__LoadTechposFile
 ; Model
+setcglob 0x00455290, EvaluateIfBuildingsOrUnitsExistForSide
 setcglob 0x00455510, Model__HandleGameLoopEvents
 setcglob 0x00455870, ModelAddUnit
 setcglob 0x00455FC0, Model__BuildBuildingPick
