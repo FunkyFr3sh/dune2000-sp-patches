@@ -182,9 +182,9 @@ void EvAct_UnitSpawn(int xpos, int ypos, int side_id, int amount, char *unit_lis
 void EvAct_UnBlockEvent(int operation, int event_index)
 {
   if (operation)
-    _gEventArray[event_index].blocked_flags |= EBF_BLOCKED;
+    _gEventArray[event_index].event_flags |= EVENTFLAG_BLOCKED;
   else
-    _gEventArray[event_index].blocked_flags &= ~EBF_BLOCKED;
+    _gEventArray[event_index].event_flags &= ~EVENTFLAG_BLOCKED;
 }
 
 void EvAct_PlayMusic(char *name)

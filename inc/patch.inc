@@ -41,6 +41,11 @@ cextern TextUib
 cextern RandomMusicEnabled
 cextern nextGameTick
 
+; ### Extended data replacing original data ###
+
+cextern _gEventArray
+cextern _gConditionArray
+
 ; ### Extra rules ###
 
 cextern rulesExt__InfiniteSpice

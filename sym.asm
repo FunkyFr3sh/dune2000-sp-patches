@@ -200,14 +200,14 @@ setcglob 0x00548048, _NumCratesAllowed
 setcglob 0x006B63C8, _GameOver
 setcglob 0x006B63CC, _gEventCount
 setcglob 0x006B7050, _somebool_6B7050
-setcglob 0x006B7058, _gEventArray
+;setcglob 0x006B7058, _gEventArray ; Replaced by mod
 setcglob 0x006B8258, _persideflags_6B8258
 setcglob 0x006B8260, _gConditionCount
 setcglob 0x006B8268, _gUnitsExist
 setcglob 0x006B8270, gTimerValue
 setcglob 0x006B8274, gWin
 setcglob 0x006B8278, gLose
-setcglob 0x006B8280, _gConditionArray
+;setcglob 0x006B8280, _gConditionArray ; Replaced by mod
 setcglob 0x006B87C0, _gBuildingsExist
 setcglob 0x006B87C8, _gMiscData
 setcglob 0x006B8818, _gVariables
@@ -291,6 +291,7 @@ setcglob 0x00417E50, WOL__StartHostINetGame
 setcglob 0x004184A0, WOL__OpenWebsite				; (char *URL)
 setcglob 0x00425720, QueueMessage
 setcglob 0x0042B590, DebugFatal
+setcglob 0x0042BB60, ReadFile
 setcglob 0x0042BC60, CreateGlobe
 ; Graphlib
 setcglob 0x0042DC00, Graphlib__TextOnScreen

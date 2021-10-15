@@ -256,16 +256,16 @@ extern char *               _ptr_circle_1x1grid;
 extern int                  _mapvisstate_548010;
 extern char                 _NumCratesAllowed;
 extern char                 _GameOver;
-extern char                 _gEventCount;
+extern int                  _gEventCount; // Extended from char to int (mod)
 extern char                 _somebool_6B7050;
-extern EventData            _gEventArray[64];
+// extern EventData            _gEventArray[64]; // Replaced by mod
 extern char                 _persideflags_6B8258[8];
-extern char                 _gConditionCount;
+extern int                  _gConditionCount; // Extended from char to int (mod)
 extern bool                 _gUnitsExist[8];
 extern int                  gTimerValue;
 extern bool                 gWin;
 extern bool                 gLose;
-extern ConditionData        _gConditionArray[];
+// extern ConditionData        _gConditionArray[48]; // Replaced by mod
 extern bool                 _gBuildingsExist[8];
 extern MiscData             _gMiscData;
 extern VariableStruct       _gVariables;

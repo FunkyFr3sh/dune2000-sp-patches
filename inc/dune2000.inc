@@ -204,6 +204,7 @@ cextern ModelAddExplosion
 cextern PlaySoundAt
 cextern CreateGlobe
 cextern Unit_49D280_occupiedbybuilding
+cextern ReadFile
 
 ;imports
 cextern _imp__GetTickCount

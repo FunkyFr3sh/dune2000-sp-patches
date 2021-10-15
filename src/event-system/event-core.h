@@ -1,4 +1,38 @@
 
+// Event-related structs
+
+typedef struct EventData
+{
+  uint8_t coord_x[4];
+  uint8_t coord_y[4];
+  int32_t value;
+  uint8_t num_conditions;
+  uint8_t event_type;
+  uint8_t args[5];
+  uint8_t condition_index[12];
+  uint8_t coord_var_flags;
+  uint8_t arg_var_flags;
+  uint8_t condition_negation[12];
+  uint8_t unused;
+  uint8_t event_flags;
+  char data[25];
+} EventData;
+
+typedef struct EventContext
+{
+  int coord_x[4];
+  int coord_y[4];
+  int args[6];
+  char *data;
+} EventContext;
+
+enum EventFlags
+{
+  EVENTFLAG_AUTO_BLOCK = 1,
+  EVENTFLAG_BLOCKED = 2,
+  EVENTFLAG_CONDITIONS_OR = 4
+};
+
 enum EventTypes
 {
   ET_REINFORCEMENT,
@@ -39,35 +73,50 @@ enum EventTypes
   ET_CHANGE_TILE_DAMAGE
 };
 
+// Condition-related structs
+
+typedef struct ConditionData
+{
+  int32_t val2; //__time_amount;
+  int32_t val1; //__start_delay;
+  int32_t value; //__value;
+  uint8_t coord_x[2];
+  uint8_t coord_var_flags;
+  uint8_t arg_var_flags;
+  uint8_t coord_y[2];
+  uint8_t unused1;
+  uint8_t unused2;
+  float   float_val; //__casualties_ratio;
+  uint8_t side_id; //__side_id;
+  uint8_t condition_type;
+  uint8_t arg1; //__building_type;
+  uint8_t arg2; //__unit_type_or_comparison_function;
+} ConditionData;
+
 enum ConditionTypes
 {
-  COND_BUILDINGEXISTS,
-  COND_UNITEXISTS,
-  COND_INTERVAL,
-  COND_TIMER,
-  COND_CASUALTIES,
-  COND_BASEDESTROYED,
-  COND_UNITSDESTROYED,
-  COND_REVEALED,
-  COND_HARVESTED,
-  COND_FLAG
+  CT_BUILDINGEXISTS,
+  CT_UNITEXISTS,
+  CT_INTERVAL,
+  CT_TIMER,
+  CT_CASUALTIES,
+  CT_BASEDESTROYED,
+  CT_UNITSDESTROYED,
+  CT_REVEALED,
+  CT_HARVESTED,
+  CT_FLAG
 };
 
-enum EventFlags
-{
-  EVENTFLAG_AUTO_BLOCK = 1,
-  EVENTFLAG_BLOCKED = 2,
-  EVENTFLAG_CONDITIONS_OR = 4
-};
+// Variables
 
-typedef struct EventContext
-{
-  int coord_x[4];
-  int coord_y[4];
-  int args[6];
-  char *data;
-} EventContext;
+#define MAX_EVENTS 1024
+#define MAX_CONDITIONS 256
 
-bool ProcessCondition(int condition_index);
-void ProcessEvent(int event_index);
+extern EventData _gEventArray[MAX_EVENTS];
+extern ConditionData _gConditionArray[MAX_CONDITIONS];
+
+// Functions
+
+bool EvaluateCondition(int condition_index);
+void ExecuteEvent(int event_index);
 void ExecuteEventAction(int event_type, EventContext *e);

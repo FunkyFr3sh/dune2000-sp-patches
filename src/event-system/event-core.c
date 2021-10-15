@@ -6,14 +6,19 @@
 #include "ini.h"
 #include "utils.h"
 #include "event-core.h"
+#include "event-conditions.h"
 #include "event-actions.h"
 
+// New extended arrays for event and condition data
+
+EventData _gEventArray[MAX_EVENTS];
+ConditionData _gConditionArray[MAX_CONDITIONS];
+
+// Custom implementation of function HandleConditionsAndEvents
 CALL(0x00449A8D, _Mod__HandleConditionsAndEvents);
 
 void Mod__HandleConditionsAndEvents()
 {
-  char v0; // bl
-  eSideType v1; // si
   char v20; // bl
   char (*v21)[8]; // ebp
   char *v22; // edx
@@ -28,13 +33,10 @@ void Mod__HandleConditionsAndEvents()
   unsigned __int8 a1; // [esp+14h] [ebp-44h]
   signed int v34; // [esp+18h] [ebp-40h]
 
-  v0 = gGameTicks & 0xF;
   a1 = (unsigned __int8)(gGameTicks & 0xF) >> 1;
-  v1 = (unsigned __int8)(gGameTicks & 0xF) >> 1;
   v30 = 0;
   v29 = -1;
-  GetSide((eSideType)a1);
-  EvaluateIfBuildingsOrUnitsExistForSide(v1, v0 & 1);
+  EvaluateIfBuildingsOrUnitsExistForSide(a1, gGameTicks & 1);
   if ( _canQueue_IsMultiplayer || gGameType == GAME_SKIRMISH )
   {
     v20 = 0;
@@ -134,11 +136,11 @@ void Mod__HandleConditionsAndEvents()
   }
   else
   {
-    char condition_results[48];
+    char condition_results[MAX_CONDITIONS];
     // Evaluate conditions
     for (int condition_index = 0; condition_index < _gConditionCount; condition_index++)
     {
-      condition_results[condition_index] = ProcessCondition(condition_index);
+      condition_results[condition_index] = EvaluateCondition(condition_index);
     }
     // Process events
     for (int event_index = 0; event_index < _gEventCount; event_index++)
@@ -173,152 +175,70 @@ void Mod__HandleConditionsAndEvents()
       // Execute event
       if ( event_can_happen )
       {
-        ProcessEvent(event_index);
+        ExecuteEvent(event_index);
       }
     }
   }
 }
 
-bool ProcessCondition(int condition_index)
+#define COORD0  coord_x[0], coord_y[0]
+#define COORD1  coord_x[1], coord_y[1]
+#define A_SIDE  args[0]
+#define A_ITEM  args[1]
+#define A_ENUM  args[2]
+#define A_VAL1  args[3]
+#define A_VAL2  args[4]
+#define A_VAL3  args[5]
+#define A_VALUE args[5]
+#define A_FLOAT arg6
+
+bool EvaluateCondition(int condition_index)
 {
   ConditionData *condition = &_gConditionArray[condition_index];
-  switch ( condition->__condition_type )
+  // Fill condition context
+  int coord_x[2];
+  int coord_y[2];
+  int args[6];
+  float arg6;
+  for (int i = 0; i < 2; i++)
   {
-    case COND_BUILDINGEXISTS:
-      for ( Building *building = GetSide(condition->__side_id)->_Buildings_10; building; building = building->Next )
-      {
-        if ( building->Type == condition->__building_type )
-        {
-          return true;
-        }
-      }
-      break;
-    case COND_UNITEXISTS:
-      for ( Unit *unit = GetSide(condition->__side_id)->_Units_8; unit; unit = unit->Next )
-      {
-        if ( unit->Type == condition->__unit_type_or_comparison_function )
-        {
-          return true;
-        }
-      }
-      break;
-    case COND_INTERVAL:
-    {
-      int remaining_time = condition->__start_delay;
-      if ( remaining_time )
-      {
-        condition->__start_delay = remaining_time - 1;
-      }
-      else
-      {
-        int remaining_runs = condition->__value;
-        if ( remaining_runs )
-        {
-          condition->__value = remaining_runs - 1;
-          condition->__start_delay = condition->__time_amount;
-          return true;
-        }
-      }
-      break;
-    }
-    case COND_TIMER:
-    {
-      unsigned int current_time = condition->__start_delay + 1;
-      condition->__start_delay = current_time;
-      switch ( condition->__unit_type_or_comparison_function )
-      {
-        case 0:
-          if ( current_time > condition->__time_amount )
-          {
-            return true;
-          }
-          break;
-        case 1:
-          if ( current_time < condition->__time_amount )
-          {
-            return true;
-          }
-          break;
-        case 2:
-          if ( current_time == condition->__time_amount )
-          {
-            return true;
-          }
-          break;
-        case 3:
-          if ( !(current_time % condition->__time_amount) )
-          {
-            return true;
-          }
-          break;
-      }
-      break;
-    }
-    case COND_CASUALTIES:
-    {
-      CSide *side = GetSide(condition->__side_id);
-      int units_lost = side->__units_lost;
-      if ( (unsigned int)units_lost > condition->__value )
-      {
-        unsigned int units_killed = side->__units_killed;
-        double v12;
-        if ( units_killed )
-        {
-          v12 = (double)(100 * units_lost / units_killed) * 0.0099999998;
-        }
-        else
-        {
-          v12 = (double)units_lost;
-        }
-        if ( v12 > condition->__casualties_ratio )
-        {
-          return true;
-        }
-      }
-      break;
-    }
-    case COND_BASEDESTROYED:
-      if ( !_gBuildingsExist[(unsigned __int8)condition->__side_id] )
-      {
-        return true;
-      }
-      break;
-    case COND_UNITSDESTROYED:
-      if ( !_gUnitsExist[(unsigned __int8)condition->__side_id] )
-      {
-        return true;
-      }
-      break;
-    case COND_REVEALED:
-    {
-      int remaining_runs = condition->__value;
-      if ( remaining_runs )
-      {
-        if ( !gGameMap.map[condition->__xpos + _CellNumbersWidthSpan[condition->__ypos]].__shroud_flags )
-        {
-          condition->__value = remaining_runs - 1;
-          return true;
-        }
-      }
-      break;
-    }
-    case COND_HARVESTED:
-    {
-      CSide *side = GetSide(gSideId);
-      if ( (unsigned int)(side->CashReal + side->SpiceReal) >= condition->__value )
-      {
-        return true;
-      }
-      break;
-    }
-    case COND_FLAG:
-      return condition->__value != 0;
-      break;
+    coord_x[i] = condition->coord_x[i];
+    coord_y[i] = condition->coord_y[i];
+  }
+  args[0] = condition->side_id;
+  args[1] = condition->arg1;
+  args[2] = condition->arg2;
+  args[3] = condition->val1;
+  args[4] = condition->val2;
+  args[5] = condition->value;
+  arg6 = condition->float_val;
+  // Run condition
+  switch ( condition->condition_type )
+  {
+    case CT_BUILDINGEXISTS: return Cond_BuildingExists(A_SIDE, A_ITEM);
+    case CT_UNITEXISTS:     return Cond_UnitExists    (A_SIDE, A_ENUM);
+    case CT_INTERVAL:       return Cond_Interval      (A_VAL1, A_VAL2, A_VAL3, condition);
+    case CT_TIMER:          return Cond_Timer         (A_ENUM, A_VAL2, A_VAL3);
+    case CT_CASUALTIES:     return Cond_Casualties    (A_SIDE, A_VALUE, A_FLOAT);
+    case CT_BASEDESTROYED:  return !_gBuildingsExist[A_SIDE];
+    case CT_UNITSDESTROYED: return !_gUnitsExist[A_SIDE];
+    case CT_REVEALED:       return Cond_Revealed      (COORD0, A_VALUE, condition);
+    case CT_HARVESTED:      return Cond_Harvested     (A_SIDE, A_ENUM, A_VALUE);
+    case CT_FLAG:           return A_VALUE != 0;
+    default:
+      DebugFatal("event-core.c", "Unknown condition type %d", condition->condition_type);
   }
   return false;  
 }
 
-void ProcessEvent(int event_index)
+#undef COORD0
+#undef COORD1
+#undef A_SIDE
+#undef A_ITEM
+#undef A_ENUM
+#undef A_VALUE
+
+void ExecuteEvent(int event_index)
 {
   EventData *event = &_gEventArray[event_index];
   // Check if event is blocked and block it if auto-block is set
@@ -375,7 +295,7 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_HIDETIMER:              gTimerValue = -1; break;
   case ET_SHOWMESSAGE:            EvAct_ShowMessage     (A_VALUE, (ShowMessageEventData *)&e->data[1]); break;
   case ET_UNIT_SPAWN:             EvAct_UnitSpawn       (COORD0, A_SIDE, A_AMNT, e->data); break;
-  case ET_SET_FLAG:               _gConditionArray[A_SIDE].__value = A_VALUE; break;
+  case ET_SET_FLAG:               _gConditionArray[A_SIDE].value = A_VALUE; break;
   case ET_UN_BLOCK_EVENT:         EvAct_UnBlockEvent    (A_BOOL, A_VALUE); break;
   case ET_PLAY_MUSIC:             EvAct_PlayMusic       (e->data); break;
   case ET_DAMAGE_TILES:           EvAct_DamageTiles     (COORD0, COORD2, COORD3, A_SIDE, A_ITEM, A_ENUM, A_BOOL); break;

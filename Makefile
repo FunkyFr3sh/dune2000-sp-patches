@@ -46,7 +46,9 @@ OBJS            ?= callsites.o \
 	src/extended-maps/ai-do-unit-facings.o \
 	\
 	src/event-system/event-core.o \
+	src/event-system/event-conditions.o \
 	src/event-system/event-actions.o \
+	src/event-system/extend-event-limits.o \
 	\
 	src/fixes/rand-seed-fix.o \
 	src/fixes/message-box-fix.o \

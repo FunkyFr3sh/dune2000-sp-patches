@@ -343,7 +343,7 @@ bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
     case CT_EXECUTE_EVENT:
     {
       // New crate type: execute event
-      ProcessEvent(crate->ext_data_field);  
+      ExecuteEvent(crate->ext_data_field);  
       return 0;
     }
     case CT_SPICE_BLOOM_SPAWNER:
