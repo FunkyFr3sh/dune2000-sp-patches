@@ -184,13 +184,13 @@ void Mod__HandleConditionsAndEvents()
 #define COORD0  coord_x[0], coord_y[0]
 #define COORD1  coord_x[1], coord_y[1]
 #define A_SIDE  args[0]
-#define A_ITEM  args[1]
-#define A_ENUM  args[2]
+#define A_ARG1  args[1]
+#define A_ARG2  args[2]
 #define A_VAL1  args[3]
 #define A_VAL2  args[4]
 #define A_VAL3  args[5]
-#define A_VALUE args[5]
-#define A_FLOAT arg6
+#define A_VAL4  args[6]
+#define A_FLOAT condition->float_val
 
 bool EvaluateCondition(int condition_index)
 {
@@ -198,8 +198,7 @@ bool EvaluateCondition(int condition_index)
   // Fill condition context
   int coord_x[2];
   int coord_y[2];
-  int args[6];
-  float arg6;
+  int args[7];
   for (int i = 0; i < 2; i++)
   {
     coord_x[i] = condition->coord_x[i];
@@ -210,21 +209,21 @@ bool EvaluateCondition(int condition_index)
   args[2] = condition->arg2;
   args[3] = condition->val1;
   args[4] = condition->val2;
-  args[5] = condition->value;
-  arg6 = condition->float_val;
+  args[5] = condition->val3;
+  args[6] = condition->val4;
   // Run condition
   switch ( condition->condition_type )
   {
-    case CT_BUILDINGEXISTS: return Cond_BuildingExists(A_SIDE, A_ITEM);
-    case CT_UNITEXISTS:     return Cond_UnitExists    (A_SIDE, A_ENUM);
-    case CT_INTERVAL:       return Cond_Interval      (A_VAL1, A_VAL2, A_VAL3, condition);
-    case CT_TIMER:          return Cond_Timer         (A_ENUM, A_VAL2, A_VAL3);
-    case CT_CASUALTIES:     return Cond_Casualties    (A_SIDE, A_VALUE, A_FLOAT);
+    case CT_BUILDINGEXISTS: return Cond_BuildingExists(A_SIDE, A_ARG1);
+    case CT_UNITEXISTS:     return Cond_UnitExists    (A_SIDE, A_ARG2);
+    case CT_INTERVAL:       return Cond_Interval      (A_ARG1, A_VAL1, A_VAL2, A_VAL3, A_VAL4);
+    case CT_TIMER:          return Cond_Timer         (A_ARG1, A_ARG2, A_VAL2, A_VAL3, A_VAL4);
+    case CT_CASUALTIES:     return Cond_Casualties    (A_SIDE, A_VAL3, A_FLOAT);
     case CT_BASEDESTROYED:  return !_gBuildingsExist[A_SIDE];
     case CT_UNITSDESTROYED: return !_gUnitsExist[A_SIDE];
-    case CT_REVEALED:       return Cond_Revealed      (COORD0, A_VALUE, condition);
-    case CT_HARVESTED:      return Cond_Harvested     (A_SIDE, A_ENUM, A_VALUE);
-    case CT_FLAG:           return A_VALUE != 0;
+    case CT_REVEALED:       return Cond_Revealed      (COORD0, A_VAL3, condition);
+    case CT_HARVESTED:      return Cond_Harvested     (A_SIDE, A_ARG2, A_VAL3);
+    case CT_FLAG:           return A_VAL3 != 0;
     default:
       DebugFatal("event-core.c", "Unknown condition type %d", condition->condition_type);
   }
@@ -295,7 +294,7 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_HIDETIMER:              gTimerValue = -1; break;
   case ET_SHOWMESSAGE:            EvAct_ShowMessage     (A_VALUE, (ShowMessageEventData *)&e->data[1]); break;
   case ET_UNIT_SPAWN:             EvAct_UnitSpawn       (COORD0, A_SIDE, A_AMNT, e->data); break;
-  case ET_SET_FLAG:               _gConditionArray[A_SIDE].value = A_VALUE; break;
+  case ET_SET_FLAG:               _gConditionArray[A_SIDE].val3 = A_VALUE; break;
   case ET_UN_BLOCK_EVENT:         EvAct_UnBlockEvent    (A_BOOL, A_VALUE); break;
   case ET_PLAY_MUSIC:             EvAct_PlayMusic       (e->data); break;
   case ET_DAMAGE_TILES:           EvAct_DamageTiles     (COORD0, COORD2, COORD3, A_SIDE, A_ITEM, A_ENUM, A_BOOL); break;
@@ -312,6 +311,7 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_TRANSFORM_TILES:        EvAct_TransformTiles  (A_AMNT, (uint16_t *)&e->data[1]); break;
   case ET_CHANGE_TILE_ATTRIBUTES: EvAct_ChangeTileAttributes(COORD0, COORD1, A_ENUM, A_VALUE); break;
   case ET_CHANGE_TILE_DAMAGE:     EvAct_ChangeTileDamage(COORD0, COORD1, A_ENUM, A_VALUE); break;
+  case ET_ACTIVATE_TIMER:         EvAct_ActivateTimer   (A_VALUE); break;
   default:
     DebugFatal("event-core.c", "Unknown event type %d", event_type);
   }

@@ -16,6 +16,7 @@ uint8_t rulesExt__infantryReleaseLimit  = 4;
 uint8_t rulesExt__infantryReleaseChance = 5;
 bool    rulesExt__buildingsAlwaysNeedPrerequisites = false;
 bool    rulesExt__returnCreditsToSpiceStorage = false;
+bool    rulesExt__intervalsAreOffByOneTick = true;
 
 static void LoadVars(LPCTSTR fileName);
 
@@ -63,4 +64,5 @@ static void LoadVars(LPCTSTR fileName)
     rulesExt__infantryReleaseChance = IniGetInt("Vars", "infantryReleaseChance", rulesExt__infantryReleaseChance, fileName);
     rulesExt__buildingsAlwaysNeedPrerequisites = IniGetBool("Vars", "buildingsAlwaysNeedPrerequisites", rulesExt__buildingsAlwaysNeedPrerequisites, fileName);
     rulesExt__returnCreditsToSpiceStorage = IniGetBool("Vars", "returnCreditsToSpiceStorage", rulesExt__returnCreditsToSpiceStorage, fileName);
+    rulesExt__intervalsAreOffByOneTick = IniGetBool("Vars", "intervalsAreOffByOneTick", rulesExt__intervalsAreOffByOneTick, fileName);
 }

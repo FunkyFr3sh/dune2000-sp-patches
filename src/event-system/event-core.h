@@ -70,7 +70,8 @@ enum EventTypes
   ET_CHANGE_MAP_BLOCK,
   ET_TRANSFORM_TILES,
   ET_CHANGE_TILE_ATTRIBUTES,
-  ET_CHANGE_TILE_DAMAGE
+  ET_CHANGE_TILE_DAMAGE,
+  ET_ACTIVATE_TIMER
 };
 
 // Condition-related structs
@@ -79,14 +80,18 @@ typedef struct ConditionData
 {
   int32_t val2; //__time_amount;
   int32_t val1; //__start_delay;
-  int32_t value; //__value;
+  int32_t val3; //__value;
   uint8_t coord_x[2];
   uint8_t coord_var_flags;
   uint8_t arg_var_flags;
   uint8_t coord_y[2];
   uint8_t unused1;
   uint8_t unused2;
-  float   float_val; //__casualties_ratio;
+  union
+  {
+    int32_t val4;
+    float   float_val; //__casualties_ratio;
+  };
   uint8_t side_id; //__side_id;
   uint8_t condition_type;
   uint8_t arg1; //__building_type;

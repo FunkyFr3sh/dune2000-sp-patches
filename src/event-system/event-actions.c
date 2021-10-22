@@ -624,3 +624,12 @@ void EvAct_ChangeTileDamage(int xpos, int ypos, int width, int height, eEventOpe
       tile->__damage = LIMIT(damage, 0, 255);
     }
 }
+
+void EvAct_ActivateTimer(int condition_index)
+{
+  ConditionData *condition = &_gConditionArray[condition_index];
+  if (!(condition->condition_type == CT_INTERVAL || condition->condition_type == CT_TIMER))
+    DebugFatal("event-actions.c", "Activate Timer: The target condition (ID %d) must be Timer or Interval type.", condition_index);
+  condition->arg1 = 0;
+  condition->val4 = gGameTicks;
+}

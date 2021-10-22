@@ -1,5 +1,6 @@
 #include "macros/patch.h"
 #include "dune2000.h"
+#include "../event-system/event-core.h"
 
 bool StartWithMCV = true;
 
@@ -145,6 +146,11 @@ void Mod__setupmapstuff()
 
   // Store the original side ID upon starting a map
   gOldSideId = gSideId;
+
+  // Clean garbage data on val4 (base time) tor Timer and Interval concitions
+  for (int i = 0; i < _gConditionCount; i++)
+    if (_gConditionArray[i].condition_type == CT_INTERVAL || _gConditionArray[i].condition_type == CT_TIMER)
+      _gConditionArray[i].val4 = 0;
 
   // First pass - back up tile and special value, set up tile flags and preplaced spice/concrete
   for (int ypos = 0; ypos < gGameMap.height; ypos++)

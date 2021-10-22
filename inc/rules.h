@@ -40,3 +40,4 @@ extern uint8_t rulesExt__infantryReleaseLimit;
 extern uint8_t rulesExt__infantryReleaseChance;
 extern bool    rulesExt__buildingsAlwaysNeedPrerequisites;
 extern bool    rulesExt__returnCreditsToSpiceStorage;
+extern bool    rulesExt__intervalsAreOffByOneTick;

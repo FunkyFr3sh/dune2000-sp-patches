@@ -51,3 +51,4 @@ void EvAct_ChangeMapBlock(int xpos, int ypos, int width, int height, uint16_t *t
 void EvAct_TransformTiles(int amount, uint16_t *tiles);
 void EvAct_ChangeTileAttributes(int xpos, int ypos, int width, int height, eEventOperation operation, uint32_t attributes);
 void EvAct_ChangeTileDamage(int xpos, int ypos, int width, int height, eEventOperation operation, int value);
+void EvAct_ActivateTimer(int condition_index);
