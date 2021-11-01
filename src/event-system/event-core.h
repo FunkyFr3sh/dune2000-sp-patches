@@ -109,7 +109,9 @@ enum ConditionTypes
   CT_UNITSDESTROYED,
   CT_REVEALED,
   CT_HARVESTED,
-  CT_FLAG
+  CT_FLAG,
+  CT_RANDOMCHANCE,
+  CT_RANDOMINTERVAL
 };
 
 // Variables
@@ -119,6 +121,8 @@ enum ConditionTypes
 
 extern EventData _gEventArray[MAX_EVENTS];
 extern ConditionData _gConditionArray[MAX_CONDITIONS];
+
+extern int tick_random_value;
 
 // Functions
 

@@ -14,6 +14,10 @@
 EventData _gEventArray[MAX_EVENTS];
 ConditionData _gConditionArray[MAX_CONDITIONS];
 
+// Other variables
+
+int tick_random_value;
+
 // Custom implementation of function HandleConditionsAndEvents
 CALL(0x00449A8D, _Mod__HandleConditionsAndEvents);
 
@@ -136,8 +140,11 @@ void Mod__HandleConditionsAndEvents()
   }
   else
   {
-    char condition_results[MAX_CONDITIONS];
+    // Generate random value for this tick
+    tick_random_value = rand();
+
     // Evaluate conditions
+    char condition_results[MAX_CONDITIONS];
     for (int condition_index = 0; condition_index < _gConditionCount; condition_index++)
     {
       condition_results[condition_index] = EvaluateCondition(condition_index);
@@ -216,14 +223,16 @@ bool EvaluateCondition(int condition_index)
   {
     case CT_BUILDINGEXISTS: return Cond_BuildingExists(A_SIDE, A_ARG1);
     case CT_UNITEXISTS:     return Cond_UnitExists    (A_SIDE, A_ARG2);
-    case CT_INTERVAL:       return Cond_Interval      (A_ARG1, A_VAL1, A_VAL2, A_VAL3, A_VAL4);
-    case CT_TIMER:          return Cond_Timer         (A_ARG1, A_ARG2, A_VAL2, A_VAL3, A_VAL4);
+    case CT_INTERVAL:       return Cond_Interval      (A_ARG1, A_VAL1, A_VAL2, A_VAL3, condition);
+    case CT_TIMER:          return Cond_Timer         (A_ARG1, A_ARG2, A_VAL2, A_VAL3, condition);
     case CT_CASUALTIES:     return Cond_Casualties    (A_SIDE, A_VAL3, A_FLOAT);
     case CT_BASEDESTROYED:  return !_gBuildingsExist[A_SIDE];
     case CT_UNITSDESTROYED: return !_gUnitsExist[A_SIDE];
     case CT_REVEALED:       return Cond_Revealed      (COORD0, A_VAL3, condition);
     case CT_HARVESTED:      return Cond_Harvested     (A_SIDE, A_ARG2, A_VAL3);
     case CT_FLAG:           return A_VAL3 != 0;
+    case CT_RANDOMCHANCE:   return Cond_RandomChance  (A_VAL1, A_VAL2, A_VAL3, A_VAL4, condition);
+    case CT_RANDOMINTERVAL: return Cond_RandomInterval(A_ARG1, A_ARG2, A_VAL1, A_VAL2, A_VAL3, condition);
     default:
       DebugFatal("event-core.c", "Unknown condition type %d", condition->condition_type);
   }

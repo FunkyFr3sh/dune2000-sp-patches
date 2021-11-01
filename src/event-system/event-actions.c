@@ -628,8 +628,10 @@ void EvAct_ChangeTileDamage(int xpos, int ypos, int width, int height, eEventOpe
 void EvAct_ActivateTimer(int condition_index)
 {
   ConditionData *condition = &_gConditionArray[condition_index];
-  if (!(condition->condition_type == CT_INTERVAL || condition->condition_type == CT_TIMER))
-    DebugFatal("event-actions.c", "Activate Timer: The target condition (ID %d) must be Timer or Interval type.", condition_index);
+  if (!(condition->condition_type == CT_INTERVAL || condition->condition_type == CT_TIMER || condition->condition_type == CT_RANDOMINTERVAL))
+    DebugFatal("event-actions.c", "Activate Timer: The target condition (ID %d) must be Timer, Interval or Random Interval type.", condition_index);
+  // Set Inactive to false
   condition->arg1 = 0;
+  // Set Base time to current time
   condition->val4 = gGameTicks;
 }
