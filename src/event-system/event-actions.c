@@ -231,7 +231,7 @@ void EvAct_DamageTiles(int xpos, int ypos, int pixel_x, int pixel_y, int spread_
   }
 }
 
-int EvAct_AddUnit(int xpos, int ypos, int side_id, int unit_type, int movement)
+int EvAct_AddUnit(int xpos, int ypos, int side_id, int properties, int unit_type, int movement, int facing)
 {
   GameMapTileStruct *tile = &gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]];
   // Do not add unit if tile is already occupied by unit
@@ -261,14 +261,27 @@ int EvAct_AddUnit(int xpos, int ypos, int side_id, int unit_type, int movement)
     case 9: target_x--; break;
   }
   // Add unit
-  int result = ModelAddUnit(side_id, unit_type, xpos, ypos, target_x, target_y, 0, 0);
+  int unit_index = ModelAddUnit(side_id, unit_type, xpos, ypos, target_x, target_y, 0, 0);
+  // Set unit properties
+  Unit *unit = GetUnit(side_id, unit_index);
+  if (unit)
+  {
+    if (!movement)
+    {
+      unit->c_field_54_facingcurrent = facing << 2;
+      unit->c_field_55_facingcurrent = facing << 2;
+      unit->c_field_56_facingcurrent = facing << 2;
+    }
+    if (properties & 1)
+      unit->Flags |= UFLAGS_10_STEALTH;
+  }
   // Revert back owner side attributes
   if (occ_building && (orig_owner_side != side_id))
     tile->__tile_bitflags = (tile->__tile_bitflags & ~7) | orig_owner_side;
-  return result;
+  return unit_index;
 }
 
-int EvAct_AddBuilding(int xpos, int ypos, int side_id, int building_type, int method)
+int EvAct_AddBuilding(int xpos, int ypos, int side_id, int properties, int building_type, int method, int facing)
 {
   bool initialsetup = false;
   bool captured = false;
@@ -289,7 +302,18 @@ int EvAct_AddBuilding(int xpos, int ypos, int side_id, int building_type, int me
   }
   if (place_concrete)
     ModelAddConcrete(side_id, CSide__MyVersionOfBuilding(GetSide(side_id), _templates_GroupIDs.Concrete1, 0), xpos, ypos, 0, _templates_buildattribs[building_type]._____TilesOccupiedAll);
-  return ModelAddBuilding(side_id, building_type, xpos, ypos, initialsetup, captured, captured);
+  int building_index = ModelAddBuilding(side_id, building_type, xpos, ypos, initialsetup, captured, captured);
+  // Turret barrel direction
+  if (_templates_buildattribs[building_type].__Behavior == BuildingBehavior_TURRET)
+  {
+    Building *bld = GetBuilding(side_id, building_index);
+    if (bld)
+      bld->c_field_21_facing = facing << 2;
+  }
+  // Primary building
+  else if (properties & 1)
+    SetBuildingAsPrimary(side_id, building_index);
+  return building_index;
 }
 
 void EvAct_AddProjectile(int src_x, int src_y, int targ_x, int targ_y, int pixel_x, int pixel_y, int spread_x, int spread_y, int side_id, int weapon_type, bool circle_spread, bool play_sound)

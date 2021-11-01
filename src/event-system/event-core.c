@@ -307,8 +307,8 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_UN_BLOCK_EVENT:         EvAct_UnBlockEvent    (A_BOOL, A_VALUE); break;
   case ET_PLAY_MUSIC:             EvAct_PlayMusic       (e->data); break;
   case ET_DAMAGE_TILES:           EvAct_DamageTiles     (COORD0, COORD2, COORD3, A_SIDE, A_ITEM, A_ENUM, A_BOOL); break;
-  case ET_ADD_UNIT:               EvAct_AddUnit         (COORD0, A_SIDE, A_ITEM, A_ENUM); break;
-  case ET_ADD_BUILDING:           EvAct_AddBuilding     (COORD0, A_SIDE, A_ITEM, A_ENUM); break;
+  case ET_ADD_UNIT:               EvAct_AddUnit         (COORD0, A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL); break;
+  case ET_ADD_BUILDING:           EvAct_AddBuilding     (COORD0, A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL); break;
   case ET_ADD_PROJECTILE:         EvAct_AddProjectile   (COORD0, COORD1, COORD2, COORD3, A_SIDE, A_ITEM, A_ENUM, A_BOOL); break;
   case ET_ADD_EXPLOSION:          EvAct_AddExplosion    (COORD0, COORD2, COORD3, A_SIDE, A_ITEM, A_ENUM, A_BOOL); break;
   case ET_ADD_CRATE:              EvAct_AddCrate        (COORD0, A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_VALUE); break;
