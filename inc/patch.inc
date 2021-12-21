@@ -50,6 +50,7 @@ cextern _gConditionArray
 
 cextern rulesExt__InfiniteSpice
 cextern rulesExt__buildingsAlwaysNeedPrerequisites
+cextern rulesExt__guardModeRadius
 
 ; ### Functions ###
 

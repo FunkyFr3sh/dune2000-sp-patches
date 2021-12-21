@@ -44,6 +44,7 @@ OBJS            ?= callsites.o \
 	src/extended-maps/return-credits-to-spice-storage.o \
 	src/extended-maps/setupmapstuff.o \
 	src/extended-maps/ai-do-unit-facings.o \
+	src/extended-maps/guard-mode-radius.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \

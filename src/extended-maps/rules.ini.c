@@ -11,12 +11,13 @@ LPCTSTR rulesIni = ".\\rules.ini";
 LPCTSTR rulesSpawnIni = ".\\rules-spawn.ini";
 
 // Newly added rules
-bool    rulesExt__InfiniteSpice         = false;
-uint8_t rulesExt__infantryReleaseLimit  = 4;
-uint8_t rulesExt__infantryReleaseChance = 5;
-bool    rulesExt__buildingsAlwaysNeedPrerequisites = false;
-bool    rulesExt__returnCreditsToSpiceStorage = false;
-bool    rulesExt__intervalsAreOffByOneTick = true;
+bool      rulesExt__InfiniteSpice         = false;
+uint8_t   rulesExt__infantryReleaseLimit  = 4;
+uint8_t   rulesExt__infantryReleaseChance = 5;
+bool      rulesExt__buildingsAlwaysNeedPrerequisites = false;
+bool      rulesExt__returnCreditsToSpiceStorage = false;
+bool      rulesExt__intervalsAreOffByOneTick = true;
+uint32_t  rulesExt__guardModeRadius       = 192;
 
 static void LoadVars(LPCTSTR fileName);
 
@@ -65,4 +66,5 @@ static void LoadVars(LPCTSTR fileName)
     rulesExt__buildingsAlwaysNeedPrerequisites = IniGetBool("Vars", "buildingsAlwaysNeedPrerequisites", rulesExt__buildingsAlwaysNeedPrerequisites, fileName);
     rulesExt__returnCreditsToSpiceStorage = IniGetBool("Vars", "returnCreditsToSpiceStorage", rulesExt__returnCreditsToSpiceStorage, fileName);
     rulesExt__intervalsAreOffByOneTick = IniGetBool("Vars", "intervalsAreOffByOneTick", rulesExt__intervalsAreOffByOneTick, fileName);
+    rulesExt__guardModeRadius = IniGetInt("Vars", "guardModeRadius", rulesExt__guardModeRadius, fileName);
 }

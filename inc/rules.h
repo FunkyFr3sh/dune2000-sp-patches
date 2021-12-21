@@ -35,9 +35,10 @@ extern bool ShowWarnings;
 extern uint8_t DeathHandAccuracy;
 
 // Newly added rules
-extern bool    rulesExt__InfiniteSpice;
-extern uint8_t rulesExt__infantryReleaseLimit;
-extern uint8_t rulesExt__infantryReleaseChance;
-extern bool    rulesExt__buildingsAlwaysNeedPrerequisites;
-extern bool    rulesExt__returnCreditsToSpiceStorage;
-extern bool    rulesExt__intervalsAreOffByOneTick;
+extern bool     rulesExt__InfiniteSpice;
+extern uint8_t  rulesExt__infantryReleaseLimit;
+extern uint8_t  rulesExt__infantryReleaseChance;
+extern bool     rulesExt__buildingsAlwaysNeedPrerequisites;
+extern bool     rulesExt__returnCreditsToSpiceStorage;
+extern bool     rulesExt__intervalsAreOffByOneTick;
+extern uint32_t rulesExt__guardModeRadius;
