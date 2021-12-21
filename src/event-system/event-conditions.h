@@ -8,3 +8,7 @@ bool Cond_Revealed(int xpos, int ypos, int run_count, ConditionData *condition);
 bool Cond_Harvested(int side_id, bool specific_side, int credits);
 bool Cond_RandomChance(int range, int min_value, int max_value, int fixed_result, ConditionData *condition);
 bool Cond_RandomInterval(int status, int run_count, int start_delay, int min_delay, int max_delay, ConditionData *condition);
+bool Cond_CheckUnits(ConditionData *condition);
+bool Cond_CheckBuildings(ConditionData *condition);
+bool Cond_CheckCrates(ConditionData *condition);
+bool Cond_CheckTiles(ConditionData *condition);

@@ -8,6 +8,7 @@
 #include "event-core.h"
 #include "event-conditions.h"
 #include "event-actions.h"
+#include "event-filters.h"
 
 // New extended arrays for event and condition data
 
@@ -233,6 +234,10 @@ bool EvaluateCondition(int condition_index)
     case CT_FLAG:           return A_VAL3 != 0;
     case CT_RANDOMCHANCE:   return Cond_RandomChance  (A_VAL1, A_VAL2, A_VAL3, A_VAL4, condition);
     case CT_RANDOMINTERVAL: return Cond_RandomInterval(A_ARG1, A_ARG2, A_VAL1, A_VAL2, A_VAL3, condition);
+    case CT_CHECKUNITS:     return Cond_CheckUnits    (condition);
+    case CT_CHECKBUILDINGS: return Cond_CheckBuildings(condition);
+    case CT_CHECKCRATES:    return Cond_CheckCrates   (condition);
+    case CT_CHECKTILES:     return Cond_CheckTiles    (condition);
     default:
       DebugFatal("event-core.c", "Unknown condition type %d", condition->condition_type);
   }
@@ -265,7 +270,102 @@ void ExecuteEvent(int event_index)
     e.args[i] = event->args[i];
   e.args[5] = event->value;
   e.data = event->data;
-  // Execute event action
+  // Unit manipulation events: process all side's units
+  if (event->event_type >= ET_DESTROY_UNIT && event->event_type <= ET_59)
+  {
+    int limit = event->data[0];
+    int affected = 0;
+    int arg_side_id = e.args[1];
+    for (int side_id = 0; side_id < 8; side_id++)
+    {
+      if ((arg_side_id != 8) && (arg_side_id != side_id))
+        continue;
+      e.args[1] = side_id;
+      CSide *side = GetSide(side_id);
+      for (Unit *unit = side->_Units_8; unit; unit = unit->Next)
+      {
+        if (CheckIfUnitMatchesFilter((ObjectFilterStruct *)&e.data[1], unit))
+        {
+          e.index = unit->MyIndex;
+          ExecuteEventAction(event->event_type, &e);
+          affected++;
+        }
+        if (limit && (affected == limit))
+          return;
+      }
+    }
+    return;
+  }
+  // Building manipulation events: process all side's buildings
+  if (event->event_type >= ET_DESTROY_BUILDING && event->event_type <= ET_69)
+  {
+    int limit = event->data[0];
+    int affected = 0;
+    int arg_side_id = e.args[1];
+    for (int side_id = 0; side_id < 8; side_id++)
+    {
+      if ((arg_side_id != 8) && (arg_side_id != side_id))
+        continue;
+      e.args[1] = side_id;
+      CSide *side = GetSide(side_id);
+      for (Building *building = side->_Buildings_10; building; building = building->Next)
+      {
+        if (CheckIfBuildingMatchesFilter((ObjectFilterStruct *)&e.data[1], building, side_id))
+        {
+          e.index = building->MyIndex;
+          ExecuteEventAction(event->event_type, &e);
+          affected++;
+        }
+        if (limit && (affected == limit))
+          return;
+      }
+    }
+    return;
+  }
+  // Crate manipulation events: process all crates
+  if (event->event_type >= ET_REMOVE_CRATE && event->event_type <= ET_74)
+  {
+    int limit = event->data[0];
+    int affected = 0;
+    for (int i = 0; i < MAX_CRATES; i++)
+    {
+      if (CheckIfCrateMatchesFilter((ObjectFilterStruct *)&e.data[1], &gCrates[i]))
+      {
+        e.index = i;
+        ExecuteEventAction(event->event_type, &e);
+        affected++;
+      }
+      if (limit && (affected == limit))
+        return;
+    }
+    return;
+  }
+  // Tile manipulation events: process all tiles
+  if (event->event_type >= ET_SET_TILE_ATTRIBUTE && event->event_type <= ET_79)
+  {
+    int limit = event->data[0];
+    int affected = 0;
+    ObjectFilterStruct *filter = (ObjectFilterStruct *)&e.data[1];
+    bool check_pos = (filter->pos_flags & OBJFILTERPOSFLAG_DOCHECK) && !(filter->pos_flags & OBJFILTERPOSFLAG_NEGATE);
+    int min_x = check_pos?filter->pos_min_x:0;
+    int min_y = check_pos?filter->pos_min_y:0;
+    int max_x = check_pos?filter->pos_max_x:gGameMapWidth-1;
+    int max_y = check_pos?filter->pos_max_y:gGameMapHeight-1;
+    for (int y = min_y; y <= max_y; y++)
+      for (int x = min_x; x <= max_x; x++)
+      {
+        if (CheckIfTileMatchesFilter((ObjectFilterStruct *)&e.data[1], &gGameMap.map[x + _CellNumbersWidthSpan[y]], x, y, (filter->pos_flags & OBJFILTERPOSFLAG_DOCHECK) && (filter->pos_flags & OBJFILTERPOSFLAG_NEGATE)))
+        {
+          e.index = x + _CellNumbersWidthSpan[y];
+          ExecuteEventAction(event->event_type, &e);
+          affected++;
+        }
+        if (limit && (affected == limit))
+          return;
+      }
+    return;
+  }
+  // Normal events: just execute action
   ExecuteEventAction(event->event_type, &e);
 }
 
@@ -279,48 +379,69 @@ void ExecuteEvent(int event_index)
 #define A_ENUM  e->args[3]
 #define A_BOOL  e->args[4]
 #define A_VALUE e->args[5]
+#define OBJ_IDX e->index
 
 void ExecuteEventAction(int event_type, EventContext *e)
 {
   switch ( event_type )
   {
-  case ET_REINFORCEMENT:          EvAct_AddDelivery     (COORD0, A_SIDE, A_AMNT, A_BOOL, DELIVERYTYPE_REINFORCE, e->data); break;
-  case ET_STARPORT_DELIVERY:      EvAct_AddDelivery     (COORD0, A_SIDE, A_AMNT, A_BOOL, DELIVERYTYPE_STARPORT,  e->data); break;
-  case ET_ALLEGIANCE:             EvAct_SetDiplomacy    (A_SIDE, A_ITEM, A_ENUM, A_BOOL); break;
+  case ET_REINFORCEMENT:          EvAct_AddDelivery         (COORD0, A_SIDE, A_AMNT, A_BOOL, DELIVERYTYPE_REINFORCE, e->data); break;
+  case ET_STARPORT_DELIVERY:      EvAct_AddDelivery         (COORD0, A_SIDE, A_AMNT, A_BOOL, DELIVERYTYPE_STARPORT,  e->data); break;
+  case ET_ALLEGIANCE:             EvAct_SetDiplomacy        (A_SIDE, A_ITEM, A_ENUM, A_BOOL); break;
   case ET_LEAVE:                  CSide__BlowupAll_surrender(GetSide(A_SIDE)); break;
   case ET_BESERK:                 _gAIArray[A_SIDE].__GoBeserk_OtherStates = 1; break;
-  case ET_PLAYSOUND:              EvAct_PlaySound       (A_VALUE, A_BOOL, COORD0); break;
+  case ET_PLAYSOUND:              EvAct_PlaySound           (A_VALUE, A_BOOL, COORD0); break;
   case ET_SETBUILDRATE:           _gAIArray[A_SIDE].UnitBuildRate = A_VALUE; break;
   case ET_SETATTACKBUILDINGRATE:  _gAIArray[A_SIDE].TimeBetweenBuildingAttacks = A_VALUE; break;
-  case ET_SETCASH:                EvAct_SetCash         (A_SIDE, A_ENUM, A_VALUE); break;
-  case ET_SETTECH:                EvAct_SetTech         (A_SIDE, A_BOOL, A_VALUE); break;
+  case ET_SETCASH:                EvAct_SetCash             (A_SIDE, A_ENUM, A_VALUE); break;
+  case ET_SETTECH:                EvAct_SetTech             (A_SIDE, A_BOOL, A_VALUE); break;
   case ET_WIN:                    if ( !gLose ) gWin = 1; break;
   case ET_LOSE:                   if ( !gWin ) gLose = 1; break;
-  case ET_SWITCH_MY_SIDE:         EvAct_SwitchMySide    (A_SIDE, A_ENUM, A_BOOL); break;
-  case ET_HIDE_MAP:               EvAct_HideMap         (); break;
-  case ET_REVEAL:                 EvAct_RevealMap       (COORD0, A_AMNT); break;
+  case ET_SWITCH_MY_SIDE:         EvAct_SwitchMySide        (A_SIDE, A_ENUM, A_BOOL); break;
+  case ET_HIDE_MAP:               EvAct_HideMap             (); break;
+  case ET_REVEAL:                 EvAct_RevealMap           (COORD0, A_AMNT); break;
   case ET_SHOWTIMER:              gTimerValue = A_VALUE; break;
   case ET_HIDETIMER:              gTimerValue = -1; break;
-  case ET_SHOWMESSAGE:            EvAct_ShowMessage     (A_VALUE, (ShowMessageEventData *)&e->data[1]); break;
-  case ET_UNIT_SPAWN:             EvAct_UnitSpawn       (COORD0, A_SIDE, A_AMNT, e->data); break;
+  case ET_SHOWMESSAGE:            EvAct_ShowMessage         (A_VALUE, (ShowMessageEventData *)&e->data[1]); break;
+  case ET_UNIT_SPAWN:             EvAct_UnitSpawn           (COORD0, A_SIDE, A_AMNT, A_ENUM, A_VALUE, e->data); break;
   case ET_SET_FLAG:               _gConditionArray[A_SIDE].val3 = A_VALUE; break;
-  case ET_UN_BLOCK_EVENT:         EvAct_UnBlockEvent    (A_BOOL, A_VALUE); break;
-  case ET_PLAY_MUSIC:             EvAct_PlayMusic       (e->data); break;
-  case ET_DAMAGE_TILES:           EvAct_DamageTiles     (COORD0, COORD2, COORD3, A_SIDE, A_ITEM, A_ENUM, A_BOOL); break;
-  case ET_ADD_UNIT:               EvAct_AddUnit         (COORD0, A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL); break;
-  case ET_ADD_BUILDING:           EvAct_AddBuilding     (COORD0, A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL); break;
-  case ET_ADD_PROJECTILE:         EvAct_AddProjectile   (COORD0, COORD1, COORD2, COORD3, A_SIDE, A_ITEM, A_ENUM, A_BOOL); break;
-  case ET_ADD_EXPLOSION:          EvAct_AddExplosion    (COORD0, COORD2, COORD3, A_SIDE, A_ITEM, A_ENUM, A_BOOL); break;
-  case ET_ADD_CRATE:              EvAct_AddCrate        (COORD0, A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_VALUE); break;
-  case ET_ADD_CONCRETE:           EvAct_AddConcrete     (COORD0, COORD1, A_SIDE, A_VALUE); break;
-  case ET_SPICE_BLOOM:            EvAct_SpiceBloom      (COORD0, A_AMNT, A_ENUM, A_BOOL); break;
-  case ET_SHAKE_SCREEN:           _ScreenShakes = A_VALUE; break;
-  case ET_CENTER_VIEWPORT:        EvAct_CenterViewport  (COORD0); break;
-  case ET_CHANGE_MAP_BLOCK:       EvAct_ChangeMapBlock  (COORD0, COORD1, (uint16_t *)&e->data[1]); break;
-  case ET_TRANSFORM_TILES:        EvAct_TransformTiles  (A_AMNT, (uint16_t *)&e->data[1]); break;
-  case ET_CHANGE_TILE_ATTRIBUTES: EvAct_ChangeTileAttributes(COORD0, COORD1, A_ENUM, A_VALUE); break;
-  case ET_CHANGE_TILE_DAMAGE:     EvAct_ChangeTileDamage(COORD0, COORD1, A_ENUM, A_VALUE); break;
-  case ET_ACTIVATE_TIMER:         EvAct_ActivateTimer   (A_VALUE); break;
+  case ET_UN_BLOCK_EVENT:         EvAct_UnBlockEvent        (A_BOOL, A_VALUE); break;
+  case ET_PLAY_MUSIC:             EvAct_PlayMusic           (e->data); break;
+  case ET_DAMAGE_TILES:           EvAct_DamageTiles         (COORD0, COORD2, COORD3, A_SIDE, A_ITEM, A_ENUM, A_BOOL); break;
+  case ET_ADD_UNIT:               EvAct_AddUnit             (COORD0, A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL, A_VALUE); break;
+  case ET_ADD_BUILDING:           EvAct_AddBuilding         (COORD0, A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL, A_VALUE); break;
+  case ET_ADD_PROJECTILE:         EvAct_AddProjectile       (COORD0, COORD1, COORD2, COORD3, A_SIDE, A_ITEM, A_ENUM, A_BOOL); break;
+  case ET_ADD_EXPLOSION:          EvAct_AddExplosion        (COORD0, COORD2, COORD3, A_SIDE, A_ITEM, A_ENUM, A_BOOL); break;
+  case ET_ADD_CRATE:              EvAct_AddCrate            (COORD0, A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_VALUE); break;
+  case ET_ADD_CONCRETE:           EvAct_AddConcrete         (COORD0, COORD1, A_SIDE, A_VALUE); break;
+  case ET_SPICE_BLOOM:            EvAct_SpiceBloom          (COORD0, A_AMNT, A_ENUM, A_BOOL); break;
+  case ET_SHAKE_SCREEN:           _ScreenShakes = A_VALUE;   break;
+  case ET_CENTER_VIEWPORT:        EvAct_CenterViewport      (COORD0); break;
+  case ET_CHANGE_MAP_BLOCK:       EvAct_ChangeMapBlock      (COORD0, COORD1, (uint16_t *)&e->data[1]); break;
+  case ET_TRANSFORM_TILES:        EvAct_TransformTiles      (A_AMNT, (uint16_t *)&e->data[1]); break;
+  case ET_ACTIVATE_TIMER:         EvAct_ActivateTimer       (A_VALUE); break;
+  // Unit manipulation
+  case ET_DESTROY_UNIT:           DestroyUnit               (A_SIDE, OBJ_IDX); break;
+  case ET_DAMAGE_HEAL_UNIT:       EvAct_DamageHealUnit      (A_SIDE, A_ENUM, A_BOOL, A_VALUE, OBJ_IDX); break;
+  case ET_CHANGE_UNIT_OWNER:      ChangeUnitOwner           (A_SIDE, A_ITEM, OBJ_IDX, 0); break;
+  case ET_CHANGE_UNIT_TYPE:       EvAct_ChangeUnitType      (A_SIDE, A_ITEM, A_BOOL, OBJ_IDX); break;
+  case ET_SET_UNIT_FLAG:          EvAct_SetUnitFlag         (A_SIDE, A_ENUM, A_VALUE, OBJ_IDX); break;
+  case ET_SET_UNIT_PROPERTY:      EvAct_SetUnitProperty     (A_SIDE, A_ITEM, A_VALUE, OBJ_IDX); break;
+  case ET_SHOW_UNIT_DATA:         EvAct_ShowUnitData        (A_SIDE, OBJ_IDX); break;
+  // Building manipulation
+  case ET_DESTROY_BUILDING:       DestroyBuilding           (A_SIDE, OBJ_IDX, 0); break;
+  case ET_DAMAGE_HEAL_BUILDING:   EvAct_DamageHealBuilding  (A_SIDE, A_ENUM, A_BOOL, A_VALUE, OBJ_IDX); break;
+  case ET_CHANGE_BUILDING_OWNER:  EvAct_ChangeBuildingOwner (A_SIDE, A_ITEM, OBJ_IDX); break;
+  case ET_CHANGE_BUILDING_TYPE:   EvAct_ChangeBuildingType  (A_SIDE, A_ITEM, OBJ_IDX); break;
+  case ET_SET_BUILDING_FLAG:      EvAct_SetBuildingFlag     (A_SIDE, A_ENUM, A_VALUE, OBJ_IDX); break;
+  case ET_SET_BUILDING_PROPERTY:  EvAct_SetBuildingProperty (A_SIDE, A_ITEM, A_VALUE, OBJ_IDX); break;
+  case ET_SHOW_BUILDING_DATA:     EvAct_ShowBuildingData    (A_SIDE, OBJ_IDX); break;
+  // Crate manipulation
+  case ET_REMOVE_CRATE:           EvAct_RemoveCrate         (OBJ_IDX); break;
+  // Tile manipulation
+  case ET_SET_TILE_ATTRIBUTE:     EvAct_SetTileAttribute    (A_ENUM, A_VALUE, OBJ_IDX); break;
+  case ET_SET_TILE_DAMAGE:        EvAct_SetTileDamage       (A_ENUM, A_VALUE, OBJ_IDX); break;
+  case ET_REVEAL_TILE:            EvAct_RevealTile          (OBJ_IDX); break;
   default:
     DebugFatal("event-core.c", "Unknown event type %d", event_type);
   }

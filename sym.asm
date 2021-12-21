@@ -350,6 +350,8 @@ setcglob 0x0046BE50, CSide__update_list_of_available_buildings_and_units
 setcglob 0x0046C450, CSide__MyVersionOfBuilding
 setcglob 0x0046C570, CSide__MyVersionOfUnit
 setcglob 0x0046C7B0, CSide_add_cash_drip
+setcglob 0x0046D2E0, ChangeUnitOwner
+setcglob 0x0046D6D0, CaptureBuilding
 setcglob 0x0046E6B0, CSide__BlowupAll_surrender
 setcglob 0x0046EA50, CSide__SurrenderAbort
 setcglob 0x0046EB00, CSide__reset_enemy

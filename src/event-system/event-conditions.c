@@ -1,7 +1,9 @@
 #include "dune2000.h"
 #include "event-core.h"
 #include "event-conditions.h"
+#include "event-filters.h"
 #include "rules.h"
+#include "utils.h"
 
 bool Cond_BuildingExists(int side_id, int building_type)
 {
@@ -138,5 +140,110 @@ bool Cond_RandomInterval(int status, int run_count, int start_delay, int min_del
   else
     // Decrease countdown counter
     condition->val4--;
+  return false;
+}
+
+bool Cond_CheckUnits(ConditionData *condition)
+{
+  bool strict_equal = condition->arg1 & CONDITIONFILTERFLAG_STRICT_EQUAL;
+  int amount = LLIMIT(condition->arg2, 1);
+  int matched = 0;
+  for (int side_id = 0; side_id < 8; side_id++)
+  {
+    if ((condition->side_id != 8) && (condition->side_id != side_id))
+      continue;
+    CSide *side = GetSide(side_id);
+    for (Unit *unit = side->_Units_8; unit; unit = unit->Next)
+    {
+      if (CheckIfUnitMatchesFilter((ObjectFilterStruct *)condition, unit))
+        matched++;
+      // Already found enough matches, no need to search further
+      if (!strict_equal && matched == amount)
+        return true;
+      // Found more matches than allowed
+      if (strict_equal && matched > amount)
+        return false;
+    }
+  }
+  if (strict_equal && matched == amount)
+    return true;
+  return false;
+}
+
+bool Cond_CheckBuildings(ConditionData *condition)
+{
+  bool strict_equal = condition->arg1 & CONDITIONFILTERFLAG_STRICT_EQUAL;
+  int amount = LLIMIT(condition->arg2, 1);
+  int matched = 0;
+  for (int side_id = 0; side_id < 8; side_id++)
+  {
+    if ((condition->side_id != 8) && (condition->side_id != side_id))
+      continue;
+    CSide *side = GetSide(side_id);
+    for (Building *bld = side->_Buildings_10; bld; bld = bld->Next)
+    {
+      if (CheckIfBuildingMatchesFilter((ObjectFilterStruct *)condition, bld, side_id))
+        matched++;
+      // Already found enough matches, no need to search further
+      if (!strict_equal && matched == amount)
+        return true;
+      // Found more matches than allowed
+      if (strict_equal && matched > amount)
+        return false;
+    }
+  }
+  if (strict_equal && matched == amount)
+    return true;
+  return false;
+}
+
+bool Cond_CheckCrates(ConditionData *condition)
+{
+  bool strict_equal = condition->arg1 & CONDITIONFILTERFLAG_STRICT_EQUAL;
+  int amount = LLIMIT(condition->arg2, 1);
+  int matched = 0;
+  for (int i = 0; i < MAX_CRATES; i++)
+  {
+    if (!gCrates[i].__is_active)
+      continue;
+    if (CheckIfCrateMatchesFilter((ObjectFilterStruct *)condition, &gCrates[i]))
+      matched++;
+    // Already found enough matches, no need to search further
+    if (!strict_equal && matched == amount)
+      return true;
+    // Found more matches than allowed
+    if (strict_equal && matched > amount)
+      return false;
+  }
+  if (strict_equal && matched == amount)
+    return true;
+  return false;
+}
+
+bool Cond_CheckTiles(ConditionData *condition)
+{
+  bool strict_equal = condition->arg1 & CONDITIONFILTERFLAG_STRICT_EQUAL;
+  int amount = LLIMIT(condition->arg2, 1);
+  int matched = 0;
+  ObjectFilterStruct *filter = (ObjectFilterStruct *)condition;
+  bool check_pos = (filter->pos_flags & OBJFILTERPOSFLAG_DOCHECK) && !(filter->pos_flags & OBJFILTERPOSFLAG_NEGATE);
+  int min_x = check_pos?filter->pos_min_x:0;
+  int min_y = check_pos?filter->pos_min_y:0;
+  int max_x = check_pos?filter->pos_max_x:gGameMapWidth-1;
+  int max_y = check_pos?filter->pos_max_y:gGameMapHeight-1;
+  for (int y = min_y; y <= max_y; y++)
+    for (int x = min_x; x <= max_x; x++)
+    {
+      if (CheckIfTileMatchesFilter((ObjectFilterStruct *)condition, &gGameMap.map[x + _CellNumbersWidthSpan[y]], x, y, (filter->pos_flags & OBJFILTERPOSFLAG_DOCHECK) && (filter->pos_flags & OBJFILTERPOSFLAG_NEGATE)))
+        matched++;
+      // Already found enough matches, no need to search further
+      if (!strict_equal && matched == amount)
+        return true;
+      // Found more matches than allowed
+      if (strict_equal && matched > amount)
+        return false;
+    }
+  if (strict_equal && matched == amount)
+    return true;
   return false;
 }

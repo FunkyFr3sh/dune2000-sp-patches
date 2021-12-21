@@ -17,7 +17,7 @@ CALL(0x0041FB65, _Mod__GetCrateFromMap);
 
 unsigned char Mod__GetCrateFromMap(int xpos, int ypos)
 {
-  for (int i = 0; i < 30; i++)
+  for (int i = 0; i < MAX_CRATES; i++)
   {
     if (gCrates[i].__x == xpos && gCrates[i].__y == ypos && gCrates[i].__is_active)
     {
@@ -54,7 +54,7 @@ bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
   // Find crate on a tile
   CrateStruct *crate = NULL;
   int crate_index = -1;
-  for (int i = 0; i < 30; i++)
+  for (int i = 0; i < MAX_CRATES; i++)
   {
     if (gCrates[i].__x == xpos && gCrates[i].__y == ypos && gCrates[i].__is_active)
     {

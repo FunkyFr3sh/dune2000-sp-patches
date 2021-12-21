@@ -39,3 +39,5 @@ typedef struct CrateStruct
   uint8_t field_7;
   int32_t __timing;
 }CrateStruct;
+
+#define MAX_CRATES 30

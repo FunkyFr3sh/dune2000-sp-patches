@@ -63,16 +63,16 @@ void EvAct_PlaySound(int sample_id, bool point_sound, int xpos, int ypos)
     Sound__PlaySample(sample_id, 0, 0, 0);
 }
 
-void EvAct_SetCash(int side_id, eEventOperation operation, int value)
+void EvAct_SetCash(int side_id, eEventValueOperation operation, int value)
 {
   CSide *side = GetSide(side_id);
   int actual_cash = side->SpiceReal + side->SpiceDrip + side->CashReal + side->CashDrip;
   int cost = 0;
   switch (operation)
   {
-    case EVENTOPERATION_SET:    cost = actual_cash - value; break;
-    case EVENTOPERATION_PLUS:   cost = value * -1; break;
-    case EVENTOPERATION_MINUS:  cost = value; break;
+    case EVENTVALUEOPERATION_SET:        cost = actual_cash - value; break;
+    case EVENTVALUEOPERATION_ADD:        cost = value * -1; break;
+    case EVENTVALUEOPERATION_SUBSTRACT:  cost = value; break;
   }
 
   if ( cost > actual_cash )
@@ -168,14 +168,22 @@ void EvAct_ShowMessage(int duration, ShowMessageEventData *data)
     _gMessageData.__ticks[message_slot] = gGameTicks + duration;
 }
 
-void EvAct_UnitSpawn(int xpos, int ypos, int side_id, int amount, char *unit_list)
+void EvAct_UnitSpawn(int xpos, int ypos, int side_id, int amount, int facing, int tag, char *unit_list)
 {
   for (int i = 0; i < amount; i++)
   {
     unsigned char x = xpos;
     unsigned char y = ypos;
     FindNearestFreeTile(&x, &y, 12u);
-    ModelAddUnit(side_id, unit_list[i], x, y, x, y, 0, 0);
+    int unit_index = ModelAddUnit(side_id, unit_list[i], x, y, x, y, 0, 0);
+    Unit *unit = GetUnit(side_id, unit_index);
+    if (unit)
+    {
+      unit->c_field_54_facingcurrent = facing << 2;
+      unit->c_field_55_facingcurrent = facing << 2;
+      unit->c_field_56_facingcurrent = facing << 2;
+      unit->w_field_E = tag;
+    }
   }
 }
 
@@ -231,7 +239,7 @@ void EvAct_DamageTiles(int xpos, int ypos, int pixel_x, int pixel_y, int spread_
   }
 }
 
-int EvAct_AddUnit(int xpos, int ypos, int side_id, int properties, int unit_type, int movement, int facing)
+int EvAct_AddUnit(int xpos, int ypos, int side_id, int properties, int unit_type, int movement, int facing, int tag)
 {
   GameMapTileStruct *tile = &gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]];
   // Do not add unit if tile is already occupied by unit
@@ -274,6 +282,7 @@ int EvAct_AddUnit(int xpos, int ypos, int side_id, int properties, int unit_type
     }
     if (properties & 1)
       unit->Flags |= UFLAGS_10_STEALTH;
+    unit->w_field_E = tag;
   }
   // Revert back owner side attributes
   if (occ_building && (orig_owner_side != side_id))
@@ -281,7 +290,7 @@ int EvAct_AddUnit(int xpos, int ypos, int side_id, int properties, int unit_type
   return unit_index;
 }
 
-int EvAct_AddBuilding(int xpos, int ypos, int side_id, int properties, int building_type, int method, int facing)
+int EvAct_AddBuilding(int xpos, int ypos, int side_id, int properties, int building_type, int method, int facing, int tag)
 {
   bool initialsetup = false;
   bool captured = false;
@@ -303,16 +312,19 @@ int EvAct_AddBuilding(int xpos, int ypos, int side_id, int properties, int build
   if (place_concrete)
     ModelAddConcrete(side_id, CSide__MyVersionOfBuilding(GetSide(side_id), _templates_GroupIDs.Concrete1, 0), xpos, ypos, 0, _templates_buildattribs[building_type]._____TilesOccupiedAll);
   int building_index = ModelAddBuilding(side_id, building_type, xpos, ypos, initialsetup, captured, captured);
-  // Turret barrel direction
-  if (_templates_buildattribs[building_type].__Behavior == BuildingBehavior_TURRET)
+  // Set building properties
+  Building *bld = GetBuilding(side_id, building_index);
+  if (bld)
   {
-    Building *bld = GetBuilding(side_id, building_index);
-    if (bld)
-      bld->c_field_21_facing = facing << 2;
+    // Turret barrel direction
+    if (_templates_buildattribs[building_type].__Behavior == BuildingBehavior_TURRET)
+        bld->c_field_21_facing = facing << 2;
+    // Primary building
+    if (properties & 1)
+      SetBuildingAsPrimary(side_id, building_index);
+    // Building tag
+    bld->field_E = tag;
   }
-  // Primary building
-  else if (properties & 1)
-    SetBuildingAsPrimary(side_id, building_index);
   return building_index;
 }
 
@@ -599,54 +611,10 @@ void EvAct_TransformTiles(int amount, uint16_t *tiles)
     for (int x = 0; x < gGameMapWidth; x++)
       for (int i = 0; i < amount; i++)
         if (gGameMap.map[x + _CellNumbersWidthSpan[y]].back_up_tile_index == tiles[i * 2])
+        {
           ChangeMapTile(x, y, tiles[i * 2 + 1]);
-}
-
-void EvAct_ChangeTileAttributes(int xpos, int ypos, int width, int height, eEventOperation operation, uint32_t attributes)
-{
-  for (int y = 0; y < height; y++)
-    for (int x = 0; x < width; x++)
-    {
-      GameMapTileStruct *tile = &gGameMap.map[x + xpos + _CellNumbersWidthSpan[y + ypos]];
-      TileFlags old_flags = tile->__tile_bitflags;
-      switch (operation)
-      {
-        case EVENTOPERATION_SET:    tile->__tile_bitflags = attributes; break;
-        case EVENTOPERATION_PLUS:   tile->__tile_bitflags |= attributes; break;
-        case EVENTOPERATION_MINUS:  tile->__tile_bitflags &= ~attributes; break;
-      }
-      TileFlags new_flags = tile->__tile_bitflags;
-      // Check if spice was removed
-      if ((old_flags & 0x700000) && !(new_flags & 0x700000))
-        tile->__tile_index = tile->back_up_tile_index;
-      // Check if concrete was removed
-      if ((old_flags & TileFlags_800_HAS_CONCRETE) && !(new_flags & TileFlags_800_HAS_CONCRETE))
-        tile->__tile_index = tile->back_up_tile_index;
-    }
-  // Update spice visuals
-  RECT r;
-  r.left = LLIMIT(xpos - 1, 0);
-  r.top = LLIMIT(ypos - 1, 0);
-  r.right = HLIMIT(xpos + width + 1, gGameMapWidth);
-  r.bottom = HLIMIT(ypos + height + 1, gGameMapHeight);
-  UpdateSpiceInRegion(&r);
-}
-
-void EvAct_ChangeTileDamage(int xpos, int ypos, int width, int height, eEventOperation operation, int value)
-{
-  for (int y = 0; y < height; y++)
-    for (int x = 0; x < width; x++)
-    {
-      GameMapTileStruct *tile = &gGameMap.map[x + xpos + _CellNumbersWidthSpan[y + ypos]];
-      int damage = tile->__damage;
-      switch (operation)
-      {
-        case EVENTOPERATION_SET:    damage = value; break;
-        case EVENTOPERATION_PLUS:   damage += value; break;
-        case EVENTOPERATION_MINUS:  damage -= value; break;
-      }
-      tile->__damage = LIMIT(damage, 0, 255);
-    }
+          break;
+        }
 }
 
 void EvAct_ActivateTimer(int condition_index)
@@ -658,4 +626,201 @@ void EvAct_ActivateTimer(int condition_index)
   condition->arg1 = 0;
   // Set Base time to current time
   condition->val4 = gGameTicks;
+}
+
+void EvAct_DamageHealUnit(int side_id, int action, int units, int value, int unit_index)
+{
+  Unit *unit = GetUnit(side_id, unit_index);
+  UnitAtribStruct *unit_template = &_templates_unitattribs[unit->Type];
+  int hit_points = (units?((unit_template->__Strength * value) / 100):value) * (action?1:-1);
+  unit->Health = LIMIT(unit->Health + hit_points, 0, unit_template->__Strength);
+  if (!unit->Health)
+    DestroyUnit(side_id, unit_index);
+}
+
+void EvAct_ChangeUnitType(int side_id, int target_type, bool defined_type, int unit_index)
+{
+  Unit *unit = GetUnit(side_id, unit_index);
+  if (defined_type)
+  {
+    if (_templates_unitattribs[unit->Type].UnitUpgradeAllowed)
+      target_type = _templates_unitattribs[unit->Type].UnitUpgradeTargetType;
+    else
+      return;
+  }
+  unit->Health = LLIMIT(unit->Health + _templates_unitattribs[target_type].__Strength - _templates_unitattribs[unit->Type].__Strength, 1);
+  unit->Flags = (unit->Flags & (~_templates_unitattribs[unit->Type].Flags)) | _templates_unitattribs[target_type].Flags;
+  unit->Speed = _templates_unitattribs[target_type].__Speed;
+  unit->Type = target_type;
+}
+
+void EvAct_SetUnitFlag(int side_id, eEventFlagOperation operation, int flag, int unit_index)
+{
+  Unit *unit = GetUnit(side_id, unit_index);
+  switch (operation)
+  {
+    case EVENTFLAGOPERATION_ADD: unit->Flags |= (1 << flag); break;
+    case EVENTFLAGOPERATION_REMOVE: unit->Flags &= ~(1 << flag); break;
+    case EVENTFLAGOPERATION_FLIP: unit->Flags ^= (1 << flag); break;
+  }
+}
+
+void EvAct_SetUnitProperty(int side_id, int byte, int value, int unit_index)
+{
+  Unit *unit = GetUnit(side_id, unit_index);
+  unsigned char *data = (unsigned char *) unit;
+  data[byte] = value;
+}
+
+void EvAct_ShowUnitData(int side_id, int unit_index)
+{
+  Unit *unit = GetUnit(side_id, unit_index);
+  unsigned char *udata = (unsigned char *)unit;
+  char buf[5][128];
+  memset(buf, 0, sizeof(buf));
+  sprintf(buf[0], "Unit %d Type %d HP %d State %d Flags: ", unit_index, unit->Type, unit->Health, unit->State);
+  int l = strlen(buf[0]);
+  memset(&buf[0][l], ' ', 43);
+  for (int i = 0; i < 32; i++)
+    buf[0][l + i + (i / 8)] = ((unit->Flags >> i & 1)?'X':'o');
+  for (int i = 0; i < 32; i++)
+  {
+    for (int j = 0; j < 4; j++)
+    {
+      sprintf(&buf[j+1][2 * i + (i / 4) + (i / 16)], "%02X", udata[i + j * 32]);
+      buf[j+1][9 * (i / 4) + (i / 16) - 1] = ' ';
+      buf[j+1][37 * (i / 16) - 2] = ' ';
+    }
+  }
+  for (int i = 4; i >= 0; i--)
+    QueueMessage(buf[i], -1);
+  for (int i = 0; i < 5; i++)
+    _gMessageData.__ticks[i] = gGameTicks;
+}
+
+void EvAct_DamageHealBuilding(int side_id, int action, int units, int value, int building_index)
+{
+  Building *bld = GetBuilding(side_id, building_index);
+  BuildingAtrbStruct *bld_template = &_templates_buildattribs[bld->Type];
+  int hit_points = (units?((bld_template->_____HitPoints * value) / 100):value) * (action?1:-1);
+  bld->Health = LIMIT((int)bld->Health + hit_points, 0, bld_template->_____HitPoints);
+  if (!bld->Health)
+    DestroyBuilding(side_id, building_index, 0);
+}
+
+void EvAct_ChangeBuildingOwner(int side_id, int target_side, int building_index)
+{
+  Building *bld = GetBuilding(side_id, building_index);
+  bld->Flags |= BuildingFlags_1000000;
+  CaptureBuilding(side_id, target_side, building_index);
+}
+
+void EvAct_ChangeBuildingType(int side_id, int target_type, int building_index)
+{
+  Building *bld = GetBuilding(side_id, building_index);
+  bld->Health = LLIMIT(bld->Health + _templates_buildattribs[target_type]._____HitPoints - _templates_buildattribs[bld->Type]._____HitPoints, 1);
+  bld->Flags = (bld->Flags & (~_templates_buildattribs[bld->Type]._____Flags)) | _templates_buildattribs[target_type]._____Flags;
+  bld->Type = target_type;
+}
+
+void EvAct_SetBuildingFlag(int side_id, eEventFlagOperation operation, int flag, int building_index)
+{
+  Building *bld = GetBuilding(side_id, building_index);
+  switch (operation)
+  {
+    case EVENTFLAGOPERATION_ADD: bld->Flags |= (1 << flag); break;
+    case EVENTFLAGOPERATION_REMOVE: bld->Flags &= ~(1 << flag); break;
+    case EVENTFLAGOPERATION_FLIP: bld->Flags ^= (1 << flag); break;
+  }
+}
+
+void EvAct_SetBuildingProperty(int side_id, int byte, int value, int building_index)
+{
+  Building *bld = GetBuilding(side_id, building_index);
+  unsigned char *data = (unsigned char *) bld;
+  data[byte] = value;
+}
+
+void EvAct_ShowBuildingData(int side_id, int building_index)
+{
+  Building *bld = GetBuilding(side_id, building_index);
+  unsigned char *bdata = (unsigned char *)bld;
+  char buf[5][128];
+  memset(buf, 0, sizeof(buf));
+  sprintf(buf[0], "Building %d Type %d HP %d State %d Flags: ", building_index, bld->Type, bld->Health, bld->__State);
+  int l = strlen(buf[0]);
+  memset(&buf[0][l], ' ', 43);
+  for (int i = 0; i < 32; i++)
+    buf[0][l + i + (i / 8)] = ((bld->Flags >> i & 1)?'X':'o');
+  for (int i = 0; i < 32; i++)
+  {
+    for (int j = 0; j < 4; j++)
+    {
+      sprintf(&buf[j+1][2 * i + (i / 4) + (i / 16)], "%02X", bdata[i + j * 32]);
+      buf[j+1][9 * (i / 4) + (i / 16) - 1] = ' ';
+      buf[j+1][37 * (i / 16) - 2] = ' ';
+    }
+  }
+  for (int i = 4; i >= 0; i--)
+    QueueMessage(buf[i], -1);
+  for (int i = 0; i < 5; i++)
+    _gMessageData.__ticks[i] = gGameTicks;
+}
+
+void EvAct_RemoveCrate(int crate_index)
+{
+  CrateStruct *crate = &gCrates[crate_index];
+  crate->__is_active = 0;
+  gGameMap.map[crate->__x + _CellNumbersWidthSpan[crate->__y]].__tile_bitflags &= ~TileFlags_1000;
+}
+
+void EvAct_SetTileAttribute(eEventFlagOperation operation, int attribute, int cell_index)
+{
+  GameMapTileStruct *tile = &gGameMap.map[cell_index];
+  TileFlags old_flags = tile->__tile_bitflags;
+  switch (operation)
+  {
+    case EVENTFLAGOPERATION_ADD: tile->__tile_bitflags |= (1 << attribute); break;
+    case EVENTFLAGOPERATION_REMOVE: tile->__tile_bitflags &= ~(1 << attribute); break;
+    case EVENTFLAGOPERATION_FLIP: tile->__tile_bitflags ^= (1 << attribute); break;
+  }
+  TileFlags new_flags = tile->__tile_bitflags;
+  // Check if spice was removed
+  if ((old_flags & 0x700000) && !(new_flags & 0x700000))
+    tile->__tile_index = tile->back_up_tile_index;
+  // Check if concrete was removed
+  if ((old_flags & TileFlags_800_HAS_CONCRETE) && !(new_flags & TileFlags_800_HAS_CONCRETE))
+    tile->__tile_index = tile->back_up_tile_index;
+  // Update spice visuals
+  if ((attribute >= 20) && (attribute <= 22))
+  {
+    int xpos = cell_index % gGameMapWidth;
+    int ypos = cell_index / gGameMapWidth;
+    RECT r;
+    r.left = LLIMIT(xpos - 1, 0);
+    r.top = LLIMIT(ypos - 1, 0);
+    r.right = HLIMIT(xpos + 2, gGameMapWidth);
+    r.bottom = HLIMIT(ypos + 2, gGameMapHeight);
+    UpdateSpiceInRegion(&r);
+  }
+}
+
+void EvAct_SetTileDamage(eEventValueOperation operation, int value, int cell_index)
+{
+  GameMapTileStruct *tile = &gGameMap.map[cell_index];
+  int damage = tile->__damage;
+  switch (operation)
+  {
+    case EVENTVALUEOPERATION_SET:    damage = value; break;
+    case EVENTVALUEOPERATION_ADD:   damage += value; break;
+    case EVENTVALUEOPERATION_SUBSTRACT:  damage -= value; break;
+  }
+  tile->__damage = LIMIT(damage, 0, 255);
+}
+
+void EvAct_RevealTile(int cell_index)
+{
+  int xpos = cell_index % gGameMapWidth;
+  int ypos = cell_index / gGameMapWidth;
+  RevealCircle(xpos, ypos, 0);
 }

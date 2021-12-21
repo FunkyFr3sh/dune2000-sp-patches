@@ -48,6 +48,7 @@ OBJS            ?= callsites.o \
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \
 	src/event-system/event-actions.o \
+	src/event-system/event-filters.o \
 	src/event-system/extend-event-limits.o \
 	\
 	src/fixes/rand-seed-fix.o \

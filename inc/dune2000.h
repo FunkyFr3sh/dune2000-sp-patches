@@ -389,6 +389,8 @@ void __thiscall CSide__update_list_of_available_buildings_and_units(CSide *side)
 char __thiscall CSide__MyVersionOfBuilding(CSide *this, char building_type, bool bool1);
 uint8_t __thiscall CSide__MyVersionOfUnit(CSide *this, char unit, bool bool1);
 void __thiscall CSide_add_cash_drip(CSide *this, int a2);
+Unit *          ChangeUnitOwner(eSideType source_side_id, eSideType target_side_id, __int16 source_unit_index, char bool1);
+char            CaptureBuilding(eSideType source_side_id, eSideType target_side_id, __int16 source_building_index);
 void __thiscall CSide__BlowupAll_surrender(CSide *side);
 void            CSide__SurrenderAbort(bool unknown);
 void __thiscall CSide__reset_enemy(CSide *this, char a2);

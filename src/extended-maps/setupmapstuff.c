@@ -287,6 +287,8 @@ void Mod__setupmapstuff()
               unit->c_field_56_facingcurrent = direction;
               if (special_value & 0x1000)
                 unit->Flags |= UFLAGS_10_STEALTH;
+              if (special_value & 0x2000)
+                unit->w_field_E = 1;
             }
             break;
           }
@@ -305,19 +307,22 @@ void Mod__setupmapstuff()
             bool no_new_harv = (special_value & 1024) != 0;
             bool primary = (special_value & 2048) != 0;
             int direction = ((special_value >> 10) & 3) << 3;
+            bool tagged = (special_value & 4096) != 0;
             if (building_type >= gBuildingTypeNum)
               DebugFatal("setupmapstuff.c", "Invalid building type %d at %d,%d (maximum is %d)", building_type, xpos, ypos, gBuildingTypeNum - 1);
             int building_index = ModelAddBuilding(side_id, building_type, xpos, ypos, true, no_new_harv, false);
+            Building *bld = GetBuilding(side_id, building_index);
             // Turret barrel direction
             if (_templates_buildattribs[building_type].__Behavior == BuildingBehavior_TURRET)
             {
-              Building *bld = GetBuilding(side_id, building_index);
               if (bld)
                 bld->c_field_21_facing = direction;
             }
             // Primary building
             else if (primary)
               SetBuildingAsPrimary(side_id, building_index);
+            if (tagged && bld)
+              bld->field_E = 1;
             break;
           }
           // Default behavior: Tiledata entry
