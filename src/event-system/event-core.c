@@ -421,7 +421,7 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_TRANSFORM_TILES:        EvAct_TransformTiles      (A_AMNT, (uint16_t *)&e->data[1]); break;
   case ET_ACTIVATE_TIMER:         EvAct_ActivateTimer       (A_VALUE); break;
   // Unit manipulation
-  case ET_DESTROY_UNIT:           DestroyUnit               (A_SIDE, OBJ_IDX); break;
+  case ET_DESTROY_UNIT:           EvAct_DestroyUnit         (A_SIDE, A_BOOL, OBJ_IDX); break;
   case ET_DAMAGE_HEAL_UNIT:       EvAct_DamageHealUnit      (A_SIDE, A_ENUM, A_BOOL, A_VALUE, OBJ_IDX); break;
   case ET_CHANGE_UNIT_OWNER:      ChangeUnitOwner           (A_SIDE, A_ITEM, OBJ_IDX, 0); break;
   case ET_CHANGE_UNIT_TYPE:       EvAct_ChangeUnitType      (A_SIDE, A_ITEM, A_BOOL, OBJ_IDX); break;

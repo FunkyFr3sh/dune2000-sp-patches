@@ -57,6 +57,7 @@ void EvAct_CenterViewport(int xpos, int ypos);
 void EvAct_ChangeMapBlock(int xpos, int ypos, int width, int height, uint16_t *tiles);
 void EvAct_TransformTiles(int amount, uint16_t *tiles);
 void EvAct_ActivateTimer(int condition_index);
+void EvAct_DestroyUnit(int side_id, bool silent, int unit_index);
 void EvAct_DamageHealUnit(int side_id, int action, int units, int value, int unit_index);
 void EvAct_ChangeUnitType(int side_id, int target_type, bool defined_type, int unit_index);
 void EvAct_SetUnitFlag(int side_id, eEventFlagOperation operation, int flag, int unit_index);

@@ -628,6 +628,19 @@ void EvAct_ActivateTimer(int condition_index)
   condition->val4 = gGameTicks;
 }
 
+void EvAct_DestroyUnit(int side_id, bool silent, int unit_index)
+{
+  if (silent)
+  {
+    Unit *unit = GetUnit(side_id, unit_index);
+    unit->State = UNIT_STATE_17_DEAD;
+    unit->ED_c_field_2F_50Inf_10Unit = 0;
+    unit->AI_w_field_32_AIndex = -1;
+  }
+  else
+    DestroyUnit(side_id, unit_index);
+}
+
 void EvAct_DamageHealUnit(int side_id, int action, int units, int value, int unit_index)
 {
   Unit *unit = GetUnit(side_id, unit_index);
