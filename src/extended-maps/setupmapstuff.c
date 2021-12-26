@@ -147,10 +147,16 @@ void Mod__setupmapstuff()
   // Store the original side ID upon starting a map
   gOldSideId = gSideId;
 
-  // Clean garbage data on val4 (base time) tor Timer and Interval concitions
+  // Clean garbage data for conditions which use some fields for internal data storage
   for (int i = 0; i < _gConditionCount; i++)
+  {
+    // Clean val4 (base time) for Timer and Interval conditions
     if (_gConditionArray[i].condition_type == CT_INTERVAL || _gConditionArray[i].condition_type == CT_TIMER)
       _gConditionArray[i].val4 = 0;
+    // Clean val3 (flag value) for Flag conditions
+    if (_gConditionArray[i].condition_type == CT_FLAG)
+      _gConditionArray[i].val3 = 0;
+  }
 
   // First pass - back up tile and special value, set up tile flags and preplaced spice/concrete
   for (int ypos = 0; ypos < gGameMap.height; ypos++)

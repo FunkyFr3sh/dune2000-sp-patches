@@ -141,7 +141,13 @@ bool CheckIfUnitMatchesCriteria(Unit *unit, eUnitFilterCriteriaType criteria_typ
       || behavior == UnitBehavior_DEATH_HAND;
   int pos_x = unit->__posx >> 21;
   int pos_y = unit->__posy >> 21;
-  uint32_t attributes = gGameMap.map[pos_x + _CellNumbersWidthSpan[pos_y]].__tile_bitflags;
+  uint32_t attributes = 0;
+  bool attributes_valid = false;
+  if (pos_x >= 0 && pos_y >= 0 && pos_x < gGameMapWidth && pos_y < gGameMapHeight)
+  {
+    attributes_valid = true;
+    attributes = gGameMap.map[pos_x + _CellNumbersWidthSpan[pos_y]].__tile_bitflags;
+  }
   switch(criteria_type)
   {
   case UNITCRITERIATYPE_NONE:         result = true; break;
@@ -178,12 +184,12 @@ bool CheckIfUnitMatchesCriteria(Unit *unit, eUnitFilterCriteriaType criteria_typ
   case UNITCRITERIATYPE_FLAG:         result = unit->Flags & (1 << value); break;
   case UNITCRITERIATYPE_STATE:        result = compare_value(unit->State, value, comparison); break;
   case UNITCRITERIATYPE_GROUPNO:      result = compare_value(unit->GroupID_28, value, comparison); break; // To be clarified
-  case UNITCRITERIATYPE_TILE_ATTRIB:  result = attributes & (1 << value); break;
-  case UNITCRITERIATYPE_TILE_TERRAIN: result = compare_value((attributes >> 29) & 7, value, comparison); break;
-  case UNITCRITERIATYPE_TILE_SPICE:   result = compare_value((attributes >> 20) & 7, value, comparison); break;
-  case UNITCRITERIATYPE_TILE_CONCOWN: result = compare_value((attributes >> 17) & 7, value, comparison); break;
-  case UNITCRITERIATYPE_TILE_OWNER1:  result = compare_value((attributes >> 0) & 7, value, comparison); break;
-  case UNITCRITERIATYPE_TILE_OWNER2:  result = compare_value((attributes >> 25) & 7, value, comparison); break;
+  case UNITCRITERIATYPE_TILE_ATTRIB:  result = attributes_valid && (attributes & (1 << value)); break;
+  case UNITCRITERIATYPE_TILE_TERRAIN: result = attributes_valid && compare_value((attributes >> 29) & 7, value, comparison); break;
+  case UNITCRITERIATYPE_TILE_SPICE:   result = attributes_valid && compare_value((attributes >> 20) & 7, value, comparison); break;
+  case UNITCRITERIATYPE_TILE_CONCOWN: result = attributes_valid && compare_value((attributes >> 17) & 7, value, comparison); break;
+  case UNITCRITERIATYPE_TILE_OWNER1:  result = attributes_valid && compare_value((attributes >> 0) & 7, value, comparison); break;
+  case UNITCRITERIATYPE_TILE_OWNER2:  result = attributes_valid && compare_value((attributes >> 25) & 7, value, comparison); break;
   }
   return result != negation;
 }
