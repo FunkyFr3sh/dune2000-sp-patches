@@ -271,7 +271,7 @@ void ExecuteEvent(int event_index)
   e.args[5] = event->value;
   e.data = event->data;
   // Unit manipulation events: process all side's units
-  if (event->event_type >= ET_DESTROY_UNIT && event->event_type <= ET_59)
+  if (event->event_type >= ET_DESTROY_UNIT && event->event_type <= ET_SHOW_UNIT_DATA)
   {
     int limit = event->data[0];
     int affected = 0;
@@ -297,7 +297,7 @@ void ExecuteEvent(int event_index)
     return;
   }
   // Building manipulation events: process all side's buildings
-  if (event->event_type >= ET_DESTROY_BUILDING && event->event_type <= ET_69)
+  if (event->event_type >= ET_DESTROY_BUILDING && event->event_type <= ET_SHOW_BUILDING_DATA)
   {
     int limit = event->data[0];
     int affected = 0;
@@ -427,6 +427,7 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_CHANGE_UNIT_TYPE:       EvAct_ChangeUnitType      (A_SIDE, A_ITEM, A_BOOL, OBJ_IDX); break;
   case ET_SET_UNIT_FLAG:          EvAct_SetUnitFlag         (A_SIDE, A_ENUM, A_VALUE, OBJ_IDX); break;
   case ET_SET_UNIT_PROPERTY:      EvAct_SetUnitProperty     (A_SIDE, A_ITEM, A_VALUE, OBJ_IDX); break;
+  case ET_AIRLIFT_UNIT:           EvAct_AirliftUnit         (A_SIDE, COORD0, A_BOOL, OBJ_IDX); break;
   case ET_SHOW_UNIT_DATA:         EvAct_ShowUnitData        (A_SIDE, OBJ_IDX); break;
   // Building manipulation
   case ET_DESTROY_BUILDING:       DestroyBuilding           (A_SIDE, OBJ_IDX, 0); break;

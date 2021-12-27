@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <stdio.h>
+#include <stdint.h>
 #include "macros/patch.h"
 #include "dune2000.h"
 #include "patch.h"
@@ -683,6 +684,48 @@ void EvAct_SetUnitProperty(int side_id, int byte, int value, int unit_index)
   Unit *unit = GetUnit(side_id, unit_index);
   unsigned char *data = (unsigned char *) unit;
   data[byte] = value;
+}
+
+void EvAct_AirliftUnit(int side_id, int target_x, int target_y, bool units_target, int unit_index)
+{
+  CSide *side = GetSide(side_id);
+  Unit *unit = GetUnit(side_id, unit_index);
+  if (unit->State == UNIT_STATE_18_AWAITING_AIRLIFT)
+    return;
+  if (units_target && unit->TargetX == unit->BlockFromX && unit->TargetY == unit->BlockFromY)
+    return;
+  if (!units_target && target_x == unit->BlockFromX && target_y == unit->BlockFromY)
+    return;
+  int8_t queue_pos = CSide_46CCA0_get_queue_pos(side, unit);
+  if ( queue_pos != -1 )
+  {
+    if (! units_target)
+    {
+      unit->TargetX = target_x;
+      unit->TargetY = target_y;
+    }
+    if (unit->Flags & UFLAGS_BLOCKTOMARKED)
+    {
+      GameMapTileStruct *tile = &gGameMap.map[unit->BlockToX + _CellNumbersWidthSpan[unit->BlockToY]];
+      tile->__tile_bitflags &= ~TileFlags_8_OCC_UNIT;
+      if ( tile->__tile_bitflags & (TileFlags_200_CSPOT_TL|TileFlags_100_CSPOT_DL|TileFlags_80_CSPOT_DR|TileFlags_40_CSPOT_TR|TileFlags_20_CSPOT_MID) )
+      {
+        tile->__tile_bitflags &= ~(TileFlags_4_OWNER|TileFlags_2_OWNER|TileFlags_1_OWNER);
+        tile->__tile_bitflags |= ((tile->__tile_bitflags >> 25) & 7);
+      }
+      unit->Flags &= ~UFLAGS_BLOCKTOMARKED;
+      unit->BlockToX = unit->BlockFromX;
+      unit->BlockToY = unit->BlockFromY;
+      unit->__posx = (unit->BlockFromX << 21) + (1 << 20);
+      unit->__posy = (unit->BlockFromY << 21) + (1 << 20);
+      unit->__pos_stepsmax = 0;
+      unit->pos_steps = 0;
+    }
+    if ( CSide__AddToQueue(side, unit, unit_index, queue_pos, 100, unit->State) )
+    {
+      UnitAdjustState(unit, UNIT_STATE_18_AWAITING_AIRLIFT);
+    }
+  }
 }
 
 void EvAct_ShowUnitData(int side_id, int unit_index)

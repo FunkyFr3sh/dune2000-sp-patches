@@ -62,6 +62,7 @@ void EvAct_DamageHealUnit(int side_id, int action, int units, int value, int uni
 void EvAct_ChangeUnitType(int side_id, int target_type, bool defined_type, int unit_index);
 void EvAct_SetUnitFlag(int side_id, eEventFlagOperation operation, int flag, int unit_index);
 void EvAct_SetUnitProperty(int side_id, int byte, int value, int unit_index);
+void EvAct_AirliftUnit(int side_id, int target_x, int target_y, bool units_target, int unit_index);
 void EvAct_ShowUnitData(int side_id, int unit_index);
 void EvAct_DamageHealBuilding(int side_id, int action, int units, int value, int building_index);
 void EvAct_ChangeBuildingOwner(int side_id, int target_side, int building_index);

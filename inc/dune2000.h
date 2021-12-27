@@ -389,6 +389,8 @@ void __thiscall CSide__update_list_of_available_buildings_and_units(CSide *side)
 char __thiscall CSide__MyVersionOfBuilding(CSide *this, char building_type, bool bool1);
 uint8_t __thiscall CSide__MyVersionOfUnit(CSide *this, char unit, bool bool1);
 void __thiscall CSide_add_cash_drip(CSide *this, int a2);
+int8_t __thiscall CSide_46CCA0_get_queue_pos(CSide *this, Unit *unit);
+bool __thiscall CSide__AddToQueue(CSide *this, Unit *unit, __int16 unit_index, unsigned __int8 queue_pos, char a5, int state);
 Unit *          ChangeUnitOwner(eSideType source_side_id, eSideType target_side_id, __int16 source_unit_index, char bool1);
 char            CaptureBuilding(eSideType source_side_id, eSideType target_side_id, __int16 source_building_index);
 void __thiscall CSide__BlowupAll_surrender(CSide *side);
@@ -419,6 +421,7 @@ void            DestroyBuilding(int side, int objIndex, char a3);
 void            DestroyUnit(eSideType side, __int16 index);
 char            DamageTiles(unsigned int xpos, unsigned int ypos, unsigned int a3, unsigned __int8 bulletType, int ai_side, __int16 ai_index, char a7);
 
+bool            UnitAdjustState(Unit *unit, eUnitState state);
 void            MakeUnitsStealthInRange(unsigned __int8 x, unsigned __int8 y, eSideType side);
 int             RevealTilesSeenByBuildingsAndUnits(eSideType side);
 bool            Unit_49F5F0(Unit *unit);

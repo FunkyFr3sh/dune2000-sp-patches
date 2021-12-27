@@ -58,7 +58,7 @@ typedef enum UnitBehaviorType
   UnitBehavior_11 = 17,
 }UnitBehaviorType;
 
-enum eUnitState
+typedef enum eUnitState
 {
   UNIT_STATE_DUMMY = 0x0,
   UNIT_STATE_1 = 0x1,
@@ -94,7 +94,7 @@ enum eUnitState
   UNIT_STATE_31_SELFDESTRUCT = 0x1F,
   UNIT_STATE_32_THUMPERING = 0x20,
   UNIT_STATE_33 = 0x21,
-};
+}eUnitState;
 
 typedef __int16 index;
 
