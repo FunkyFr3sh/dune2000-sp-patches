@@ -18,6 +18,7 @@ bool      rulesExt__buildingsAlwaysNeedPrerequisites = false;
 bool      rulesExt__returnCreditsToSpiceStorage = false;
 bool      rulesExt__intervalsAreOffByOneTick = true;
 uint32_t  rulesExt__guardModeRadius       = 192;
+bool      rulesExt__alwaysShowRadar       = false;
 
 static void LoadVars(LPCTSTR fileName);
 
@@ -67,4 +68,5 @@ static void LoadVars(LPCTSTR fileName)
     rulesExt__returnCreditsToSpiceStorage = IniGetBool("Vars", "returnCreditsToSpiceStorage", rulesExt__returnCreditsToSpiceStorage, fileName);
     rulesExt__intervalsAreOffByOneTick = IniGetBool("Vars", "intervalsAreOffByOneTick", rulesExt__intervalsAreOffByOneTick, fileName);
     rulesExt__guardModeRadius = IniGetInt("Vars", "guardModeRadius", rulesExt__guardModeRadius, fileName);
+    rulesExt__alwaysShowRadar = IniGetBool("Vars", "alwaysShowRadar", rulesExt__alwaysShowRadar, fileName);
 }

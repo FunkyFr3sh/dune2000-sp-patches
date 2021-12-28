@@ -42,3 +42,4 @@ extern bool     rulesExt__buildingsAlwaysNeedPrerequisites;
 extern bool     rulesExt__returnCreditsToSpiceStorage;
 extern bool     rulesExt__intervalsAreOffByOneTick;
 extern uint32_t rulesExt__guardModeRadius;
+extern bool     rulesExt__alwaysShowRadar;
