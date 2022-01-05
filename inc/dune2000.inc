@@ -180,8 +180,6 @@ cextern WindowActivated
 
 ; ### Functions ###
 cextern Graphlib__TextOnScreen
-cextern Model__GenerateUnitMoveOrder
-cextern Model__GenerateUnitAttackUnitOrder
 cextern Model__ExecuteGameEvent
 cextern CUIManager__LoadDune2000Cfg
 cextern CUIManager__SaveDune2000Cfg

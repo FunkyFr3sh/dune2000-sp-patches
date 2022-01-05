@@ -294,7 +294,7 @@ void Mod__setupmapstuff()
               if (special_value & 0x1000)
                 unit->Flags |= UFLAGS_10_STEALTH;
               if (special_value & 0x2000)
-                unit->w_field_E = 1;
+                unit->Tag = 1;
             }
             break;
           }
@@ -328,7 +328,7 @@ void Mod__setupmapstuff()
             else if (primary)
               SetBuildingAsPrimary(side_id, building_index);
             if (tagged && bld)
-              bld->field_E = 1;
+              bld->Tag = 1;
             break;
           }
           // Default behavior: Tiledata entry

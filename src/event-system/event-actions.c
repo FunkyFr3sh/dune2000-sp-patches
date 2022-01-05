@@ -183,7 +183,7 @@ void EvAct_UnitSpawn(int xpos, int ypos, int side_id, int amount, int facing, in
       unit->c_field_54_facingcurrent = facing << 2;
       unit->c_field_55_facingcurrent = facing << 2;
       unit->c_field_56_facingcurrent = facing << 2;
-      unit->w_field_E = tag;
+      unit->Tag = tag;
     }
   }
 }
@@ -283,7 +283,7 @@ int EvAct_AddUnit(int xpos, int ypos, int side_id, int properties, int unit_type
     }
     if (properties & 1)
       unit->Flags |= UFLAGS_10_STEALTH;
-    unit->w_field_E = tag;
+    unit->Tag = tag;
   }
   // Revert back owner side attributes
   if (occ_building && (orig_owner_side != side_id))
@@ -324,7 +324,7 @@ int EvAct_AddBuilding(int xpos, int ypos, int side_id, int properties, int build
     if (properties & 1)
       SetBuildingAsPrimary(side_id, building_index);
     // Building tag
-    bld->field_E = tag;
+    bld->Tag = tag;
   }
   return building_index;
 }
@@ -629,13 +629,47 @@ void EvAct_ActivateTimer(int condition_index)
   condition->val4 = gGameTicks;
 }
 
+void EvAct_ShowSideData(int side_id)
+{
+  CSide *side = GetSide(side_id);
+  unsigned char *udata = ((unsigned char *)side) + 0x2660C;
+  char buf[5][128];
+  memset(buf, 0, sizeof(buf));
+  //int v[12];
+  //int *p = ((int *)side);
+  //for (int i = 0; i < 12; i++)
+  //  v[i] = (p[i] - (int)side) / sizeof(Unit);
+  //StructForCSide *q = &side->s_field_2651C;
+  //sprintf(buf[0], "%d %d %d %d %d %d %d %d %d %d %d %d", v[0], v[1], v[2], v[3], v[4], v[5], v[6], v[7], v[8], v[9], v[10], v[11]);
+  //sprintf(buf[0], "%d %d %d %f %d %d %d", q->w_field_0, q->w_field_2, q->w_field_4, q->f_field_8, q->dw_field_C, q->c_field_10, q->c_field_11);
+  /*sprintf(buf[0], "Unit %d Type %d HP %d State %d Flags: ", unit_index, unit->Type, unit->Health, unit->State);
+  int l = strlen(buf[0]);
+  memset(&buf[0][l], ' ', 43);
+  for (int i = 0; i < 32; i++)
+    buf[0][l + i + (i / 8)] = ((unit->Flags >> i & 1)?'X':'o');
+  */
+  for (int i = 0; i < 32; i++)
+  {
+    for (int j = 0; j < 4; j++)
+    {
+      sprintf(&buf[j+1][2 * i + (i / 4) + (i / 16)], "%02X", udata[i + j * 32]);
+      buf[j+1][9 * (i / 4) + (i / 16) - 1] = ' ';
+      buf[j+1][37 * (i / 16) - 2] = ' ';
+    }
+  }
+  for (int i = 4; i >= 0; i--)
+    QueueMessage(buf[i], -1);
+  for (int i = 0; i < 5; i++)
+    _gMessageData.__ticks[i] = gGameTicks;
+}
+
 void EvAct_DestroyUnit(int side_id, bool silent, int unit_index)
 {
   if (silent)
   {
     Unit *unit = GetUnit(side_id, unit_index);
     unit->State = UNIT_STATE_17_DEAD;
-    unit->ED_c_field_2F_50Inf_10Unit = 0;
+    unit->ED_c_field_2F_50Inf_10Unit = 1;
     unit->AI_w_field_32_AIndex = -1;
   }
   else
@@ -684,6 +718,14 @@ void EvAct_SetUnitProperty(int side_id, int byte, int value, int unit_index)
   Unit *unit = GetUnit(side_id, unit_index);
   unsigned char *data = (unsigned char *) unit;
   data[byte] = value;
+}
+
+void EvAct_SelectUnit(int side_id, bool exclude_from_restore, int unit_index)
+{
+  Unit *unit = GetUnit(side_id, unit_index);
+  unit->__ClearUnits_SelectedGroup_c_field_19_state = 1;
+  if (exclude_from_restore)
+    unit->PrevWasSelected = 0;
 }
 
 void EvAct_AirliftUnit(int side_id, int target_x, int target_y, bool units_target, int unit_index)
@@ -797,6 +839,14 @@ void EvAct_SetBuildingProperty(int side_id, int byte, int value, int building_in
   data[byte] = value;
 }
 
+void EvAct_SelectBuilding(int side_id, bool exclude_from_restore, int building_index)
+{
+  Building *bld = GetBuilding(side_id, building_index);
+  bld->c_field_35_bool = 1;
+  if (exclude_from_restore)
+    bld->PrevWasSelected = 0;
+}
+
 void EvAct_ShowBuildingData(int side_id, int building_index)
 {
   Building *bld = GetBuilding(side_id, building_index);
@@ -879,4 +929,51 @@ void EvAct_RevealTile(int cell_index)
   int xpos = cell_index % gGameMapWidth;
   int ypos = cell_index / gGameMapWidth;
   RevealCircle(xpos, ypos, 0);
+}
+
+void EvAct_OrderUnitRetreat(int side_id)
+{
+  CSide *side = GetSide(side_id);
+  uint8_t x, y;
+  if (CSide__FindBestBasePosition(side, &x, &y))
+    GenerateUnitRetreatOrder(side_id, x, y);
+}
+
+void EvAct_OrderBuildBuildingCancel(int side_id, bool force)
+{
+  CSide *side = GetSide(side_id);
+  if (force)
+    side->s_field_2651C.c_field_10 = 1;
+  GenerateBuildBuildingCancelOrder(side_id, side->s_field_2651C.w_field_0);
+}
+
+void EvAct_OrderBuildPlaceBuilding(int side_id, int xpos, int ypos)
+{
+  CSide *side = GetSide(side_id);
+  GenerateBuildPlaceBuildingOrder(side_id, side->s_field_2651C.w_field_0, xpos, ypos);
+}
+
+void EvAct_OrderBuildUnitCancel(int side_id, int unit_type, bool force)
+{
+  CSide *side = GetSide(side_id);
+  if (force)
+    for (int i = 0; i < 10; i++)
+      if (side->ar_10_26530[i].w_field_0 == unit_type)
+        side->ar_10_26530[i].c_field_10 = 1;
+  GenerateBuildUnitCancelOrder(side_id, unit_type);
+}
+
+void EvAct_OrderStarportPick(int side_id, int unit_type)
+{
+  CSide *side = GetSide(side_id);
+  if (!side->starport_delivery_c_field_262A5)
+    GenerateStarportPickOrder(side_id, unit_type);
+}
+
+void EvAct_OrderUpgradeCancel(int side_id, bool force)
+{
+  CSide *side = GetSide(side_id);
+  if (force)
+    side->c_field_26608 = 1;
+  GenerateUpgradeCancelOrder(side_id, side->w_field_265F8);
 }

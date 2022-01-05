@@ -9,6 +9,7 @@
 #include "event-conditions.h"
 #include "event-actions.h"
 #include "event-filters.h"
+#include "event-utils.h"
 
 // New extended arrays for event and condition data
 
@@ -254,6 +255,7 @@ bool EvaluateCondition(int condition_index)
 void ExecuteEvent(int event_index)
 {
   EventData *event = &_gEventArray[event_index];
+  int et = event->event_type;
   // Check if event is blocked and block it if auto-block is set
   if (event->event_flags & EVENTFLAG_BLOCKED)
     return;
@@ -271,9 +273,16 @@ void ExecuteEvent(int event_index)
   e.args[5] = event->value;
   e.data = event->data;
   // Unit manipulation events: process all side's units
-  if (event->event_type >= ET_DESTROY_UNIT && event->event_type <= ET_SHOW_UNIT_DATA)
+  if ((et >= ET_DESTROY_UNIT && et <= ET_SHOW_UNIT_DATA)
+      || et == ET_ORDER_REPAIR_SINGLE_UNIT
+      || et == ET_ORDER_UNIT_ATTACK_UNIT
+      || et == ET_ORDER_UNIT_DEPLOY
+      || et == ET_ORDER_BUILDING_ATTACK_UNIT)
   {
     int limit = event->data[0];
+    if (et == ET_ORDER_UNIT_ATTACK_UNIT
+        || et == ET_ORDER_BUILDING_ATTACK_UNIT)
+      limit = 1;
     int affected = 0;
     int arg_side_id = e.args[1];
     for (int side_id = 0; side_id < 8; side_id++)
@@ -282,12 +291,20 @@ void ExecuteEvent(int event_index)
         continue;
       e.args[1] = side_id;
       CSide *side = GetSide(side_id);
+      // Clear and backup unit selection
+      if (et == ET_SELECT_UNIT)
+        for (Unit *unit = side->_Units_8; unit; unit = unit->Next)
+        {
+          unit->PrevWasSelected = unit->__ClearUnits_SelectedGroup_c_field_19_state;
+          unit->__ClearUnits_SelectedGroup_c_field_19_state = 0;
+        }
+      // Process all units
       for (Unit *unit = side->_Units_8; unit; unit = unit->Next)
       {
         if (CheckIfUnitMatchesFilter((ObjectFilterStruct *)&e.data[1], unit))
         {
           e.index = unit->MyIndex;
-          ExecuteEventAction(event->event_type, &e);
+          ExecuteEventAction(et, &e);
           affected++;
         }
         if (limit && (affected == limit))
@@ -297,9 +314,20 @@ void ExecuteEvent(int event_index)
     return;
   }
   // Building manipulation events: process all side's buildings
-  if (event->event_type >= ET_DESTROY_BUILDING && event->event_type <= ET_SHOW_BUILDING_DATA)
+  if ((et >= ET_DESTROY_BUILDING && et <= ET_SHOW_BUILDING_DATA)
+      || et == ET_ORDER_DOCK_WITH_REFINERY
+      || et == ET_ORDER_REPAIR_SELECTED_UNITS
+      || et == ET_ORDER_UNIT_ATTACK_BUILDING
+      || et == ET_ORDER_BUILDING_ATTACK_BUILDING
+      || et == ET_ORDER_BUILDING_REPAIR
+      || et == ET_ORDER_BUILDING_SELL)
   {
     int limit = event->data[0];
+    if (et == ET_ORDER_DOCK_WITH_REFINERY
+        || et == ET_ORDER_REPAIR_SELECTED_UNITS
+        || et == ET_ORDER_UNIT_ATTACK_BUILDING
+        || et == ET_ORDER_BUILDING_ATTACK_BUILDING)
+      limit = 1;
     int affected = 0;
     int arg_side_id = e.args[1];
     for (int side_id = 0; side_id < 8; side_id++)
@@ -308,12 +336,20 @@ void ExecuteEvent(int event_index)
         continue;
       e.args[1] = side_id;
       CSide *side = GetSide(side_id);
+      // Clear and backup building selection
+      if (et == ET_SELECT_BUILDING)
+        for (Building *building = side->_Buildings_10; building; building = building->Next)
+        {
+          building->PrevWasSelected = building->c_field_35_bool;
+          building->c_field_35_bool = 0;
+        }
+      // Process all buildings
       for (Building *building = side->_Buildings_10; building; building = building->Next)
       {
         if (CheckIfBuildingMatchesFilter((ObjectFilterStruct *)&e.data[1], building, side_id))
         {
           e.index = building->MyIndex;
-          ExecuteEventAction(event->event_type, &e);
+          ExecuteEventAction(et, &e);
           affected++;
         }
         if (limit && (affected == limit))
@@ -323,16 +359,17 @@ void ExecuteEvent(int event_index)
     return;
   }
   // Crate manipulation events: process all crates
-  if (event->event_type >= ET_REMOVE_CRATE && event->event_type <= ET_74)
+  if (et >= ET_REMOVE_CRATE && et <= ET_74)
   {
     int limit = event->data[0];
     int affected = 0;
+    // Process all crates
     for (int i = 0; i < MAX_CRATES; i++)
     {
       if (CheckIfCrateMatchesFilter((ObjectFilterStruct *)&e.data[1], &gCrates[i]))
       {
         e.index = i;
-        ExecuteEventAction(event->event_type, &e);
+        ExecuteEventAction(et, &e);
         affected++;
       }
       if (limit && (affected == limit))
@@ -341,7 +378,7 @@ void ExecuteEvent(int event_index)
     return;
   }
   // Tile manipulation events: process all tiles
-  if (event->event_type >= ET_SET_TILE_ATTRIBUTE && event->event_type <= ET_79)
+  if (et >= ET_SET_TILE_ATTRIBUTE && et <= ET_79)
   {
     int limit = event->data[0];
     int affected = 0;
@@ -351,13 +388,14 @@ void ExecuteEvent(int event_index)
     int min_y = check_pos?filter->pos_min_y:0;
     int max_x = check_pos?filter->pos_max_x:gGameMapWidth-1;
     int max_y = check_pos?filter->pos_max_y:gGameMapHeight-1;
+    // Process all tiles
     for (int y = min_y; y <= max_y; y++)
       for (int x = min_x; x <= max_x; x++)
       {
         if (CheckIfTileMatchesFilter((ObjectFilterStruct *)&e.data[1], &gGameMap.map[x + _CellNumbersWidthSpan[y]], x, y, (filter->pos_flags & OBJFILTERPOSFLAG_DOCHECK) && (filter->pos_flags & OBJFILTERPOSFLAG_NEGATE)))
         {
           e.index = x + _CellNumbersWidthSpan[y];
-          ExecuteEventAction(event->event_type, &e);
+          ExecuteEventAction(et, &e);
           affected++;
         }
         if (limit && (affected == limit))
@@ -366,7 +404,7 @@ void ExecuteEvent(int event_index)
     return;
   }
   // Normal events: just execute action
-  ExecuteEventAction(event->event_type, &e);
+  ExecuteEventAction(et, &e);
 }
 
 #define COORD0  e->coord_x[0], e->coord_y[0]
@@ -415,11 +453,13 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_ADD_CRATE:              EvAct_AddCrate            (COORD0, A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_VALUE); break;
   case ET_ADD_CONCRETE:           EvAct_AddConcrete         (COORD0, COORD1, A_SIDE, A_VALUE); break;
   case ET_SPICE_BLOOM:            EvAct_SpiceBloom          (COORD0, A_AMNT, A_ENUM, A_BOOL); break;
-  case ET_SHAKE_SCREEN:           _ScreenShakes = A_VALUE;   break;
+  case ET_SHAKE_SCREEN:           _ScreenShakes = A_VALUE; break;
   case ET_CENTER_VIEWPORT:        EvAct_CenterViewport      (COORD0); break;
   case ET_CHANGE_MAP_BLOCK:       EvAct_ChangeMapBlock      (COORD0, COORD1, (uint16_t *)&e->data[1]); break;
   case ET_TRANSFORM_TILES:        EvAct_TransformTiles      (A_AMNT, (uint16_t *)&e->data[1]); break;
   case ET_ACTIVATE_TIMER:         EvAct_ActivateTimer       (A_VALUE); break;
+  // Side manipulation
+  case ET_SHOW_SIDE_DATA:         EvAct_ShowSideData        (A_SIDE); break;
   // Unit manipulation
   case ET_DESTROY_UNIT:           EvAct_DestroyUnit         (A_SIDE, A_BOOL, OBJ_IDX); break;
   case ET_DAMAGE_HEAL_UNIT:       EvAct_DamageHealUnit      (A_SIDE, A_ENUM, A_BOOL, A_VALUE, OBJ_IDX); break;
@@ -427,6 +467,7 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_CHANGE_UNIT_TYPE:       EvAct_ChangeUnitType      (A_SIDE, A_ITEM, A_BOOL, OBJ_IDX); break;
   case ET_SET_UNIT_FLAG:          EvAct_SetUnitFlag         (A_SIDE, A_ENUM, A_VALUE, OBJ_IDX); break;
   case ET_SET_UNIT_PROPERTY:      EvAct_SetUnitProperty     (A_SIDE, A_ITEM, A_VALUE, OBJ_IDX); break;
+  case ET_SELECT_UNIT:            EvAct_SelectUnit          (A_SIDE, A_BOOL, OBJ_IDX); break;
   case ET_AIRLIFT_UNIT:           EvAct_AirliftUnit         (A_SIDE, COORD0, A_BOOL, OBJ_IDX); break;
   case ET_SHOW_UNIT_DATA:         EvAct_ShowUnitData        (A_SIDE, OBJ_IDX); break;
   // Building manipulation
@@ -436,6 +477,7 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_CHANGE_BUILDING_TYPE:   EvAct_ChangeBuildingType  (A_SIDE, A_ITEM, OBJ_IDX); break;
   case ET_SET_BUILDING_FLAG:      EvAct_SetBuildingFlag     (A_SIDE, A_ENUM, A_VALUE, OBJ_IDX); break;
   case ET_SET_BUILDING_PROPERTY:  EvAct_SetBuildingProperty (A_SIDE, A_ITEM, A_VALUE, OBJ_IDX); break;
+  case ET_SELECT_BUILDING:        EvAct_SelectBuilding      (A_SIDE, A_BOOL, OBJ_IDX); break;
   case ET_SHOW_BUILDING_DATA:     EvAct_ShowBuildingData    (A_SIDE, OBJ_IDX); break;
   // Crate manipulation
   case ET_REMOVE_CRATE:           EvAct_RemoveCrate         (OBJ_IDX); break;
@@ -443,6 +485,36 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_SET_TILE_ATTRIBUTE:     EvAct_SetTileAttribute    (A_ENUM, A_VALUE, OBJ_IDX); break;
   case ET_SET_TILE_DAMAGE:        EvAct_SetTileDamage       (A_ENUM, A_VALUE, OBJ_IDX); break;
   case ET_REVEAL_TILE:            EvAct_RevealTile          (OBJ_IDX); break;
+  // Orders
+  case ET_ORDER_UNIT_MOVE:                GenerateUnitMoveOrder               (A_SIDE, COORD0);           RestoreUnitSelection(A_SIDE, A_BOOL); break;
+  case ET_ORDER_DOCK_WITH_REFINERY:       GenerateDockWithRefineryOrder       (A_SIDE, OBJ_IDX);          RestoreUnitSelection(A_SIDE, A_BOOL); break;
+  case ET_ORDER_REPAIR_SELECTED_UNITS:    GenerateRepairSelectedUnitsOrder    (A_SIDE, OBJ_IDX);          RestoreUnitSelection(A_SIDE, A_BOOL); break;
+  case ET_ORDER_REPAIR_SINGLE_UNIT:       GenerateRepairSingleUnitOrder       (A_SIDE, OBJ_IDX);          break;
+  case ET_ORDER_UNIT_ATTACK_UNIT:         GenerateUnitAttackUnitOrder         (A_ITEM, A_SIDE, OBJ_IDX);  RestoreUnitSelection(A_ITEM, A_BOOL); break;
+  case ET_ORDER_UNIT_ATTACK_BUILDING:     GenerateUnitAttackBuildingOrder     (A_ITEM, A_SIDE, OBJ_IDX);  RestoreUnitSelection(A_ITEM, A_BOOL); break;
+  case ET_ORDER_UNIT_ATTACK_TILE:         GenerateUnitAttackTileOrder         (A_SIDE, COORD0);           RestoreUnitSelection(A_SIDE, A_BOOL); break;
+  case ET_ORDER_UNIT_GUARD:               GenerateUnitGuardOrder              (A_SIDE);                   RestoreUnitSelection(A_SIDE, A_BOOL); break;
+  case ET_ORDER_UNIT_SCATTER:             GenerateUnitScatterOrder            (A_SIDE);                   RestoreUnitSelection(A_SIDE, A_BOOL); break;
+  case ET_ORDER_UNIT_RETREAT:             EvAct_OrderUnitRetreat              (A_SIDE);                   RestoreUnitSelection(A_SIDE, A_BOOL); break;
+  case ET_ORDER_UNIT_DEPLOY:              GenerateUnitDeployOrder             (A_SIDE, OBJ_IDX);          break;
+  case ET_ORDER_BUILDING_ATTACK_UNIT:     GenerateBuildingAttackUnitOrder     (A_ITEM, A_SIDE, OBJ_IDX);  RestoreBuildingSelection(A_SIDE, A_BOOL); break;
+  case ET_ORDER_BUILDING_ATTACK_BUILDING: GenerateBuildingAttackBuildingOrder (A_ITEM, A_SIDE, OBJ_IDX);  RestoreBuildingSelection(A_SIDE, A_BOOL); break;
+  case ET_ORDER_BUILDING_SET_PRIMARY:     GenerateBuildingSetPrimaryOrder     (A_SIDE);                   RestoreBuildingSelection(A_SIDE, A_BOOL); break;
+  case ET_ORDER_BUILDING_REPAIR:          GenerateBuildingRepairOrder         (A_SIDE, OBJ_IDX);          break;
+  case ET_ORDER_BUILDING_SELL:            GenerateBuildingSellOrder           (A_SIDE, OBJ_IDX);          break;
+  case ET_ORDER_STOP:                     GenerateStopOrder                   (A_SIDE);                   RestoreUnitSelection(A_SIDE, A_BOOL); RestoreBuildingSelection(A_SIDE, A_BOOL); break;
+  case ET_ORDER_BUILD_BUILDING_PICK:      GenerateBuildBuildingPickOrder      (A_SIDE, A_ITEM);           break;
+  case ET_ORDER_BUILD_BUILDING_CANCEL:    EvAct_OrderBuildBuildingCancel      (A_SIDE, A_BOOL);           break;
+  case ET_ORDER_BUILD_PLACE_BUILDING:     EvAct_OrderBuildPlaceBuilding       (A_SIDE, COORD0);           break;
+  case ET_ORDER_BUILD_UNIT_PICK:          GenerateBuildUnitPickOrder          (A_SIDE, A_ITEM);           break;
+  case ET_ORDER_BUILD_UNIT_CANCEL:        EvAct_OrderBuildUnitCancel          (A_SIDE, A_ITEM, A_BOOL);   break;
+  case ET_ORDER_STARPORT_PICK:            EvAct_OrderStarportPick             (A_SIDE, A_ITEM);           break;
+  case ET_ORDER_STARPORT_UNPICK:          GenerateStarportUnpickOrder         (A_SIDE, A_ITEM);           break;
+  case ET_ORDER_STARPORT_PURCHASE:        GenerateStarportPurchaseOrder       (A_SIDE);                   break;
+  case ET_ORDER_STARPORT_CANCEL:          GenerateStarportCancelOrder         (A_SIDE);                   break;
+  case ET_ORDER_UPGRADE_PICK:             GenerateUpgradePickOrder            (A_SIDE, A_ITEM);           break;
+  case ET_ORDER_UPGRADE_CANCEL:           EvAct_OrderUpgradeCancel            (A_SIDE, A_BOOL);           break;
+  case ET_ORDER_SPECIAL_WEAPON:           GenerateSpecialWeaponOrder          (A_SIDE, A_ITEM, COORD0);   break;
   default:
     DebugFatal("event-core.c", "Unknown event type %d", event_type);
   }

@@ -57,20 +57,35 @@ void EvAct_CenterViewport(int xpos, int ypos);
 void EvAct_ChangeMapBlock(int xpos, int ypos, int width, int height, uint16_t *tiles);
 void EvAct_TransformTiles(int amount, uint16_t *tiles);
 void EvAct_ActivateTimer(int condition_index);
+// Side manipulation
+void EvAct_ShowSideData(int side_id);
+// Unit manipulation
 void EvAct_DestroyUnit(int side_id, bool silent, int unit_index);
 void EvAct_DamageHealUnit(int side_id, int action, int units, int value, int unit_index);
 void EvAct_ChangeUnitType(int side_id, int target_type, bool defined_type, int unit_index);
 void EvAct_SetUnitFlag(int side_id, eEventFlagOperation operation, int flag, int unit_index);
 void EvAct_SetUnitProperty(int side_id, int byte, int value, int unit_index);
+void EvAct_SelectUnit(int side_id, bool exclude_from_restore, int unit_index);
 void EvAct_AirliftUnit(int side_id, int target_x, int target_y, bool units_target, int unit_index);
 void EvAct_ShowUnitData(int side_id, int unit_index);
+// Building manipulation
 void EvAct_DamageHealBuilding(int side_id, int action, int units, int value, int building_index);
 void EvAct_ChangeBuildingOwner(int side_id, int target_side, int building_index);
 void EvAct_ChangeBuildingType(int side_id, int target_type, int building_index);
 void EvAct_SetBuildingFlag(int side_id, eEventFlagOperation operation, int flag, int building_index);
 void EvAct_SetBuildingProperty(int side_id, int byte, int value, int building_index);
+void EvAct_SelectBuilding(int side_id, bool exclude_from_restore, int building_index);
 void EvAct_ShowBuildingData(int side_id, int building_index);
+// Crate manipulation
 void EvAct_RemoveCrate(int crate_index);
+// Tile manipulation
 void EvAct_SetTileAttribute(eEventFlagOperation operation, int attribute, int cell_index);
 void EvAct_SetTileDamage(eEventValueOperation operation, int value, int cell_index);
 void EvAct_RevealTile(int cell_index);
+// Orders
+void EvAct_OrderUnitRetreat(int side_id);
+void EvAct_OrderBuildBuildingCancel(int side_id, bool force);
+void EvAct_OrderBuildPlaceBuilding(int side_id, int xpos, int ypos);
+void EvAct_OrderBuildUnitCancel(int side_id, int unit_type, bool force);
+void EvAct_OrderStarportPick(int side_id, int unit_type);
+void EvAct_OrderUpgradeCancel(int side_id, bool force);

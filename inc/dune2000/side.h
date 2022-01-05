@@ -104,7 +104,8 @@ typedef struct Unit
   int32_t Health;
   UnitFlags Flags;
   index EnemyIndex;
-  int16_t w_field_E;
+  uint8_t Tag; // Additional field for extended functionality (mod)
+  uint8_t PrevWasSelected; // Additional field for extended functionality (mod)
   int32_t State;
   uint32_t OldState;
   uint8_t Type;
@@ -242,8 +243,8 @@ typedef struct Building
   char field_B;
   char field_C;
   char field_D;
-  char field_E;
-  char field_F;
+  uint8_t Tag; // Additional field for extended functionality (mod)
+  uint8_t PrevWasSelected; // Additional field for extended functionality (mod)
   char field_10;
   char field_11;
   char field_12;
