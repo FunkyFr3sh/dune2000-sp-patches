@@ -6,6 +6,7 @@
 #include "patch.h"
 #include "ini.h"
 #include "utils.h"
+#include "event-utils.h"
 #include "event-actions.h"
 #include "event-core.h"
 
@@ -64,22 +65,14 @@ void EvAct_PlaySound(int sample_id, bool point_sound, int xpos, int ypos)
     Sound__PlaySample(sample_id, 0, 0, 0);
 }
 
-void EvAct_SetCash(int side_id, eEventValueOperation operation, int value)
+void EvAct_SetCash(int side_id, eValueOperation operation, int value)
 {
   CSide *side = GetSide(side_id);
   int actual_cash = side->SpiceReal + side->SpiceDrip + side->CashReal + side->CashDrip;
-  int cost = 0;
-  switch (operation)
-  {
-    case EVENTVALUEOPERATION_SET:        cost = actual_cash - value; break;
-    case EVENTVALUEOPERATION_ADD:        cost = value * -1; break;
-    case EVENTVALUEOPERATION_SUBSTRACT:  cost = value; break;
-  }
+  int target_cash = ValueOperation(actual_cash, value, operation);
+  int cost = actual_cash - target_cash;
 
-  if ( cost > actual_cash )
-  {
-    cost = actual_cash;
-  }
+  cost = HLIMIT(cost, actual_cash);
   if (cost <= 0)
   {
     side->CashDrip -= cost;
@@ -95,9 +88,9 @@ void EvAct_SetCash(int side_id, eEventValueOperation operation, int value)
   }
 }
 
-void EvAct_SetTech(int side_id, bool immediate_update, int value)
+void EvAct_SetTech(int side_id, eValueOperation operation, bool immediate_update, int value)
 {
-  _gMiscData.Tech[side_id] = value;
+  _gMiscData.Tech[side_id] = ValueOperation(_gMiscData.Tech[side_id], value, operation);
   // Immediately update available buildings and units
   if (immediate_update)
   {
@@ -702,22 +695,16 @@ void EvAct_ChangeUnitType(int side_id, int target_type, bool defined_type, int u
   unit->Type = target_type;
 }
 
-void EvAct_SetUnitFlag(int side_id, eEventFlagOperation operation, int flag, int unit_index)
+void EvAct_SetUnitFlag(int side_id, eFlagOperation operation, int flag, int unit_index)
 {
   Unit *unit = GetUnit(side_id, unit_index);
-  switch (operation)
-  {
-    case EVENTFLAGOPERATION_ADD: unit->Flags |= (1 << flag); break;
-    case EVENTFLAGOPERATION_REMOVE: unit->Flags &= ~(1 << flag); break;
-    case EVENTFLAGOPERATION_FLIP: unit->Flags ^= (1 << flag); break;
-  }
+  unit->Flags = FlagOperation(unit->Flags, flag, operation);
 }
 
-void EvAct_SetUnitProperty(int side_id, int byte, int value, int unit_index)
+void EvAct_SetUnitProperty(int side_id, eDataSize data_size, int offset, eValueOperation operation, int value, int unit_index)
 {
   Unit *unit = GetUnit(side_id, unit_index);
-  unsigned char *data = (unsigned char *) unit;
-  data[byte] = value;
+  SetDataValue((char *)unit, data_size, offset, operation, value);
 }
 
 void EvAct_SelectUnit(int side_id, bool exclude_from_restore, int unit_index)
@@ -821,22 +808,16 @@ void EvAct_ChangeBuildingType(int side_id, int target_type, int building_index)
   bld->Type = target_type;
 }
 
-void EvAct_SetBuildingFlag(int side_id, eEventFlagOperation operation, int flag, int building_index)
+void EvAct_SetBuildingFlag(int side_id, eFlagOperation operation, int flag, int building_index)
 {
   Building *bld = GetBuilding(side_id, building_index);
-  switch (operation)
-  {
-    case EVENTFLAGOPERATION_ADD: bld->Flags |= (1 << flag); break;
-    case EVENTFLAGOPERATION_REMOVE: bld->Flags &= ~(1 << flag); break;
-    case EVENTFLAGOPERATION_FLIP: bld->Flags ^= (1 << flag); break;
-  }
+  bld->Flags = FlagOperation(bld->Flags, flag, operation);
 }
 
-void EvAct_SetBuildingProperty(int side_id, int byte, int value, int building_index)
+void EvAct_SetBuildingProperty(int side_id, eDataSize data_size, int offset, eValueOperation operation, int value, int building_index)
 {
   Building *bld = GetBuilding(side_id, building_index);
-  unsigned char *data = (unsigned char *) bld;
-  data[byte] = value;
+  SetDataValue((char *)bld, data_size, offset, operation, value);
 }
 
 void EvAct_SelectBuilding(int side_id, bool exclude_from_restore, int building_index)
@@ -880,16 +861,11 @@ void EvAct_RemoveCrate(int crate_index)
   gGameMap.map[crate->__x + _CellNumbersWidthSpan[crate->__y]].__tile_bitflags &= ~TileFlags_1000;
 }
 
-void EvAct_SetTileAttribute(eEventFlagOperation operation, int attribute, int cell_index)
+void EvAct_SetTileAttribute(eFlagOperation operation, int attribute, int cell_index)
 {
   GameMapTileStruct *tile = &gGameMap.map[cell_index];
   TileFlags old_flags = tile->__tile_bitflags;
-  switch (operation)
-  {
-    case EVENTFLAGOPERATION_ADD: tile->__tile_bitflags |= (1 << attribute); break;
-    case EVENTFLAGOPERATION_REMOVE: tile->__tile_bitflags &= ~(1 << attribute); break;
-    case EVENTFLAGOPERATION_FLIP: tile->__tile_bitflags ^= (1 << attribute); break;
-  }
+  tile->__tile_bitflags = FlagOperation(tile->__tile_bitflags, attribute, operation);
   TileFlags new_flags = tile->__tile_bitflags;
   // Check if spice was removed
   if ((old_flags & 0x700000) && !(new_flags & 0x700000))
@@ -911,16 +887,10 @@ void EvAct_SetTileAttribute(eEventFlagOperation operation, int attribute, int ce
   }
 }
 
-void EvAct_SetTileDamage(eEventValueOperation operation, int value, int cell_index)
+void EvAct_SetTileDamage(eValueOperation operation, int value, int cell_index)
 {
   GameMapTileStruct *tile = &gGameMap.map[cell_index];
-  int damage = tile->__damage;
-  switch (operation)
-  {
-    case EVENTVALUEOPERATION_SET:    damage = value; break;
-    case EVENTVALUEOPERATION_ADD:   damage += value; break;
-    case EVENTVALUEOPERATION_SUBSTRACT:  damage -= value; break;
-  }
+  int damage = ValueOperation(tile->__damage, value, operation);
   tile->__damage = LIMIT(damage, 0, 255);
 }
 

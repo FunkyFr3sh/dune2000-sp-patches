@@ -11,20 +11,6 @@ typedef enum eDeliveryType
   DELIVERYTYPE_STARPORT = 2
 } eDeliveryType;
 
-typedef enum eEventValueOperation
-{
-  EVENTVALUEOPERATION_SET,
-  EVENTVALUEOPERATION_ADD,
-  EVENTVALUEOPERATION_SUBSTRACT
-} eEventValueOperation;
-
-typedef enum eEventFlagOperation
-{
-  EVENTFLAGOPERATION_ADD,
-  EVENTFLAGOPERATION_REMOVE,
-  EVENTFLAGOPERATION_FLIP
-} eEventFlagOperation;
-
 typedef enum eSpiceBloomMode
 {
   SPICEBLOOM_CLASSIC,
@@ -36,8 +22,8 @@ typedef enum eSpiceBloomMode
 void EvAct_AddDelivery(int xpos, int ypos, int side_id, int amount, int deploy_action, eDeliveryType delivery_type, char *unit_list);
 void EvAct_SetDiplomacy(int source_side, int target_side, int allegiance_type, bool both_sided);
 void EvAct_PlaySound(int sample_id, bool point_sound, int xpos, int ypos);
-void EvAct_SetCash(int side_id, eEventValueOperation operation, int value);
-void EvAct_SetTech(int side_id, bool immediate_update, int value);
+void EvAct_SetCash(int side_id, eValueOperation operation, int value);
+void EvAct_SetTech(int side_id, eValueOperation operation, bool immediate_update, int value);
 void EvAct_SwitchMySide(int side_id, int ai_switch, bool reveal_base);
 void EvAct_HideMap();
 void EvAct_RevealMap(int xpos, int ypos, int radius);
@@ -63,8 +49,8 @@ void EvAct_ShowSideData(int side_id);
 void EvAct_DestroyUnit(int side_id, bool silent, int unit_index);
 void EvAct_DamageHealUnit(int side_id, int action, int units, int value, int unit_index);
 void EvAct_ChangeUnitType(int side_id, int target_type, bool defined_type, int unit_index);
-void EvAct_SetUnitFlag(int side_id, eEventFlagOperation operation, int flag, int unit_index);
-void EvAct_SetUnitProperty(int side_id, int byte, int value, int unit_index);
+void EvAct_SetUnitFlag(int side_id, eFlagOperation operation, int flag, int unit_index);
+void EvAct_SetUnitProperty(int side_id, eDataSize data_size, int offset, eValueOperation operation, int value, int unit_index);
 void EvAct_SelectUnit(int side_id, bool exclude_from_restore, int unit_index);
 void EvAct_AirliftUnit(int side_id, int target_x, int target_y, bool units_target, int unit_index);
 void EvAct_ShowUnitData(int side_id, int unit_index);
@@ -72,15 +58,15 @@ void EvAct_ShowUnitData(int side_id, int unit_index);
 void EvAct_DamageHealBuilding(int side_id, int action, int units, int value, int building_index);
 void EvAct_ChangeBuildingOwner(int side_id, int target_side, int building_index);
 void EvAct_ChangeBuildingType(int side_id, int target_type, int building_index);
-void EvAct_SetBuildingFlag(int side_id, eEventFlagOperation operation, int flag, int building_index);
-void EvAct_SetBuildingProperty(int side_id, int byte, int value, int building_index);
+void EvAct_SetBuildingFlag(int side_id, eFlagOperation operation, int flag, int building_index);
+void EvAct_SetBuildingProperty(int side_id, eDataSize data_size, int offset, eValueOperation operation, int value, int building_index);
 void EvAct_SelectBuilding(int side_id, bool exclude_from_restore, int building_index);
 void EvAct_ShowBuildingData(int side_id, int building_index);
 // Crate manipulation
 void EvAct_RemoveCrate(int crate_index);
 // Tile manipulation
-void EvAct_SetTileAttribute(eEventFlagOperation operation, int attribute, int cell_index);
-void EvAct_SetTileDamage(eEventValueOperation operation, int value, int cell_index);
+void EvAct_SetTileAttribute(eFlagOperation operation, int attribute, int cell_index);
+void EvAct_SetTileDamage(eValueOperation operation, int value, int cell_index);
 void EvAct_RevealTile(int cell_index);
 // Orders
 void EvAct_OrderUnitRetreat(int side_id);

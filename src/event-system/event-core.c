@@ -5,11 +5,11 @@
 #include "patch.h"
 #include "ini.h"
 #include "utils.h"
+#include "event-utils.h"
 #include "event-core.h"
 #include "event-conditions.h"
 #include "event-actions.h"
 #include "event-filters.h"
-#include "event-utils.h"
 
 // New extended arrays for event and condition data
 
@@ -419,6 +419,8 @@ void ExecuteEvent(int event_index)
 #define A_VALUE e->args[5]
 #define OBJ_IDX e->index
 
+#define VALUEOPERATION(data) data = ValueOperation(data, A_VALUE, A_ENUM)
+
 void ExecuteEventAction(int event_type, EventContext *e)
 {
   switch ( event_type )
@@ -429,16 +431,16 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_LEAVE:                  CSide__BlowupAll_surrender(GetSide(A_SIDE)); break;
   case ET_BESERK:                 _gAIArray[A_SIDE].__GoBeserk_OtherStates = 1; break;
   case ET_PLAYSOUND:              EvAct_PlaySound           (A_VALUE, A_BOOL, COORD0); break;
-  case ET_SETBUILDRATE:           _gAIArray[A_SIDE].UnitBuildRate = A_VALUE; break;
-  case ET_SETATTACKBUILDINGRATE:  _gAIArray[A_SIDE].TimeBetweenBuildingAttacks = A_VALUE; break;
+  case ET_SETBUILDRATE:           VALUEOPERATION(_gAIArray[A_SIDE].UnitBuildRate); break;
+  case ET_SETATTACKBUILDINGRATE:  VALUEOPERATION(_gAIArray[A_SIDE].TimeBetweenBuildingAttacks); break;
   case ET_SETCASH:                EvAct_SetCash             (A_SIDE, A_ENUM, A_VALUE); break;
-  case ET_SETTECH:                EvAct_SetTech             (A_SIDE, A_BOOL, A_VALUE); break;
+  case ET_SETTECH:                EvAct_SetTech             (A_SIDE, A_ENUM, A_BOOL, A_VALUE); break;
   case ET_WIN:                    if ( !gLose ) gWin = 1; break;
   case ET_LOSE:                   if ( !gWin ) gLose = 1; break;
   case ET_SWITCH_MY_SIDE:         EvAct_SwitchMySide        (A_SIDE, A_ENUM, A_BOOL); break;
   case ET_HIDE_MAP:               EvAct_HideMap             (); break;
   case ET_REVEAL:                 EvAct_RevealMap           (COORD0, A_AMNT); break;
-  case ET_SHOWTIMER:              gTimerValue = A_VALUE; break;
+  case ET_SETTIMER:               VALUEOPERATION(gTimerValue); break;
   case ET_HIDETIMER:              gTimerValue = -1; break;
   case ET_SHOWMESSAGE:            EvAct_ShowMessage         (A_VALUE, (ShowMessageEventData *)&e->data[1]); break;
   case ET_UNIT_SPAWN:             EvAct_UnitSpawn           (COORD0, A_SIDE, A_AMNT, A_ENUM, A_VALUE, e->data); break;
@@ -466,7 +468,7 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_CHANGE_UNIT_OWNER:      ChangeUnitOwner           (A_SIDE, A_ITEM, OBJ_IDX, 0); break;
   case ET_CHANGE_UNIT_TYPE:       EvAct_ChangeUnitType      (A_SIDE, A_ITEM, A_BOOL, OBJ_IDX); break;
   case ET_SET_UNIT_FLAG:          EvAct_SetUnitFlag         (A_SIDE, A_ENUM, A_VALUE, OBJ_IDX); break;
-  case ET_SET_UNIT_PROPERTY:      EvAct_SetUnitProperty     (A_SIDE, A_ITEM, A_VALUE, OBJ_IDX); break;
+  case ET_SET_UNIT_PROPERTY:      EvAct_SetUnitProperty     (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_VALUE, OBJ_IDX); break;
   case ET_SELECT_UNIT:            EvAct_SelectUnit          (A_SIDE, A_BOOL, OBJ_IDX); break;
   case ET_AIRLIFT_UNIT:           EvAct_AirliftUnit         (A_SIDE, COORD0, A_BOOL, OBJ_IDX); break;
   case ET_SHOW_UNIT_DATA:         EvAct_ShowUnitData        (A_SIDE, OBJ_IDX); break;
@@ -476,7 +478,7 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_CHANGE_BUILDING_OWNER:  EvAct_ChangeBuildingOwner (A_SIDE, A_ITEM, OBJ_IDX); break;
   case ET_CHANGE_BUILDING_TYPE:   EvAct_ChangeBuildingType  (A_SIDE, A_ITEM, OBJ_IDX); break;
   case ET_SET_BUILDING_FLAG:      EvAct_SetBuildingFlag     (A_SIDE, A_ENUM, A_VALUE, OBJ_IDX); break;
-  case ET_SET_BUILDING_PROPERTY:  EvAct_SetBuildingProperty (A_SIDE, A_ITEM, A_VALUE, OBJ_IDX); break;
+  case ET_SET_BUILDING_PROPERTY:  EvAct_SetBuildingProperty (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_VALUE, OBJ_IDX); break;
   case ET_SELECT_BUILDING:        EvAct_SelectBuilding      (A_SIDE, A_BOOL, OBJ_IDX); break;
   case ET_SHOW_BUILDING_DATA:     EvAct_ShowBuildingData    (A_SIDE, OBJ_IDX); break;
   // Crate manipulation
