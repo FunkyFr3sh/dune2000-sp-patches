@@ -39,7 +39,7 @@ void PlaceStaticCrateExt(uint8_t x, uint8_t y, eCrateType type, eCrateImage imag
       else if ((image & 6) == 6)
         gCrates[index].__timing = 1;
     }
-    tile->__tile_bitflags |= TileFlags_1000;
+    tile->__tile_bitflags |= TileFlags_1000_HAS_CRATE;
   }
 }
 
@@ -288,9 +288,9 @@ void Mod__setupmapstuff()
             Unit *unit = GetUnit(side_id, unit_index);
             if (unit)
             {
-              unit->c_field_54_facingcurrent = direction;
-              unit->c_field_55_facingcurrent = direction;
-              unit->c_field_56_facingcurrent = direction;
+              unit->__Facing = direction;
+              unit->__FacingTurret = direction;
+              unit->__FacingTurretTarget = direction;
               if (special_value & 0x1000)
                 unit->Flags |= UFLAGS_10_STEALTH;
               if (special_value & 0x2000)
@@ -322,7 +322,7 @@ void Mod__setupmapstuff()
             if (_templates_buildattribs[building_type].__Behavior == BuildingBehavior_TURRET)
             {
               if (bld)
-                bld->c_field_21_facing = direction;
+                bld->__Facing = direction;
             }
             // Primary building
             else if (primary)

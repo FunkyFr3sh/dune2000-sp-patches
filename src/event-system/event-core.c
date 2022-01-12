@@ -293,13 +293,13 @@ void ExecuteEvent(int event_index)
       CSide *side = GetSide(side_id);
       // Clear and backup unit selection
       if (et == ET_SELECT_UNIT)
-        for (Unit *unit = side->_Units_8; unit; unit = unit->Next)
+        for (Unit *unit = side->__FirstUnitPtr; unit; unit = unit->Next)
         {
-          unit->PrevWasSelected = unit->__ClearUnits_SelectedGroup_c_field_19_state;
-          unit->__ClearUnits_SelectedGroup_c_field_19_state = 0;
+          unit->PrevWasSelected = unit->__IsSelected;
+          unit->__IsSelected = 0;
         }
       // Process all units
-      for (Unit *unit = side->_Units_8; unit; unit = unit->Next)
+      for (Unit *unit = side->__FirstUnitPtr; unit; unit = unit->Next)
       {
         if (CheckIfUnitMatchesFilter((ObjectFilterStruct *)&e.data[1], unit))
         {
@@ -338,13 +338,13 @@ void ExecuteEvent(int event_index)
       CSide *side = GetSide(side_id);
       // Clear and backup building selection
       if (et == ET_SELECT_BUILDING)
-        for (Building *building = side->_Buildings_10; building; building = building->Next)
+        for (Building *building = side->__FirstBuildingPtr; building; building = building->Next)
         {
-          building->PrevWasSelected = building->c_field_35_bool;
-          building->c_field_35_bool = 0;
+          building->PrevWasSelected = building->__IsSelected;
+          building->__IsSelected = 0;
         }
       // Process all buildings
-      for (Building *building = side->_Buildings_10; building; building = building->Next)
+      for (Building *building = side->__FirstBuildingPtr; building; building = building->Next)
       {
         if (CheckIfBuildingMatchesFilter((ObjectFilterStruct *)&e.data[1], building, side_id))
         {

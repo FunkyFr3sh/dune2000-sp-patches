@@ -412,18 +412,18 @@ void            SetPixelOnRadar16(unsigned __int8 x, unsigned __int8 y, __int16 
 void            radarmap();
 
 // CSide
-void __thiscall CSide__update_list_of_available_buildings_and_units(CSide *side);
+void __thiscall CSide__UpdateBuildingAndUnitIconsAndBaseBoundaries(CSide *side);
 char __thiscall CSide__MyVersionOfBuilding(CSide *this, char building_type, bool bool1);
 uint8_t __thiscall CSide__MyVersionOfUnit(CSide *this, char unit, bool bool1);
-void __thiscall CSide_add_cash_drip(CSide *this, int a2);
+void __thiscall CSide__AddCash(CSide *this, int a2);
 int8_t __thiscall CSide_46CCA0_get_queue_pos(CSide *this, Unit *unit);
 bool __thiscall CSide__AddToQueue(CSide *this, Unit *unit, __int16 unit_index, unsigned __int8 queue_pos, char a5, int state);
 Unit *          ChangeUnitOwner(eSideType source_side_id, eSideType target_side_id, __int16 source_unit_index, char bool1);
 char            CaptureBuilding(eSideType source_side_id, eSideType target_side_id, __int16 source_building_index);
 char __thiscall CSide__FindBestBasePosition(CSide *this, _BYTE *x, _BYTE *y);
 void __thiscall CSide__BlowupAll_surrender(CSide *side);
-void            CSide__SurrenderAbort(bool unknown);
-void __thiscall CSide__reset_enemy(CSide *this, char a2);
+void            GenerateSurrenderOrder(bool unknown);
+void __thiscall CSide__ResetEnemyForSide(CSide *this, char a2);
 // Sound
 void            PlaySoundAt(int id, unsigned __int8 xpos, unsigned __int8 ypos);
 void            Sound__PlaySample(int id, char state, int time, int priority);

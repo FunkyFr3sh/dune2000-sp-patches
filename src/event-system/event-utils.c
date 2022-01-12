@@ -71,9 +71,9 @@ void RestoreUnitSelection(int side_id, bool restore_selection)
   if (!restore_selection)
     return;
   CSide *side = GetSide(side_id);
-  for (Unit *unit = side->_Units_8; unit; unit = unit->Next)
+  for (Unit *unit = side->__FirstUnitPtr; unit; unit = unit->Next)
   {
-    unit->__ClearUnits_SelectedGroup_c_field_19_state = unit->PrevWasSelected;
+    unit->__IsSelected = unit->PrevWasSelected;
     unit->PrevWasSelected = 0;
   }
 }
@@ -83,9 +83,9 @@ void RestoreBuildingSelection(int side_id, bool restore_selection)
   if (!restore_selection)
     return;
   CSide *side = GetSide(side_id);
-  for (Building *building = side->_Buildings_10; building; building = building->Next)
+  for (Building *building = side->__FirstBuildingPtr; building; building = building->Next)
   {
-    building->c_field_35_bool = building->PrevWasSelected;
+    building->__IsSelected = building->PrevWasSelected;
     building->PrevWasSelected = 0;
   }
 }

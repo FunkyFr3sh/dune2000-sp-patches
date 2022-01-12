@@ -32,31 +32,31 @@ void __thiscall Mod__CAI__DoSetGoBerserk(CAI_ *this)
 
         // New logic start
         // If side started with no buildings or units, do not set berserk mode at all
-        if (side->__units_built == 0 && side->__buildings_built == 0)
+        if (side->__UnitsBuilt == 0 && side->__BuildingsBuilt == 0)
         {
           return;
         }
         // New logic end
         
-        if ( !side->building_a_field_245C1_buildingcount[(unsigned __int8)_templates_GroupIDs.Refinery] )
+        if ( !side->__BuildingsExistPerGroup[(unsigned __int8)_templates_GroupIDs.Refinery] )
         {
           no_refineries = 1;
         }
-        if ( !side->__HarvesterCount_245B8 )
+        if ( !side->__HarvesterCount )
         {
           no_harvesters = 1;
         }
-        if ( side->__primary_conyard == -1 && !side->unit_count_ar_field_24628[(unsigned __int8)_templates_GroupIDs.MCV] )
+        if ( side->__PrimaryConyard == -1 && !side->__UnitsExistPerType[(unsigned __int8)_templates_GroupIDs.MCV] )
         {
           no_conyard = 1;
         }
-        if ( side->__primary_starport != -1
-          || side->__primary_light_factory != -1
-          || side->__primary_heavy_factory != -1
-          || side->__primary_barracks != -1
-          || side->__primary_palace != -1
-          || side->__primary_at1_palace != -1
-          || (no_production_building = 1, side->__primary_at2_palace != -1) )
+        if ( side->__PrimaryStarport != -1
+          || side->__PrimaryLightFactory != -1
+          || side->__PrimaryHeavyFactory != -1
+          || side->__PrimaryBarracks != -1
+          || side->__PrimaryHarkPalace != -1
+          || side->__PrimaryOrdPalace != -1
+          || (no_production_building = 1, side->__PrimaryAtrPalace != -1) )
         {
           no_production_building = 0;
         }
@@ -95,7 +95,7 @@ void __thiscall Mod__CAI__DoSetGoBerserk(CAI_ *this)
       {
         // New logic start
         // If side receives a MCV, berserk mode will turn off
-        if (side->unit_count_ar_field_24628[(unsigned __int8)_templates_GroupIDs.MCV])
+        if (side->__UnitsExistPerType[(unsigned __int8)_templates_GroupIDs.MCV])
         {
           ai->__GoBeserk_OtherStates = 0;
         }

@@ -7,7 +7,7 @@
 
 bool Cond_BuildingExists(int side_id, int building_type)
 {
-  for ( Building *building = GetSide(side_id)->_Buildings_10; building; building = building->Next )
+  for ( Building *building = GetSide(side_id)->__FirstBuildingPtr; building; building = building->Next )
   {
     if ( building->Type == building_type )
     {
@@ -19,7 +19,7 @@ bool Cond_BuildingExists(int side_id, int building_type)
 
 bool Cond_UnitExists(int side_id, int unit_type)
 {
-  for ( Unit *unit = GetSide(side_id)->_Units_8; unit; unit = unit->Next )
+  for ( Unit *unit = GetSide(side_id)->__FirstUnitPtr; unit; unit = unit->Next )
   {
     if ( unit->Type == unit_type )
     {
@@ -61,10 +61,10 @@ bool Cond_Timer(bool inactive, int comp_func, int time_amount, int time_shift, C
 bool Cond_Casualties(int side_id, int threshold, float proportion)
 {
   CSide *side = GetSide(side_id);
-  int units_lost = side->__units_lost;
+  int units_lost = side->__UnitsLost;
   if ( units_lost > threshold )
   {
-    unsigned int units_killed = side->__units_killed;
+    unsigned int units_killed = side->__UnitsKilled;
     double v12;
     if ( units_killed )
     {
@@ -153,7 +153,7 @@ bool Cond_CheckUnits(ConditionData *condition)
     if ((condition->side_id != 8) && (condition->side_id != side_id))
       continue;
     CSide *side = GetSide(side_id);
-    for (Unit *unit = side->_Units_8; unit; unit = unit->Next)
+    for (Unit *unit = side->__FirstUnitPtr; unit; unit = unit->Next)
     {
       if (CheckIfUnitMatchesFilter((ObjectFilterStruct *)condition, unit))
         matched++;
@@ -180,7 +180,7 @@ bool Cond_CheckBuildings(ConditionData *condition)
     if ((condition->side_id != 8) && (condition->side_id != side_id))
       continue;
     CSide *side = GetSide(side_id);
-    for (Building *bld = side->_Buildings_10; bld; bld = bld->Next)
+    for (Building *bld = side->__FirstBuildingPtr; bld; bld = bld->Next)
     {
       if (CheckIfBuildingMatchesFilter((ObjectFilterStruct *)condition, bld, side_id))
         matched++;

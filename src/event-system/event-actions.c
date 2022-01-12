@@ -13,7 +13,7 @@
 void EvAct_AddDelivery(int xpos, int ypos, int side_id, int amount, int deploy_action, eDeliveryType delivery_type, char *unit_list)
 {
   CSide *side = GetSide(side_id);
-  if (delivery_type == DELIVERYTYPE_STARPORT && side->__primary_starport == -1)
+  if (delivery_type == DELIVERYTYPE_STARPORT && side->__PrimaryStarport == -1)
     return;
   int found_free_slot = 0;
   for (int i = 0; i <= 10; i++)
@@ -22,21 +22,21 @@ void EvAct_AddDelivery(int xpos, int ypos, int side_id, int amount, int deploy_a
     {
       DebugFatal("event-actions.c", "Too many deliveries");
     }
-    if (!side->delivery_field_262EC[i].__is_active)
+    if (!side->__Deliveries[i].__is_active)
     {
       found_free_slot = i;
       break;
     }
   }
-  side->delivery_field_262EC[found_free_slot].__is_active = 1;
-  side->delivery_field_262EC[found_free_slot].c_field_2 = 0;
-  side->delivery_field_262EC[found_free_slot].__xpos = xpos;
-  side->delivery_field_262EC[found_free_slot].__ypos = ypos;
-  side->delivery_field_262EC[found_free_slot].__delivery_time = gGameTicks;
-  side->delivery_field_262EC[found_free_slot].__deploy_action = deploy_action;
-  side->delivery_field_262EC[found_free_slot].__delivery_type = delivery_type;
-  memcpy(side->delivery_field_262EC[found_free_slot].__units, unit_list, amount);
-  side->delivery_field_262EC[found_free_slot].__units[amount] = -1;
+  side->__Deliveries[found_free_slot].__is_active = 1;
+  side->__Deliveries[found_free_slot].c_field_2 = 0;
+  side->__Deliveries[found_free_slot].__xpos = xpos;
+  side->__Deliveries[found_free_slot].__ypos = ypos;
+  side->__Deliveries[found_free_slot].__delivery_time = gGameTicks;
+  side->__Deliveries[found_free_slot].__deploy_action = deploy_action;
+  side->__Deliveries[found_free_slot].__delivery_type = delivery_type;
+  memcpy(side->__Deliveries[found_free_slot].__units, unit_list, amount);
+  side->__Deliveries[found_free_slot].__units[amount] = -1;
 }
 
 void EvAct_SetDiplomacy(int source_side, int target_side, int allegiance_type, bool both_sided)
@@ -44,7 +44,7 @@ void EvAct_SetDiplomacy(int source_side, int target_side, int allegiance_type, b
   _gDiplomacy[source_side][target_side] = allegiance_type;
   if ( allegiance_type == 0 || allegiance_type == 2 )
   {
-    CSide__reset_enemy(GetSide(source_side), target_side);
+    CSide__ResetEnemyForSide(GetSide(source_side), target_side);
   }
   // Double-sided
   if (both_sided)
@@ -52,7 +52,7 @@ void EvAct_SetDiplomacy(int source_side, int target_side, int allegiance_type, b
     _gDiplomacy[target_side][source_side] = allegiance_type;
     if ( allegiance_type == 0 || allegiance_type == 2 )
     {
-      CSide__reset_enemy(GetSide(target_side), source_side);
+      CSide__ResetEnemyForSide(GetSide(target_side), source_side);
     }
   }
 }
@@ -94,7 +94,7 @@ void EvAct_SetTech(int side_id, eValueOperation operation, bool immediate_update
   // Immediately update available buildings and units
   if (immediate_update)
   {
-    CSide__update_list_of_available_buildings_and_units(GetSide(side_id));
+    CSide__UpdateBuildingAndUnitIconsAndBaseBoundaries(GetSide(side_id));
   }
 }
 
@@ -173,9 +173,9 @@ void EvAct_UnitSpawn(int xpos, int ypos, int side_id, int amount, int facing, in
     Unit *unit = GetUnit(side_id, unit_index);
     if (unit)
     {
-      unit->c_field_54_facingcurrent = facing << 2;
-      unit->c_field_55_facingcurrent = facing << 2;
-      unit->c_field_56_facingcurrent = facing << 2;
+      unit->__Facing = facing << 2;
+      unit->__FacingTurret = facing << 2;
+      unit->__FacingTurretTarget = facing << 2;
       unit->Tag = tag;
     }
   }
@@ -270,9 +270,9 @@ int EvAct_AddUnit(int xpos, int ypos, int side_id, int properties, int unit_type
   {
     if (!movement)
     {
-      unit->c_field_54_facingcurrent = facing << 2;
-      unit->c_field_55_facingcurrent = facing << 2;
-      unit->c_field_56_facingcurrent = facing << 2;
+      unit->__Facing = facing << 2;
+      unit->__FacingTurret = facing << 2;
+      unit->__FacingTurretTarget = facing << 2;
     }
     if (properties & 1)
       unit->Flags |= UFLAGS_10_STEALTH;
@@ -312,7 +312,7 @@ int EvAct_AddBuilding(int xpos, int ypos, int side_id, int properties, int build
   {
     // Turret barrel direction
     if (_templates_buildattribs[building_type].__Behavior == BuildingBehavior_TURRET)
-        bld->c_field_21_facing = facing << 2;
+        bld->__Facing = facing << 2;
     // Primary building
     if (properties & 1)
       SetBuildingAsPrimary(side_id, building_index);
@@ -349,7 +349,7 @@ void EvAct_AddExplosion(int xpos, int ypos, int pixel_x, int pixel_y, int spread
 int EvAct_AddCrate(int xpos, int ypos, int crate_type, int image, int ext_data, int respawns, int expiration)
 {
   // There is already crate
-  if (gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]].__tile_bitflags & TileFlags_1000)
+  if (gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]].__tile_bitflags & TileFlags_1000_HAS_CRATE)
     return -1;
   // Add the crate
   int index = GetFreeCrateIndex();
@@ -363,7 +363,7 @@ int EvAct_AddCrate(int xpos, int ypos, int crate_type, int image, int ext_data, 
     gCrates[index].__timing = (expiration?expiration:INT32_MAX);
     gCrates[index].__times_to_respawn = respawns;
     gCrates[index].ext_data_field = ext_data;
-    gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]].__tile_bitflags |= TileFlags_1000;
+    gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]].__tile_bitflags |= TileFlags_1000_HAS_CRATE;
   }
   return index;
 }
@@ -632,9 +632,9 @@ void EvAct_ShowSideData(int side_id)
   //int *p = ((int *)side);
   //for (int i = 0; i < 12; i++)
   //  v[i] = (p[i] - (int)side) / sizeof(Unit);
-  //StructForCSide *q = &side->s_field_2651C;
+  //StructForCSide *q = &side->__BuildingBuildQueue;
   //sprintf(buf[0], "%d %d %d %d %d %d %d %d %d %d %d %d", v[0], v[1], v[2], v[3], v[4], v[5], v[6], v[7], v[8], v[9], v[10], v[11]);
-  //sprintf(buf[0], "%d %d %d %f %d %d %d", q->w_field_0, q->w_field_2, q->w_field_4, q->f_field_8, q->dw_field_C, q->c_field_10, q->c_field_11);
+  //sprintf(buf[0], "%d %d %d %f %d %d %d", q->__type, q->w_field_2, q->w_field_4, q->f_field_8, q->dw_field_C, q->__on_hold, q->c_field_11);
   /*sprintf(buf[0], "Unit %d Type %d HP %d State %d Flags: ", unit_index, unit->Type, unit->Health, unit->State);
   int l = strlen(buf[0]);
   memset(&buf[0][l], ' ', 43);
@@ -662,8 +662,8 @@ void EvAct_DestroyUnit(int side_id, bool silent, int unit_index)
   {
     Unit *unit = GetUnit(side_id, unit_index);
     unit->State = UNIT_STATE_17_DEAD;
-    unit->ED_c_field_2F_50Inf_10Unit = 1;
-    unit->AI_w_field_32_AIndex = -1;
+    unit->__DeadStateTimeCounter = 1;
+    unit->__AttackerIndex = -1;
   }
   else
     DestroyUnit(side_id, unit_index);
@@ -710,7 +710,7 @@ void EvAct_SetUnitProperty(int side_id, eDataSize data_size, int offset, eValueO
 void EvAct_SelectUnit(int side_id, bool exclude_from_restore, int unit_index)
 {
   Unit *unit = GetUnit(side_id, unit_index);
-  unit->__ClearUnits_SelectedGroup_c_field_19_state = 1;
+  unit->__IsSelected = 1;
   if (exclude_from_restore)
     unit->PrevWasSelected = 0;
 }
@@ -745,8 +745,8 @@ void EvAct_AirliftUnit(int side_id, int target_x, int target_y, bool units_targe
       unit->Flags &= ~UFLAGS_BLOCKTOMARKED;
       unit->BlockToX = unit->BlockFromX;
       unit->BlockToY = unit->BlockFromY;
-      unit->__posx = (unit->BlockFromX << 21) + (1 << 20);
-      unit->__posy = (unit->BlockFromY << 21) + (1 << 20);
+      unit->__PosX = (unit->BlockFromX << 21) + (1 << 20);
+      unit->__PosY = (unit->BlockFromY << 21) + (1 << 20);
       unit->__pos_stepsmax = 0;
       unit->pos_steps = 0;
     }
@@ -796,7 +796,7 @@ void EvAct_DamageHealBuilding(int side_id, int action, int units, int value, int
 void EvAct_ChangeBuildingOwner(int side_id, int target_side, int building_index)
 {
   Building *bld = GetBuilding(side_id, building_index);
-  bld->Flags |= BuildingFlags_1000000;
+  bld->Flags |= BFLAGS_1000000_INFILTRATED;
   CaptureBuilding(side_id, target_side, building_index);
 }
 
@@ -823,7 +823,7 @@ void EvAct_SetBuildingProperty(int side_id, eDataSize data_size, int offset, eVa
 void EvAct_SelectBuilding(int side_id, bool exclude_from_restore, int building_index)
 {
   Building *bld = GetBuilding(side_id, building_index);
-  bld->c_field_35_bool = 1;
+  bld->__IsSelected = 1;
   if (exclude_from_restore)
     bld->PrevWasSelected = 0;
 }
@@ -858,7 +858,7 @@ void EvAct_RemoveCrate(int crate_index)
 {
   CrateStruct *crate = &gCrates[crate_index];
   crate->__is_active = 0;
-  gGameMap.map[crate->__x + _CellNumbersWidthSpan[crate->__y]].__tile_bitflags &= ~TileFlags_1000;
+  gGameMap.map[crate->__x + _CellNumbersWidthSpan[crate->__y]].__tile_bitflags &= ~TileFlags_1000_HAS_CRATE;
 }
 
 void EvAct_SetTileAttribute(eFlagOperation operation, int attribute, int cell_index)
@@ -913,14 +913,14 @@ void EvAct_OrderBuildBuildingCancel(int side_id, bool force)
 {
   CSide *side = GetSide(side_id);
   if (force)
-    side->s_field_2651C.c_field_10 = 1;
-  GenerateBuildBuildingCancelOrder(side_id, side->s_field_2651C.w_field_0);
+    side->__BuildingBuildQueue.__on_hold = 1;
+  GenerateBuildBuildingCancelOrder(side_id, side->__BuildingBuildQueue.__type);
 }
 
 void EvAct_OrderBuildPlaceBuilding(int side_id, int xpos, int ypos)
 {
   CSide *side = GetSide(side_id);
-  GenerateBuildPlaceBuildingOrder(side_id, side->s_field_2651C.w_field_0, xpos, ypos);
+  GenerateBuildPlaceBuildingOrder(side_id, side->__BuildingBuildQueue.__type, xpos, ypos);
 }
 
 void EvAct_OrderBuildUnitCancel(int side_id, int unit_type, bool force)
@@ -928,15 +928,15 @@ void EvAct_OrderBuildUnitCancel(int side_id, int unit_type, bool force)
   CSide *side = GetSide(side_id);
   if (force)
     for (int i = 0; i < 10; i++)
-      if (side->ar_10_26530[i].w_field_0 == unit_type)
-        side->ar_10_26530[i].c_field_10 = 1;
+      if (side->__UnitBuildQueue[i].__type == unit_type)
+        side->__UnitBuildQueue[i].__on_hold = 1;
   GenerateBuildUnitCancelOrder(side_id, unit_type);
 }
 
 void EvAct_OrderStarportPick(int side_id, int unit_type)
 {
   CSide *side = GetSide(side_id);
-  if (!side->starport_delivery_c_field_262A5)
+  if (!side->__StarportDeliveryInProgress)
     GenerateStarportPickOrder(side_id, unit_type);
 }
 
@@ -944,6 +944,6 @@ void EvAct_OrderUpgradeCancel(int side_id, bool force)
 {
   CSide *side = GetSide(side_id);
   if (force)
-    side->c_field_26608 = 1;
-  GenerateUpgradeCancelOrder(side_id, side->w_field_265F8);
+    side->__BuildingUpgradeQueue.__on_hold = 1;
+  GenerateUpgradeCancelOrder(side_id, side->__BuildingUpgradeQueue.__type);
 }

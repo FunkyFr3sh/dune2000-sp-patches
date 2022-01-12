@@ -25,10 +25,10 @@ void Mod__ReleaseInfantryFromBuilding(Building *building, unsigned char side_id)
 
   if (! (_templates_buildattribs[building->Type]._____Flags & BFLAGS_200_SELECTABLE_REPAIRABLE))
     return;
-  if ( building->Flags & BuildingFlags_2000 )
+  if ( building->Flags & BFLAGS_2000 )
     return;
 
-  building->Flags |= BuildingFlags_80000;
+  building->Flags |= BFLAGS_80000_INFANTRY_RELEASED;
 
   // Find unit type
   int unit_type = -1;
@@ -53,8 +53,8 @@ void Mod__ReleaseInfantryFromBuilding(Building *building, unsigned char side_id)
   if ( unit_type == -1 )
     return;
 
-  int xpos = building->dw_field_0_x / 0x10000 / 32;
-  int ypos = (building->dw_field_4_y / 0x10000 - _templates_buildattribs[building->Type]._____ArtHeight) / 32;
+  int xpos = building->__PosX / 0x10000 / 32;
+  int ypos = (building->__PosY / 0x10000 - _templates_buildattribs[building->Type]._____ArtHeight) / 32;
   int tiles_occupied_solid_bitmask = _templates_buildattribs[building->Type]._____TilesOccupiedSolid;
   int building_cost = GetBuildingCost(building->Type, 0, side_id);
   int unit_cost = w__GetUnitCost(unit_type, side_id);

@@ -5,6 +5,7 @@
 #include "patch.h"
 #include "ini.h"
 #include "utils.h"
+#include "../event-system/event-utils.h"
 #include "../event-system/event-core.h"
 #include "../event-system/event-actions.h"
 
@@ -47,7 +48,7 @@ bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
     return 0;
   }
   // There is no crate on the target tile
-  if ( !(gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]].__tile_bitflags & TileFlags_1000) )
+  if ( !(gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]].__tile_bitflags & TileFlags_1000_HAS_CRATE) )
   {
     return 0;
   }
@@ -84,7 +85,7 @@ bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
     else
     {
       crate->__is_active = 0;
-      gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]].__tile_bitflags &= ~TileFlags_1000;
+      gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]].__tile_bitflags &= ~TileFlags_1000_HAS_CRATE;
     }
   }
   // Do crate action
@@ -95,7 +96,7 @@ bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
     {
       // Extended behavior: amount of cash = ext_data_field * 100;
       int crate_cash = crate->ext_data_field ? crate->ext_data_field * 100 : _gVariables.CrateCash;
-      CSide_add_cash_drip(side, crate_cash);
+      CSide__AddCash(side, crate_cash);
       if ( _templates_GroupIDs.EX_CASH != -1 )
       {
         ModelAddExplosion(side_id, _templates_GroupIDs.EX_CASH, 32 * unit->BlockToX + 16, 32 * unit->BlockToY + 16, 0, 0, 0, 0, 0);
@@ -266,7 +267,7 @@ bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
       bool crate_used = always_pickup;
       
       // Do the action
-      for (Unit *u = GetSide(side_id)->_Units_8; u; u = u->Next)
+      for (Unit *u = GetSide(side_id)->__FirstUnitPtr; u; u = u->Next)
       {
         if ((range == 0 && u == unit) || ((range > 0) && (abs(u->BlockFromX - xpos) <= range) && (abs(u->BlockFromY - ypos) <= range)))
         {
@@ -276,13 +277,13 @@ bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
               // Make unit stealth
               if ( _templates_unitattribs[u->Type].__Behavior == UnitBehavior_SABOTEUR )
               {
-                u->__SpecialVal_S = -96;
+                u->__SpecialPurpose = -96;
                 crate_used = true;
               }
               else if ( !Unit_49F5F0(u) )
               {
                 u->Flags |= UFLAGS_10_STEALTH;
-                u->S_c_field_31 = 0;
+                u->__StealthUnCloakDelayCounter = 0;
                 crate_used = true;
               }
               break;
@@ -335,7 +336,7 @@ bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
       if (crate_used)
       {
         crate->__is_active = 0;
-        gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]].__tile_bitflags &= ~TileFlags_1000;        
+        gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]].__tile_bitflags &= ~TileFlags_1000_HAS_CRATE;        
       }
       
       return 0;
@@ -376,7 +377,7 @@ void HitCrate(int crate_index)
   {
     // Remove crate
     crate->__is_active = 0;
-    gGameMap.map[crate->__x + _CellNumbersWidthSpan[crate->__y]].__tile_bitflags &= ~TileFlags_1000;
+    gGameMap.map[crate->__x + _CellNumbersWidthSpan[crate->__y]].__tile_bitflags &= ~TileFlags_1000_HAS_CRATE;
     // Do damage
     HandleExplosionCrate(crate, NULL, gSideId);
     return;

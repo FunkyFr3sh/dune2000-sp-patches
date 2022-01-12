@@ -52,7 +52,7 @@ bool CheckIfUnitMatchesFilter(ObjectFilterStruct *filter, Unit *unit)
   if (unit->State == 17)
     return false;
   // Check for position
-  if (!EvaluateFilterPosition(filter, unit->__posx >> 21, unit->__posy >> 21))
+  if (!EvaluateFilterPosition(filter, unit->__PosX >> 21, unit->__PosY >> 21))
     return false;
   // Check for criteria
   bool criteria_result[8];
@@ -71,8 +71,8 @@ bool CheckIfBuildingMatchesFilter(ObjectFilterStruct *filter, Building *building
   if (building->__State == 17)
     return false;
   // Check for position
-  int pos_x = building->dw_field_0_x >> 21;
-  int pos_y = (building->dw_field_4_y >> 21) - (_templates_buildattribs[building->Type]._____ArtHeight / 32);
+  int pos_x = building->__PosX >> 21;
+  int pos_y = (building->__PosY >> 21) - (_templates_buildattribs[building->Type]._____ArtHeight / 32);
   if (!EvaluateFilterPosition(filter, pos_x, pos_y))
     return false;
   // Check for criteria
@@ -132,8 +132,8 @@ bool CheckIfUnitMatchesCriteria(Unit *unit, eUnitFilterCriteriaType criteria_typ
       || behavior == UnitBehavior_ORNITHOPTER
       || behavior == UnitBehavior_CARRYALL
       || behavior == UnitBehavior_DEATH_HAND;
-  int pos_x = unit->__posx >> 21;
-  int pos_y = unit->__posy >> 21;
+  int pos_x = unit->__PosX >> 21;
+  int pos_y = unit->__PosY >> 21;
   uint32_t attributes = 0;
   bool attributes_valid = false;
   if (pos_x >= 0 && pos_y >= 0 && pos_x < gGameMapWidth && pos_y < gGameMapHeight)
@@ -170,13 +170,13 @@ bool CheckIfUnitMatchesCriteria(Unit *unit, eUnitFilterCriteriaType criteria_typ
   case UNITCRITERIATYPE_SIGHT:          result = CompareValue(unit_template->__ViewDistance, value, comparison); break;
   case UNITCRITERIATYPE_RANGE:          result = CompareValue((unit_template->__PrimaryWeapon != -1)?_templates_bulletattribs[(int)unit_template->__PrimaryWeapon].__Range:0, value, comparison); break;
   case UNITCRITERIATYPE_SPEED:          result = CompareValue(unit->Speed >> 12, value, comparison); break;
-  case UNITCRITERIATYPE_RATE_OF_FIRE:   result = CompareValue(unit->ReloadRate, value, comparison); break;
+  case UNITCRITERIATYPE_RATE_OF_FIRE:   result = CompareValue(unit->__ReloadDelayCounter, value, comparison); break;
   case UNITCRITERIATYPE_HP100_MAX:      result = CompareValue(unit_template->__Strength / 100, value, comparison); break;
   case UNITCRITERIATYPE_HP100_CUR:      result = CompareValue(unit->Health / 100, value, comparison); break;
   case UNITCRITERIATYPE_HEALTH_PERCENT: result = CompareValue((unit->Health * 100) / unit_template->__Strength, value, comparison); break;
   case UNITCRITERIATYPE_FLAG:           result = unit->Flags & (1 << value); break;
   case UNITCRITERIATYPE_STATE:          result = CompareValue(unit->State, value, comparison); break;
-  case UNITCRITERIATYPE_GROUPNO:        result = CompareValue(unit->GroupID_28, value, comparison); break; // To be clarified
+  case UNITCRITERIATYPE_GROUPNO:        result = CompareValue(unit->__GroupID, value, comparison); break; // To be clarified
   case UNITCRITERIATYPE_TILE_ATTRIB:    result = attributes_valid && (attributes & (1 << value)); break;
   case UNITCRITERIATYPE_TILE_TERRAIN:   result = attributes_valid && CompareValue((attributes >> 29) & 7, value, comparison); break;
   case UNITCRITERIATYPE_TILE_SPICE:     result = attributes_valid && CompareValue((attributes >> 20) & 7, value, comparison); break;
@@ -215,13 +215,13 @@ bool CheckIfBuildingMatchesCriteria(Building *building, eSideType side_id, eBuil
   case BUILDINGCRITERIATYPE_POWER_CONS:     result = CompareValue((building_template->__PowerDrain > 0)?building_template->__PowerDrain:0, value, comparison); break;
   case BUILDINGCRITERIATYPE_POWER_PROD:     result = CompareValue((building_template->__PowerDrain < 0)?building_template->__PowerDrain * -1:0, value, comparison); break;
   case BUILDINGCRITERIATYPE_RANGE:          result = CompareValue((building_template->_____PrimaryWeapon != -1)?_templates_bulletattribs[(int)building_template->_____PrimaryWeapon].__Range:0, value, comparison); break;
-  case BUILDINGCRITERIATYPE_RATE_OF_FIRE:   result = CompareValue(building->_____RateOfFire_refinery, value, comparison); break;
+  case BUILDINGCRITERIATYPE_RATE_OF_FIRE:   result = CompareValue(building->__ReloadDelayCounter_refinery, value, comparison); break;
   case BUILDINGCRITERIATYPE_HP100_MAX:      result = CompareValue(building_template->_____HitPoints / 100, value, comparison); break;
   case BUILDINGCRITERIATYPE_HP100_CUR:      result = CompareValue(building->Health / 100, value, comparison); break;
   case BUILDINGCRITERIATYPE_HEALTH_PERCENT: result = CompareValue((building->Health * 100) / building_template->_____HitPoints, value, comparison); break;
   case BUILDINGCRITERIATYPE_FLAG:           result = building->Flags & (1 << value); break;
   case BUILDINGCRITERIATYPE_STATE:          result = CompareValue(building->__State, value, comparison); break;
-  case BUILDINGCRITERIATYPE_UPGRADES:       result = CompareValue(side->__building_group_upgrade_count[(int)building_template->GroupType], value, comparison); break;
+  case BUILDINGCRITERIATYPE_UPGRADES:       result = CompareValue(side->__BuildingGroupUpgradeCount[(int)building_template->GroupType], value, comparison); break;
   }
   return result != negation;
 }

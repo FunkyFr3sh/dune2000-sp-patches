@@ -327,9 +327,9 @@ setcglob 0x004544E0, Mission__LoadVarsFile
 setcglob 0x00454E00, Mission__LoadTechposFile
 ; Model
 setcglob 0x00455290, EvaluateIfBuildingsOrUnitsExistForSide
-setcglob 0x00455510, Model__HandleGameLoopEvents
+setcglob 0x00455510, ModelBuildUnitPick
 setcglob 0x00455870, ModelAddUnit
-setcglob 0x00455FC0, Model__BuildBuildingPick
+setcglob 0x00455FC0, ModelBuildBuildingPick
 setcglob 0x00456210, ModelAddConcrete
 setcglob 0x004563B0, ModelAddBuilding
 setcglob 0x00456A30, ModelAddBullet
@@ -373,18 +373,18 @@ setcglob 0x004620B0, SetPixelOnRadar16
 setcglob 0x00462140, radarmap
 setcglob 0x00466140, Setup__LoadGraphicsFile
 ; CSide
-setcglob 0x0046BE50, CSide__update_list_of_available_buildings_and_units
+setcglob 0x0046BE50, CSide__UpdateBuildingAndUnitIconsAndBaseBoundaries
 setcglob 0x0046C450, CSide__MyVersionOfBuilding
 setcglob 0x0046C570, CSide__MyVersionOfUnit
-setcglob 0x0046C7B0, CSide_add_cash_drip
+setcglob 0x0046C7B0, CSide__AddCash
 setcglob 0x0046CCA0, CSide_46CCA0_get_queue_pos
 setcglob 0x0046CD00, CSide__AddToQueue
 setcglob 0x0046D2E0, ChangeUnitOwner
 setcglob 0x0046D6D0, CaptureBuilding
 setcglob 0x0046E3F0, CSide__FindBestBasePosition
 setcglob 0x0046E6B0, CSide__BlowupAll_surrender
-setcglob 0x0046EA50, CSide__SurrenderAbort
-setcglob 0x0046EB00, CSide__reset_enemy
+setcglob 0x0046EA50, GenerateSurrenderOrder
+setcglob 0x0046EB00, CSide__ResetEnemyForSide
 ; Sound
 setcglob 0x0046F540, PlaySoundAt
 setcglob 0x0046F820, Sound__PlaySample
