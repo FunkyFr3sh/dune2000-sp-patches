@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "dune2000.h"
 #include "utils.h"
 #include "event-utils.h"
@@ -88,4 +89,26 @@ void RestoreBuildingSelection(int side_id, bool restore_selection)
     building->__IsSelected = building->PrevWasSelected;
     building->PrevWasSelected = 0;
   }
+}
+
+void ShowDataOnScreen(char *header, unsigned char *data_ptr)
+{
+  char buf[4][128];
+  memset(buf, 0, sizeof(buf));
+  for (int i = 0; i < 32; i++)
+  {
+    for (int j = 0; j < 4; j++)
+    {
+      sprintf(&buf[j][2 * i + (i / 4) + (i / 16)], "%02X", data_ptr[i + j * 32]);
+      if (i >= 4)
+        buf[j][9 * (i / 4) + (i / 16) - 1] = ' ';
+      if (i >= 16)
+        buf[j][37 * (i / 16) - 2] = ' ';
+    }
+  }
+  for (int i = 3; i >= 0; i--)
+    QueueMessage(buf[i], -1);
+  QueueMessage(header, -1);
+  for (int i = 0; i < 5; i++)
+    _gMessageData.__ticks[i] = gGameTicks;
 }

@@ -148,7 +148,7 @@ cextern MySideID
 cextern gSideId
 cextern gWin
 cextern gLose
-cextern DifficultyLevel
+cextern gDifficultyLevel
 cextern GameType
 cextern GameState
 cextern AtreidesMoney

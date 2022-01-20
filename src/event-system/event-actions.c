@@ -611,6 +611,19 @@ void EvAct_TransformTiles(int amount, uint16_t *tiles)
         }
 }
 
+void EvAct_AddBuildingDestruct(int xpos, int ypos, int side_id, int building_type)
+{
+  int old_screen_shakes = _ScreenShakes;
+  int building_index = ModelAddBuilding(side_id, building_type, xpos, ypos, 0, 1, 1);
+  DestroyBuilding(side_id, building_index, 0);
+  CSide *side = GetSide(side_id);
+  side->__BuildingsBuilt--;
+  side->__BuildingsBuiltPerType[building_type]--;
+  Building *bld = GetBuilding(side_id, building_index);
+  bld->__DeadStateTimeCounter = 1;
+  _ScreenShakes = old_screen_shakes;
+}
+
 void EvAct_ActivateTimer(int condition_index)
 {
   ConditionData *condition = &_gConditionArray[condition_index];
@@ -622,38 +635,110 @@ void EvAct_ActivateTimer(int condition_index)
   condition->val4 = gGameTicks;
 }
 
-void EvAct_ShowSideData(int side_id)
+void EvAct_TransferCredits(int side_id, eTransferCreditsOperation operation, int value)
 {
   CSide *side = GetSide(side_id);
-  unsigned char *udata = ((unsigned char *)side) + 0x2660C;
-  char buf[5][128];
-  memset(buf, 0, sizeof(buf));
-  //int v[12];
-  //int *p = ((int *)side);
-  //for (int i = 0; i < 12; i++)
-  //  v[i] = (p[i] - (int)side) / sizeof(Unit);
-  //StructForCSide *q = &side->__BuildingBuildQueue;
-  //sprintf(buf[0], "%d %d %d %d %d %d %d %d %d %d %d %d", v[0], v[1], v[2], v[3], v[4], v[5], v[6], v[7], v[8], v[9], v[10], v[11]);
-  //sprintf(buf[0], "%d %d %d %f %d %d %d", q->__type, q->w_field_2, q->w_field_4, q->f_field_8, q->dw_field_C, q->__on_hold, q->c_field_11);
-  /*sprintf(buf[0], "Unit %d Type %d HP %d State %d Flags: ", unit_index, unit->Type, unit->Health, unit->State);
-  int l = strlen(buf[0]);
-  memset(&buf[0][l], ' ', 43);
-  for (int i = 0; i < 32; i++)
-    buf[0][l + i + (i / 8)] = ((unit->Flags >> i & 1)?'X':'o');
-  */
-  for (int i = 0; i < 32; i++)
+  int remaining_transfer = 0;
+  switch (operation)
   {
-    for (int j = 0; j < 4; j++)
+  case TRANSFERCREDITS_ALL_TO_CASH: remaining_transfer = side->SpiceDrip + side->SpiceReal; break;
+  case TRANSFERCREDITS_ALL_TO_SPICE_STORAGE: remaining_transfer = side->__MaxStorage - (side->SpiceDrip + side->SpiceReal); break;
+  case TRANSFERCREDITS_ALL_TO_SPICE_FORCE: remaining_transfer = side->CashDrip + side->CashReal; break;
+  case TRANSFERCREDITS_VALUE_TO_CASH: remaining_transfer = value; break;
+  case TRANSFERCREDITS_VALUE_TO_SPICE_STORAGE: remaining_transfer = HLIMIT(side->__MaxStorage - (side->SpiceDrip + side->SpiceReal), value); break;
+  case TRANSFERCREDITS_VALUE_TO_SPICE_FORCE: remaining_transfer = value; break;
+  }
+
+  switch (operation)
+  {
+    case TRANSFERCREDITS_ALL_TO_CASH:
+    case TRANSFERCREDITS_VALUE_TO_CASH:
     {
-      sprintf(&buf[j+1][2 * i + (i / 4) + (i / 16)], "%02X", udata[i + j * 32]);
-      buf[j+1][9 * (i / 4) + (i / 16) - 1] = ' ';
-      buf[j+1][37 * (i / 16) - 2] = ' ';
+      int transfer_spice_drip = HLIMIT(side->SpiceDrip, remaining_transfer);
+      remaining_transfer -= transfer_spice_drip;
+      side->CashDrip += transfer_spice_drip;
+      side->SpiceDrip -= transfer_spice_drip;
+      int transfer_spice_real = HLIMIT(side->SpiceReal, remaining_transfer);
+      side->CashReal += transfer_spice_real;
+      side->SpiceReal -= transfer_spice_real;
+      break;
+    }
+    case TRANSFERCREDITS_ALL_TO_SPICE_STORAGE:
+    case TRANSFERCREDITS_ALL_TO_SPICE_FORCE:
+    case TRANSFERCREDITS_VALUE_TO_SPICE_STORAGE:
+    case TRANSFERCREDITS_VALUE_TO_SPICE_FORCE:
+    {
+      int transfer_cash_drip = LIMIT(side->CashDrip, 0, remaining_transfer);
+      remaining_transfer -= transfer_cash_drip;
+      side->SpiceDrip += transfer_cash_drip;
+      side->CashDrip -= transfer_cash_drip;
+      int transfer_cash_real = HLIMIT(side->CashReal, remaining_transfer);
+      side->SpiceReal += transfer_cash_real;
+      side->SpiceReal = HLIMIT(side->SpiceReal, side->__MaxStorage);
+      side->CashReal -= transfer_cash_real;
+      break;
     }
   }
-  for (int i = 4; i >= 0; i--)
-    QueueMessage(buf[i], -1);
-  for (int i = 0; i < 5; i++)
-    _gMessageData.__ticks[i] = gGameTicks;
+}
+
+void EvAct_SetBuildingUpgrades(int side_id, int building_group, eValueOperation operation, int value)
+{
+  CSide *side = GetSide(side_id);
+  int old_upgrades = side->__BuildingGroupUpgradeCount[building_group];
+  int new_upgrades = LLIMIT(ValueOperation(old_upgrades, value, operation), 0);
+  side->__BuildingGroupUpgradeCount[building_group] = new_upgrades;
+  CSide__UpdateBuildingAndUnitIconsAndBaseBoundaries(side);
+  if ((old_upgrades < new_upgrades) && (side->__BuildingUpgradeQueue.__type == CSide__MyVersionOfBuilding(side, building_group, 0)))
+  {
+    side->__BuildingUpgradeQueue.__on_hold = 1;
+    GenerateUpgradeCancelOrder(side_id, side->__BuildingUpgradeQueue.__type);
+  }
+}
+
+void EvAct_SetStarportCost(int side_id, int unit_type, eValueOperation operation, bool default_cost, int value)
+{
+  CSide *side = GetSide(side_id);
+  if (default_cost)
+    side->__StarportUnitTypeCost[unit_type] = _templates_unitattribs[unit_type].__Cost;
+  else
+    side->__StarportUnitTypeCost[unit_type] = LLIMIT(ValueOperation(side->__StarportUnitTypeCost[unit_type], value, operation), 0);
+}
+
+void EvAct_ShowSideData(int side_id, int offset)
+{
+  CSide *side = GetSide(side_id);
+  char header[128];
+  memset(header, 0, sizeof(header));
+  sprintf(header, "Side %d Cash %d %d Spice %d %d Storage %d PowerOutput %d PowerDrain %d", side_id, side->CashDrip, side->CashReal, side->SpiceDrip, side->SpiceReal, side->__MaxStorage, side->__PowerOutput, side->__PowerDrained);
+  ShowDataOnScreen(header, ((unsigned char *)side) + offset);
+}
+
+void EvAct_ShowAIData(int side_id, int offset)
+{
+  CAI_ *ai = &_gAIArray[side_id];
+  char header[128];
+  memset(header, 0, sizeof(header));
+  sprintf(header, "AI %d memory dump at offset %X", side_id, offset);
+  ShowDataOnScreen(header, ((unsigned char *)ai) + offset);
+}
+
+void EvAct_SetMemoryData(int bytes, int value, int address)
+{
+  if (!address)
+    DebugFatal("event-actions.c", "Memory address is NULL");
+  unsigned char *memory = (unsigned char *)address;
+  for (int i = 0; i < bytes; i++)
+    memory[i] = value;
+}
+
+void EvAct_ShowMemoryData(int address)
+{
+  if (!address)
+    DebugFatal("event-actions.c", "Memory address is NULL");
+  char header[128];
+  memset(header, 0, sizeof(header));
+  sprintf(header, "Memory dump at address %08X", address);
+  ShowDataOnScreen(header, (unsigned char *)address);
 }
 
 void EvAct_DestroyUnit(int side_id, bool silent, int unit_index)
@@ -760,27 +845,14 @@ void EvAct_AirliftUnit(int side_id, int target_x, int target_y, bool units_targe
 void EvAct_ShowUnitData(int side_id, int unit_index)
 {
   Unit *unit = GetUnit(side_id, unit_index);
-  unsigned char *udata = (unsigned char *)unit;
-  char buf[5][128];
+  char buf[128];
   memset(buf, 0, sizeof(buf));
-  sprintf(buf[0], "Unit %d Type %d HP %d State %d Flags: ", unit_index, unit->Type, unit->Health, unit->State);
-  int l = strlen(buf[0]);
-  memset(&buf[0][l], ' ', 43);
+  sprintf(buf, "Unit %d Type %d HP %d State %d Flags: ", unit_index, unit->Type, unit->Health, unit->State);
+  int l = strlen(buf);
+  memset(&buf[l], ' ', 43);
   for (int i = 0; i < 32; i++)
-    buf[0][l + i + (i / 8)] = ((unit->Flags >> i & 1)?'X':'o');
-  for (int i = 0; i < 32; i++)
-  {
-    for (int j = 0; j < 4; j++)
-    {
-      sprintf(&buf[j+1][2 * i + (i / 4) + (i / 16)], "%02X", udata[i + j * 32]);
-      buf[j+1][9 * (i / 4) + (i / 16) - 1] = ' ';
-      buf[j+1][37 * (i / 16) - 2] = ' ';
-    }
-  }
-  for (int i = 4; i >= 0; i--)
-    QueueMessage(buf[i], -1);
-  for (int i = 0; i < 5; i++)
-    _gMessageData.__ticks[i] = gGameTicks;
+    buf[l + i + (i / 8)] = ((unit->Flags >> i & 1)?'X':'o');
+  ShowDataOnScreen(buf, (unsigned char *)unit);
 }
 
 void EvAct_DamageHealBuilding(int side_id, int action, int units, int value, int building_index)
@@ -831,27 +903,14 @@ void EvAct_SelectBuilding(int side_id, bool exclude_from_restore, int building_i
 void EvAct_ShowBuildingData(int side_id, int building_index)
 {
   Building *bld = GetBuilding(side_id, building_index);
-  unsigned char *bdata = (unsigned char *)bld;
-  char buf[5][128];
+  char buf[128];
   memset(buf, 0, sizeof(buf));
-  sprintf(buf[0], "Building %d Type %d HP %d State %d Flags: ", building_index, bld->Type, bld->Health, bld->__State);
-  int l = strlen(buf[0]);
-  memset(&buf[0][l], ' ', 43);
+  sprintf(buf, "Building %d Type %d HP %d State %d Flags: ", building_index, bld->Type, bld->Health, bld->__State);
+  int l = strlen(buf);
+  memset(&buf[l], ' ', 43);
   for (int i = 0; i < 32; i++)
-    buf[0][l + i + (i / 8)] = ((bld->Flags >> i & 1)?'X':'o');
-  for (int i = 0; i < 32; i++)
-  {
-    for (int j = 0; j < 4; j++)
-    {
-      sprintf(&buf[j+1][2 * i + (i / 4) + (i / 16)], "%02X", bdata[i + j * 32]);
-      buf[j+1][9 * (i / 4) + (i / 16) - 1] = ' ';
-      buf[j+1][37 * (i / 16) - 2] = ' ';
-    }
-  }
-  for (int i = 4; i >= 0; i--)
-    QueueMessage(buf[i], -1);
-  for (int i = 0; i < 5; i++)
-    _gMessageData.__ticks[i] = gGameTicks;
+    buf[l + i + (i / 8)] = ((bld->Flags >> i & 1)?'X':'o');
+  ShowDataOnScreen(buf, (unsigned char *)bld);
 }
 
 void EvAct_RemoveCrate(int crate_index)
@@ -923,14 +982,21 @@ void EvAct_OrderBuildPlaceBuilding(int side_id, int xpos, int ypos)
   GenerateBuildPlaceBuildingOrder(side_id, side->__BuildingBuildQueue.__type, xpos, ypos);
 }
 
-void EvAct_OrderBuildUnitCancel(int side_id, int unit_type, bool force)
+void EvAct_OrderBuildUnitCancel(int side_id, bool any_unit, int unit_type, int queue, bool force)
 {
   CSide *side = GetSide(side_id);
-  if (force)
-    for (int i = 0; i < 10; i++)
-      if (side->__UnitBuildQueue[i].__type == unit_type)
+  char *queue_groups = (char *)&_templates_GroupIDs;
+  for (int i = 0; i < 10; i++)
+  {
+    int unit_type_built = side->__UnitBuildQueue[i].__type;
+    int prereq1_group = _templates_unitattribs[unit_type_built].__PreReq1;
+    if ((!any_unit && unit_type_built == unit_type) || (any_unit && (queue == 0 || (queue > 0 && prereq1_group == queue_groups[(queue <= 6)?queue:queue+3]))))
+    {
+      if (force)
         side->__UnitBuildQueue[i].__on_hold = 1;
-  GenerateBuildUnitCancelOrder(side_id, unit_type);
+      GenerateBuildUnitCancelOrder(side_id, unit_type_built);
+    }
+  }
 }
 
 void EvAct_OrderStarportPick(int side_id, int unit_type)

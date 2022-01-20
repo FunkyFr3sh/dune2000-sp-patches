@@ -171,7 +171,7 @@ setcglob 0x004DEDB4, CreditsScreenTop
 setcglob 0x004DEDBC, CreditsScreenBottom
 setcglob 0x004DFB08, GameState
 setcglob 0x004E3B14, MyCurrentFrameRate
-setcglob 0x004E8BF0, DifficultyLevel
+setcglob 0x004E8BF0, gDifficultyLevel
 setcglob 0x004EB018, gBitsPerPixel
 setcglob 0x004EB048, MousePositionX
 setcglob 0x004EB04C, MousePositionY

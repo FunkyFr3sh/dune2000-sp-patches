@@ -26,7 +26,7 @@ void InitSpawner()
     SpawnIniGetString("Settings", "ScenarioName", NetMap, MapName, 60);
     MissionNumber = SpawnIniGetInt("Settings", "MissionNumber", 0);
     MySideID = SpawnIniGetInt("Settings", "MySideID", -1);
-    DifficultyLevel = SpawnIniGetInt("Settings", "DifficultyLevel", 1);
+    gDifficultyLevel = SpawnIniGetInt("Settings", "DifficultyLevel", 1);
     //stats hack
     NetPlayerCount = 1;
     gNetAIPlayers = 7;

@@ -223,22 +223,41 @@ bool EvaluateCondition(int condition_index)
   // Run condition
   switch ( condition->condition_type )
   {
-    case CT_BUILDINGEXISTS: return Cond_BuildingExists(A_SIDE, A_ARG1);
-    case CT_UNITEXISTS:     return Cond_UnitExists    (A_SIDE, A_ARG2);
-    case CT_INTERVAL:       return Cond_Interval      (A_ARG1, A_VAL1, A_VAL2, A_VAL3, condition);
-    case CT_TIMER:          return Cond_Timer         (A_ARG1, A_ARG2, A_VAL2, A_VAL3, condition);
-    case CT_CASUALTIES:     return Cond_Casualties    (A_SIDE, A_VAL3, A_FLOAT);
-    case CT_BASEDESTROYED:  return !_gBuildingsExist[A_SIDE];
-    case CT_UNITSDESTROYED: return !_gUnitsExist[A_SIDE];
-    case CT_REVEALED:       return Cond_Revealed      (COORD0, A_VAL3, condition);
-    case CT_HARVESTED:      return Cond_Harvested     (A_SIDE, A_ARG2, A_VAL3);
-    case CT_FLAG:           return A_VAL3 != 0;
-    case CT_RANDOMCHANCE:   return Cond_RandomChance  (A_VAL1, A_VAL2, A_VAL3, A_VAL4, condition);
-    case CT_RANDOMINTERVAL: return Cond_RandomInterval(A_ARG1, A_ARG2, A_VAL1, A_VAL2, A_VAL3, condition);
-    case CT_CHECKUNITS:     return Cond_CheckUnits    (condition);
-    case CT_CHECKBUILDINGS: return Cond_CheckBuildings(condition);
-    case CT_CHECKCRATES:    return Cond_CheckCrates   (condition);
-    case CT_CHECKTILES:     return Cond_CheckTiles    (condition);
+    case CT_BUILDINGEXISTS:     return Cond_BuildingExists(A_SIDE, A_ARG1);
+    case CT_UNITEXISTS:         return Cond_UnitExists    (A_SIDE, A_ARG2);
+    case CT_INTERVAL:           return Cond_Interval      (A_ARG1, A_VAL1, A_VAL2, A_VAL3, condition);
+    case CT_TIMER:              return Cond_Timer         (A_ARG1, A_ARG2, A_VAL2, A_VAL3, condition);
+    case CT_CASUALTIES:         return Cond_Casualties    (A_SIDE, A_VAL3, A_FLOAT);
+    case CT_BASEDESTROYED:      return !_gBuildingsExist[A_SIDE];
+    case CT_UNITSDESTROYED:     return !_gUnitsExist[A_SIDE];
+    case CT_REVEALED:           return Cond_Revealed      (COORD0, A_VAL3, condition);
+    case CT_CREDITS:            return Cond_Credits       (A_SIDE, A_ARG1, A_ARG2, A_VAL3);
+    case CT_FLAG:               return A_VAL3 != 0;
+    case CT_RANDOMCHANCE:       return Cond_RandomChance  (A_VAL1, A_VAL2, A_VAL3, A_VAL4, condition);
+    case CT_RANDOMINTERVAL:     return Cond_RandomInterval(A_ARG1, A_ARG2, A_VAL1, A_VAL2, A_VAL3, condition);
+    case CT_DIFFICULTY:         return gDifficultyLevel == A_VAL3;
+    case CT_CHECKUNITS:         return Cond_CheckUnits    (condition);
+    case CT_CHECKBUILDINGS:     return Cond_CheckBuildings(condition);
+    case CT_CHECKCRATES:        return Cond_CheckCrates   (condition);
+    case CT_CHECKTILES:         return Cond_CheckTiles    (condition);
+    case CT_SPICE_IN_AREA:      return Cond_SpiceInArea   (COORD0, COORD1, A_VAL3);
+    case CT_DAMAGE_IN_AREA:     return Cond_DamageInArea  (COORD0, COORD1, A_ARG1, A_ARG2, A_VAL3);
+    case CT_POWER:              return Cond_Power         (A_SIDE, A_ARG1, A_VAL1, A_VAL3);
+    case CT_BUILDING_UPGRADES:  return CompareValue(GetSide(A_SIDE)->__BuildingGroupUpgradeCount[A_ARG1], A_VAL3, !A_VAL1);
+    case CT_STARPORT_STOCK:     return Cond_StarportStock (A_SIDE, A_ARG1, A_ARG2, A_VAL1, A_VAL3);
+    case CT_STARPORT_COST:      return Cond_StarportCost  (A_SIDE, A_ARG1, A_VAL1, A_VAL3);
+    case CT_STARPORT_PICK:      return Cond_StarportPick  (A_SIDE, A_ARG1, A_ARG2, A_VAL1, A_VAL3);
+    case CT_STARPORT_DELIVERY:  return GetSide(A_SIDE)->__StarportDeliveryInProgress;
+    case CT_BUILDING_ICON:      return Cond_BuildingIcon  (A_SIDE, A_ARG1, A_ARG2, A_VAL2);
+    case CT_UNIT_ICON:          return Cond_UnitIcon      (A_SIDE, A_ARG1, A_ARG2, A_VAL1, A_VAL2);
+    case CT_UPGRADE_ICON:       return Cond_UpgradeIcon   (A_SIDE, A_ARG2, A_VAL2);
+    case CT_SPICE_HARVESTED:    return CompareValue(GetSide(A_SIDE)->__SpiceHarvested, A_VAL3, !A_VAL1);
+    case CT_UNITS_BUILT:        return Cond_UnitsBuilt    (A_SIDE, A_ARG1, A_ARG2, A_VAL1, A_VAL3);
+    case CT_BUILDINGS_BUILT:    return Cond_BuildingsBuilt(A_SIDE, A_ARG1, A_ARG2, A_VAL1, A_VAL3);
+    case CT_UNITS_LOST:         return Cond_UnitsLost     (A_SIDE, A_ARG1, A_ARG2, A_VAL1, A_VAL3);
+    case CT_BUILDINGS_LOST:     return Cond_BuildingsLost (A_SIDE, A_VAL1, A_VAL3);
+    case CT_UNITS_KILLED:       return Cond_UnitsKilled   (A_SIDE, A_ARG1, A_ARG2, A_VAL1, A_VAL2, A_VAL3);
+    case CT_BUILDINGS_KILLED:   return Cond_BuildingsKilled(A_SIDE, A_ARG1, A_ARG2, A_VAL1, A_VAL2, A_VAL3);
     default:
       DebugFatal("event-core.c", "Unknown condition type %d", condition->condition_type);
   }
@@ -459,9 +478,20 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_CENTER_VIEWPORT:        EvAct_CenterViewport      (COORD0); break;
   case ET_CHANGE_MAP_BLOCK:       EvAct_ChangeMapBlock      (COORD0, COORD1, (uint16_t *)&e->data[1]); break;
   case ET_TRANSFORM_TILES:        EvAct_TransformTiles      (A_AMNT, (uint16_t *)&e->data[1]); break;
+  case ET_ADD_BUILDING_DESTRUCT:  EvAct_AddBuildingDestruct (COORD0, A_SIDE, A_ITEM); break;
   case ET_ACTIVATE_TIMER:         EvAct_ActivateTimer       (A_VALUE); break;
   // Side manipulation
-  case ET_SHOW_SIDE_DATA:         EvAct_ShowSideData        (A_SIDE); break;
+  case ET_TRANSFER_CREDITS:       EvAct_TransferCredits     (A_SIDE, A_ENUM, A_VALUE); break;
+  case ET_SET_BUILDING_UPGRADES:  EvAct_SetBuildingUpgrades (A_SIDE, A_ITEM, A_ENUM, A_VALUE); break;
+  case ET_SET_STARPORT_STOCK:     VALUEOPERATION(GetSide(A_SIDE)->__StarportUnitTypeStock[A_ITEM]); break;
+  case ET_SET_STARPORT_COST:      EvAct_SetStarportCost     (A_SIDE, A_ITEM, A_ENUM, A_BOOL, A_VALUE); break;
+  case ET_CHANGE_STARPORT_UNIT:   GetSide(A_SIDE)->__StarportIcons[A_AMNT] = A_ITEM; break;
+  case ET_SHOW_SIDE_DATA:         EvAct_ShowSideData        (A_SIDE, A_VALUE); break;
+  // AI manipulation
+  case ET_SHOW_AI_DATA:           EvAct_ShowAIData          (A_SIDE, A_VALUE); break;
+  // Memory manipulation
+  case ET_SET_MEMORY_DATA:        EvAct_SetMemoryData       (A_AMNT, A_ITEM, A_VALUE); break;
+  case ET_SHOW_MEMORY_DATA:       EvAct_ShowMemoryData      (A_VALUE); break;
   // Unit manipulation
   case ET_DESTROY_UNIT:           EvAct_DestroyUnit         (A_SIDE, A_BOOL, OBJ_IDX); break;
   case ET_DAMAGE_HEAL_UNIT:       EvAct_DamageHealUnit      (A_SIDE, A_ENUM, A_BOOL, A_VALUE, OBJ_IDX); break;
@@ -509,7 +539,7 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_ORDER_BUILD_BUILDING_CANCEL:    EvAct_OrderBuildBuildingCancel      (A_SIDE, A_BOOL);           break;
   case ET_ORDER_BUILD_PLACE_BUILDING:     EvAct_OrderBuildPlaceBuilding       (A_SIDE, COORD0);           break;
   case ET_ORDER_BUILD_UNIT_PICK:          GenerateBuildUnitPickOrder          (A_SIDE, A_ITEM);           break;
-  case ET_ORDER_BUILD_UNIT_CANCEL:        EvAct_OrderBuildUnitCancel          (A_SIDE, A_ITEM, A_BOOL);   break;
+  case ET_ORDER_BUILD_UNIT_CANCEL:        EvAct_OrderBuildUnitCancel          (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL);   break;
   case ET_ORDER_STARPORT_PICK:            EvAct_OrderStarportPick             (A_SIDE, A_ITEM);           break;
   case ET_ORDER_STARPORT_UNPICK:          GenerateStarportUnpickOrder         (A_SIDE, A_ITEM);           break;
   case ET_ORDER_STARPORT_PURCHASE:        GenerateStarportPurchaseOrder       (A_SIDE);                   break;

@@ -229,7 +229,7 @@ extern unsigned char MissionNumber;
 
 extern int                  GameState;
 
-extern short                DifficultyLevel;
+extern short                gDifficultyLevel;
 extern int                  gBitsPerPixel;
 extern int                  MousePositionX;
 extern int                  MousePositionY;

@@ -19,6 +19,16 @@ typedef enum eSpiceBloomMode
   SPICEBLOOM_DUNE2
 } eSpiceBloomMode;
 
+typedef enum eTransferCreditsOperation
+{
+  TRANSFERCREDITS_ALL_TO_CASH,
+  TRANSFERCREDITS_ALL_TO_SPICE_STORAGE,
+  TRANSFERCREDITS_ALL_TO_SPICE_FORCE,
+  TRANSFERCREDITS_VALUE_TO_CASH,
+  TRANSFERCREDITS_VALUE_TO_SPICE_STORAGE,
+  TRANSFERCREDITS_VALUE_TO_SPICE_FORCE
+} eTransferCreditsOperation;
+
 void EvAct_AddDelivery(int xpos, int ypos, int side_id, int amount, int deploy_action, eDeliveryType delivery_type, char *unit_list);
 void EvAct_SetDiplomacy(int source_side, int target_side, int allegiance_type, bool both_sided);
 void EvAct_PlaySound(int sample_id, bool point_sound, int xpos, int ypos);
@@ -42,9 +52,18 @@ void EvAct_SpiceBloom(int xpos, int ypos, int range, eSpiceBloomMode mode, bool 
 void EvAct_CenterViewport(int xpos, int ypos);
 void EvAct_ChangeMapBlock(int xpos, int ypos, int width, int height, uint16_t *tiles);
 void EvAct_TransformTiles(int amount, uint16_t *tiles);
+void EvAct_AddBuildingDestruct(int xpos, int ypos, int side_id, int building_type);
 void EvAct_ActivateTimer(int condition_index);
 // Side manipulation
-void EvAct_ShowSideData(int side_id);
+void EvAct_TransferCredits(int side_id, eTransferCreditsOperation operation, int value);
+void EvAct_SetBuildingUpgrades(int side_id, int building_group, eValueOperation operation, int value);
+void EvAct_SetStarportCost(int side_id, int unit_type, eValueOperation operation, bool default_cost, int value);
+void EvAct_ShowSideData(int side_id, int offset);
+// AI manipulation
+void EvAct_ShowAIData(int side_id, int offset);
+// Memory manipulation
+void EvAct_SetMemoryData(int bytes, int value, int address);
+void EvAct_ShowMemoryData(int address);
 // Unit manipulation
 void EvAct_DestroyUnit(int side_id, bool silent, int unit_index);
 void EvAct_DamageHealUnit(int side_id, int action, int units, int value, int unit_index);
@@ -72,6 +91,6 @@ void EvAct_RevealTile(int cell_index);
 void EvAct_OrderUnitRetreat(int side_id);
 void EvAct_OrderBuildBuildingCancel(int side_id, bool force);
 void EvAct_OrderBuildPlaceBuilding(int side_id, int xpos, int ypos);
-void EvAct_OrderBuildUnitCancel(int side_id, int unit_type, bool force);
+void EvAct_OrderBuildUnitCancel(int side_id, bool any_unit, int unit_type, int queue, bool force);
 void EvAct_OrderStarportPick(int side_id, int unit_type);
 void EvAct_OrderUpgradeCancel(int side_id, bool force);
