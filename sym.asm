@@ -304,6 +304,7 @@ setcglob 0x00430860, ClearTImage
 ; Other
 setcglob 0x00442BB0, w__GetUnitCost
 setcglob 0x00442BE0, GetBuildingCost
+setcglob 0x00443370, IsAnyStarportUnitPicked
 setcglob 0x00448460, GetRandomValue
 setcglob 0x0044B1F0, SetBuildingAsPrimary
 ; Map
@@ -334,6 +335,7 @@ setcglob 0x00456210, ModelAddConcrete
 setcglob 0x004563B0, ModelAddBuilding
 setcglob 0x00456A30, ModelAddBullet
 setcglob 0x00456DF0, ModelAddExplosion
+setcglob 0x004572F0, ModelStarportCancel
 setcglob 0x00459450, GenerateUnitMoveOrder
 setcglob 0x00459540, GenerateDockWithRefineryOrder
 setcglob 0x004595E0, GenerateRepairSelectedUnitsOrder
@@ -384,6 +386,7 @@ setcglob 0x0046D6D0, CaptureBuilding
 setcglob 0x0046E3F0, CSide__FindBestBasePosition
 setcglob 0x0046E6B0, CSide__BlowupAll_surrender
 setcglob 0x0046EA50, GenerateSurrenderOrder
+setcglob 0x0046EAC0, CSide__ReturnMoneyFromStarportOrder
 setcglob 0x0046EB00, CSide__ResetEnemyForSide
 ; Sound
 setcglob 0x0046F540, PlaySoundAt

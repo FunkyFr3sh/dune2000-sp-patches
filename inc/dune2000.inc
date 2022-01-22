@@ -198,10 +198,13 @@ cextern GetSide
 cextern Sound__PlayMusic
 cextern Sound__SetMusicVolume
 cextern GetBuildingCost
+cextern IsAnyStarportUnitPicked
 cextern ModelAddExplosion
+cextern ModelStarportCancel
 cextern PlaySoundAt
 cextern CreateGlobe
 cextern Unit_49D280_occupiedbybuilding
+cextern CSide__ReturnMoneyFromStarportOrder
 cextern ReadFile
 
 ;imports

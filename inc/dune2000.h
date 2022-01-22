@@ -343,6 +343,7 @@ void            ClearTImage(TImage *a1, int color, int unusable);
 // Other
 unsigned int    w__GetUnitCost(int type, eSideType side);
 unsigned int    GetBuildingCost(int building_type, int num_upgrades, eSideType side_id);
+
 int             GetRandomValue(char *, int);
 void            SetBuildingAsPrimary(eSideType side_id, int building_index);
 // Map
@@ -373,6 +374,7 @@ void            ModelAddConcrete(eSideType side_id, char building_type, unsigned
 signed __int16  ModelAddBuilding(eSideType side_id, char building_type, unsigned __int8 x, unsigned __int8 y, int initialsetup, bool captured, bool captured2);
 signed __int16  ModelAddBullet(unsigned __int8 side_id, unsigned __int8 bulletype, int a3, __int16 firer, unsigned __int16 source_x, unsigned __int16 source_y, unsigned __int16 target_x, unsigned __int16 target_y, __int16 homing_index, char homing_side);
 signed __int16  ModelAddExplosion(int side_id, unsigned __int8 explosionType, unsigned __int16 x, unsigned __int16 y, int a5, int a6, char a7, int a8, int a9);
+
 void            GenerateUnitMoveOrder(char side_id, unsigned __int8 x, unsigned __int8 y);
 void            GenerateDockWithRefineryOrder(char side_id, __int16 refinery_index);
 void            GenerateRepairSelectedUnitsOrder(char side_id, __int16 repair_pad_index);
@@ -423,6 +425,7 @@ char            CaptureBuilding(eSideType source_side_id, eSideType target_side_
 char __thiscall CSide__FindBestBasePosition(CSide *this, _BYTE *x, _BYTE *y);
 void __thiscall CSide__BlowupAll_surrender(CSide *side);
 void            GenerateSurrenderOrder(bool unknown);
+
 void __thiscall CSide__ResetEnemyForSide(CSide *this, char a2);
 // Sound
 void            PlaySoundAt(int id, unsigned __int8 xpos, unsigned __int8 ypos);

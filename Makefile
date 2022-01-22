@@ -78,6 +78,7 @@ OBJS            ?= callsites.o \
 	src/fixes/ai-reset-berserk-when-got-mcv.o \
 	src/fixes/longer-message-duration.o \
 	src/fixes/no-building-damage-when-sold.o \
+	src/fixes/starport-sell-refund-fix.o \
 	\
 	src/hotkeys/hotkeys.o \
 	src/hotkeys/hotkeys-func.o \
