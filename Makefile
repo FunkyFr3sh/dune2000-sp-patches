@@ -79,6 +79,7 @@ OBJS            ?= callsites.o \
 	src/fixes/longer-message-duration.o \
 	src/fixes/no-building-damage-when-sold.o \
 	src/fixes/starport-sell-refund-fix.o \
+	src/fixes/upgrade-cancel-refund-fix.o \
 	\
 	src/hotkeys/hotkeys.o \
 	src/hotkeys/hotkeys-func.o \
