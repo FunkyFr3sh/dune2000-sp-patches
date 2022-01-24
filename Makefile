@@ -46,6 +46,7 @@ OBJS            ?= callsites.o \
 	src/extended-maps/ai-do-unit-facings.o \
 	src/extended-maps/guard-mode-radius.o \
 	src/extended-maps/always-show-radar.o \
+	src/extended-maps/tile-damage.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \
