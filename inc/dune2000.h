@@ -464,6 +464,7 @@ Building *      GetBuilding(eSideType side, index objIndex);
 Unit *          GetUnitOnTile(unsigned int x, unsigned int y, eSideType *side, _WORD *index, bool bool1);
 Unit *          GetNextUnitOnTile(unsigned int x, unsigned int y, unsigned int side, _WORD *unit_index);
 bool            GetBuildingOnTile_0(int x, int y, Building **building_ptr, eSideType *side_id, _WORD *index);
+
 bool            FindNearestFreeTile(unsigned char *x, unsigned char *y, unsigned char a3);
 void            cinit();
 

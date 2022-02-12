@@ -204,6 +204,7 @@ cextern ModelStarportCancel
 cextern PlaySoundAt
 cextern CreateGlobe
 cextern Unit_49D280_occupiedbybuilding
+cextern IsAnyInfantrySelected
 cextern CSide__ReturnMoneyFromStarportOrder
 cextern ReadFile
 
