@@ -17,6 +17,10 @@ hack 0x0044E07E, 0x0044E084 ; RemoveBuildingTileDataAndRadar
     and edx, 0xE000
     or esi, [eax*4+0x517DF4] ; Add walk-on, drive-on and build-on flags into existing tile flags
     jmp hackend
+
+; Remove check for building requiring concrete
+@CLEAR 0x0044DFB6, 0x90, 0x0044DFBE ; RemoveBuildingTileDataAndRadar
+@CLEAR 0x0044E07C, 0x90, 0x0044E07E ; RemoveBuildingTileDataAndRadar
     
 ; When an infantry is killed, the occupied-spot tile attribute is reset.
 ; If a tile underneath has pre-set those attributes (i.e. repulsion field), this patch makes sure
