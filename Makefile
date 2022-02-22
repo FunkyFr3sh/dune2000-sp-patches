@@ -84,6 +84,7 @@ OBJS            ?= callsites.o \
 	src/fixes/starport-sell-refund-fix.o \
 	src/fixes/upgrade-cancel-refund-fix.o \
 	src/fixes/sandworm-fixes.o \
+	src/fixes/ai-stuck-targeting-cloaked-unit-fix.o \
 	\
 	src/hotkeys/hotkeys.o \
 	src/hotkeys/hotkeys-func.o \
