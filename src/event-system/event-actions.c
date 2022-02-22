@@ -168,7 +168,8 @@ void EvAct_UnitSpawn(int xpos, int ypos, int side_id, int amount, int facing, in
   {
     unsigned char x = xpos;
     unsigned char y = ypos;
-    FindNearestFreeTile(&x, &y, 12u);
+    if (_templates_unitattribs[(int)unit_list[i]].__Behavior != UnitBehavior_SANDWORM)
+      FindNearestFreeTile(&x, &y, 12u);
     int unit_index = ModelAddUnit(side_id, unit_list[i], x, y, x, y, 0, 0);
     Unit *unit = GetUnit(side_id, unit_index);
     if (unit)
@@ -237,7 +238,7 @@ int EvAct_AddUnit(int xpos, int ypos, int side_id, int properties, int unit_type
 {
   GameMapTileStruct *tile = &gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]];
   // Do not add unit if tile is already occupied by unit
-  if (tile->__tile_bitflags & TileFlags_8_OCC_UNIT)
+  if (_templates_unitattribs[unit_type].__Behavior != UnitBehavior_SANDWORM && tile->__tile_bitflags & TileFlags_8_OCC_UNIT)
     return -1;
   // Do not add next infantry if all 5 slots are already occupied
   if (_templates_unitattribs[unit_type].__IsInfantry && ((tile->__tile_bitflags & 0x3E0) == 0x3E0))

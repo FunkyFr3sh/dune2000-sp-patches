@@ -83,6 +83,7 @@ OBJS            ?= callsites.o \
 	src/fixes/no-building-damage-when-sold.o \
 	src/fixes/starport-sell-refund-fix.o \
 	src/fixes/upgrade-cancel-refund-fix.o \
+	src/fixes/sandworm-fixes.o \
 	\
 	src/hotkeys/hotkeys.o \
 	src/hotkeys/hotkeys-func.o \
