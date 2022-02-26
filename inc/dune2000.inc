@@ -198,6 +198,7 @@ cextern GetSide
 cextern Sound__PlayMusic
 cextern Sound__SetMusicVolume
 cextern GetBuildingCost
+cextern CanSideUpgradeBuildingGroup
 cextern IsAnyStarportUnitPicked
 cextern ModelAddExplosion
 cextern ModelStarportCancel

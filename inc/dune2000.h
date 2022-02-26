@@ -344,6 +344,7 @@ void            ClearTImage(TImage *a1, int color, int unusable);
 unsigned int    w__GetUnitCost(int type, eSideType side);
 unsigned int    GetBuildingCost(int building_type, int num_upgrades, eSideType side_id);
 
+
 int             GetRandomValue(char *, int);
 void            SetBuildingAsPrimary(eSideType side_id, int building_index);
 // Map
