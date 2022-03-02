@@ -49,6 +49,7 @@ OBJS            ?= callsites.o \
 	src/extended-maps/tile-damage.o \
 	src/extended-maps/pickup-crate-on-landing.o \
 	src/extended-maps/move-infantry-on-infantry-tile.o \
+	src/extended-maps/buildable-top-row-of-map.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \
