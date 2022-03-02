@@ -569,7 +569,7 @@ LABEL_52:
       _FreeSpawnLocations[spawn_location] = 1;
       v119 = v79;
       x = v79;
-      FindNearestFreeTile(&x, &y, 6u);
+      GetNearestFreeTileForUnit(&x, &y, 6u);
       v80 = side;
       v81 = y;
       v82 = x;
@@ -674,7 +674,7 @@ LABEL_104:
 LABEL_105:
         x = v90;
         y = v108;
-        FindNearestFreeTile(&x, &y, 6u);
+        GetNearestFreeTileForUnit(&x, &y, 6u);
         ModelAddUnit(v80, type, x, y, x, y, 0, 0);
         goto LABEL_106;
       }

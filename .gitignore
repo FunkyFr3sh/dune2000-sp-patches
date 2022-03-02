@@ -11,3 +11,5 @@ config.mk
 move.cmd
 *~
 \#*\#
+dune2000-sp-patches.*
+build_*

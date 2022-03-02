@@ -169,7 +169,7 @@ void EvAct_UnitSpawn(int xpos, int ypos, int side_id, int amount, int facing, in
     unsigned char x = xpos;
     unsigned char y = ypos;
     if (_templates_unitattribs[(int)unit_list[i]].__Behavior != UnitBehavior_SANDWORM)
-      FindNearestFreeTile(&x, &y, 12u);
+      GetNearestFreeTileForUnit(&x, &y, 12u);
     int unit_index = ModelAddUnit(side_id, unit_list[i], x, y, x, y, 0, 0);
     Unit *unit = GetUnit(side_id, unit_index);
     if (unit)

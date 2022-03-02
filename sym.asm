@@ -427,7 +427,7 @@ setcglob 0x004A5270, GetUnitOnTile
 setcglob 0x004A54A0, GetNextUnitOnTile
 setcglob 0x004A5640, GetBuildingOnTile_0
 setcglob 0x004A5980, IsAnyInfantrySelected
-setcglob 0x004A60E0, FindNearestFreeTile
+setcglob 0x004A60E0, GetNearestFreeTileForUnit
 setcglob 0x004B1890, cinit
 
 ; winapi
