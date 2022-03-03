@@ -89,6 +89,7 @@ OBJS            ?= callsites.o \
 	src/fixes/cancel-upgrade-when-lowered-tech.o \
 	src/fixes/armed-engineer-saboteur-cursor-fix.o \
 	src/fixes/infiltrated-flag-cursor-fix.o \
+	src/fixes/unit-build-availability-check-fix.o \
 	\
 	src/hotkeys/hotkeys.o \
 	src/hotkeys/hotkeys-func.o \

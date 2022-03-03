@@ -304,6 +304,7 @@ setcglob 0x00430860, ClearTImage
 ; Other
 setcglob 0x00442BB0, w__GetUnitCost
 setcglob 0x00442BE0, GetBuildingCost
+setcglob 0x004430D0, w_CanUnitBeBuilt
 setcglob 0x004431D0, CanSideUpgradeBuildingGroup
 setcglob 0x00443370, IsAnyStarportUnitPicked
 setcglob 0x00448460, GetRandomValue

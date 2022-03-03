@@ -343,6 +343,7 @@ void            ClearTImage(TImage *a1, int color, int unusable);
 // Other
 unsigned int    w__GetUnitCost(int type, eSideType side);
 unsigned int    GetBuildingCost(int building_type, int num_upgrades, eSideType side_id);
+bool            w_CanUnitBeBuilt(unsigned __int8 side_id, unsigned __int8 unitType, char bool1);
 
 
 int             GetRandomValue(char *, int);
