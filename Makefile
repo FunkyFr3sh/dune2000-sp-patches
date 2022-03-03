@@ -87,6 +87,7 @@ OBJS            ?= callsites.o \
 	src/fixes/sandworm-fixes.o \
 	src/fixes/ai-stuck-targeting-cloaked-unit-fix.o \
 	src/fixes/cancel-upgrade-when-lowered-tech.o \
+	src/fixes/armed-engineer-saboteur-cursor-fix.o \
 	\
 	src/hotkeys/hotkeys.o \
 	src/hotkeys/hotkeys-func.o \
