@@ -43,3 +43,7 @@ extern bool     rulesExt__returnCreditsToSpiceStorage;
 extern bool     rulesExt__intervalsAreOffByOneTick;
 extern uint32_t rulesExt__guardModeRadius;
 extern bool     rulesExt__alwaysShowRadar;
+extern uint32_t rulesExt__costPercentageEasy;
+extern uint32_t rulesExt__costPercentageHard;
+extern uint32_t rulesExt__buildSpeedPercentageEasy;
+extern uint32_t rulesExt__buildSpeedPercentageHard;

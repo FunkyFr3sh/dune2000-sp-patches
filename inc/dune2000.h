@@ -19,6 +19,7 @@ typedef uint8_t _BYTE;
 #include "dune2000/mission.h"
 #include "dune2000/text.h"
 #include "dune2000/vars.h"
+#include "dune2000/order.h"
 
 typedef struct GameEvent // 168 byte
 {
@@ -270,6 +271,7 @@ extern bool                 _gBuildingsExist[8];
 extern MiscData             _gMiscData;
 extern VariableStruct       _gVariables;
 extern TechPosEntry         _TechPosdata[10][10];
+extern OrderStruct          _OrderData[8];
 
 
 extern GroupIDsStruct       _templates_GroupIDs;

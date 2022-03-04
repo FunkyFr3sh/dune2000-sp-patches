@@ -212,6 +212,7 @@ setcglob 0x006B87C0, _gBuildingsExist
 setcglob 0x006B87C8, _gMiscData
 setcglob 0x006B8818, _gVariables
 setcglob 0x006B8868, _TechPosdata
+setcglob 0x006B91F8, _OrderData
 setcglob 0x006B9518, NetMessageString
 setcglob 0x006B9864, LimitedModelRate
 setcglob 0x006D60D8, _templates_GroupIDs
