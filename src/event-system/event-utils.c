@@ -19,6 +19,12 @@ int ValueOperation(int val1, int val2, eValueOperation operation)
     case VALUEOPERATION_BITXOR:     return val1 ^ val2; break;
     case VALUEOPERATION_BITLSHIFT:  return val1 << val2; break;
     case VALUEOPERATION_BITRSHIFT:  return val1 >> val2; break;
+    case VALUEOPERATION_SETRANDOM:  return rand()%val2; break;
+    case VALUEOPERATION_ADDRANDOM:  return val1 + rand()%val2; break;
+    case VALUEOPERATION_SUBRANDOM:  return val1 - rand()%val2; break;
+    case VALUEOPERATION_MULRANDOM:  return val1 * (rand()%val2); break;
+    case VALUEOPERATION_ADDRANDOMPERCENT:  return val1 + rand()%((val1 * val2) / 100); break;
+    case VALUEOPERATION_SUBRANDOMPERCENT:  return val1 - rand()%((val1 * val2) / 100); break;
     default: return val1;
   }
 }
