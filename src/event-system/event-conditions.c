@@ -87,7 +87,7 @@ bool Cond_Revealed(int xpos, int ypos, int run_count, ConditionData *condition)
 {
   if ( run_count )
   {
-    if ( !gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]].__shroud_flags )
+    if ( !gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]].__shroud )
     {
       condition->val3 = run_count - 1;
       return true;
@@ -163,7 +163,7 @@ bool Cond_CheckUnits(ConditionData *condition)
     CSide *side = GetSide(side_id);
     for (Unit *unit = side->__FirstUnitPtr; unit; unit = unit->Next)
     {
-      if (CheckIfUnitMatchesFilter((ObjectFilterStruct *)condition, unit))
+      if (CheckIfUnitMatchesFilter((ObjectFilterStruct *)condition, unit, side_id))
         matched++;
       // Already found enough matches, no need to search further
       if (!strict_equal && matched == amount)

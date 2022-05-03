@@ -9,11 +9,10 @@ typedef struct MiscData
 
 typedef struct MessageData
 {
-  int __index;
-  int __slot;
-  int __slot2;
-  int __ticks[5];
-  int __type[4];
-  char field_30[4];
+  unsigned int __count_active;
+  unsigned int __next_slot;
+  unsigned int __oldest_active;
+  unsigned int __ticks[5];
+  int __type[5];
   char __messages[5][128];
 } MessageData;

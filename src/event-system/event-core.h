@@ -13,7 +13,7 @@ typedef struct EventData
   uint8_t coord_var_flags;
   uint8_t arg_var_flags;
   uint8_t condition_negation[12];
-  uint8_t unused;
+  uint8_t filter_skip;
   uint8_t event_flags;
   char data[25];
 } EventData;
@@ -36,6 +36,7 @@ enum EventFlags
 
 enum EventTypes
 {
+  // Vanilla / General
   ET_REINFORCEMENT,
   ET_STARPORT_DELIVERY,
   ET_ALLEGIANCE,
@@ -76,16 +77,20 @@ enum EventTypes
   ET_37,
   ET_38,
   ET_39,
+  // Side manipulation
   ET_TRANSFER_CREDITS,
   ET_SET_BUILDING_UPGRADES,
   ET_SET_STARPORT_STOCK,
   ET_SET_STARPORT_COST,
   ET_CHANGE_STARPORT_UNIT,
   ET_SHOW_SIDE_DATA,
-  ET_46,
+  // AI manipulation
+  ET_SET_AI_PROPERTY,
   ET_SHOW_AI_DATA,
+  // Memory manipulation
   ET_SET_MEMORY_DATA,
   ET_SHOW_MEMORY_DATA,
+  // Unit manipulation
   ET_DESTROY_UNIT,
   ET_DAMAGE_HEAL_UNIT,
   ET_CHANGE_UNIT_OWNER,
@@ -96,6 +101,7 @@ enum EventTypes
   ET_AIRLIFT_UNIT,
   ET_58,
   ET_SHOW_UNIT_DATA,
+  // Building manipulation
   ET_DESTROY_BUILDING,
   ET_DAMAGE_HEAL_BUILDING,
   ET_CHANGE_BUILDING_OWNER,
@@ -106,16 +112,19 @@ enum EventTypes
   ET_67,
   ET_68,
   ET_SHOW_BUILDING_DATA,
+  // Crate manipulation
   ET_REMOVE_CRATE,
-  ET_71,
-  ET_72,
-  ET_73,
-  ET_74,
+  ET_PICKUP_CRATE,
+  ET_SET_CRATE_PROPERTY,
+  ET_SHOW_CRATE_DATA,
+  // Tile manipulation
+  ET_CHANGE_TILE,
   ET_SET_TILE_ATTRIBUTE,
   ET_SET_TILE_DAMAGE,
   ET_REVEAL_TILE,
-  ET_78,
-  ET_79,
+  ET_HIDE_TILE,
+  ET_SHOW_TILE_DATA,
+  // Orders
   ET_ORDER_UNIT_MOVE,
   ET_ORDER_DOCK_WITH_REFINERY,
   ET_ORDER_REPAIR_SELECTED_UNITS,
@@ -174,6 +183,7 @@ typedef struct ConditionData
 
 enum ConditionTypes
 {
+  // Vanilla / General
   CT_BUILDINGEXISTS,
   CT_UNITEXISTS,
   CT_INTERVAL,
@@ -186,14 +196,16 @@ enum ConditionTypes
   CT_FLAG,
   CT_RANDOMCHANCE,
   CT_RANDOMINTERVAL,
-  CT_12,
+  CT_DIPLOMACY,
   CT_DIFFICULTY,
+  // Environment checking
   CT_CHECKUNITS,
   CT_CHECKBUILDINGS,
   CT_CHECKCRATES,
   CT_CHECKTILES,
   CT_SPICE_IN_AREA,
   CT_DAMAGE_IN_AREA,
+  // Side related
   CT_POWER,
   CT_BUILDING_UPGRADES,
   CT_STARPORT_STOCK,
@@ -210,7 +222,12 @@ enum ConditionTypes
   CT_UNITS_LOST,
   CT_BUILDINGS_LOST,
   CT_UNITS_KILLED,
-  CT_BUILDINGS_KILLED
+  CT_BUILDINGS_KILLED,
+  CT_SIDE_PROPERTY,
+  // AI related
+  CT_AI_PROPERTY,
+  // Memory related
+  CT_MEMORY_VALUE
 };
 
 enum ConditionFilterFlags

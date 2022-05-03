@@ -28,17 +28,23 @@ typedef enum eFlagOperation
   FLAGOPERATION_TOGGLE
 } eFlagOperation;
 
-typedef enum eDataSize
+typedef enum eDataType
 {
-  DATASIZE_BYTE,
-  DATASIZE_WORD,
-  DATASIZE_DWORD
-} eDataSize;
+  DATATYPE_BYTE,
+  DATATYPE_WORD,
+  DATATYPE_DWORD,
+  DATATYPE_FLOAT
+} eDataType;
 
 int ValueOperation(int val1, int val2, eValueOperation operation);
+float ValueOperationFloat(float val1, float val2, eValueOperation operation);
 int FlagOperation(int value, int flag, eFlagOperation operation);
-void SetDataValue(char *data_ptr, eDataSize data_size, int offset, eValueOperation operation, int value);
+void SetDataValue(char *data_ptr, eDataType data_type, int offset, eValueOperation operation, int value);
+int GetDataValue(char *data_ptr, eDataType data_type, int offset);
 bool CompareValue(int val, int comp_val, bool comparison);
+bool CompareValueFloat(float val, float comp_val, bool comparison);
+bool CompareDataValue(char *data_ptr, eDataType data_type, int offset, int comp_val, bool comparison);
+bool CompareDistance(int x1, int y1, int x2, int y2, int comp_val, bool comparison);
 
 void RestoreUnitSelection(int side_id, bool restore_selection);
 void RestoreBuildingSelection(int side_id, bool restore_selection);

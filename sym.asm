@@ -204,7 +204,7 @@ setcglob 0x006B7050, _somebool_6B7050
 setcglob 0x006B8258, _persideflags_6B8258
 setcglob 0x006B8260, _gConditionCount
 setcglob 0x006B8268, _gUnitsExist
-setcglob 0x006B8270, gTimerValue
+setcglob 0x006B8270, _gTimerValue
 setcglob 0x006B8274, gWin
 setcglob 0x006B8278, gLose
 ;setcglob 0x006B8280, _gConditionArray ; Replaced by mod
@@ -291,6 +291,7 @@ setcglob 0x00417C40, WOL__StartGuestINetGame
 setcglob 0x00417E50, WOL__StartHostINetGame
 setcglob 0x004184A0, WOL__OpenWebsite				; (char *URL)
 setcglob 0x00425720, QueueMessage
+setcglob 0x00425830, FreeMessageSlot
 setcglob 0x0042B590, DebugFatal
 setcglob 0x0042BB60, ReadFile
 setcglob 0x0042BC60, CreateGlobe
@@ -310,10 +311,13 @@ setcglob 0x004431D0, CanSideUpgradeBuildingGroup
 setcglob 0x00443370, IsAnyStarportUnitPicked
 setcglob 0x00448460, GetRandomValue
 setcglob 0x0044B1F0, SetBuildingAsPrimary
+setcglob 0x0044C420, SetMouseCursor
 ; Map
 setcglob 0x0044C480, RevealMap
 setcglob 0x0044C4F0, Map__PlayerDefeated
 setcglob 0x0044C520, Map__SetDeadOrder
+setcglob 0x0044CD10, UpdateShroudInRegion
+setcglob 0x0044DAC0, GetBuildingOnConcreteCount
 setcglob 0x0044E3B0, RevealCircle
 setcglob 0x0044E790, GetFreeCrateIndex
 setcglob 0x0044E8E0, PlaceCrate
@@ -425,8 +429,10 @@ setcglob 0x004A39E0, Parse_Command_Line
 setcglob 0x004A4660, GetSide ; (int house)
 setcglob 0x004A46B0, GetUnit
 setcglob 0x004A4740, GetBuilding
+setcglob 0x004A5200, UnitOccupiesTile
 setcglob 0x004A5270, GetUnitOnTile
 setcglob 0x004A54A0, GetNextUnitOnTile
+setcglob 0x004A5570, BuildingOccupiesTile
 setcglob 0x004A5640, GetBuildingOnTile_0
 setcglob 0x004A5980, IsAnyInfantrySelected
 setcglob 0x004A60E0, GetNearestFreeTileForUnit

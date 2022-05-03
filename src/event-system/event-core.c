@@ -223,6 +223,7 @@ bool EvaluateCondition(int condition_index)
   // Run condition
   switch ( condition->condition_type )
   {
+    // Vanilla / General
     case CT_BUILDINGEXISTS:     return Cond_BuildingExists(A_SIDE, A_ARG1);
     case CT_UNITEXISTS:         return Cond_UnitExists    (A_SIDE, A_ARG2);
     case CT_INTERVAL:           return Cond_Interval      (A_ARG1, A_VAL1, A_VAL2, A_VAL3, condition);
@@ -235,13 +236,16 @@ bool EvaluateCondition(int condition_index)
     case CT_FLAG:               return A_VAL3 != 0;
     case CT_RANDOMCHANCE:       return Cond_RandomChance  (A_VAL1, A_VAL2, A_VAL3, A_VAL4, condition);
     case CT_RANDOMINTERVAL:     return Cond_RandomInterval(A_ARG1, A_ARG2, A_VAL1, A_VAL2, A_VAL3, condition);
+    case CT_DIPLOMACY:          return _gDiplomacy[A_SIDE][A_ARG1] == A_ARG2;
     case CT_DIFFICULTY:         return gDifficultyLevel == A_VAL3;
+    // Environment checking
     case CT_CHECKUNITS:         return Cond_CheckUnits    (condition);
     case CT_CHECKBUILDINGS:     return Cond_CheckBuildings(condition);
     case CT_CHECKCRATES:        return Cond_CheckCrates   (condition);
     case CT_CHECKTILES:         return Cond_CheckTiles    (condition);
     case CT_SPICE_IN_AREA:      return Cond_SpiceInArea   (COORD0, COORD1, A_VAL3);
     case CT_DAMAGE_IN_AREA:     return Cond_DamageInArea  (COORD0, COORD1, A_ARG1, A_ARG2, A_VAL3);
+    // Side related
     case CT_POWER:              return Cond_Power         (A_SIDE, A_ARG1, A_VAL1, A_VAL3);
     case CT_BUILDING_UPGRADES:  return CompareValue(GetSide(A_SIDE)->__BuildingGroupUpgradeCount[A_ARG1], A_VAL3, !A_VAL1);
     case CT_STARPORT_STOCK:     return Cond_StarportStock (A_SIDE, A_ARG1, A_ARG2, A_VAL1, A_VAL3);
@@ -258,6 +262,11 @@ bool EvaluateCondition(int condition_index)
     case CT_BUILDINGS_LOST:     return Cond_BuildingsLost (A_SIDE, A_VAL1, A_VAL3);
     case CT_UNITS_KILLED:       return Cond_UnitsKilled   (A_SIDE, A_ARG1, A_ARG2, A_VAL1, A_VAL2, A_VAL3);
     case CT_BUILDINGS_KILLED:   return Cond_BuildingsKilled(A_SIDE, A_ARG1, A_ARG2, A_VAL1, A_VAL2, A_VAL3);
+    case CT_SIDE_PROPERTY:      return CompareDataValue   ((char *)GetSide(A_SIDE),    A_ARG1, A_VAL1, A_VAL3, !A_VAL2);
+    // AI related
+    case CT_AI_PROPERTY:        return CompareDataValue   ((char *)&_gAIArray[A_SIDE], A_ARG1, A_VAL1, A_VAL3, !A_VAL2);
+    // Memory related
+    case CT_MEMORY_VALUE:       return CompareDataValue   (NULL,                       A_ARG1, A_VAL1, A_VAL3, !A_VAL2);
     default:
       DebugFatal("event-core.c", "Unknown condition type %d", condition->condition_type);
   }
@@ -298,6 +307,7 @@ void ExecuteEvent(int event_index)
       || et == ET_ORDER_UNIT_DEPLOY
       || et == ET_ORDER_BUILDING_ATTACK_UNIT)
   {
+    int skip = event->filter_skip;
     int limit = event->data[0];
     if (et == ET_ORDER_UNIT_ATTACK_UNIT
         || et == ET_ORDER_BUILDING_ATTACK_UNIT)
@@ -320,11 +330,16 @@ void ExecuteEvent(int event_index)
       // Process all units
       for (Unit *unit = side->__FirstUnitPtr; unit; unit = unit->Next)
       {
-        if (CheckIfUnitMatchesFilter((ObjectFilterStruct *)&e.data[1], unit))
+        if (CheckIfUnitMatchesFilter((ObjectFilterStruct *)&e.data[1], unit, side_id))
         {
-          e.index = unit->MyIndex;
-          ExecuteEventAction(et, &e);
-          affected++;
+          if (skip)
+            skip--;
+          else
+          {
+            e.index = unit->MyIndex;
+            ExecuteEventAction(et, &e);
+            affected++;
+          }
         }
         if (limit && (affected == limit))
           return;
@@ -341,6 +356,7 @@ void ExecuteEvent(int event_index)
       || et == ET_ORDER_BUILDING_REPAIR
       || et == ET_ORDER_BUILDING_SELL)
   {
+    int skip = event->filter_skip;
     int limit = event->data[0];
     if (et == ET_ORDER_DOCK_WITH_REFINERY
         || et == ET_ORDER_REPAIR_SELECTED_UNITS
@@ -367,9 +383,14 @@ void ExecuteEvent(int event_index)
       {
         if (CheckIfBuildingMatchesFilter((ObjectFilterStruct *)&e.data[1], building, side_id))
         {
-          e.index = building->MyIndex;
-          ExecuteEventAction(et, &e);
-          affected++;
+          if (skip)
+            skip--;
+          else
+          {
+            e.index = building->MyIndex;
+            ExecuteEventAction(et, &e);
+            affected++;
+          }
         }
         if (limit && (affected == limit))
           return;
@@ -378,8 +399,9 @@ void ExecuteEvent(int event_index)
     return;
   }
   // Crate manipulation events: process all crates
-  if (et >= ET_REMOVE_CRATE && et <= ET_74)
+  if (et >= ET_REMOVE_CRATE && et <= ET_SHOW_CRATE_DATA)
   {
+    int skip = event->filter_skip;
     int limit = event->data[0];
     int affected = 0;
     // Process all crates
@@ -387,9 +409,14 @@ void ExecuteEvent(int event_index)
     {
       if (CheckIfCrateMatchesFilter((ObjectFilterStruct *)&e.data[1], &gCrates[i]))
       {
-        e.index = i;
-        ExecuteEventAction(et, &e);
-        affected++;
+        if (skip)
+          skip--;
+        else
+        {
+          e.index = i;
+          ExecuteEventAction(et, &e);
+          affected++;
+        }
       }
       if (limit && (affected == limit))
         return;
@@ -397,8 +424,9 @@ void ExecuteEvent(int event_index)
     return;
   }
   // Tile manipulation events: process all tiles
-  if (et >= ET_SET_TILE_ATTRIBUTE && et <= ET_79)
+  if (et >= ET_CHANGE_TILE && et <= ET_SHOW_TILE_DATA)
   {
+    int skip = event->filter_skip;
     int limit = event->data[0];
     int affected = 0;
     ObjectFilterStruct *filter = (ObjectFilterStruct *)&e.data[1];
@@ -413,9 +441,14 @@ void ExecuteEvent(int event_index)
       {
         if (CheckIfTileMatchesFilter((ObjectFilterStruct *)&e.data[1], &gGameMap.map[x + _CellNumbersWidthSpan[y]], x, y, (filter->pos_flags & OBJFILTERPOSFLAG_DOCHECK) && (filter->pos_flags & OBJFILTERPOSFLAG_NEGATE)))
         {
-          e.index = x + _CellNumbersWidthSpan[y];
-          ExecuteEventAction(et, &e);
-          affected++;
+          if (skip)
+            skip--;
+          else
+          {
+            e.index = x + (y << 8);
+            ExecuteEventAction(et, &e);
+            affected++;
+          }
         }
         if (limit && (affected == limit))
           return;
@@ -444,8 +477,9 @@ void ExecuteEventAction(int event_type, EventContext *e)
 {
   switch ( event_type )
   {
-  case ET_REINFORCEMENT:          EvAct_AddDelivery         (COORD0, A_SIDE, A_AMNT, A_BOOL, DELIVERYTYPE_REINFORCE, e->data); break;
-  case ET_STARPORT_DELIVERY:      EvAct_AddDelivery         (COORD0, A_SIDE, A_AMNT, A_BOOL, DELIVERYTYPE_STARPORT,  e->data); break;
+  // Vanilla / General
+  case ET_REINFORCEMENT:          EvAct_AddDelivery         (COORD0, A_SIDE, A_AMNT, A_BOOL, 0,       DELIVERYTYPE_REINFORCE, e->data); break;
+  case ET_STARPORT_DELIVERY:      EvAct_AddDelivery         (COORD0, A_SIDE, A_AMNT, A_BOOL, A_VALUE, DELIVERYTYPE_STARPORT,  e->data); break;
   case ET_ALLEGIANCE:             EvAct_SetDiplomacy        (A_SIDE, A_ITEM, A_ENUM, A_BOOL); break;
   case ET_LEAVE:                  CSide__BlowupAll_surrender(GetSide(A_SIDE)); break;
   case ET_BESERK:                 _gAIArray[A_SIDE].__GoBeserk_OtherStates = 1; break;
@@ -459,9 +493,9 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_SWITCH_MY_SIDE:         EvAct_SwitchMySide        (A_SIDE, A_ENUM, A_BOOL); break;
   case ET_HIDE_MAP:               EvAct_HideMap             (); break;
   case ET_REVEAL:                 EvAct_RevealMap           (COORD0, A_AMNT); break;
-  case ET_SETTIMER:               VALUEOPERATION(gTimerValue); break;
-  case ET_HIDETIMER:              gTimerValue = -1; break;
-  case ET_SHOWMESSAGE:            EvAct_ShowMessage         (A_VALUE, (ShowMessageEventData *)&e->data[1]); break;
+  case ET_SETTIMER:               VALUEOPERATION(_gTimerValue); break;
+  case ET_HIDETIMER:              _gTimerValue = -1; break;
+  case ET_SHOWMESSAGE:            EvAct_ShowMessage         (A_ENUM, A_VALUE, (ShowMessageEventData *)&e->data[1]); break;
   case ET_UNIT_SPAWN:             EvAct_UnitSpawn           (COORD0, A_SIDE, A_AMNT, A_ENUM, A_VALUE, e->data); break;
   case ET_SET_FLAG:               _gConditionArray[A_SIDE].val3 = A_VALUE; break;
   case ET_UN_BLOCK_EVENT:         EvAct_UnBlockEvent        (A_BOOL, A_VALUE); break;
@@ -476,8 +510,8 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_SPICE_BLOOM:            EvAct_SpiceBloom          (COORD0, A_AMNT, A_ENUM, A_BOOL); break;
   case ET_SHAKE_SCREEN:           _ScreenShakes = A_VALUE; break;
   case ET_CENTER_VIEWPORT:        EvAct_CenterViewport      (COORD0); break;
-  case ET_CHANGE_MAP_BLOCK:       EvAct_ChangeMapBlock      (COORD0, COORD1, (uint16_t *)&e->data[1]); break;
-  case ET_TRANSFORM_TILES:        EvAct_TransformTiles      (A_AMNT, (uint16_t *)&e->data[1]); break;
+  case ET_CHANGE_MAP_BLOCK:       EvAct_ChangeMapBlock      (COORD0, COORD1, A_ENUM, (uint16_t *)&e->data[1]); break;
+  case ET_TRANSFORM_TILES:        EvAct_TransformTiles      (A_AMNT, A_ENUM, (uint16_t *)&e->data[1]); break;
   case ET_ADD_BUILDING_DESTRUCT:  EvAct_AddBuildingDestruct (COORD0, A_SIDE, A_ITEM); break;
   case ET_ACTIVATE_TIMER:         EvAct_ActivateTimer       (A_VALUE); break;
   // Side manipulation
@@ -488,9 +522,10 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_CHANGE_STARPORT_UNIT:   GetSide(A_SIDE)->__StarportIcons[A_AMNT] = A_ITEM; break;
   case ET_SHOW_SIDE_DATA:         EvAct_ShowSideData        (A_SIDE, A_VALUE); break;
   // AI manipulation
+  case ET_SET_AI_PROPERTY:        EvAct_SetAIProperty       (A_SIDE, A_AMNT, A_ENUM, A_VALUE, *(int *)&e->data[1]); break;
   case ET_SHOW_AI_DATA:           EvAct_ShowAIData          (A_SIDE, A_VALUE); break;
   // Memory manipulation
-  case ET_SET_MEMORY_DATA:        EvAct_SetMemoryData       (A_AMNT, A_ITEM, A_VALUE); break;
+  case ET_SET_MEMORY_DATA:        EvAct_SetMemoryData       (A_AMNT, A_ENUM, A_VALUE, *(int *)&e->data[1]); break;
   case ET_SHOW_MEMORY_DATA:       EvAct_ShowMemoryData      (A_VALUE); break;
   // Unit manipulation
   case ET_DESTROY_UNIT:           EvAct_DestroyUnit         (A_SIDE, A_BOOL, OBJ_IDX); break;
@@ -503,7 +538,7 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_AIRLIFT_UNIT:           EvAct_AirliftUnit         (A_SIDE, COORD0, A_BOOL, OBJ_IDX); break;
   case ET_SHOW_UNIT_DATA:         EvAct_ShowUnitData        (A_SIDE, OBJ_IDX); break;
   // Building manipulation
-  case ET_DESTROY_BUILDING:       DestroyBuilding           (A_SIDE, OBJ_IDX, 0); break;
+  case ET_DESTROY_BUILDING:       EvAct_DestroyBuilding     (A_SIDE, A_BOOL, OBJ_IDX); break;
   case ET_DAMAGE_HEAL_BUILDING:   EvAct_DamageHealBuilding  (A_SIDE, A_ENUM, A_BOOL, A_VALUE, OBJ_IDX); break;
   case ET_CHANGE_BUILDING_OWNER:  EvAct_ChangeBuildingOwner (A_SIDE, A_ITEM, OBJ_IDX); break;
   case ET_CHANGE_BUILDING_TYPE:   EvAct_ChangeBuildingType  (A_SIDE, A_ITEM, OBJ_IDX); break;
@@ -513,10 +548,16 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_SHOW_BUILDING_DATA:     EvAct_ShowBuildingData    (A_SIDE, OBJ_IDX); break;
   // Crate manipulation
   case ET_REMOVE_CRATE:           EvAct_RemoveCrate         (OBJ_IDX); break;
+  case ET_PICKUP_CRATE:           EvAct_PickupCrate         (A_SIDE, OBJ_IDX); break;
+  case ET_SET_CRATE_PROPERTY:     EvAct_SetCrateProperty    (A_AMNT, A_ITEM, A_ENUM, A_VALUE, OBJ_IDX); break;
+  case ET_SHOW_CRATE_DATA:        EvAct_ShowCrateData       (OBJ_IDX); break;
   // Tile manipulation
+  case ET_CHANGE_TILE:            EvAct_ChangeTile          (A_ENUM, A_VALUE, OBJ_IDX); break;
   case ET_SET_TILE_ATTRIBUTE:     EvAct_SetTileAttribute    (A_ENUM, A_VALUE, OBJ_IDX); break;
   case ET_SET_TILE_DAMAGE:        EvAct_SetTileDamage       (A_ENUM, A_VALUE, OBJ_IDX); break;
-  case ET_REVEAL_TILE:            EvAct_RevealTile          (OBJ_IDX); break;
+  case ET_REVEAL_TILE:            EvAct_RevealTile          (A_AMNT, OBJ_IDX); break;
+  case ET_HIDE_TILE:              EvAct_HideTile            (OBJ_IDX); break;
+  case ET_SHOW_TILE_DATA:         EvAct_ShowTileData        (OBJ_IDX); break;
   // Orders
   case ET_ORDER_UNIT_MOVE:                GenerateUnitMoveOrder               (A_SIDE, COORD0);           RestoreUnitSelection(A_SIDE, A_BOOL); break;
   case ET_ORDER_DOCK_WITH_REFINERY:       GenerateDockWithRefineryOrder       (A_SIDE, OBJ_IDX);          RestoreUnitSelection(A_SIDE, A_BOOL); break;

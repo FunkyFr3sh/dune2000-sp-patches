@@ -45,12 +45,10 @@ bool EvaluateFilterExpression(ObjectFilterStruct *filter, bool *p_criteria_resul
   return criteria_result[0];
 }
 
-bool CheckIfUnitMatchesCriteria(Unit *unit, eUnitFilterCriteriaType criteria_type, bool negation, bool comparison, int value);
+bool CheckIfUnitMatchesCriteria(Unit *unit, eSideType side_id, eUnitFilterCriteriaType criteria_type, bool negation, bool comparison, int value);
 
-bool CheckIfUnitMatchesFilter(ObjectFilterStruct *filter, Unit *unit)
+bool CheckIfUnitMatchesFilter(ObjectFilterStruct *filter, Unit *unit, eSideType side_id)
 {
-  if (unit->State == 17)
-    return false;
   // Check for position
   if (!EvaluateFilterPosition(filter, unit->__PosX >> 21, unit->__PosY >> 21))
     return false;
@@ -59,7 +57,7 @@ bool CheckIfUnitMatchesFilter(ObjectFilterStruct *filter, Unit *unit)
   for (int i = 0; i < 8; i++)
   {
     int value = filter->criteria_value[i];
-    criteria_result[i] = CheckIfUnitMatchesCriteria(unit, filter->criteria_type[i] & 63, filter->criteria_type[i] & 64, filter->criteria_type[i] & 128, value);
+    criteria_result[i] = CheckIfUnitMatchesCriteria(unit, side_id, filter->criteria_type[i] & 63, filter->criteria_type[i] & 64, filter->criteria_type[i] & 128, value);
   }
   return EvaluateFilterExpression(filter, criteria_result);
 }
@@ -68,8 +66,6 @@ bool CheckIfBuildingMatchesCriteria(Building *building, eSideType side_id, eBuil
 
 bool CheckIfBuildingMatchesFilter(ObjectFilterStruct *filter, Building *building, eSideType side_id)
 {
-  if (building->__State == 17)
-    return false;
   // Check for position
   int pos_x = building->__PosX >> 21;
   int pos_y = (building->__PosY >> 21) - (_templates_buildattribs[building->Type]._____ArtHeight / 32);
@@ -121,7 +117,10 @@ bool CheckIfTileMatchesFilter(ObjectFilterStruct *filter, GameMapTileStruct *til
   return EvaluateFilterExpression(filter, criteria_result);
 }
 
-bool CheckIfUnitMatchesCriteria(Unit *unit, eUnitFilterCriteriaType criteria_type, bool negation, bool comparison, int value)
+bool TileCheck(int pos_x, int pos_y, eTileCheckType check_type, bool comparison, int value);
+bool ObjectCheck(int side_id, int obj_index, eObjectCheckType check_type, int pos_x, int pos_y, bool comparison, int value);
+
+bool CheckIfUnitMatchesCriteria(Unit *unit, eSideType side_id, eUnitFilterCriteriaType criteria_type, bool negation, bool comparison, int value)
 {
   bool result = true;
   UnitAtribStruct *unit_template = &_templates_unitattribs[unit->Type];
@@ -134,13 +133,13 @@ bool CheckIfUnitMatchesCriteria(Unit *unit, eUnitFilterCriteriaType criteria_typ
       || behavior == UnitBehavior_DEATH_HAND;
   int pos_x = unit->__PosX >> 21;
   int pos_y = unit->__PosY >> 21;
-  uint32_t attributes = 0;
-  bool attributes_valid = false;
-  if (pos_x >= 0 && pos_y >= 0 && pos_x < gGameMapWidth && pos_y < gGameMapHeight)
-  {
-    attributes_valid = true;
-    attributes = gGameMap.map[pos_x + _CellNumbersWidthSpan[pos_y]].__tile_bitflags;
-  }
+  int next_x = unit->BlockToX;
+  int next_y = unit->BlockToY;
+  int targ_x = unit->TargetX;
+  int targ_y = unit->TargetY;
+  bool tile_valid = (pos_x >= 0 && pos_y >= 0 && pos_x < gGameMapWidth && pos_y < gGameMapHeight);
+  bool next_valid = (next_x >= 0 && next_y >= 0 && next_x < gGameMapWidth && next_y < gGameMapHeight);
+  bool targ_valid = (targ_x >= 0 && targ_y >= 0 && targ_x < gGameMapWidth && targ_y < gGameMapHeight);
   switch(criteria_type)
   {
   case UNITCRITERIATYPE_NONE:           result = true; break;
@@ -150,39 +149,108 @@ bool CheckIfUnitMatchesCriteria(Unit *unit, eUnitFilterCriteriaType criteria_typ
   case UNITCRITERIATYPE_CATEGORY:
     switch(value)
     {
-    case UNITCATEGORY_INFANTRY:         result = unit_template->__IsInfantry; break;
-    case UNITCATEGORY_VEHICLE:          result = !(unit_template->__IsInfantry) && !is_special_unit; break;
-    case UNITCATEGORY_LIGHT_VEH:        result = !(unit_template->__IsInfantry) && !(unit_template->__CanCrush) && !is_special_unit; break;
-    case UNITCATEGORY_HEAVY_VEH:        result = !(unit_template->__IsInfantry) && (unit_template->__CanCrush) && !is_special_unit; break;
-    case UNITCATEGORY_SPECIAL:          result = is_special_unit; break;
-    case UNITCATEGORY_HAS_PRI_WEAPON:   result = unit_template->__PrimaryWeapon != -1; break;
-    case UNITCATEGORY_HAS_SEC_WEAPON:   result = unit_template->__SecondaryWeapon != -1; break;
-    case UNITCATEGORY_HAS_BARREL:       result = unit_template->__HasBarrel; break;
-    case UNITCATEGORY_CAN_BE_UPGRADED:  result = unit_template->UnitUpgradeAllowed; break;
+    case UNITCATEGORY_INFANTRY:           result = unit_template->__IsInfantry; break;
+    case UNITCATEGORY_VEHICLE:            result = !(unit_template->__IsInfantry) && !is_special_unit; break;
+    case UNITCATEGORY_LIGHT_VEH:          result = !(unit_template->__IsInfantry) && !(unit_template->__CanCrush) && !is_special_unit; break;
+    case UNITCATEGORY_HEAVY_VEH:          result = !(unit_template->__IsInfantry) && (unit_template->__CanCrush) && !is_special_unit; break;
+    case UNITCATEGORY_SPECIAL:            result = is_special_unit; break;
+    case UNITCATEGORY_HAS_PRI_WEAPON:     result = unit_template->__PrimaryWeapon != -1; break;
+    case UNITCATEGORY_HAS_SEC_WEAPON:     result = unit_template->__SecondaryWeapon != -1; break;
+    case UNITCATEGORY_HAS_BARREL:         result = unit_template->__HasBarrel; break;
+    case UNITCATEGORY_CAN_BE_UPGRADED:    result = unit_template->UnitUpgradeAllowed; break;
+    case UNITCATEGORY_MY_SIDE:            result = side_id == gSideId; break;
+    case UNITCATEGORY_ALLY_SIDE:          result = (_gDiplomacy[side_id][gSideId] == 0) && (side_id != gSideId); break;
+    case UNITCATEGORY_ENEMY_SIDE:         result = (_gDiplomacy[side_id][gSideId] == 1) && (side_id != gSideId); break;
+    case UNITCATEGORY_NEUTRAL_SIDE:       result = (_gDiplomacy[side_id][gSideId] == 2) && (side_id != gSideId); break;
+    case UNITCATEGORY_IS_SELECTED:        result = unit->__IsSelected; break;
+    case UNITCATEGORY_UNDER_CURSOR:       result = MousePositionX < _ViewportWidth && MousePositionY >= OptionsBarHeight && UnitOccupiesTile(unit, (_ViewportXPos + MousePositionX) / 32, (_ViewportYPos + MousePositionY - OptionsBarHeight) / 32); break;
+    case UNITCATEGORY_CENTER_OF_TILE:     result = unit->pos_steps == 0; break;
+    case UNITCATEGORY_REVEALED_TILE_FULL: result = tile_valid && ((gGameMap.map[pos_x + _CellNumbersWidthSpan[pos_y]].__shroud & 15) == 0); break;
+    case UNITCATEGORY_REVEALED_TILE_PART: result = tile_valid && ((gGameMap.map[pos_x + _CellNumbersWidthSpan[pos_y]].__shroud & 15) != 1); break;
+    case UNITCATEGORY_LYING:              result = unit->__Lying; break;
+    case UNITCATEGORY_ENEMY_VALID:        result = unit->EnemyIndex != -1; break;
+    case UNITCATEGORY_ENEMY_UNIT:         result = (unit->EnemyIndex != -1) && !is_special_unit && GetSide(unit->EnemySide)->__ObjectArray[unit->EnemyIndex].ObjectType == 1; break;
+    case UNITCATEGORY_ENEMY_BUILDING:     result = (unit->EnemyIndex != -1) && !is_special_unit && GetSide(unit->EnemySide)->__ObjectArray[unit->EnemyIndex].ObjectType == 2; break;
+    case UNITCATEGORY_ENEMY_MY_SIDE:      result = (unit->EnemyIndex != -1) && (unit->EnemySide == gSideId); break;
+    case UNITCATEGORY_ENEMY_ALLY_SIDE:    result = (unit->EnemyIndex != -1) && (_gDiplomacy[side_id][(unsigned)unit->EnemySide] == 0) && (side_id != (unsigned)unit->EnemySide); break;
+    case UNITCATEGORY_ENEMY_ENEMY_SIDE:   result = (unit->EnemyIndex != -1) && (_gDiplomacy[side_id][(unsigned)unit->EnemySide] == 1) && (side_id != (unsigned)unit->EnemySide); break;
+    case UNITCATEGORY_ENEMY_NEUTRAL_SIDE: result = (unit->EnemyIndex != -1) && (_gDiplomacy[side_id][(unsigned)unit->EnemySide] == 2) && (side_id != (unsigned)unit->EnemySide); break;
+    case UNITCATEGORY_ATTACKER_VALID:       result = unit->__AttackerIndex != -1; break;
+    case UNITCATEGORY_ATTACKER_UNIT:        result = (unit->__AttackerIndex != -1) && GetSide(unit->__AttackerSide)->__ObjectArray[unit->__AttackerIndex].ObjectType == 1; break;
+    case UNITCATEGORY_ATTACKER_BUILDING:    result = (unit->__AttackerIndex != -1) && GetSide(unit->__AttackerSide)->__ObjectArray[unit->__AttackerIndex].ObjectType == 2; break;
+    case UNITCATEGORY_ATTACKER_MY_SIDE:     result = (unit->__AttackerIndex != -1) && (unit->__AttackerSide == gSideId); break;
+    case UNITCATEGORY_ATTACKER_ALLY_SIDE:   result = (unit->__AttackerIndex != -1) && (_gDiplomacy[side_id][(unsigned)unit->__AttackerSide] == 0) && (side_id != (unsigned)unit->__AttackerSide); break;
+    case UNITCATEGORY_ATTACKER_ENEMY_SIDE:  result = (unit->__AttackerIndex != -1) && (_gDiplomacy[side_id][(unsigned)unit->__AttackerSide] == 1) && (side_id != (unsigned)unit->__AttackerSide); break;
+    case UNITCATEGORY_ATTACKER_NEUTRAL_SIDE:result = (unit->__AttackerIndex != -1) && (_gDiplomacy[side_id][(unsigned)unit->__AttackerSide] == 2) && (side_id != (unsigned)unit->__AttackerSide); break;
+    case UNITCATEGORY_OLD_SIDE_MY_SIDE:   result = (unit->Flags & UFLAGS_1000_DEVIATED) && unit->OldSide == gSideId; break;
+    case UNITCATEGORY_OLD_SIDE_ALLY:      result = (unit->Flags & UFLAGS_1000_DEVIATED) && (_gDiplomacy[side_id][(unsigned)unit->OldSide] == 0) && (side_id != (unsigned)unit->OldSide); break;
+    case UNITCATEGORY_OLD_SIDE_ENEMY:     result = (unit->Flags & UFLAGS_1000_DEVIATED) && (_gDiplomacy[side_id][(unsigned)unit->OldSide] == 1) && (side_id != (unsigned)unit->OldSide); break;
+    case UNITCATEGORY_OLD_SIDE_NEUTRAL:   result = (unit->Flags & UFLAGS_1000_DEVIATED) && (_gDiplomacy[side_id][(unsigned)unit->OldSide] == 2) && (side_id != (unsigned)unit->OldSide); break;
+    case UNITCATEGORY_ROUTE_MODE_0:       result = unit->RouteMode == 0; break;
+    case UNITCATEGORY_ROUTE_MODE_1:       result = unit->RouteMode == 1; break;
+    case UNITCATEGORY_ROUTE_MODE_2:       result = unit->RouteMode == 2; break;
+    case UNITCATEGORY_ROUTE_MODE_3:       result = unit->RouteMode == 3; break;
     }
     break;
   case UNITCRITERIATYPE_TAG:            result = CompareValue(unit->Tag, value, comparison); break;
-  case UNITCRITERIATYPE_OWNER_SIDE:     result = unit_template->__OwnerSide & (1 << value); break;
+  case UNITCRITERIATYPE_TYPE_OWNER:     result = unit_template->__OwnerSide & (1 << value); break;
   case UNITCRITERIATYPE_ARMOR:          result = CompareValue(unit_template->__Armour, value, comparison); break;
   case UNITCRITERIATYPE_SPEED_TYPE:     result = CompareValue(unit_template->__VehicleType, value, comparison); break;
   case UNITCRITERIATYPE_PRI_WEAPON:     result = CompareValue(unit_template->__PrimaryWeapon, value, comparison); break;
   case UNITCRITERIATYPE_SEC_WEAPON:     result = CompareValue(unit_template->__SecondaryWeapon, value, comparison); break;
   case UNITCRITERIATYPE_SIGHT:          result = CompareValue(unit_template->__ViewDistance, value, comparison); break;
   case UNITCRITERIATYPE_RANGE:          result = CompareValue((unit_template->__PrimaryWeapon != -1)?_templates_bulletattribs[(int)unit_template->__PrimaryWeapon].__Range:0, value, comparison); break;
-  case UNITCRITERIATYPE_SPEED:          result = CompareValue(unit->Speed >> 12, value, comparison); break;
-  case UNITCRITERIATYPE_RATE_OF_FIRE:   result = CompareValue(unit->__ReloadDelayCounter, value, comparison); break;
+  case UNITCRITERIATYPE_SPEED:          result = CompareValue(unit_template->__Speed >> 12, value, comparison); break;
+  case UNITCRITERIATYPE_RATE_OF_FIRE:   result = CompareValue(unit_template->__RateOfFire, value, comparison); break;
   case UNITCRITERIATYPE_HP100_MAX:      result = CompareValue(unit_template->__Strength / 100, value, comparison); break;
   case UNITCRITERIATYPE_HP100_CUR:      result = CompareValue(unit->Health / 100, value, comparison); break;
   case UNITCRITERIATYPE_HEALTH_PERCENT: result = CompareValue((unit->Health * 100) / unit_template->__Strength, value, comparison); break;
   case UNITCRITERIATYPE_FLAG:           result = unit->Flags & (1 << value); break;
   case UNITCRITERIATYPE_STATE:          result = CompareValue(unit->State, value, comparison); break;
   case UNITCRITERIATYPE_GROUPNO:        result = CompareValue(unit->__GroupID, value, comparison); break; // To be clarified
-  case UNITCRITERIATYPE_TILE_ATTRIB:    result = attributes_valid && (attributes & (1 << value)); break;
-  case UNITCRITERIATYPE_TILE_TERRAIN:   result = attributes_valid && CompareValue((attributes >> 29) & 7, value, comparison); break;
-  case UNITCRITERIATYPE_TILE_SPICE:     result = attributes_valid && CompareValue((attributes >> 20) & 7, value, comparison); break;
-  case UNITCRITERIATYPE_TILE_CONCOWN:   result = attributes_valid && CompareValue((attributes >> 17) & 7, value, comparison); break;
-  case UNITCRITERIATYPE_TILE_OWNER1:    result = attributes_valid && CompareValue((attributes >> 0) & 7, value, comparison); break;
-  case UNITCRITERIATYPE_TILE_OWNER2:    result = attributes_valid && CompareValue((attributes >> 25) & 7, value, comparison); break;
+  case UNITCRITERIATYPE_TILE_ATTRIB:    if (!tile_valid) return false; result = TileCheck(pos_x, pos_y, TILECHECK_ATTRIB,  comparison, value); break;
+  case UNITCRITERIATYPE_TILE_TERRAIN:   if (!tile_valid) return false; result = TileCheck(pos_x, pos_y, TILECHECK_TERRAIN, comparison, value); break;
+  case UNITCRITERIATYPE_TILE_BLD_TYPE:  if (!tile_valid) return false; result = TileCheck(pos_x, pos_y, TILECHECK_BUILDING_TYPE,  comparison, value); break;
+  case UNITCRITERIATYPE_TILE_BLD_GROUP: if (!tile_valid) return false; result = TileCheck(pos_x, pos_y, TILECHECK_BUILDING_GROUP, comparison, value); break;
+  case UNITCRITERIATYPE_TILE_BLD_TAG:   if (!tile_valid) return false; result = TileCheck(pos_x, pos_y, TILECHECK_BUILDING_TAG,   comparison, value); break;
+  case UNITCRITERIATYPE_TILE_BLD_FLAG:  if (!tile_valid) return false; result = TileCheck(pos_x, pos_y, TILECHECK_BUILDING_FLAG,  comparison, value); break;
+  case UNITCRITERIATYPE_TILE_BLD_TILENO:if (!tile_valid) return false; result = TileCheck(pos_x, pos_y, TILECHECK_BUILDING_TILENO,comparison, value); break;
+  case UNITCRITERIATYPE_NEXT_XPOS:      result = CompareValue(next_x, value, comparison); break;
+  case UNITCRITERIATYPE_NEXT_YPOS:      result = CompareValue(next_y, value, comparison); break;
+  case UNITCRITERIATYPE_NEXT_ATTRIB:    if (!next_valid) return false; result = TileCheck(next_x, next_y, TILECHECK_ATTRIB, comparison, value); break;
+  case UNITCRITERIATYPE_NEXT_TERRAIN:   if (!next_valid) return false; result = TileCheck(next_x, next_y, TILECHECK_TERRAIN, comparison, value); break;
+  case UNITCRITERIATYPE_TARG_XPOS:      if (pos_x == targ_x && pos_y == targ_y) return false; result = CompareValue(targ_x, value, comparison); break;
+  case UNITCRITERIATYPE_TARG_YPOS:      if (pos_x == targ_x && pos_y == targ_y) return false; result = CompareValue(targ_y, value, comparison); break;
+  case UNITCRITERIATYPE_TARG_ATTRIB:    if (pos_x == targ_x && pos_y == targ_y) return false; result = targ_valid && TileCheck(targ_x, targ_y, TILECHECK_ATTRIB, comparison, value); break;
+  case UNITCRITERIATYPE_TARG_TERRAIN:   if (pos_x == targ_x && pos_y == targ_y) return false; result = targ_valid && TileCheck(targ_x, targ_y, TILECHECK_TERRAIN, comparison, value); break;
+  case UNITCRITERIATYPE_TARG_DIST:      if (pos_x == targ_x && pos_y == targ_y) return false; result = CompareDistance(unit->__PosX >> 16, unit->__PosY >> 16, targ_x * 32 + 16, targ_y * 32 + 16, value, comparison); break;
+  case UNITCRITERIATYPE_ENEMY_SIDE:     if (unit->EnemyIndex == -1 || is_special_unit) return false; result = CompareValue(unit->EnemySide, value, comparison); break;
+  case UNITCRITERIATYPE_ENEMY_TYPE:     if (unit->EnemyIndex == -1 || is_special_unit) return false; result = ObjectCheck(unit->EnemySide, unit->EnemyIndex, OBJECTCHECK_TYPE, 0, 0, comparison, value); break;
+  case UNITCRITERIATYPE_ENEMY_GROUP:    if (unit->EnemyIndex == -1 || is_special_unit) return false; result = ObjectCheck(unit->EnemySide, unit->EnemyIndex, OBJECTCHECK_GROUP, 0, 0, comparison, value); break;
+  case UNITCRITERIATYPE_ENEMY_CATEGORY: if (unit->EnemyIndex == -1 || is_special_unit) return false; result = ObjectCheck(unit->EnemySide, unit->EnemyIndex, OBJECTCHECK_CATEGORY, 0, 0, comparison, value); break;
+  case UNITCRITERIATYPE_ENEMY_TAG:      if (unit->EnemyIndex == -1 || is_special_unit) return false; result = ObjectCheck(unit->EnemySide, unit->EnemyIndex, OBJECTCHECK_TAG, 0, 0, comparison, value); break;
+  case UNITCRITERIATYPE_ENEMY_ARMOR:    if (unit->EnemyIndex == -1 || is_special_unit) return false; result = ObjectCheck(unit->EnemySide, unit->EnemyIndex, OBJECTCHECK_ARMOR, 0, 0, comparison, value); break;
+  case UNITCRITERIATYPE_ENEMY_DIST:     if (unit->EnemyIndex == -1 || is_special_unit) return false; result = ObjectCheck(unit->EnemySide, unit->EnemyIndex, OBJECTCHECK_DIST, unit->__PosX >> 16, unit->__PosY >> 16, comparison, value); break;
+  case UNITCRITERIATYPE_ENEMY_INDEX:    result = unit->EnemyIndex == value; break;
+  case UNITCRITERIATYPE_ATTACKER_SIDE:  if (unit->__AttackerIndex == -1) return false; result = CompareValue(unit->__AttackerSide, value, comparison); break;
+  case UNITCRITERIATYPE_ATTACKER_TYPE:  if (unit->__AttackerIndex == -1) return false; result = ObjectCheck(unit->__AttackerSide, unit->__AttackerIndex, OBJECTCHECK_TYPE, 0, 0, comparison, value); break;
+  case UNITCRITERIATYPE_ATTACKER_GROUP: if (unit->__AttackerIndex == -1) return false; result = ObjectCheck(unit->__AttackerSide, unit->__AttackerIndex, OBJECTCHECK_GROUP, 0, 0, comparison, value); break;
+  case UNITCRITERIATYPE_ATTACKER_CATEGORY: if (unit->__AttackerIndex == -1) return false; result = ObjectCheck(unit->__AttackerSide, unit->__AttackerIndex, OBJECTCHECK_CATEGORY, 0, 0, comparison, value); break;
+  case UNITCRITERIATYPE_ATTACKER_TAG:   if (unit->__AttackerIndex == -1) return false; result = ObjectCheck(unit->__AttackerSide, unit->__AttackerIndex, OBJECTCHECK_TAG, 0, 0, comparison, value); break;
+  case UNITCRITERIATYPE_ATTACKER_WEAPON:   if (unit->__AttackerIndex == -1) return false; result = ObjectCheck(unit->__AttackerSide, unit->__AttackerIndex, OBJECTCHECK_WEAPON, 0, 0, comparison, value); break;
+  case UNITCRITERIATYPE_ATTACKER_DIST:  if (unit->__AttackerIndex == -1) return false; result = ObjectCheck(unit->__AttackerSide, unit->__AttackerIndex, OBJECTCHECK_DIST, unit->__PosX >> 16, unit->__PosY >> 16, comparison, value); break;
+  case UNITCRITERIATYPE_ATTACKER_INDEX: result = unit->__AttackerIndex == value; break;
+  case UNITCRITERIATYPE_FACING:         result = CompareValue(unit->__Facing, value, comparison); break;
+  case UNITCRITERIATYPE_FACING_TURRET:  result = CompareValue(unit->__FacingTurret, value, comparison); break;
+  case UNITCRITERIATYPE_ANIM_FRAME:     result = CompareValue(unit->__CurrentAnimFrame, value, comparison); break;
+  case UNITCRITERIATYPE_SPEC_PURPOSE:   result = CompareValue(unit->__SpecialPurpose, value, comparison); break;
+  case UNITCRITERIATYPE_LAST_ATTACKED:  result = CompareValue(unit->LastAttacked, value, comparison); break;
+  case UNITCRITERIATYPE_LAST_FIRED:     result = CompareValue(unit->LastFired, value, comparison); break;
+  case UNITCRITERIATYPE_LAST_MOVED:     result = CompareValue(unit->LastMoved, value, comparison); break;
+  case UNITCRITERIATYPE_OLD_SIDE:       result = CompareValue(unit->OldSide, value, comparison); break;
+  case UNITCRITERIATYPE_DEVIATED_TIME:  result = CompareValue(unit->__DeviatedTimeCounter, value, comparison); break;
+  case UNITCRITERIATYPE_DEAD_STATE_TIME:result = CompareValue(unit->__DeadStateTimeCounter, value, comparison); break;
+  case UNITCRITERIATYPE_RELOAD_DELAY:   result = CompareValue(unit->__ReloadDelayCounter, value, comparison); break;
   }
   return result != negation;
 }
@@ -192,6 +260,9 @@ bool CheckIfBuildingMatchesCriteria(Building *building, eSideType side_id, eBuil
   bool result = true;
   BuildingAtrbStruct *building_template = &_templates_buildattribs[building->Type];
   CSide *side = GetSide(side_id);
+  int pos_x = building->__PosX >> 21;
+  int pos_y = ((building->__PosY >> 16) - building_template->_____ArtHeight) >> 5;
+  unsigned int buildTileCount, concreteTileCount;
   switch(criteria_type)
   {
   case BUILDINGCRITERIATYPE_NONE:           result = true; break;
@@ -204,10 +275,35 @@ bool CheckIfBuildingMatchesCriteria(Building *building, eSideType side_id, eBuil
     case BUILDINGCATEGORY_POWER_CONS:       result = building_template->__PowerDrain > 0; break;
     case BUILDINGCATEGORY_POWER_PROD:       result = building_template->__PowerDrain < 0; break;
     case BUILDINGCATEGORY_REQ_ENOUGH_POW:   result = building_template->_____RequireEnoughPower; break;
+    case BUILDINGCATEGORY_SHAKE_SCREEN:     result = building_template->_____ScreenShake > 0; break;
+    case BUILDINGCATEGORY_HAS_PRI_WEAPON:   result = building_template->_____PrimaryWeapon != -1; break;
+    case BUILDINGCATEGORY_HAS_SEC_WEAPON:   result = building_template->_____SecondaryWeapon != -1; break;
+    case BUILDINGCATEGORY_HAS_BARREL:       result = building_template->_____BarrelArt != -1; break;
+    case BUILDINGCATEGORY_CAN_BE_UPGRADED:  result = CanSideUpgradeBuildingGroup(side_id, building_template->GroupType); break;
+    case BUILDINGCATEGORY_MY_SIDE:          result = side_id == gSideId; break;
+    case BUILDINGCATEGORY_ALLY_SIDE:        result = (_gDiplomacy[side_id][gSideId] == 0) && (side_id != gSideId); break;
+    case BUILDINGCATEGORY_ENEMY_SIDE:       result = (_gDiplomacy[side_id][gSideId] == 1) && (side_id != gSideId); break;
+    case BUILDINGCATEGORY_NEUTRAL_SIDE:     result = (_gDiplomacy[side_id][gSideId] == 2) && (side_id != gSideId); break;
+    case BUILDINGCATEGORY_IS_SELECTED:      result = building->__IsSelected; break;
+    case BUILDINGCATEGORY_UNDER_CURSOR:     result = MousePositionX < _ViewportWidth && MousePositionY >= OptionsBarHeight && BuildingOccupiesTile(building, (_ViewportXPos + MousePositionX) / 32, (_ViewportYPos + MousePositionY - OptionsBarHeight) / 32); break;
+    case BUILDINGCATEGORY_ENEMY_VALID:          result = building->EnemyIndex != -1; break;
+    case BUILDINGCATEGORY_ENEMY_UNIT:           result = (building->EnemyIndex != -1) && GetSide(building->EnemySide)->__ObjectArray[building->EnemyIndex].ObjectType == 1; break;
+    case BUILDINGCATEGORY_ENEMY_BUILDING:       result = (building->EnemyIndex != -1) && GetSide(building->EnemySide)->__ObjectArray[building->EnemyIndex].ObjectType == 2; break;
+    case BUILDINGCATEGORY_ENEMY_MY_SIDE:        result = (building->EnemyIndex != -1) && (building->EnemySide == gSideId); break;
+    case BUILDINGCATEGORY_ENEMY_ALLY_SIDE:      result = (building->EnemyIndex != -1) && (_gDiplomacy[side_id][(unsigned)building->EnemySide] == 0) && (side_id != (unsigned)building->EnemySide); break;
+    case BUILDINGCATEGORY_ENEMY_ENEMY_SIDE:     result = (building->EnemyIndex != -1) && (_gDiplomacy[side_id][(unsigned)building->EnemySide] == 1) && (side_id != (unsigned)building->EnemySide); break;
+    case BUILDINGCATEGORY_ENEMY_NEUTRAL_SIDE:   result = (building->EnemyIndex != -1) && (_gDiplomacy[side_id][(unsigned)building->EnemySide] == 2) && (side_id != (unsigned)building->EnemySide); break;
+    case BUILDINGCATEGORY_ATTACKER_VALID:       result = building->__AttackerIndex != -1; break;
+    case BUILDINGCATEGORY_ATTACKER_UNIT:        result = (building->__AttackerIndex != -1) && GetSide(building->__AttackerSide)->__ObjectArray[building->__AttackerIndex].ObjectType == 1; break;
+    case BUILDINGCATEGORY_ATTACKER_BUILDING:    result = (building->__AttackerIndex != -1) && GetSide(building->__AttackerSide)->__ObjectArray[building->__AttackerIndex].ObjectType == 2; break;
+    case BUILDINGCATEGORY_ATTACKER_MY_SIDE:     result = (building->__AttackerIndex != -1) && (building->__AttackerSide == gSideId); break;
+    case BUILDINGCATEGORY_ATTACKER_ALLY_SIDE:   result = (building->__AttackerIndex != -1) && (_gDiplomacy[side_id][(unsigned)building->__AttackerSide] == 0) && (side_id != (unsigned)building->__AttackerSide); break;
+    case BUILDINGCATEGORY_ATTACKER_ENEMY_SIDE:  result = (building->__AttackerIndex != -1) && (_gDiplomacy[side_id][(unsigned)building->__AttackerSide] == 1) && (side_id != (unsigned)building->__AttackerSide); break;
+    case BUILDINGCATEGORY_ATTACKER_NEUTRAL_SIDE:result = (building->__AttackerIndex != -1) && (_gDiplomacy[side_id][(unsigned)building->__AttackerSide] == 2) && (side_id != (unsigned)building->__AttackerSide); break;
     }
     break;
   case BUILDINGCRITERIATYPE_TAG:            result = CompareValue(building->Tag, value, comparison); break;
-  case BUILDINGCRITERIATYPE_OWNER_SIDE:     result = building_template->_____OwnerSide & (1 << value); break;
+  case BUILDINGCRITERIATYPE_TYPE_OWNER:     result = building_template->_____OwnerSide & (1 << value); break;
   case BUILDINGCRITERIATYPE_ARMOR:          result = CompareValue(building_template->Armour, value, comparison); break;
   case BUILDINGCRITERIATYPE_PRI_WEAPON:     result = CompareValue(building_template->_____PrimaryWeapon, value, comparison); break;
   case BUILDINGCRITERIATYPE_SEC_WEAPON:     result = CompareValue(building_template->_____SecondaryWeapon, value, comparison); break;
@@ -215,13 +311,46 @@ bool CheckIfBuildingMatchesCriteria(Building *building, eSideType side_id, eBuil
   case BUILDINGCRITERIATYPE_POWER_CONS:     result = CompareValue((building_template->__PowerDrain > 0)?building_template->__PowerDrain:0, value, comparison); break;
   case BUILDINGCRITERIATYPE_POWER_PROD:     result = CompareValue((building_template->__PowerDrain < 0)?building_template->__PowerDrain * -1:0, value, comparison); break;
   case BUILDINGCRITERIATYPE_RANGE:          result = CompareValue((building_template->_____PrimaryWeapon != -1)?_templates_bulletattribs[(int)building_template->_____PrimaryWeapon].__Range:0, value, comparison); break;
-  case BUILDINGCRITERIATYPE_RATE_OF_FIRE:   result = CompareValue(building->__ReloadDelayCounter_refinery, value, comparison); break;
+  case BUILDINGCRITERIATYPE_RATE_OF_FIRE:   result = CompareValue(building_template->_____RateOfFire, value, comparison); break;
   case BUILDINGCRITERIATYPE_HP100_MAX:      result = CompareValue(building_template->_____HitPoints / 100, value, comparison); break;
   case BUILDINGCRITERIATYPE_HP100_CUR:      result = CompareValue(building->Health / 100, value, comparison); break;
   case BUILDINGCRITERIATYPE_HEALTH_PERCENT: result = CompareValue((building->Health * 100) / building_template->_____HitPoints, value, comparison); break;
   case BUILDINGCRITERIATYPE_FLAG:           result = building->Flags & (1 << value); break;
   case BUILDINGCRITERIATYPE_STATE:          result = CompareValue(building->__State, value, comparison); break;
   case BUILDINGCRITERIATYPE_UPGRADES:       result = CompareValue(side->__BuildingGroupUpgradeCount[(int)building_template->GroupType], value, comparison); break;
+  case BUILDINGCRITERIATYPE_TILES_TOTAL:    GetBuildingOnConcreteCount(side_id, building->Type, pos_x, pos_y, &buildTileCount, &concreteTileCount); result = CompareValue(buildTileCount, value, comparison); break;
+  case BUILDINGCRITERIATYPE_TILES_ON_CONC:  GetBuildingOnConcreteCount(side_id, building->Type, pos_x, pos_y, &buildTileCount, &concreteTileCount); result = CompareValue(concreteTileCount, value, comparison); break;
+  case BUILDINGCRITERIATYPE_TILES_ON_CONC_PERCENT: GetBuildingOnConcreteCount(side_id, building->Type, pos_x, pos_y, &buildTileCount, &concreteTileCount); result = CompareValue((concreteTileCount * 100) / buildTileCount, value, comparison); break;
+  case BUILDINGCRITERIATYPE_RESERVED1:      return false;
+  case BUILDINGCRITERIATYPE_RESERVED2:      return false;
+  case BUILDINGCRITERIATYPE_RESERVED3:      return false;
+  case BUILDINGCRITERIATYPE_RESERVED4:      return false;
+  case BUILDINGCRITERIATYPE_ENEMY_SIDE:     if (building->EnemyIndex == -1) return false; result = CompareValue(building->EnemySide, value, comparison); break;
+  case BUILDINGCRITERIATYPE_ENEMY_TYPE:     if (building->EnemyIndex == -1) return false; result = ObjectCheck(building->EnemySide, building->EnemyIndex, OBJECTCHECK_TYPE, 0, 0, comparison, value); break;
+  case BUILDINGCRITERIATYPE_ENEMY_GROUP:    if (building->EnemyIndex == -1) return false; result = ObjectCheck(building->EnemySide, building->EnemyIndex, OBJECTCHECK_GROUP, 0, 0, comparison, value); break;
+  case BUILDINGCRITERIATYPE_ENEMY_CATEGORY: if (building->EnemyIndex == -1) return false; result = ObjectCheck(building->EnemySide, building->EnemyIndex, OBJECTCHECK_CATEGORY, 0, 0, comparison, value); break;
+  case BUILDINGCRITERIATYPE_ENEMY_TAG:      if (building->EnemyIndex == -1) return false; result = ObjectCheck(building->EnemySide, building->EnemyIndex, OBJECTCHECK_TAG, 0, 0, comparison, value); break;
+  case BUILDINGCRITERIATYPE_ENEMY_ARMOR:    if (building->EnemyIndex == -1) return false; result = ObjectCheck(building->EnemySide, building->EnemyIndex, OBJECTCHECK_ARMOR, 0, 0, comparison, value); break;
+  case BUILDINGCRITERIATYPE_ENEMY_DIST:     if (building->EnemyIndex == -1) return false; result = ObjectCheck(building->EnemySide, building->EnemyIndex, OBJECTCHECK_DIST, (building->__PosX >> 16) + 16, (building->__PosY >> 16) - building_template->_____ArtHeight + 16, comparison, value); break;
+  case BUILDINGCRITERIATYPE_ENEMY_INDEX:    result = building->EnemyIndex == value; break;
+  case BUILDINGCRITERIATYPE_ATTACKER_SIDE:  if (building->__AttackerIndex == -1) return false; result = CompareValue(building->__AttackerSide, value, comparison); break;
+  case BUILDINGCRITERIATYPE_ATTACKER_TYPE:  if (building->__AttackerIndex == -1) return false; result = ObjectCheck(building->__AttackerSide, building->__AttackerIndex, OBJECTCHECK_TYPE, 0, 0, comparison, value); break;
+  case BUILDINGCRITERIATYPE_ATTACKER_CATEGORY: if (building->__AttackerIndex == -1) return false; result = ObjectCheck(building->__AttackerSide, building->__AttackerIndex, OBJECTCHECK_GROUP, 0, 0, comparison, value); break;
+  case BUILDINGCRITERIATYPE_ATTACKER_GROUP: if (building->__AttackerIndex == -1) return false; result = ObjectCheck(building->__AttackerSide, building->__AttackerIndex, OBJECTCHECK_CATEGORY, 0, 0, comparison, value); break;
+  case BUILDINGCRITERIATYPE_ATTACKER_TAG:   if (building->__AttackerIndex == -1) return false; result = ObjectCheck(building->__AttackerSide, building->__AttackerIndex, OBJECTCHECK_TAG, 0, 0, comparison, value); break;
+  case BUILDINGCRITERIATYPE_ATTACKER_WEAPON: if (building->__AttackerIndex == -1) return false; result = ObjectCheck(building->__AttackerSide, building->__AttackerIndex, OBJECTCHECK_WEAPON, 0, 0, comparison, value); break;
+  case BUILDINGCRITERIATYPE_ATTACKER_DIST:  if (building->__AttackerIndex == -1) return false; result = ObjectCheck(building->__AttackerSide, building->__AttackerIndex, OBJECTCHECK_DIST, (building->__PosX >> 16) + 16, (building->__PosY >> 16) - building_template->_____ArtHeight + 16, comparison, value); break;
+  case BUILDINGCRITERIATYPE_ATTACKER_INDEX: result = building->__AttackerIndex == value; break;
+  case BUILDINGCRITERIATYPE_FACING:         result = CompareValue(building->__Facing, value, comparison); break;
+  case BUILDINGCRITERIATYPE_DIR_FRAME:      result = CompareValue(building->__DirectionFrame, value, comparison); break;
+  case BUILDINGCRITERIATYPE_BUILDUP_FRAME:  result = CompareValue(building->__BuildupAnimCounter, value, comparison); break;
+  case BUILDINGCRITERIATYPE_ANIM_FRAME:     result = CompareValue(building->__BuildingAnimCounter, value, comparison); break;
+  case BUILDINGCRITERIATYPE_SPEC_PURPOSE:   result = CompareValue(building->SpecialPurpose, value, comparison); break;
+  case BUILDINGCRITERIATYPE_LAST_ATTACKED:  result = CompareValue(building->__LastAttacked, value, comparison); break;
+  case BUILDINGCRITERIATYPE_RESERVED5:      return false;
+  case BUILDINGCRITERIATYPE_DEAD_TIME:      result = CompareValue(building->__DeadStateTimeCounter, value, comparison); break;
+  case BUILDINGCRITERIATYPE_RELOAD_TIME:    result = CompareValue(building->__ReloadDelayCounter_refinery, value, comparison); break;
+  case BUILDINGCRITERIATYPE_TURN_TIME:      result = CompareValue(building->__TurretTurnDelayCounter, value, comparison); break;
   }
   return result != negation;
 }
@@ -229,25 +358,26 @@ bool CheckIfBuildingMatchesCriteria(Building *building, eSideType side_id, eBuil
 bool CheckIfCrateMatchesCriteria(CrateStruct *crate, eCrateFilterCriteriaType criteria_type, bool negation, bool comparison, int value)
 {
   bool result = true;
-  uint32_t attributes = gGameMap.map[crate->__x + _CellNumbersWidthSpan[crate->__y]].__tile_bitflags;
   switch(criteria_type)
   {
   case CRATECRITERIATYPE_NONE:          result = true; break;
   case CRATECRITERIATYPE_TYPE:          result = CompareValue(crate->__type, value, comparison); break;
   case CRATECRITERIATYPE_IMAGE:         result = CompareValue(crate->__image, value, comparison); break;
+  case CRATECRITERIATYPE_CATEGORY:
+    switch(value)
+    {
+    case CRATECATEGORY_UNDER_CURSOR:  result = MousePositionX < _ViewportWidth && MousePositionY >= OptionsBarHeight && crate->__x == (_ViewportXPos + MousePositionX) / 32 && crate->__y == ((_ViewportYPos + MousePositionY - OptionsBarHeight) / 32); break;
+    case CRATECATEGORY_SPICE_BLOOM:   result = crate->__type >= CT_SPICE_BLOOM_SMALL && crate->__type <= CT_SPICE_BLOOM_LARGE; break;
+    case CRATECATEGORY_SHOOTABLE:     result = (crate->__type >= CT_SPICE_BLOOM_SMALL && crate->__type <= CT_SPICE_BLOOM_LARGE && !(crate->ext_data_field & 128)) || (crate->__type == CT_EXPLODE && crate->ext_data_field & 128); break;
+    case CRATECATEGORY_IGNORED_BY_AI: result = (crate->__type == CT_EXPLODE && crate->ext_data_field) || (crate->__image == 4); break;
+    }
+    break;
   case CRATECRITERIATYPE_EXT_DATA:      result = CompareValue(crate->ext_data_field, value, comparison); break;
   case CRATECRITERIATYPE_EXT_DATA_BIT:  result = crate->ext_data_field & (1 << value); break;
   case CRATECRITERIATYPE_RESPAWN_TIMES: result = CompareValue(crate->__times_to_respawn, value, comparison); break;
   case CRATECRITERIATYPE_TIME_TICKS:    result = CompareValue(crate->__timing, value, comparison); break;
   case CRATECRITERIATYPE_TIME_SECS:     result = CompareValue(crate->__timing / 25, value, comparison); break;
-  case CRATECRITERIATYPE_XPOS:          result = CompareValue(crate->__x, value, comparison); break;
-  case CRATECRITERIATYPE_YPOS:          result = CompareValue(crate->__y, value, comparison); break;
-  case CRATECRITERIATYPE_TILE_ATTRIB:   result = attributes & (1 << value); break;
-  case CRATECRITERIATYPE_TILE_TERRAIN:  result = CompareValue((attributes >> 29) & 7, value, comparison); break;
-  case CRATECRITERIATYPE_TILE_SPICE:    result = CompareValue((attributes >> 20) & 7, value, comparison); break;
-  case CRATECRITERIATYPE_TILE_CONCOWN:  result = CompareValue((attributes >> 17) & 7, value, comparison); break;
-  case CRATECRITERIATYPE_TILE_OWNER1:   result = CompareValue((attributes >> 0) & 7, value, comparison); break;
-  case CRATECRITERIATYPE_TILE_OWNER2:   result = CompareValue((attributes >> 25) & 7, value, comparison); break;
+  default: result = TileCheck(crate->__x, crate->__y, criteria_type - CRATECRITERIATYPE_TILECHECK, comparison, value);
   }
   return result != negation;
 }
@@ -255,60 +385,136 @@ bool CheckIfCrateMatchesCriteria(CrateStruct *crate, eCrateFilterCriteriaType cr
 bool CheckIfTileMatchesCriteria(GameMapTileStruct *tile, int pos_x, int pos_y, eTileFilterCriteriaType criteria_type, bool negation, bool comparison, int value)
 {
   bool result = false;
-  uint32_t attributes = tile->__tile_bitflags;
   switch(criteria_type)
   {
-  case TILECRITERIATYPE_NONE:     result = true; break;
-  case TILECRITERIATYPE_DAMAGE:   result = CompareValue(tile->__damage, value, comparison); break;
-  case TILECRITERIATYPE_SHROUD:   result = CompareValue(tile->__shroud_flags, value, comparison); break;
-  case TILECRITERIATYPE_XPOS:     result = CompareValue(pos_x, value, comparison); break;
-  case TILECRITERIATYPE_YPOS:     result = CompareValue(pos_y, value, comparison); break;
-  case TILECRITERIATYPE_ATTRIB:   result = attributes & (1 << value); break;
-  case TILECRITERIATYPE_TERRAIN:  result = CompareValue((attributes >> 29) & 7, value, comparison); break;
-  case TILECRITERIATYPE_SPICE:    result = CompareValue((attributes >> 20) & 7, value, comparison); break;
-  case TILECRITERIATYPE_CONCOWN:  result = CompareValue((attributes >> 17) & 7, value, comparison); break;
-  case TILECRITERIATYPE_OWNER1:   result = CompareValue((attributes >> 0) & 7, value, comparison); break;
-  case TILECRITERIATYPE_OWNER2:   result = CompareValue((attributes >> 25) & 7, value, comparison); break;
-  case TILECRITERIATYPE_UNIT_TYPE:
-  case TILECRITERIATYPE_UNIT_TAG:
-  {
-    eSideType side_id = 0;
-    _WORD index;
-    Unit *unit;
-    if ((attributes & 0x3E8) && (GetUnitOnTile(32 * pos_x, 32 * pos_y, &side_id, &index, false)))
-    {
-      index = -1;
-      while ((unit = GetNextUnitOnTile(pos_x, pos_y, side_id, &index)))
+    case TILECRITERIATYPE_NONE:       result = true; break;
+    case TILECRITERIATYPE_IDX:        result = CompareValue(tile->__tile_index, value, comparison); break;
+    case TILECRITERIATYPE_COL:        result = CompareValue(tile->__tile_index % 20, value, comparison); break;
+    case TILECRITERIATYPE_ROW:        result = CompareValue(tile->__tile_index / 20, value, comparison); break;
+    case TILECRITERIATYPE_CATEGORY:
+      switch(value)
       {
-        switch(criteria_type)
-        {
-        case TILECRITERIATYPE_UNIT_TYPE: result = CompareValue(unit->Type, value, comparison); break;
-        case TILECRITERIATYPE_UNIT_TAG: result = CompareValue(unit->Tag, value, comparison); break;
-        default: result = false;
-        }
-        if (result)
-          break;
+      case TILECATEGORY_UNDER_CURSOR:     result = MousePositionX < _ViewportWidth && MousePositionY >= OptionsBarHeight && pos_x == (_ViewportXPos + MousePositionX) / 32 && pos_y == ((_ViewportYPos + MousePositionY - OptionsBarHeight) / 32); break;
+      case TILECATEGORY_FULLY_HIDDEN:     result = (tile->__shroud & 15) == 1; break;
+      case TILECATEGORY_HIDDEN:           result = (tile->__shroud & 15) != 0; break;
+      case TILECATEGORY_PART_REVEALED:    result = (tile->__shroud & 15) != 1; break;
+      case TILECATEGORY_REVEALED:         result = (tile->__shroud & 15) == 0; break;
+      case TILECATEGORY_OVERRIDEN:        result = tile->__tile_index != tile->back_up_tile_index; break;
+      case TILECATEGORY_HAS_INFANTRY:     result = (tile->__tile_bitflags & 0x3E0) != 0; break;
+      case TILECATEGORY_HAS_ANY_UNIT:     result = (tile->__tile_bitflags & 0x3E8) != 0; break;
+      case TILECATEGORY_HAS_STRUCTURE:    result = (tile->__tile_bitflags & 0x3F8) != 0; break;
       }
-    }
-    break;
-  }
-  case TILECRITERIATYPE_BUILDING_TYPE:
-  case TILECRITERIATYPE_BUILDING_TAG:
-  {
-    eSideType side_id = 0;
-    _WORD index;
-    Building *bld;
-    if ((attributes & TileFlags_10_OCC_BUILDING) && GetBuildingOnTile_0(pos_x, pos_y, &bld, &side_id, &index))
-    {
-      switch(criteria_type)
-      {
-      case TILECRITERIATYPE_BUILDING_TYPE: result = CompareValue(bld->Type, value, comparison); break;
-      case TILECRITERIATYPE_BUILDING_TAG: result = CompareValue(bld->Tag, value, comparison); break;
-      default: result = false;
-      }
-    }
-    break;
-  }
+      break;
+    case TILECRITERIATYPE_DAMAGE:     result = CompareValue(tile->__damage, value, comparison); break;
+    case TILECRITERIATYPE_SHROUD:     result = CompareValue(tile->__shroud, value, comparison); break;
+    default: result = TileCheck(pos_x, pos_y, criteria_type - TILECRITERIATYPE_TILECHECK, comparison, value);
   }
   return result != negation;
+}
+
+bool TileCheck(int pos_x, int pos_y, eTileCheckType check_type, bool comparison, int value)
+{
+  uint32_t attributes = gGameMap.map[pos_x + _CellNumbersWidthSpan[pos_y]].__tile_bitflags;
+  switch (check_type)
+  {
+    case TILECHECK_XPOS:     return CompareValue(pos_x, value, comparison);
+    case TILECHECK_YPOS:     return CompareValue(pos_y, value, comparison);
+    case TILECHECK_ATTRIB:   return attributes & (1 << value);
+    case TILECHECK_TERRAIN:  return CompareValue((attributes >> 29) & 7, value, comparison);
+    case TILECHECK_SPICE:    return CompareValue((attributes >> 20) & 7, value, comparison);
+    case TILECHECK_CONCOWN:  return CompareValue((attributes >> 17) & 7, value, comparison);
+    case TILECHECK_OWNER1:   return CompareValue((attributes >> 0) & 7, value, comparison);
+    case TILECHECK_OWNER2:   return CompareValue((attributes >> 25) & 7, value, comparison);
+    case TILECHECK_UNIT_TYPE:
+    case TILECHECK_UNIT_GROUP:
+    case TILECHECK_UNIT_TAG:
+    case TILECHECK_UNIT_FLAG:
+    case TILECHECK_UNIT_STATE:
+    {
+      eSideType side_id = 0;
+      _WORD index;
+      Unit *unit;
+      if ((attributes & 0x3E8) && (GetUnitOnTile(32 * pos_x, 32 * pos_y, &side_id, &index, false)))
+      {
+        index = -1;
+        while ((unit = GetNextUnitOnTile(pos_x, pos_y, side_id, &index)))
+        {
+          switch(check_type)
+          {
+            case TILECHECK_UNIT_TYPE:   if (CompareValue(unit->Type, value, comparison)) return true; break;
+            case TILECHECK_UNIT_GROUP:  if (CompareValue(_templates_unitattribs[unit->Type].__UnitType, value, comparison)) return true; break;
+            case TILECHECK_UNIT_TAG:    if (CompareValue(unit->Tag, value, comparison)) return true; break;
+            case TILECHECK_UNIT_FLAG:   if (unit->Flags & (1 << value)) return true; break;
+            case TILECHECK_UNIT_STATE:  if (CompareValue(unit->State, value, comparison)) return true; break;
+            default: ;
+          }
+        }
+      }
+      break;
+    }
+    case TILECHECK_BUILDING_TYPE:
+    case TILECHECK_BUILDING_GROUP:
+    case TILECHECK_BUILDING_TAG:
+    case TILECHECK_BUILDING_FLAG:
+    case TILECHECK_BUILDING_STATE:
+    case TILECHECK_BUILDING_TILENO:
+    {
+      eSideType side_id = 0;
+      _WORD index;
+      Building *bld;
+      if ((attributes & TileFlags_10_OCC_BUILDING) && GetBuildingOnTile_0(pos_x, pos_y, &bld, &side_id, &index))
+      {
+        switch(check_type)
+        {
+          case TILECHECK_BUILDING_TYPE:   return CompareValue(bld->Type, value, comparison);
+          case TILECHECK_BUILDING_GROUP:  return CompareValue(_templates_buildattribs[bld->Type].GroupType, value, comparison);
+          case TILECHECK_BUILDING_TAG:    return CompareValue(bld->Tag, value, comparison);
+          case TILECHECK_BUILDING_FLAG:   return bld->Flags & (1 << value);
+          case TILECHECK_BUILDING_STATE:  return CompareValue(bld->__State, value, comparison);
+          case TILECHECK_BUILDING_TILENO: return CompareValue((pos_x - (bld->__PosX >> 21)) + (pos_y - (((bld->__PosY >> 16) - _templates_buildattribs[bld->Type]._____ArtHeight) >> 5)) * 4, value, comparison);
+          default: ;
+        }
+      }
+      break;
+    }
+  }
+  return false;
+}
+
+bool ObjectCheck(int side_id, int obj_index, eObjectCheckType check_type, int pos_x, int pos_y, bool comparison, int value)
+{
+  CSide *side = GetSide(side_id);
+  Unit *unit = &side->__ObjectArray[obj_index];
+  Building *bld = (Building *)unit;
+  if (unit->ObjectType == 1)
+  {
+    UnitAtribStruct *ut = &_templates_unitattribs[unit->Type];
+    switch(check_type)
+    {
+      case OBJECTCHECK_TYPE: return CompareValue(unit->Type, value, comparison);
+      case OBJECTCHECK_GROUP: return CompareValue(ut->__UnitType, value, comparison);
+      case OBJECTCHECK_CATEGORY: return CheckIfUnitMatchesCriteria(unit, side_id, UNITCRITERIATYPE_CATEGORY, false, comparison, value);
+      case OBJECTCHECK_TAG: return CompareValue(unit->Tag, value, comparison);
+      case OBJECTCHECK_ARMOR: return CompareValue(ut->__Armour, value, comparison);
+      case OBJECTCHECK_WEAPON: return ((ut->__PrimaryWeapon != -1) && CompareValue(ut->__PrimaryWeapon, value, comparison)) || ((ut->__SecondaryWeapon != -1) && CompareValue(ut->__SecondaryWeapon, value, comparison));
+      case OBJECTCHECK_DIST: return CompareDistance(unit->__PosX >> 16, unit->__PosY >> 16, pos_x, pos_y, value, comparison);
+    }
+  }
+  else if (unit->ObjectType == 2)
+  {
+    BuildingAtrbStruct *bt = &_templates_buildattribs[bld->Type];
+    switch(check_type)
+    {
+      case OBJECTCHECK_TYPE: return CompareValue(bld->Type, value, comparison);
+      case OBJECTCHECK_GROUP: return CompareValue(bt->GroupType, value, comparison);
+      case OBJECTCHECK_CATEGORY: return CheckIfBuildingMatchesCriteria(bld, side_id, BUILDINGCRITERIATYPE_CATEGORY, false, comparison, value);
+      case OBJECTCHECK_TAG: return CompareValue(bld->Tag, value, comparison);
+      case OBJECTCHECK_ARMOR: return CompareValue(bt->Armour, value, comparison);
+      case OBJECTCHECK_WEAPON: return ((bt->_____PrimaryWeapon != -1) && CompareValue(bt->_____PrimaryWeapon, value, comparison)) || ((bt->_____SecondaryWeapon != -1) && CompareValue(bt->_____SecondaryWeapon, value, comparison));
+      case OBJECTCHECK_DIST: return CompareDistance((bld->__PosX >> 16) + 16, (bld->__PosY >> 16) - bt->_____ArtHeight + 16, pos_x, pos_y, value, comparison);
+    }
+  }
+  //else
+  //  DebugFatal("event-filters.c", "Invalid object type %d to check for (side %d index %d)", unit->ObjectType, side_id, obj_index);
+  return false;
 }

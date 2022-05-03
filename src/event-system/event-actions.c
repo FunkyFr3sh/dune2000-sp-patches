@@ -9,8 +9,9 @@
 #include "event-utils.h"
 #include "event-actions.h"
 #include "event-core.h"
+#include "../extended-maps/crates-func.h"
 
-void EvAct_AddDelivery(int xpos, int ypos, int side_id, int amount, int deploy_action, eDeliveryType delivery_type, char *unit_list)
+void EvAct_AddDelivery(int xpos, int ypos, int side_id, int amount, int deploy_action, int delay, eDeliveryType delivery_type, char *unit_list)
 {
   CSide *side = GetSide(side_id);
   if (delivery_type == DELIVERYTYPE_STARPORT && side->__PrimaryStarport == -1)
@@ -32,11 +33,13 @@ void EvAct_AddDelivery(int xpos, int ypos, int side_id, int amount, int deploy_a
   side->__Deliveries[found_free_slot].c_field_2 = 0;
   side->__Deliveries[found_free_slot].__xpos = xpos;
   side->__Deliveries[found_free_slot].__ypos = ypos;
-  side->__Deliveries[found_free_slot].__delivery_time = gGameTicks;
+  side->__Deliveries[found_free_slot].__delivery_time = gGameTicks + delay;
   side->__Deliveries[found_free_slot].__deploy_action = deploy_action;
   side->__Deliveries[found_free_slot].__delivery_type = delivery_type;
   memcpy(side->__Deliveries[found_free_slot].__units, unit_list, amount);
   side->__Deliveries[found_free_slot].__units[amount] = -1;
+  if (delivery_type == DELIVERYTYPE_STARPORT)
+    side->__StarportDeliveryInProgress = 1;
 }
 
 void EvAct_SetDiplomacy(int source_side, int target_side, int allegiance_type, bool both_sided)
@@ -120,7 +123,7 @@ void EvAct_HideMap()
   {
     for (int x = 0; x < gGameMap.width; x++)
     {
-      gGameMap.map[x + _CellNumbersWidthSpan[y]].__shroud_flags = 1;
+      gGameMap.map[x + _CellNumbersWidthSpan[y]].__shroud = 1;
     }
   }
   _mapvisstate_548010 = GetMapVisState();
@@ -138,13 +141,17 @@ void EvAct_RevealMap(int xpos, int ypos, int radius)
     RevealCircle(xpos, ypos, radius);
 }
 
-void EvAct_ShowMessage(int duration, ShowMessageEventData *data)
+void EvAct_ShowMessage(eMsgSoundMode sound_mode, int duration, ShowMessageEventData *data)
 {
   // Play message sound
-  int sample_id = Data__GetSoundTableID("S_CHATMSG");
-  Sound__PlaySample(sample_id, 0, 0, 0);
+  switch (sound_mode)
+  {
+    case MSGSOUNDMODE_DEFAULT:  Sound__PlaySample(Data__GetSoundTableID("S_CHATMSG"), 0, 0, 0); break;
+    case MSGSOUNDMODE_NONE:     break;
+    case MSGSOUNDMODE_CUSTOM:   Sound__PlaySample(data->sample_id, 0, 0, 0); break;
+  }
   // Remember the current free message slot
-  int message_slot = _gMessageData.__slot;
+  int message_slot = _gMessageData.__next_slot;
   // Attempt to get custom text from mission ini file
   char mapIniPath[256];
   char id[12];
@@ -507,11 +514,17 @@ void EvAct_CenterViewport(int xpos, int ypos)
   _ViewportYPos = LIMIT(ypos * 32 - (_ViewportHeight / 2) + 16, 0, gGameMapHeight * 32 - _ViewportHeight);
 }
 
-void ChangeMapTile(int xpos, int ypos, int new_tile_index)
+void ChangeMapTile(int xpos, int ypos, int new_tile_index, eChangeTileMode mode)
 {
   if (new_tile_index == 65535)
     return;
   GameMapTileStruct *tile = &gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]];
+  switch (mode)
+  {
+    case CHANGETILE_NORMAL:   break;
+    case CHANGETILE_VISUAL:   tile->__tile_index = new_tile_index; return;
+    case CHANGETILE_RESTORE:  tile->__tile_index = tile->back_up_tile_index; return;
+  }
   uint16_t old_tile_index = tile->back_up_tile_index;
   // Determine properties of new tile
   bool no_drive_on =  (_TileBitflags[new_tile_index] & TileFlags_2000_DRIVE_ON) == 0;
@@ -532,7 +545,7 @@ void ChangeMapTile(int xpos, int ypos, int new_tile_index)
   bool real_building_on_tile = false;
   if ((tile->__tile_bitflags & TileFlags_10_OCC_BUILDING) && GetBuildingOnTile_0(xpos, ypos, &bld, &side_id, &index))
   {
-    if (destroy_buildings && !(_templates_buildattribs[bld->Type]._____Flags & BFLAGS_400000_NO_CONCRETE))
+    if (destroy_buildings && bld->__State != 17 && !(_templates_buildattribs[bld->Type]._____Flags & BFLAGS_400000_NO_CONCRETE))
       DestroyBuilding(side_id, index, 0);
     else
       real_building_on_tile = true;
@@ -581,14 +594,14 @@ void ChangeMapTile(int xpos, int ypos, int new_tile_index)
   tile->__damage = 0;
 };
 
-void EvAct_ChangeMapBlock(int xpos, int ypos, int width, int height, uint16_t *tiles)
+void EvAct_ChangeMapBlock(int xpos, int ypos, int width, int height, eChangeTileMode mode, uint16_t *tiles)
 {
   int tile_count = height * width;
   if (tile_count > 12)
     DebugFatal("event-actions.c", "Max allowed tiles in Change Tiles event is 12, actual is %d", tile_count);
   for (int y = 0; y < height; y++)
     for (int x = 0; x < width; x++)
-      ChangeMapTile(x + xpos, y + ypos, tiles[y * width + x]);
+      ChangeMapTile(x + xpos, y + ypos, tiles[y * width + x], mode);
   // Update spice visuals
   RECT r;
   r.left = LLIMIT(xpos - 1, 0);
@@ -598,16 +611,16 @@ void EvAct_ChangeMapBlock(int xpos, int ypos, int width, int height, uint16_t *t
   UpdateSpiceInRegion(&r);
 }
 
-void EvAct_TransformTiles(int amount, uint16_t *tiles)
+void EvAct_TransformTiles(int amount, eChangeTileMode mode, uint16_t *tiles)
 {
   if (amount > 6)
     DebugFatal("event-actions.c", "Max allowed tile pairs in Transform Tiles event is 6, actual is %d", amount);
   for (int y = 0; y < gGameMapHeight; y++)
     for (int x = 0; x < gGameMapWidth; x++)
       for (int i = 0; i < amount; i++)
-        if (gGameMap.map[x + _CellNumbersWidthSpan[y]].back_up_tile_index == tiles[i * 2])
+        if (gGameMap.map[x + _CellNumbersWidthSpan[y]].__tile_index == tiles[i * 2])
         {
-          ChangeMapTile(x, y, tiles[i * 2 + 1]);
+          ChangeMapTile(x, y, tiles[i * 2 + 1], mode);
           break;
         }
 }
@@ -710,8 +723,14 @@ void EvAct_ShowSideData(int side_id, int offset)
   CSide *side = GetSide(side_id);
   char header[128];
   memset(header, 0, sizeof(header));
-  sprintf(header, "Side %d Cash %d %d Spice %d %d Storage %d PowerOutput %d PowerDrain %d", side_id, side->CashDrip, side->CashReal, side->SpiceDrip, side->SpiceReal, side->__MaxStorage, side->__PowerOutput, side->__PowerDrained);
+  sprintf(header, "Side %d (%p) Cash %d %d Spice %d %d Storage %d PowerOutput %d PowerDrain %d", side_id, (char *)side + offset, side->CashDrip, side->CashReal, side->SpiceDrip, side->SpiceReal, side->__MaxStorage, side->__PowerOutput, side->__PowerDrained);
   ShowDataOnScreen(header, ((unsigned char *)side) + offset);
+}
+
+void EvAct_SetAIProperty(int side_id, eDataType data_type, eValueOperation operation, int offset, int value)
+{
+  CAI_ *ai = &_gAIArray[side_id];
+  SetDataValue((char *)ai, data_type, offset, operation, value);
 }
 
 void EvAct_ShowAIData(int side_id, int offset)
@@ -719,17 +738,15 @@ void EvAct_ShowAIData(int side_id, int offset)
   CAI_ *ai = &_gAIArray[side_id];
   char header[128];
   memset(header, 0, sizeof(header));
-  sprintf(header, "AI %d memory dump at offset %X", side_id, offset);
+  sprintf(header, "AI %d (%p) memory dump at offset %d", side_id, (char *)ai + offset, offset);
   ShowDataOnScreen(header, ((unsigned char *)ai) + offset);
 }
 
-void EvAct_SetMemoryData(int bytes, int value, int address)
+void EvAct_SetMemoryData(eDataType data_type, eValueOperation operation, int address, int value)
 {
   if (!address)
     DebugFatal("event-actions.c", "Memory address is NULL");
-  unsigned char *memory = (unsigned char *)address;
-  for (int i = 0; i < bytes; i++)
-    memory[i] = value;
+  SetDataValue((char *)address, data_type, 0, operation, value);
 }
 
 void EvAct_ShowMemoryData(int address)
@@ -744,9 +761,11 @@ void EvAct_ShowMemoryData(int address)
 
 void EvAct_DestroyUnit(int side_id, bool silent, int unit_index)
 {
+  Unit *unit = GetUnit(side_id, unit_index);
+  if (unit->State == UNIT_STATE_17_DEAD)
+    return;
   if (silent)
-  {
-    Unit *unit = GetUnit(side_id, unit_index);
+  {  
     unit->State = UNIT_STATE_17_DEAD;
     unit->__DeadStateTimeCounter = 1;
     unit->__AttackerIndex = -1;
@@ -758,6 +777,8 @@ void EvAct_DestroyUnit(int side_id, bool silent, int unit_index)
 void EvAct_DamageHealUnit(int side_id, int action, int units, int value, int unit_index)
 {
   Unit *unit = GetUnit(side_id, unit_index);
+  if (unit->State == UNIT_STATE_17_DEAD)
+    return;
   UnitAtribStruct *unit_template = &_templates_unitattribs[unit->Type];
   int hit_points = (units?((unit_template->__Strength * value) / 100):value) * (action?1:-1);
   unit->Health = LIMIT(unit->Health + hit_points, 0, unit_template->__Strength);
@@ -787,10 +808,10 @@ void EvAct_SetUnitFlag(int side_id, eFlagOperation operation, int flag, int unit
   unit->Flags = FlagOperation(unit->Flags, flag, operation);
 }
 
-void EvAct_SetUnitProperty(int side_id, eDataSize data_size, int offset, eValueOperation operation, int value, int unit_index)
+void EvAct_SetUnitProperty(int side_id, eDataType data_type, int offset, eValueOperation operation, int value, int unit_index)
 {
   Unit *unit = GetUnit(side_id, unit_index);
-  SetDataValue((char *)unit, data_size, offset, operation, value);
+  SetDataValue((char *)unit, data_type, offset, operation, value);
 }
 
 void EvAct_SelectUnit(int side_id, bool exclude_from_restore, int unit_index)
@@ -848,7 +869,7 @@ void EvAct_ShowUnitData(int side_id, int unit_index)
   Unit *unit = GetUnit(side_id, unit_index);
   char buf[128];
   memset(buf, 0, sizeof(buf));
-  sprintf(buf, "Unit %d Type %d HP %d State %d Flags: ", unit_index, unit->Type, unit->Health, unit->State);
+  sprintf(buf, "Unit %d (%p) Type %d HP %d State %d Flags: ", unit_index, unit, unit->Type, unit->Health, unit->State);
   int l = strlen(buf);
   memset(&buf[l], ' ', 43);
   for (int i = 0; i < 32; i++)
@@ -856,9 +877,26 @@ void EvAct_ShowUnitData(int side_id, int unit_index)
   ShowDataOnScreen(buf, (unsigned char *)unit);
 }
 
+void EvAct_DestroyBuilding(int side_id, bool silent, int building_index)
+{
+  Building *bld = GetBuilding(side_id, building_index);
+  if (bld->__State == UNIT_STATE_17_DEAD)
+    return;
+  if (silent)
+  {
+    bld->__State = UNIT_STATE_17_DEAD;
+    bld->__DeadStateTimeCounter = 1;
+    bld->__AttackerIndex = -1;
+  }
+  else
+    DestroyBuilding(side_id, building_index, 0);
+}
+
 void EvAct_DamageHealBuilding(int side_id, int action, int units, int value, int building_index)
 {
   Building *bld = GetBuilding(side_id, building_index);
+  if (bld->__State == UNIT_STATE_17_DEAD)
+    return;
   BuildingAtrbStruct *bld_template = &_templates_buildattribs[bld->Type];
   int hit_points = (units?((bld_template->_____HitPoints * value) / 100):value) * (action?1:-1);
   bld->Health = LIMIT((int)bld->Health + hit_points, 0, bld_template->_____HitPoints);
@@ -887,10 +925,10 @@ void EvAct_SetBuildingFlag(int side_id, eFlagOperation operation, int flag, int 
   bld->Flags = FlagOperation(bld->Flags, flag, operation);
 }
 
-void EvAct_SetBuildingProperty(int side_id, eDataSize data_size, int offset, eValueOperation operation, int value, int building_index)
+void EvAct_SetBuildingProperty(int side_id, eDataType data_type, int offset, eValueOperation operation, int value, int building_index)
 {
   Building *bld = GetBuilding(side_id, building_index);
-  SetDataValue((char *)bld, data_size, offset, operation, value);
+  SetDataValue((char *)bld, data_type, offset, operation, value);
 }
 
 void EvAct_SelectBuilding(int side_id, bool exclude_from_restore, int building_index)
@@ -906,7 +944,7 @@ void EvAct_ShowBuildingData(int side_id, int building_index)
   Building *bld = GetBuilding(side_id, building_index);
   char buf[128];
   memset(buf, 0, sizeof(buf));
-  sprintf(buf, "Building %d Type %d HP %d State %d Flags: ", building_index, bld->Type, bld->Health, bld->__State);
+  sprintf(buf, "Building %d (%p) Type %d HP %d State %d Flags: ", building_index, bld, bld->Type, bld->Health, bld->__State);
   int l = strlen(buf);
   memset(&buf[l], ' ', 43);
   for (int i = 0; i < 32; i++)
@@ -921,9 +959,50 @@ void EvAct_RemoveCrate(int crate_index)
   gGameMap.map[crate->__x + _CellNumbersWidthSpan[crate->__y]].__tile_bitflags &= ~TileFlags_1000_HAS_CRATE;
 }
 
+void EvAct_PickupCrate(int side_id, int crate_index)
+{
+  DoPickupCrate(crate_index, NULL, side_id);
+}
+
+void EvAct_SetCrateProperty(eDataType data_type, int offset, eValueOperation operation, int value, int crate_index)
+{
+  CrateStruct *crate = &gCrates[crate_index];
+  int old_x = crate->__x;
+  int old_y = crate->__y;
+  SetDataValue((char *)crate, data_type, offset, operation, value);
+  // Crate was moved around - fix attributes
+  if (old_x != crate->__x || old_y != crate->__y)
+  {
+    gGameMap.map[old_x + _CellNumbersWidthSpan[old_y]].__tile_bitflags &= ~TileFlags_1000_HAS_CRATE;
+    gGameMap.map[crate->__x + _CellNumbersWidthSpan[crate->__y]].__tile_bitflags |= TileFlags_1000_HAS_CRATE;
+  }
+}
+
+void EvAct_ShowCrateData(int crate_index)
+{
+  CrateStruct *crate = &gCrates[crate_index];
+  char buf[128];
+  memset(buf, 0, sizeof(buf));
+  sprintf(buf, "Crate %d (%p) at %d , %d Type %d Image %d Ext data %d Respawns %d Timing: %d", crate_index, crate, crate->__x, crate->__y, crate->__type, crate->__image, crate->ext_data_field, crate->__times_to_respawn, crate->__timing);
+  for (int i = 3; i >= 0; i--)
+    QueueMessage("", -1);
+  QueueMessage(buf, -1);
+  for (int i = 0; i < 5; i++)
+    _gMessageData.__ticks[i] = gGameTicks;
+}
+
+void EvAct_ChangeTile(eChangeTileMode mode, int tile_index, int cell_index)
+{
+  int xpos = cell_index & 255;
+  int ypos = cell_index >> 8;
+  ChangeMapTile(xpos, ypos, tile_index, mode);
+}
+
 void EvAct_SetTileAttribute(eFlagOperation operation, int attribute, int cell_index)
 {
-  GameMapTileStruct *tile = &gGameMap.map[cell_index];
+  int xpos = cell_index & 255;
+  int ypos = cell_index >> 8;
+  GameMapTileStruct *tile = &gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]];
   TileFlags old_flags = tile->__tile_bitflags;
   tile->__tile_bitflags = FlagOperation(tile->__tile_bitflags, attribute, operation);
   TileFlags new_flags = tile->__tile_bitflags;
@@ -936,8 +1015,6 @@ void EvAct_SetTileAttribute(eFlagOperation operation, int attribute, int cell_in
   // Update spice visuals
   if ((attribute >= 20) && (attribute <= 22))
   {
-    int xpos = cell_index % gGameMapWidth;
-    int ypos = cell_index / gGameMapWidth;
     RECT r;
     r.left = LLIMIT(xpos - 1, 0);
     r.top = LLIMIT(ypos - 1, 0);
@@ -949,16 +1026,64 @@ void EvAct_SetTileAttribute(eFlagOperation operation, int attribute, int cell_in
 
 void EvAct_SetTileDamage(eValueOperation operation, int value, int cell_index)
 {
-  GameMapTileStruct *tile = &gGameMap.map[cell_index];
+  int xpos = cell_index & 255;
+  int ypos = cell_index >> 8;
+  GameMapTileStruct *tile = &gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]];
   int damage = ValueOperation(tile->__damage, value, operation);
   tile->__damage = LIMIT(damage, 0, 255);
 }
 
-void EvAct_RevealTile(int cell_index)
+void EvAct_RevealTile(int radius, int cell_index)
 {
-  int xpos = cell_index % gGameMapWidth;
-  int ypos = cell_index / gGameMapWidth;
-  RevealCircle(xpos, ypos, 0);
+  int xpos = cell_index & 255;
+  int ypos = cell_index >> 8;
+  RevealCircle(xpos, ypos, radius);
+}
+
+void EvAct_HideTile(int cell_index)
+{
+  int xpos = cell_index & 255;
+  int ypos = cell_index >> 8;
+  if ( gBitsPerPixel == 16 )
+  {
+    int *img = _RadarMap1 + 16;
+    uint16_t *buffer = (uint16_t *)*img;
+    buffer[ypos * gGameMap.width + xpos] = 0;
+  }
+  else
+  {
+    int *img = _RadarMap1 + 16;
+    uint8_t *buffer = (uint8_t *)*img;
+    buffer[ypos * gGameMap.width + xpos] = 0;
+  }
+  for (int y = LLIMIT(ypos - 1, 0); y <= HLIMIT(ypos + 1, gGameMapHeight - 1); y++)
+    for (int x = LLIMIT(xpos - 1, 0); x <= HLIMIT(xpos + 1, gGameMapWidth - 1); x++)
+      gGameMap.map[x + _CellNumbersWidthSpan[y]].__shroud = 1;
+  RECT r;
+  r.left = xpos - 2;
+  r.top = ypos - 2;
+  r.right = xpos + 3;
+  r.bottom = ypos + 3;
+  UpdateShroudInRegion(&r, gGameMapWidth, gGameMapHeight);
+}
+
+void EvAct_ShowTileData(int cell_index)
+{
+  int xpos = cell_index & 255;
+  int ypos = cell_index >> 8;
+  GameMapTileStruct *tile = &gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]];
+  char buf[128];
+  memset(buf, 0, sizeof(buf));
+  sprintf(buf, "Tile %d %d (%p) Idx %d Backup %d Shroud %d Damage %d Flags: ", xpos, ypos, tile, tile->__tile_index, tile->back_up_tile_index, tile->__shroud, tile->__damage);
+  int l = strlen(buf);
+  memset(&buf[l], ' ', 43);
+  for (int i = 0; i < 32; i++)
+    buf[l + i + (i / 8)] = ((tile->__tile_bitflags >> i & 1)?'X':'o');
+  for (int i = 3; i >= 0; i--)
+    QueueMessage("", -1);
+  QueueMessage(buf, -1);
+  for (int i = 0; i < 5; i++)
+    _gMessageData.__ticks[i] = gGameTicks;
 }
 
 void EvAct_OrderUnitRetreat(int side_id)

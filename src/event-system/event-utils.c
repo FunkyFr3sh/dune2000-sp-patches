@@ -29,6 +29,21 @@ int ValueOperation(int val1, int val2, eValueOperation operation)
   }
 }
 
+float ValueOperationFloat(float val1, float val2, eValueOperation operation)
+{
+  switch (operation)
+  {
+    case VALUEOPERATION_SET:        return val2; break;
+    case VALUEOPERATION_ADD:        return val1 + val2; break;
+    case VALUEOPERATION_SUBSTRACT:  return val1 - val2; break;
+    case VALUEOPERATION_MULPERCENT: return (val1 * val2) / 100; break;
+    case VALUEOPERATION_CAPMAX:     return HLIMIT(val1, val2); break;
+    case VALUEOPERATION_CAPMIN:     return LLIMIT(val1, val2); break;
+    default: DebugFatal("event-utils.c", "Invalid operation %d for floating-point value.", operation);
+  }
+  return 0;
+}
+
 int FlagOperation(int value, int flag, eFlagOperation operation)
 {
   switch (operation)
@@ -40,29 +55,60 @@ int FlagOperation(int value, int flag, eFlagOperation operation)
   }
 }
 
-void SetDataValue(char *data_ptr, eDataSize data_size, int offset, eValueOperation operation, int value)
+void SetDataValue(char *data_ptr, eDataType data_type, int offset, eValueOperation operation, int value)
 {
-  switch (data_size)
+  switch (data_type)
   {
-    case DATASIZE_BYTE:
+    case DATATYPE_BYTE:
     {
       int8_t *p = (int8_t *)&data_ptr[offset];
       *p = ValueOperation(*p, value, operation);
       break;
     }
-    case DATASIZE_WORD:
+    case DATATYPE_WORD:
     {
       int16_t *p = (int16_t *)&data_ptr[offset];
       *p = ValueOperation(*p, value, operation);
       break;
     }
-    case DATASIZE_DWORD:
+    case DATATYPE_DWORD:
     {
       int32_t *p = (int32_t *)&data_ptr[offset];
       *p = ValueOperation(*p, value, operation);
       break;
     }
+    case DATATYPE_FLOAT:
+    {
+      float *p = (float *)&data_ptr[offset];
+      float *fvalptr = (float *)&value;
+      *p = ValueOperationFloat(*p, *fvalptr, operation);
+      break;
+    }
   }
+}
+
+int GetDataValue(char *data_ptr, eDataType data_type, int offset)
+{
+  switch (data_type)
+  {
+    case DATATYPE_BYTE:
+    {
+      int8_t *p = (int8_t *)&data_ptr[offset];
+      return *p;
+    }
+    case DATATYPE_WORD:
+    {
+      int16_t *p = (int16_t *)&data_ptr[offset];
+      return *p;
+    }
+    case DATATYPE_DWORD:
+    case DATATYPE_FLOAT:
+    {
+      int32_t *p = (int32_t *)&data_ptr[offset];
+      return *p;
+    }
+  }
+  return 0;
 }
 
 bool CompareValue(int val, int comp_val, bool comparison)
@@ -71,6 +117,34 @@ bool CompareValue(int val, int comp_val, bool comparison)
     return val >= comp_val;
   else
     return val == comp_val;
+}
+
+bool CompareValueFloat(float val, float comp_val, bool comparison)
+{
+  if (comparison)
+    return val >= comp_val;
+  else
+    return val == comp_val;
+}
+
+bool CompareDataValue(char *data_ptr, eDataType data_type, int offset, int comp_val, bool comparison)
+{
+  int value = GetDataValue(data_ptr, data_type, offset);
+  if (data_type == DATATYPE_FLOAT)
+  {
+    float *fvalptr = (float *)&value;
+    float *fcompvalptr = (float *)&comp_val;
+    return CompareValueFloat(*fvalptr, *fcompvalptr, comparison);
+  }
+  return CompareValue(value, comp_val, comparison);
+}
+
+bool CompareDistance(int x1, int y1, int x2, int y2, int comp_val, bool comparison)
+{
+  int xdist = abs(x1 - x2);
+  int ydist = abs(y1 - y2);
+  int val = xdist * xdist + ydist * ydist;
+  return CompareValue(val, comp_val * comp_val, comparison);
 }
 
 void RestoreUnitSelection(int side_id, bool restore_selection)

@@ -263,7 +263,7 @@ extern char                 _somebool_6B7050;
 extern char                 _persideflags_6B8258[8];
 extern int                  _gConditionCount; // Extended from char to int (mod)
 extern bool                 _gUnitsExist[8];
-extern int                  gTimerValue;
+extern int                  _gTimerValue;
 extern bool                 gWin;
 extern bool                 gLose;
 // extern ConditionData        _gConditionArray[48]; // Replaced by mod
@@ -332,6 +332,7 @@ void            WOL__StartGuestINetGame();
 void            WOL__StartHostINetGame();
 void            WOL__OpenWebsite(char *URL);
 void            QueueMessage(const char *message, int type);
+void            FreeMessageSlot();
 void            DebugFatal(char *caption, char *format, ...);
 
 // Graphlib
@@ -346,14 +347,17 @@ void            ClearTImage(TImage *a1, int color, int unusable);
 unsigned int    w__GetUnitCost(int type, eSideType side);
 unsigned int    GetBuildingCost(int building_type, int num_upgrades, eSideType side_id);
 bool            w_CanUnitBeBuilt(unsigned __int8 side_id, unsigned __int8 unitType, char bool1);
-
+bool            CanSideUpgradeBuildingGroup(eSideType side_id, eBuildingGroupType building_group);
 
 int             GetRandomValue(char *, int);
 void            SetBuildingAsPrimary(eSideType side_id, int building_index);
+void            SetMouseCursor(int cursor);
 // Map
 int             RevealMap();
 void            Map__PlayerDefeated(uint8_t sideId);
 
+char            UpdateShroudInRegion(RECT *rect, unsigned __int8 width, unsigned __int8 height);
+void            GetBuildingOnConcreteCount(char side_id, unsigned char building_type, unsigned char x, unsigned char y, unsigned int *buildTileCount1, unsigned int *concreteTileCount1);
 void            RevealCircle(int x, int y, int size);
 char            GetFreeCrateIndex();
 void            PlaceCrate(int x, int y, int timing, eCrateType type, eCrateImage image, int respawn_count);
@@ -465,8 +469,10 @@ bool            Unit_49F5F0(Unit *unit);
 CSide *         GetSide(int sideId);
 Unit *          GetUnit(eSideType side, index objIndex);
 Building *      GetBuilding(eSideType side, index objIndex);
+bool            UnitOccupiesTile(Unit *unit, char x, char y);
 Unit *          GetUnitOnTile(unsigned int x, unsigned int y, eSideType *side, _WORD *index, bool bool1);
 Unit *          GetNextUnitOnTile(unsigned int x, unsigned int y, unsigned int side, _WORD *unit_index);
+bool            BuildingOccupiesTile(Building *building, unsigned __int8 x, unsigned __int8 y);
 bool            GetBuildingOnTile_0(int x, int y, Building **building_ptr, eSideType *side_id, _WORD *index);
 
 bool            GetNearestFreeTileForUnit(unsigned char *x, unsigned char *y, unsigned char a3);
