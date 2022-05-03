@@ -51,6 +51,7 @@ OBJS            ?= callsites.o \
 	src/extended-maps/move-infantry-on-infantry-tile.o \
 	src/extended-maps/buildable-top-row-of-map.o \
 	src/extended-maps/difficulty-cost-buildspeed-rules.o \
+	src/extended-maps/sound-size-limit.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \
