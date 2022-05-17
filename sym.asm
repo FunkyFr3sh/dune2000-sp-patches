@@ -335,6 +335,7 @@ setcglob 0x004544E0, Mission__LoadVarsFile
 setcglob 0x00454E00, Mission__LoadTechposFile
 ; Model
 setcglob 0x00455290, EvaluateIfBuildingsOrUnitsExistForSide
+setcglob 0x00455480, UncloakRemainingStealthUnit
 setcglob 0x00455510, ModelBuildUnitPick
 setcglob 0x00455870, ModelAddUnit
 setcglob 0x00455FC0, ModelBuildBuildingPick

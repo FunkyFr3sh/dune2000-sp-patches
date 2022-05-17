@@ -52,6 +52,7 @@ cextern rulesExt__InfiniteSpice
 cextern rulesExt__buildingsAlwaysNeedPrerequisites
 cextern rulesExt__guardModeRadius
 cextern rulesExt__alwaysShowRadar
+cextern rulesExt__uncloakRemainingStealthUnit
 
 ; ### Functions ###
 

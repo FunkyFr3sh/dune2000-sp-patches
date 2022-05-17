@@ -23,6 +23,7 @@ uint32_t  rulesExt__costPercentageEasy          = 75;
 uint32_t  rulesExt__costPercentageHard          = 125;
 uint32_t  rulesExt__buildSpeedPercentageEasy    = 125;
 uint32_t  rulesExt__buildSpeedPercentageHard    = 75;
+bool      rulesExt__uncloakRemainingStealthUnit = true;
 
 static void LoadVars(LPCTSTR fileName);
 
@@ -77,4 +78,5 @@ static void LoadVars(LPCTSTR fileName)
     rulesExt__costPercentageHard = IniGetInt("Vars", "costPercentageHard", rulesExt__costPercentageHard, fileName);
     rulesExt__buildSpeedPercentageEasy = IniGetInt("Vars", "buildSpeedPercentageEasy", rulesExt__buildSpeedPercentageEasy, fileName);
     rulesExt__buildSpeedPercentageHard = IniGetInt("Vars", "buildSpeedPercentageHard", rulesExt__buildSpeedPercentageHard, fileName);
+    rulesExt__uncloakRemainingStealthUnit = IniGetBool("Vars", "uncloakRemainingStealthUnit", rulesExt__uncloakRemainingStealthUnit, fileName);
 }

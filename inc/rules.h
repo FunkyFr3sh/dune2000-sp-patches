@@ -47,3 +47,4 @@ extern uint32_t rulesExt__costPercentageEasy;
 extern uint32_t rulesExt__costPercentageHard;
 extern uint32_t rulesExt__buildSpeedPercentageEasy;
 extern uint32_t rulesExt__buildSpeedPercentageHard;
+extern bool     rulesExt__uncloakRemainingStealthUnit;

@@ -200,6 +200,7 @@ cextern Sound__SetMusicVolume
 cextern GetBuildingCost
 cextern CanSideUpgradeBuildingGroup
 cextern IsAnyStarportUnitPicked
+cextern UncloakRemainingStealthUnit
 cextern ModelAddExplosion
 cextern ModelStarportCancel
 cextern PlaySoundAt

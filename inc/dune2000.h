@@ -376,6 +376,7 @@ void            Mission__LoadVarsFile();
 // Model
 bool            EvaluateIfBuildingsOrUnitsExistForSide(eSideType side_id, char buildings_or_units);
 
+
 index           ModelAddUnit(unsigned char side, unsigned char type, unsigned char add_at_x, unsigned char add_at_y, unsigned char move_to_x, unsigned char move_to_y, int pixel_offset_x, int pixel_offset_y);
 
 void            ModelAddConcrete(eSideType side_id, char building_type, unsigned __int8 xpos, int ypos, int a5, int tilebitmask);
