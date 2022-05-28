@@ -208,7 +208,8 @@ cextern CreateGlobe
 cextern Unit_49D280_occupiedbybuilding
 cextern IsAnyInfantrySelected
 cextern CSide__ReturnMoneyFromStarportOrder
-cextern ReadFile
+cextern _ReadFile
+cextern Graphlib_font_pal
 
 ;imports
 cextern _imp__GetTickCount

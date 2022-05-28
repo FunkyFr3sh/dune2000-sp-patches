@@ -183,6 +183,9 @@ setcglob 0x00513520, MoviesResourcePath
 setcglob 0x005135B8, MusicResourcePath
 setcglob 0x00513650, MissionsResourcePath
 setcglob 0x005136E8, MapsResourcePath
+setcglob 0x00513A20, _FontBinData
+setcglob 0x00513B20, _FontData
+setcglob 0x00515B60, _FontPals
 setcglob 0x005173F4, gGameTicks
 setcglob 0x00517500, _cheatstates
 setcglob 0x00517780, _radarcolor_byte_517780_spicecolor
@@ -231,9 +234,11 @@ setcglob 0x00781E54, _RadarMap2
 setcglob 0x00781E58, _templates_explosionattribs
 setcglob 0x00782068, _templates_bulletattribs
 setcglob 0x00782AA0, _FreeSpawnLocations
+setcglob 0x00786C48, _ColoursBinData
 setcglob 0x00786D48, _ViewportWidth
 setcglob 0x00786FEC, _SpawnLocationCount
 setcglob 0x00786FF8, _TileBitflags
+setcglob 0x00795518, _radarcolor16_sidecolor
 setcglob 0x00795538, gUnitTypeNum
 setcglob 0x0079553C, gBuildingTypeNum
 setcglob 0x00795540, gBulletTypeNum
@@ -242,9 +247,11 @@ setcglob 0x00795608, SoundClassObject
 setcglob 0x007975A8, gTextTable
 setcglob 0x0079759C, CUIManagerObject
 setcglob 0x00797A98, CurrentSoundTrack
+setcglob 0x00797E1C, gRestartGame
 setcglob 0x00797E34, GameType
 setcglob 0x00797E34, gGameType
 setcglob 0x00797E78, KeyIsDown2
+setcglob 0x00798384, _colormask1
 setcglob 0x00798390, KeyIsDown1
 setcglob 0x007984C0, gTotalPlayers
 setcglob 0x007984C4, _canQueue_IsMultiplayer
@@ -293,16 +300,22 @@ setcglob 0x004184A0, WOL__OpenWebsite				; (char *URL)
 setcglob 0x00425720, QueueMessage
 setcglob 0x00425830, FreeMessageSlot
 setcglob 0x0042B590, DebugFatal
-setcglob 0x0042BB60, ReadFile
+setcglob 0x0042BB60, _ReadFile
+setcglob 0x0042BB80, _WriteFile
 setcglob 0x0042BC60, CreateGlobe
 ; Graphlib
 setcglob 0x0042DC00, Graphlib__TextOnScreen
 setcglob 0x0042DD50, Graphlib__DrawRightAlignedText
 setcglob 0x0042DD90, Graphlib__DrawTextWithBlackShadow
+setcglob 0x0042DFB0, GetStringPixelWidth
+setcglob 0x0042E1C0, Graphlib_font_pal
+setcglob 0x0042E420, GetFontPaletteHandle
 setcglob 0x0042E450, Graphlib__LoadFontFile
+setcglob 0x0042F3D0, GetColor16bit
 ; Image
 setcglob 0x004305F0, BlitClipTImage1
 setcglob 0x00430860, ClearTImage
+setcglob 0x00431F50, BlitFontChar_0
 ; Other
 setcglob 0x00442BB0, w__GetUnitCost
 setcglob 0x00442BE0, GetBuildingCost

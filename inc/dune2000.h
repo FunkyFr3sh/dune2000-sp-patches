@@ -5,7 +5,6 @@
 // This header works with sym.asm which defines the Vanilla symbols
 // This header will be split up as it becomes larger
 
-typedef void TImage;
 typedef char eBuildingGroupType;
 typedef int32_t _DWORD;
 typedef int16_t _WORD;
@@ -20,6 +19,7 @@ typedef uint8_t _BYTE;
 #include "dune2000/text.h"
 #include "dune2000/vars.h"
 #include "dune2000/order.h"
+#include "dune2000/graphlib.h"
 
 typedef struct GameEvent // 168 byte
 {
@@ -236,12 +236,15 @@ extern int                  MousePositionX;
 extern int                  MousePositionY;
 extern int                  RandSeed;
 extern CAI_                 _gAIArray[];
-extern MessageData          _gMessageData;
+// extern MessageData          _gMessageData; // Replaced by mod
 extern char                 ResourcePath[];
 extern char                 MoviesResourcePath[];
 extern char                 MusicResourcePath[];
 extern char                 MissionsResourcePath[];
 extern char                 MapsResourcePath[];
+extern char                 _FontBinData[256];
+extern FontHeader           _FontData[8];
+extern int *                _FontPals[16];
 extern unsigned int         gGameTicks;
 extern char                 _cheatstates[8];
 extern char                 _radarcolor_byte_517780_spicecolor;
@@ -290,9 +293,11 @@ extern void *               _RadarMap2;
 extern ExploisonAtrbStruct  _templates_explosionattribs[64];
 extern BullAtrbStruct       _templates_bulletattribs[64];
 extern char                 _FreeSpawnLocations[8];
+extern uint16_t             _ColoursBinData[128];
 extern int                  _ViewportWidth;
 extern char                 _SpawnLocationCount;
 extern unsigned int         _TileBitflags[800];
+extern uint16_t             _radarcolor16_sidecolor[8];
 extern unsigned char        gUnitTypeNum;
 extern unsigned char        gBuildingTypeNum;
 extern unsigned char        gBulletTypeNum;
@@ -301,8 +306,11 @@ extern int                  SoundClassObject;
 extern TextTableStruct **   gTextTable;
 extern int                  CUIManagerObject;
 
+extern bool                 gRestartGame;
 extern int                  GameType;
 extern eGameType            gGameType;
+
+extern int                  _colormask1;
 
 extern unsigned char        gTotalPlayers;
 extern char                 _canQueue_IsMultiplayer;
@@ -334,15 +342,22 @@ void            WOL__OpenWebsite(char *URL);
 void            QueueMessage(const char *message, int type);
 void            FreeMessageSlot();
 void            DebugFatal(char *caption, char *format, ...);
+size_t          _ReadFile(void *buffer, size_t size, size_t count, FILE *file);
+size_t          _WriteFile(void *buffer, size_t size, size_t count, FILE *file);
 
 // Graphlib
 void            Graphlib__TextOnScreen(int *image, char *text, int x, int y, bool bold_unk, int color_unk, int unk2);
 void            Graphlib__DrawRightAlignedText(int *image, char *text, int x, int y, bool bold_unk, int color_unk, int unk2);
-void            Graphlib__DrawTextWithBlackShadow(int *image, char *text, int x, int y, int unk, int color_unk);
+void            Graphlib__DrawTextWithBlackShadow(TImage *image, char *text, int x, int y, int unk, int color_unk);
+int             GetStringPixelWidth(const char *string, unsigned char font);
+
+void *          GetFontPaletteHandle(unsigned char a1);
 void            Graphlib__LoadFontFile();
+uint16_t        GetColor16bit(int colormask, int color);
 // Image
 void            BlitClipTImage1(TImage *lpTITo, int toX, int toY, TImage *lpTIFrom, RECT *rect, bool trans, int a7);
 void            ClearTImage(TImage *a1, int color, int unusable);
+void            BlitFontChar_0(TImage *dest, int x, int y, TImage *src, _WORD *pal);
 // Other
 unsigned int    w__GetUnitCost(int type, eSideType side);
 unsigned int    GetBuildingCost(int building_type, int num_upgrades, eSideType side_id);

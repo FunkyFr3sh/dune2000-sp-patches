@@ -53,6 +53,9 @@ OBJS            ?= callsites.o \
 	src/extended-maps/difficulty-cost-buildspeed-rules.o \
 	src/extended-maps/sound-size-limit.o \
 	src/extended-maps/uncloak-remaining-unit-rule.o \
+	src/extended-maps/messages.o \
+	src/extended-maps/messages-func.o \
+	src/extended-maps/load-save-extra-data.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \

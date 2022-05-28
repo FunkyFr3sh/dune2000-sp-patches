@@ -19,6 +19,21 @@ typedef enum eMsgSoundMode
   MSGSOUNDMODE_CUSTOM
 } eMsgSoundMode;
 
+typedef enum eRemoveMessageMode
+{
+  REMOVEMSGMODE_REFID,
+  REMOVEMSGMODE_CHATOLDEST,
+  REMOVEMSGMODE_CHATNEWEST
+} eRemoveMessageMode;
+
+typedef enum eSetMessageColorMode
+{
+  SETMSGCOLORMODE_SOLID_SHADOW,
+  SETMSGCOLORMODE_COLOR_GRADIENT,
+  SETMSGCOLORMODE_TIME_TRANSITION_1,
+  SETMSGCOLORMODE_TIME_TRANSITION_2
+} eSetMessageColorMode;
+
 typedef enum eSpiceBloomMode
 {
   SPICEBLOOM_CLASSIC,
@@ -52,7 +67,7 @@ void EvAct_SetTech(int side_id, eValueOperation operation, bool immediate_update
 void EvAct_SwitchMySide(int side_id, int ai_switch, bool reveal_base);
 void EvAct_HideMap();
 void EvAct_RevealMap(int xpos, int ypos, int radius);
-void EvAct_ShowMessage(eMsgSoundMode sound_mode, int duration, ShowMessageEventData *data);
+void EvAct_ShowMessage(int xoff, int yoff, int ref_id, int screen_pos, int color, eMsgSoundMode sound_mode, bool type_on, int duration, ShowMessageEventData *data);
 void EvAct_UnitSpawn(int xpos, int ypos, int side_id, int amount, int facing, int tag, char *unit_list);
 void EvAct_UnBlockEvent(int operation, int event_index);
 void EvAct_PlayMusic(char *name);
@@ -69,6 +84,8 @@ void EvAct_ChangeMapBlock(int xpos, int ypos, int width, int height, eChangeTile
 void EvAct_TransformTiles(int amount, eChangeTileMode mode, uint16_t *tiles);
 void EvAct_AddBuildingDestruct(int xpos, int ypos, int side_id, int building_type);
 void EvAct_ActivateTimer(int condition_index);
+void EvAct_RemoveMessage(eRemoveMessageMode mode, int ref_id, int amount);
+void EvAct_SetMessageColor(int color_index, eSetMessageColorMode mode, int transition_speed, int transition_stages, int color1, int color2);
 // Side manipulation
 void EvAct_TransferCredits(int side_id, eTransferCreditsOperation operation, int value);
 void EvAct_SetBuildingUpgrades(int side_id, int building_group, eValueOperation operation, int value);

@@ -10,6 +10,7 @@
 #include "event-actions.h"
 #include "event-core.h"
 #include "../extended-maps/crates-func.h"
+#include "../extended-maps/messages-func.h"
 
 void EvAct_AddDelivery(int xpos, int ypos, int side_id, int amount, int deploy_action, int delay, eDeliveryType delivery_type, char *unit_list)
 {
@@ -141,7 +142,7 @@ void EvAct_RevealMap(int xpos, int ypos, int radius)
     RevealCircle(xpos, ypos, radius);
 }
 
-void EvAct_ShowMessage(eMsgSoundMode sound_mode, int duration, ShowMessageEventData *data)
+void EvAct_ShowMessage(int xoff, int yoff, int ref_id, int screen_pos, int color, eMsgSoundMode sound_mode, bool type_on, int duration, ShowMessageEventData *data)
 {
   // Play message sound
   switch (sound_mode)
@@ -150,23 +151,20 @@ void EvAct_ShowMessage(eMsgSoundMode sound_mode, int duration, ShowMessageEventD
     case MSGSOUNDMODE_NONE:     break;
     case MSGSOUNDMODE_CUSTOM:   Sound__PlaySample(data->sample_id, 0, 0, 0); break;
   }
-  // Remember the current free message slot
-  int message_slot = _gMessageData.__next_slot;
   // Attempt to get custom text from mission ini file
   char mapIniPath[256];
   char id[12];
   char custom_text[512];
+  char *text_to_show;
   sprintf(mapIniPath, ".\\%s%s", GameType == GT_SINGLEPLAYER ? MissionsResourcePath : MapsResourcePath, PathChangeExtension(MissionMap, ".ini"));
   sprintf(id, "%d", data->message_index);
   IniGetString("Text", id, "", custom_text, 512, mapIniPath);
   if (strlen(custom_text) > 0)
-    QueueMessage(custom_text, -1);
+    text_to_show = custom_text;
   else
     // Get text from string table
-    QueueMessage(Data__GetTextString(data->message_index, 1), -1);
-  // Set customized message duration
-  if (duration)
-    _gMessageData.__ticks[message_slot] = gGameTicks + duration;
+    text_to_show = Data__GetTextString(data->message_index, 1);
+  QueueMessageExt(text_to_show, duration, ref_id, screen_pos, xoff, yoff, color, type_on);
 }
 
 void EvAct_UnitSpawn(int xpos, int ypos, int side_id, int amount, int facing, int tag, char *unit_list)
@@ -649,6 +647,89 @@ void EvAct_ActivateTimer(int condition_index)
   condition->val4 = gGameTicks;
 }
 
+void EvAct_RemoveMessage(eRemoveMessageMode mode, int ref_id, int amount)
+{
+  switch (mode)
+  {
+    case REMOVEMSGMODE_REFID:
+    {
+      for (int i = 0; i < MAX_MESSAGES; i++)
+        if (gMessageData[i].ref_id >= ref_id && gMessageData[i].ref_id < (ref_id + amount))
+          gMessageData[i].expire_ticks = 0;
+      break;
+    }
+    case REMOVEMSGMODE_CHATOLDEST:
+    {
+      while (amount)
+      {
+        unsigned int min_order_added = UINT_MAX;
+        int slot_to_remove = -1;
+        for (int i = 0; i < MAX_MESSAGES; i++)
+        {
+          if (gMessageData[i].expire_ticks <= gGameTicks)
+            continue;
+          if (gMessageData[i].is_chat && gMessageData[i].order_added < min_order_added)
+          {
+            min_order_added = gMessageData[i].order_added;
+            slot_to_remove = i;
+          }
+        }
+        if (slot_to_remove != -1)
+        {
+          gMessageData[slot_to_remove].expire_ticks = 0;
+          amount--;
+        }
+        else
+          break;
+      }
+      break;
+    }
+    case REMOVEMSGMODE_CHATNEWEST:
+    {
+      while (amount)
+      {
+        unsigned int max_order_added = 0;
+        int slot_to_remove = -1;
+        for (int i = 0; i < MAX_MESSAGES; i++)
+        {
+          if (gMessageData[i].expire_ticks <= gGameTicks)
+            continue;
+          if (gMessageData[i].is_chat && gMessageData[i].order_added > max_order_added)
+          {
+            max_order_added = gMessageData[i].order_added;
+            slot_to_remove = i;
+          }
+        }
+        if (slot_to_remove != -1)
+        {
+          gMessageData[slot_to_remove].expire_ticks = 0;
+          amount--;
+        }
+        else
+          break;
+      }
+      break;
+    }
+  }
+}
+
+void EvAct_SetMessageColor(int color_index, eSetMessageColorMode mode, int transition_speed, int transition_stages, int color1, int color2)
+{
+  switch (mode)
+  {
+    case SETMSGCOLORMODE_SOLID_SHADOW: SetFontColorSolid(color_index, color1, color2); break;
+    case SETMSGCOLORMODE_COLOR_GRADIENT: SetFontColorGradient(color_index, color1, color2, -1, -1); break;
+    case SETMSGCOLORMODE_TIME_TRANSITION_1: SetFontColorGradient(color_index, color1, color2, (gGameTicks >> transition_speed) % transition_stages, transition_stages); break;
+    case SETMSGCOLORMODE_TIME_TRANSITION_2:
+    {
+      int modtick = (gGameTicks >> transition_speed) % (transition_stages + transition_stages - 2);
+      int stage = (modtick < transition_stages)?modtick:transition_stages - 2 - (modtick - transition_stages);
+      SetFontColorGradient(color_index, color1, color2, stage, transition_stages);
+      break;
+    }
+  }
+}
+
 void EvAct_TransferCredits(int side_id, eTransferCreditsOperation operation, int value)
 {
   CSide *side = GetSide(side_id);
@@ -984,11 +1065,7 @@ void EvAct_ShowCrateData(int crate_index)
   char buf[128];
   memset(buf, 0, sizeof(buf));
   sprintf(buf, "Crate %d (%p) at %d , %d Type %d Image %d Ext data %d Respawns %d Timing: %d", crate_index, crate, crate->__x, crate->__y, crate->__type, crate->__image, crate->ext_data_field, crate->__times_to_respawn, crate->__timing);
-  for (int i = 3; i >= 0; i--)
-    QueueMessage("", -1);
-  QueueMessage(buf, -1);
-  for (int i = 0; i < 5; i++)
-    _gMessageData.__ticks[i] = gGameTicks;
+  QueueMessageExt(buf, 1, 250, 0, 0, 0, 0, 0);
 }
 
 void EvAct_ChangeTile(eChangeTileMode mode, int tile_index, int cell_index)
@@ -1079,11 +1156,7 @@ void EvAct_ShowTileData(int cell_index)
   memset(&buf[l], ' ', 43);
   for (int i = 0; i < 32; i++)
     buf[l + i + (i / 8)] = ((tile->__tile_bitflags >> i & 1)?'X':'o');
-  for (int i = 3; i >= 0; i--)
-    QueueMessage("", -1);
-  QueueMessage(buf, -1);
-  for (int i = 0; i < 5; i++)
-    _gMessageData.__ticks[i] = gGameTicks;
+  QueueMessageExt(buf, 1, 250, 0, 0, 0, 0, 0);
 }
 
 void EvAct_OrderUnitRetreat(int side_id)

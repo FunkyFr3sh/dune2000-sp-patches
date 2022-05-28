@@ -13,35 +13,35 @@
 
 ; Loading MIS file - Load extra data from MIS file
 hack 0x0044FDC7, 0x0044FDCC ; LoadMission
-    call ReadFile ; Instruction replaced by the long jump
+    call _ReadFile ; Instruction replaced by the long jump
     ; Read extended _gEventCount
     add esp, 10h
     push esi
     push 1
     push 2
     push 0x6B63CC
-    call ReadFile
+    call _ReadFile
     ; Read extended _gConditionCount
     add esp, 10h
     push esi
     push 1
     push 2
     push 0x6B8260
-    call ReadFile
+    call _ReadFile
     ; Read extended part of _gConditionArray
     add esp, 10h
     push esi
     push (256 - 48)
     push 28
     push _gConditionArray + (48 * 28)
-    call ReadFile
+    call _ReadFile
     ; Read extended part of _gEventArray
     add esp, 10h
     push esi
     push (1024 - 64)
     push 72
     push _gEventArray + (64 * 72)
-    call ReadFile
+    call _ReadFile
     jmp hackend
 
 ; Saving game - Save event and condition arrays from new memory location and different amount of data

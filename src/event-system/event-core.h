@@ -74,8 +74,8 @@ enum EventTypes
   ET_ADD_BUILDING_DESTRUCT,
   ET_35,
   ET_ACTIVATE_TIMER,
-  ET_37,
-  ET_38,
+  ET_REMOVE_MESSAGE,
+  ET_SET_MESSAGE_COLOR,
   ET_39,
   // Side manipulation
   ET_TRANSFER_CREDITS,

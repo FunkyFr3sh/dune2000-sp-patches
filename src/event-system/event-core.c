@@ -495,7 +495,7 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_REVEAL:                 EvAct_RevealMap           (COORD0, A_AMNT); break;
   case ET_SETTIMER:               VALUEOPERATION(_gTimerValue); break;
   case ET_HIDETIMER:              _gTimerValue = -1; break;
-  case ET_SHOWMESSAGE:            EvAct_ShowMessage         (A_ENUM, A_VALUE, (ShowMessageEventData *)&e->data[1]); break;
+  case ET_SHOWMESSAGE:            EvAct_ShowMessage         (COORD0, A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL, A_VALUE, (ShowMessageEventData *)&e->data[1]); break;
   case ET_UNIT_SPAWN:             EvAct_UnitSpawn           (COORD0, A_SIDE, A_AMNT, A_ENUM, A_VALUE, e->data); break;
   case ET_SET_FLAG:               _gConditionArray[A_SIDE].val3 = A_VALUE; break;
   case ET_UN_BLOCK_EVENT:         EvAct_UnBlockEvent        (A_BOOL, A_VALUE); break;
@@ -514,6 +514,8 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_TRANSFORM_TILES:        EvAct_TransformTiles      (A_AMNT, A_ENUM, (uint16_t *)&e->data[1]); break;
   case ET_ADD_BUILDING_DESTRUCT:  EvAct_AddBuildingDestruct (COORD0, A_SIDE, A_ITEM); break;
   case ET_ACTIVATE_TIMER:         EvAct_ActivateTimer       (A_VALUE); break;
+  case ET_REMOVE_MESSAGE:         EvAct_RemoveMessage       (A_SIDE, A_AMNT, A_ITEM); break;
+  case ET_SET_MESSAGE_COLOR:      EvAct_SetMessageColor     (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_VALUE, *((int *)&e->data[1])); break;
   // Side manipulation
   case ET_TRANSFER_CREDITS:       EvAct_TransferCredits     (A_SIDE, A_ENUM, A_VALUE); break;
   case ET_SET_BUILDING_UPGRADES:  EvAct_SetBuildingUpgrades (A_SIDE, A_ITEM, A_ENUM, A_VALUE); break;

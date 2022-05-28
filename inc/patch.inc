@@ -45,6 +45,7 @@ cextern nextGameTick
 
 cextern _gEventArray
 cextern _gConditionArray
+cextern gMessageData
 
 ; ### Extra rules ###
 
@@ -72,3 +73,4 @@ cextern fake_GetTickCount
 cextern HandleSpecialValue
 cextern HitCrate
 cextern Mod__PickupCrate
+cextern InitFontColors

@@ -2,6 +2,7 @@
 #include "dune2000.h"
 #include "utils.h"
 #include "event-utils.h"
+#include "../extended-maps/messages-func.h"
 
 int ValueOperation(int val1, int val2, eValueOperation operation)
 {
@@ -187,8 +188,6 @@ void ShowDataOnScreen(char *header, unsigned char *data_ptr)
     }
   }
   for (int i = 3; i >= 0; i--)
-    QueueMessage(buf[i], -1);
-  QueueMessage(header, -1);
-  for (int i = 0; i < 5; i++)
-    _gMessageData.__ticks[i] = gGameTicks;
+    QueueMessageExt(buf[i], 1, 251 + i, 0, 0, 0, 0, 0);
+  QueueMessageExt(header, 1, 250, 0, 0, 0, 0, 0);
 }

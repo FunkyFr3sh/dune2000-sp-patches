@@ -1,6 +1,7 @@
 #include "macros/patch.h"
 #include "dune2000.h"
 #include "../event-system/event-core.h"
+#include "messages-func.h"
 
 bool StartWithMCV = true;
 
@@ -143,6 +144,10 @@ void Mod__setupmapstuff()
   worm_count = 0;
   type = -1;
   _SpawnLocationCount = 0;
+
+  // Initialize font colors to default values upon restart
+  if (gRestartGame)
+    InitFontColors();
 
   // Store the original side ID upon starting a map
   gOldSideId = gSideId;
