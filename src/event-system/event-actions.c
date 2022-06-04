@@ -61,12 +61,16 @@ void EvAct_SetDiplomacy(int source_side, int target_side, int allegiance_type, b
   }
 }
 
-void EvAct_PlaySound(int sample_id, bool point_sound, int xpos, int ypos)
+void EvAct_PlaySound(int sample_id, bool force, bool point_sound, int xpos, int ypos)
 {
   if (point_sound)
     PlaySoundAt(sample_id, xpos, ypos);
   else
-    Sound__PlaySample(sample_id, 0, 0, 0);
+  {
+    if (force)
+      ISampleManager__EndSample(_gSampleMgr, 0);
+    Sound__PlaySample(sample_id, 1, 0, force?1:0);
+  }
 }
 
 void EvAct_SetCash(int side_id, eValueOperation operation, int value)
@@ -147,9 +151,10 @@ void EvAct_ShowMessage(int xoff, int yoff, int ref_id, int screen_pos, int color
   // Play message sound
   switch (sound_mode)
   {
-    case MSGSOUNDMODE_DEFAULT:  Sound__PlaySample(Data__GetSoundTableID("S_CHATMSG"), 0, 0, 0); break;
-    case MSGSOUNDMODE_NONE:     break;
-    case MSGSOUNDMODE_CUSTOM:   Sound__PlaySample(data->sample_id, 0, 0, 0); break;
+    case MSGSOUNDMODE_DEFAULT:      Sound__PlaySample(Data__GetSoundTableID("S_CHATMSG"), 1, 0, 0); break;
+    case MSGSOUNDMODE_NONE:         break;
+    case MSGSOUNDMODE_CUSTOM:       Sound__PlaySample(data->sample_id, 1, 0, 0); break;
+    case MSGSOUNDMODE_CUSTOM_FORCE: ISampleManager__EndSample(_gSampleMgr, 0); Sound__PlaySample(data->sample_id, 1, 0, 1); break;
   }
   // Attempt to get custom text from mission ini file
   char mapIniPath[256];

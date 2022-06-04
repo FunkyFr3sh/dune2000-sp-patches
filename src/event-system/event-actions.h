@@ -16,7 +16,8 @@ typedef enum eMsgSoundMode
 {
   MSGSOUNDMODE_DEFAULT,
   MSGSOUNDMODE_NONE,
-  MSGSOUNDMODE_CUSTOM
+  MSGSOUNDMODE_CUSTOM,
+  MSGSOUNDMODE_CUSTOM_FORCE
 } eMsgSoundMode;
 
 typedef enum eRemoveMessageMode
@@ -61,7 +62,7 @@ typedef enum eChangeTileMode
 
 void EvAct_AddDelivery(int xpos, int ypos, int side_id, int amount, int deploy_action, int delay, eDeliveryType delivery_type, char *unit_list);
 void EvAct_SetDiplomacy(int source_side, int target_side, int allegiance_type, bool both_sided);
-void EvAct_PlaySound(int sample_id, bool point_sound, int xpos, int ypos);
+void EvAct_PlaySound(int sample_id, bool force, bool point_sound, int xpos, int ypos);
 void EvAct_SetCash(int side_id, eValueOperation operation, int value);
 void EvAct_SetTech(int side_id, eValueOperation operation, bool immediate_update, int value);
 void EvAct_SwitchMySide(int side_id, int ai_switch, bool reveal_base);

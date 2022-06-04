@@ -248,6 +248,7 @@ setcglob 0x0079553C, gBuildingTypeNum
 setcglob 0x00795540, gBulletTypeNum
 setcglob 0x00795544, gExplosionTypeNum
 setcglob 0x00795608, SoundClassObject
+setcglob 0x00795608, _gSampleMgr
 setcglob 0x007975A8, gTextTable
 setcglob 0x0079759C, CUIManagerObject
 setcglob 0x00797A98, CurrentSoundTrack
@@ -417,6 +418,7 @@ setcglob 0x0046EA50, GenerateSurrenderOrder
 setcglob 0x0046EAC0, CSide__ReturnMoneyFromStarportOrder
 setcglob 0x0046EB00, CSide__ResetEnemyForSide
 ; Sound
+setcglob 0x0046F420, ISampleManager__EndSample
 setcglob 0x0046F540, PlaySoundAt
 setcglob 0x0046F820, Sound__PlaySample
 setcglob 0x0046FD90, Sound__LoadMusicFile

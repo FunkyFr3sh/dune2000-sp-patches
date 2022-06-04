@@ -18,6 +18,8 @@ typedef struct dwXYStruct
   int Y;
 } dwXYStruct;
 
+typedef void ISampleManager;
+
 #include "dune2000/side.h"
 #include "dune2000/ai.h"
 #include "dune2000/templates.h"
@@ -353,6 +355,7 @@ extern unsigned char        gBuildingTypeNum;
 extern unsigned char        gBulletTypeNum;
 extern unsigned char        gExplosionTypeNum;
 extern int                  SoundClassObject;
+extern ISampleManager *     _gSampleMgr;
 extern TextTableStruct **   gTextTable;
 extern int                  CUIManagerObject;
 
@@ -505,6 +508,7 @@ void            GenerateSurrenderOrder(bool unknown);
 
 void __thiscall CSide__ResetEnemyForSide(CSide *this, char a2);
 // Sound
+void __thiscall ISampleManager__EndSample(ISampleManager *this, int handle_id);
 void            PlaySoundAt(int id, unsigned __int8 xpos, unsigned __int8 ypos);
 void            Sound__PlaySample(int id, char state, int time, int priority);
 void __thiscall Sound__LoadMusicFile(int this, char *fileName);
