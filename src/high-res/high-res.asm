@@ -88,7 +88,7 @@ hack 0x0044C784 ; LoadMapData() - map too small crash fix, adjust BattleField si
     
     
 hack 0x00444678, 0x0044467E ; map too small - Do not draw selection rectangle if cursor out of battlefield
-    mov edx, dword[OptionsBarHeight]
+    mov edx, dword[_OptionsBarHeight]
     push ecx
     mov ecx, edx
     add ecx, dword[BattleFieldHeight]
@@ -99,7 +99,7 @@ hack 0x00444678, 0x0044467E ; map too small - Do not draw selection rectangle if
     
     
 hack 0x004455BE ; map too small - Ignore order if cursor out of battlefield
-    mov eax, dword[OptionsBarHeight]
+    mov eax, dword[_OptionsBarHeight]
     push edx
     mov edx, eax
     add edx, dword[BattleFieldHeight]

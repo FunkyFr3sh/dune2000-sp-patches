@@ -913,7 +913,7 @@ void EvAct_AirliftUnit(int side_id, int target_x, int target_y, bool units_targe
     return;
   if (!units_target && target_x == unit->BlockFromX && target_y == unit->BlockFromY)
     return;
-  int8_t queue_pos = CSide_46CCA0_get_queue_pos(side, unit);
+  int8_t queue_pos = CSide__GetQueuePos(side, unit);
   if ( queue_pos != -1 )
   {
     if (! units_target)

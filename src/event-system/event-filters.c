@@ -163,7 +163,7 @@ bool CheckIfUnitMatchesCriteria(Unit *unit, eSideType side_id, eUnitFilterCriter
     case UNITCATEGORY_ENEMY_SIDE:         result = (_gDiplomacy[side_id][gSideId] == 1) && (side_id != gSideId); break;
     case UNITCATEGORY_NEUTRAL_SIDE:       result = (_gDiplomacy[side_id][gSideId] == 2) && (side_id != gSideId); break;
     case UNITCATEGORY_IS_SELECTED:        result = unit->__IsSelected; break;
-    case UNITCATEGORY_UNDER_CURSOR:       result = MousePositionX < _ViewportWidth && MousePositionY >= OptionsBarHeight && UnitOccupiesTile(unit, (_ViewportXPos + MousePositionX) / 32, (_ViewportYPos + MousePositionY - OptionsBarHeight) / 32); break;
+    case UNITCATEGORY_UNDER_CURSOR:       result = MousePositionX < _ViewportWidth && MousePositionY >= _OptionsBarHeight && UnitOccupiesTile(unit, (_ViewportXPos + MousePositionX) / 32, (_ViewportYPos + MousePositionY - _OptionsBarHeight) / 32); break;
     case UNITCATEGORY_CENTER_OF_TILE:     result = unit->pos_steps == 0; break;
     case UNITCATEGORY_REVEALED_TILE_FULL: result = tile_valid && ((gGameMap.map[pos_x + _CellNumbersWidthSpan[pos_y]].__shroud & 15) == 0); break;
     case UNITCATEGORY_REVEALED_TILE_PART: result = tile_valid && ((gGameMap.map[pos_x + _CellNumbersWidthSpan[pos_y]].__shroud & 15) != 1); break;
@@ -285,7 +285,7 @@ bool CheckIfBuildingMatchesCriteria(Building *building, eSideType side_id, eBuil
     case BUILDINGCATEGORY_ENEMY_SIDE:       result = (_gDiplomacy[side_id][gSideId] == 1) && (side_id != gSideId); break;
     case BUILDINGCATEGORY_NEUTRAL_SIDE:     result = (_gDiplomacy[side_id][gSideId] == 2) && (side_id != gSideId); break;
     case BUILDINGCATEGORY_IS_SELECTED:      result = building->__IsSelected; break;
-    case BUILDINGCATEGORY_UNDER_CURSOR:     result = MousePositionX < _ViewportWidth && MousePositionY >= OptionsBarHeight && BuildingOccupiesTile(building, (_ViewportXPos + MousePositionX) / 32, (_ViewportYPos + MousePositionY - OptionsBarHeight) / 32); break;
+    case BUILDINGCATEGORY_UNDER_CURSOR:     result = MousePositionX < _ViewportWidth && MousePositionY >= _OptionsBarHeight && BuildingOccupiesTile(building, (_ViewportXPos + MousePositionX) / 32, (_ViewportYPos + MousePositionY - _OptionsBarHeight) / 32); break;
     case BUILDINGCATEGORY_ENEMY_VALID:          result = building->EnemyIndex != -1; break;
     case BUILDINGCATEGORY_ENEMY_UNIT:           result = (building->EnemyIndex != -1) && GetSide(building->EnemySide)->__ObjectArray[building->EnemyIndex].ObjectType == 1; break;
     case BUILDINGCATEGORY_ENEMY_BUILDING:       result = (building->EnemyIndex != -1) && GetSide(building->EnemySide)->__ObjectArray[building->EnemyIndex].ObjectType == 2; break;
@@ -366,7 +366,7 @@ bool CheckIfCrateMatchesCriteria(CrateStruct *crate, eCrateFilterCriteriaType cr
   case CRATECRITERIATYPE_CATEGORY:
     switch(value)
     {
-    case CRATECATEGORY_UNDER_CURSOR:  result = MousePositionX < _ViewportWidth && MousePositionY >= OptionsBarHeight && crate->__x == (_ViewportXPos + MousePositionX) / 32 && crate->__y == ((_ViewportYPos + MousePositionY - OptionsBarHeight) / 32); break;
+    case CRATECATEGORY_UNDER_CURSOR:  result = MousePositionX < _ViewportWidth && MousePositionY >= _OptionsBarHeight && crate->__x == (_ViewportXPos + MousePositionX) / 32 && crate->__y == ((_ViewportYPos + MousePositionY - _OptionsBarHeight) / 32); break;
     case CRATECATEGORY_SPICE_BLOOM:   result = crate->__type >= CT_SPICE_BLOOM_SMALL && crate->__type <= CT_SPICE_BLOOM_LARGE; break;
     case CRATECATEGORY_SHOOTABLE:     result = (crate->__type >= CT_SPICE_BLOOM_SMALL && crate->__type <= CT_SPICE_BLOOM_LARGE && !(crate->ext_data_field & 128)) || (crate->__type == CT_EXPLODE && crate->ext_data_field & 128); break;
     case CRATECATEGORY_IGNORED_BY_AI: result = (crate->__type == CT_EXPLODE && crate->ext_data_field) || (crate->__image == 4); break;
@@ -394,7 +394,7 @@ bool CheckIfTileMatchesCriteria(GameMapTileStruct *tile, int pos_x, int pos_y, e
     case TILECRITERIATYPE_CATEGORY:
       switch(value)
       {
-      case TILECATEGORY_UNDER_CURSOR:     result = MousePositionX < _ViewportWidth && MousePositionY >= OptionsBarHeight && pos_x == (_ViewportXPos + MousePositionX) / 32 && pos_y == ((_ViewportYPos + MousePositionY - OptionsBarHeight) / 32); break;
+      case TILECATEGORY_UNDER_CURSOR:     result = MousePositionX < _ViewportWidth && MousePositionY >= _OptionsBarHeight && pos_x == (_ViewportXPos + MousePositionX) / 32 && pos_y == ((_ViewportYPos + MousePositionY - _OptionsBarHeight) / 32); break;
       case TILECATEGORY_FULLY_HIDDEN:     result = (tile->__shroud & 15) == 1; break;
       case TILECATEGORY_HIDDEN:           result = (tile->__shroud & 15) != 0; break;
       case TILECATEGORY_PART_REVEALED:    result = (tile->__shroud & 15) != 1; break;

@@ -135,7 +135,7 @@ cextern SideBarPanelLeftUIPosX
 cextern SideBarIconCount
 cextern MiniMapUIPosX
 cextern PointerToMainImage
-cextern OptionsBarHeight
+cextern _OptionsBarHeight
 cextern BattleFieldWidth
 cextern BattleFieldHeight
 cextern BattleFieldPosX
@@ -205,7 +205,7 @@ cextern ModelAddExplosion
 cextern ModelStarportCancel
 cextern PlaySoundAt
 cextern CreateGlobe
-cextern Unit_49D280_occupiedbybuilding
+cextern UnitTileOccupiedByBuilding
 cextern IsAnyInfantrySelected
 cextern CSide__ReturnMoneyFromStarportOrder
 cextern _ReadFile

@@ -161,7 +161,7 @@ void QueueMessageExt(const char *message, int duration, int ref_id, int screen_p
   {
     gMessageData[slot].is_chat = true;
     gMessageData[slot].screen_pos_x = 8;
-    gMessageData[slot].screen_pos_y = OptionsBarHeight + 4;
+    gMessageData[slot].screen_pos_y = _OptionsBarHeight + 4;
   }
   else
   {
@@ -179,10 +179,10 @@ void QueueMessageExt(const char *message, int duration, int ref_id, int screen_p
     }
     switch (vertical_screen_pos)
     {
-    case 0: ypos = OptionsBarHeight + offset_y; break;
-    case 1: ypos = OptionsBarHeight + (_ViewportHeight / 2) - 6 - offset_y; break;
-    case 2: ypos = OptionsBarHeight + (_ViewportHeight / 2) - 6 + offset_y; break;
-    case 3: ypos = OptionsBarHeight + _ViewportHeight - 17 - offset_y; break;
+    case 0: ypos = _OptionsBarHeight + offset_y; break;
+    case 1: ypos = _OptionsBarHeight + (_ViewportHeight / 2) - 6 - offset_y; break;
+    case 2: ypos = _OptionsBarHeight + (_ViewportHeight / 2) - 6 + offset_y; break;
+    case 3: ypos = _OptionsBarHeight + _ViewportHeight - 17 - offset_y; break;
     }
     gMessageData[slot].is_chat = false;
     gMessageData[slot].screen_pos_x = xpos;
@@ -220,7 +220,7 @@ void Mod__BlitMessages(TImage *img)
   {
     char Buffer[20];
     sprintf(Buffer, "%02d:%02d", _gTimerValue / 1500, _gTimerValue / 25 % 60);
-    Graphlib__DrawTextWithBlackShadow(img, Buffer, HighResPatchEnabled?420+HighResAddedWidth:420, OptionsBarHeight + 4, 1, 0);
+    Graphlib__DrawTextWithBlackShadow(img, Buffer, HighResPatchEnabled?420+HighResAddedWidth:420, _OptionsBarHeight + 4, 1, 0);
   }
 
   // Draw messages

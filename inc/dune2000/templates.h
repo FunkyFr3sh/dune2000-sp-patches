@@ -45,7 +45,8 @@ typedef struct UnitAtribStruct
   // Additional fields for extended functionality (mod)
   char UnitUpgradeAllowed;
   unsigned char UnitUpgradeTargetType;
-  char field_AD[83];
+  char MovementRestriction;
+  char field_AD[82];
 }UnitAtribStruct;
 
 typedef struct BuildingAtrbStruct
@@ -104,7 +105,10 @@ typedef struct BuildingAtrbStruct
   char _____BuildupArt;
   char _____BuildingAnimation;
   char _____explosionindex2;
-  char field_8D[127];
+  // Additional fields for extended functionality (mod)
+  char BuildRestriction;
+  char BuildMaxDistance;
+  char field_8D[125];
 }BuildingAtrbStruct;
 
 typedef struct BullAtrbStruct

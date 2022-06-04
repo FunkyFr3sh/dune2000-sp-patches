@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include "patch.h"
 
 // This header works with sym.asm which defines the Vanilla symbols
@@ -9,6 +10,13 @@ typedef char eBuildingGroupType;
 typedef int32_t _DWORD;
 typedef int16_t _WORD;
 typedef uint8_t _BYTE;
+typedef int BOOL;
+
+typedef struct dwXYStruct
+{
+  int X;
+  int Y;
+} dwXYStruct;
 
 #include "dune2000/side.h"
 #include "dune2000/ai.h"
@@ -127,6 +135,44 @@ enum GameStates
     GS_QUIT
 };
 
+enum CursorTypes
+{
+  CURSOR_POINTER = 0,
+  CURSOR_MOVE = 1,
+  CURSOR_ATTACK = 2,
+  CURSOR_CANT_MOVE = 3,
+  CURSOR_ENTER = 4,
+  CURSOR_OVER_UNIT = 5,
+  CURSOR_MOVE_RADAR = 6,
+  CURSOR_CANT_SELL = 7,
+  CURSOR_CANT_REPAIR = 8,
+  CURSOR_SPECIAL = 9,
+  CURSOR_SELL = 10,
+  CURSOR_REPAIR = 11,
+  CURSOR_DEPLOY = 12,
+  CURSOR_CANT_DEPLOY = 13,
+  CURSOR_SCROLL_N = 14,
+  CURSOR_SCROLL_NE = 15,
+  CURSOR_SCROLL_E = 16,
+  CURSOR_SCROLL_SE = 17,
+  CURSOR_SCROLL_S = 18,
+  CURSOR_SCROLL_SW = 19,
+  CURSOR_SCROLL_W = 20,
+  CURSOR_SCROLL_NW = 21,
+  CURSOR_CANT_SCROLL_N = 22,
+  CURSOR_CANT_SCROLL_NE = 23,
+  CURSOR_CANT_SCROLL_E = 24,
+  CURSOR_CANT_SCROLL_SE = 25,
+  CURSOR_CANT_SCROLL_S = 26,
+  CURSOR_CANT_SCROLL_SW = 27,
+  CURSOR_CANT_SCROLL_W = 28,
+  CURSOR_CANT_SCROLL_NW = 29,
+  CURSOR_DEATHHAND = 30,
+  CURSOR_DEMOLISH = 31,
+  CURSOR_MOVE_MOUNTAIN = 32,
+  CURSORS_MAX = 33,
+};
+
 // Side (HouseClass)
 #define HC_SIDEID 0x24252
 #define HC_CREDITS 0x2425C
@@ -219,7 +265,7 @@ extern int MiniMapUIPosX;
 extern int SideBarWidth;
 extern int BattleFieldWidth;
 extern int BattleFieldHeight;
-extern int OptionsBarHeight;
+extern int _OptionsBarHeight;
 extern int CurrentCursorId;
 
 //Others
@@ -232,6 +278,7 @@ extern int                  GameState;
 
 extern short                gDifficultyLevel;
 extern int                  gBitsPerPixel;
+extern POINT                _gMousePos;
 extern int                  MousePositionX;
 extern int                  MousePositionY;
 extern int                  RandSeed;
@@ -285,6 +332,7 @@ extern char                 _templates_UnitTypeCount;
 
 extern int                  _ViewportHeight;
 extern BuildingAtrbStruct   _templates_buildattribs[100];
+extern TImage *             _image_placement_marker_buildable_concrete;
 extern int                  _sinValues[16384];
 extern char                 _MapName[200];
 extern int                  _cosValues[16384];
@@ -295,8 +343,10 @@ extern BullAtrbStruct       _templates_bulletattribs[64];
 extern char                 _FreeSpawnLocations[8];
 extern uint16_t             _ColoursBinData[128];
 extern int                  _ViewportWidth;
+extern TImage *             _image_placement_marker_buildable;
 extern char                 _SpawnLocationCount;
 extern unsigned int         _TileBitflags[800];
+extern TImage *             _image_placement_marker_nonbuildable;
 extern uint16_t             _radarcolor16_sidecolor[8];
 extern unsigned char        gUnitTypeNum;
 extern unsigned char        gBuildingTypeNum;
@@ -341,6 +391,7 @@ void            WOL__StartHostINetGame();
 void            WOL__OpenWebsite(char *URL);
 void            QueueMessage(const char *message, int type);
 void            FreeMessageSlot();
+void            GetOwnershipStatusOfCell(int x, int y, char side, _BYTE *flags);
 void            DebugFatal(char *caption, char *format, ...);
 size_t          _ReadFile(void *buffer, size_t size, size_t count, FILE *file);
 size_t          _WriteFile(void *buffer, size_t size, size_t count, FILE *file);
@@ -356,6 +407,7 @@ void            Graphlib__LoadFontFile();
 uint16_t        GetColor16bit(int colormask, int color);
 // Image
 void            BlitClipTImage1(TImage *lpTITo, int toX, int toY, TImage *lpTIFrom, RECT *rect, bool trans, int a7);
+void            BlitClipTImage2(TImage *lpTITo, RECT *rect, int toX, int toY, TImage *lpTIFrom, bool trans, int a7);
 void            ClearTImage(TImage *a1, int color, int unusable);
 void            BlitFontChar_0(TImage *dest, int x, int y, TImage *src, _WORD *pal);
 // Other
@@ -372,6 +424,7 @@ int             RevealMap();
 void            Map__PlayerDefeated(uint8_t sideId);
 
 char            UpdateShroudInRegion(RECT *rect, unsigned __int8 width, unsigned __int8 height);
+unsigned int    FindFreeSpotForInfantry(TileFlags tile_flags);
 void            GetBuildingOnConcreteCount(char side_id, unsigned char building_type, unsigned char x, unsigned char y, unsigned int *buildTileCount1, unsigned int *concreteTileCount1);
 void            RevealCircle(int x, int y, int size);
 char            GetFreeCrateIndex();
@@ -442,7 +495,7 @@ void __thiscall CSide__UpdateBuildingAndUnitIconsAndBaseBoundaries(CSide *side);
 char __thiscall CSide__MyVersionOfBuilding(CSide *this, char building_type, bool bool1);
 uint8_t __thiscall CSide__MyVersionOfUnit(CSide *this, char unit, bool bool1);
 void __thiscall CSide__AddCash(CSide *this, int a2);
-int8_t __thiscall CSide_46CCA0_get_queue_pos(CSide *this, Unit *unit);
+int8_t __thiscall CSide__GetQueuePos(CSide *this, Unit *unit);
 bool __thiscall CSide__AddToQueue(CSide *this, Unit *unit, __int16 unit_index, unsigned __int8 queue_pos, char a5, int state);
 Unit *          ChangeUnitOwner(eSideType source_side_id, eSideType target_side_id, __int16 source_unit_index, char bool1);
 char            CaptureBuilding(eSideType source_side_id, eSideType target_side_id, __int16 source_building_index);
@@ -477,6 +530,7 @@ void            DestroyUnit(eSideType side, __int16 index);
 char            DamageTiles(unsigned int xpos, unsigned int ypos, unsigned int a3, unsigned __int8 bulletType, int ai_side, __int16 ai_index, char a7);
 
 bool            UnitAdjustState(Unit *unit, eUnitState state);
+bool            Unit_49E140(Unit *unit);
 void            MakeUnitsStealthInRange(unsigned __int8 x, unsigned __int8 y, eSideType side);
 int             RevealTilesSeenByBuildingsAndUnits(eSideType side);
 bool            Unit_49F5F0(Unit *unit);

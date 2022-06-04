@@ -22,9 +22,10 @@
     test eax, 0x7013F8
 @ENDPATCH
 
-@PATCH 0x0042881C ; HandleBuildingPlacement
-    test eax, 0x7013F8
-@ENDPATCH
+; Superseded by Mod__HandleBuildingPlacement
+;@PATCH 0x0042881C ; HandleBuildingPlacement
+;    test eax, 0x7013F8
+;@ENDPATCH
 
 ; Do not allow placing concrete on tiles with spice
 @PATCH 0x004562B3 ; AddConcrete

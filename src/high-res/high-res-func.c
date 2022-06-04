@@ -51,7 +51,7 @@ void SetBattleFieldSize()
     int mapWidth = 32 * gGameMapWidth;
     int mapHeight = 32 * gGameMapHeight;
     int maxWidth = GameWidth - SideBarWidth;
-    int maxHeight = GameHeight - OptionsBarHeight;
+    int maxHeight = GameHeight - _OptionsBarHeight;
     
     BattleFieldWidth = mapWidth < maxWidth ? mapWidth : maxWidth;
     BattleFieldHeight = mapHeight < maxHeight ? mapHeight : maxHeight;

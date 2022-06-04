@@ -116,7 +116,7 @@ setcglob 0x00516414, SideBarButtonMainMenu2Visible
 setcglob 0x0051642C, SideBarButtonPurchaseVisible
 setcglob 0x00786D48, BattleFieldWidth
 setcglob 0x006DC538, BattleFieldHeight
-setcglob 0x004E41DC, OptionsBarHeight
+setcglob 0x004E41DC, _OptionsBarHeight
 setcglob 0x00798538, BattleFieldPosX
 setcglob 0x0079853C, BattleFieldPosY
 setcglob 0x00798540, CurrentCursorId
@@ -173,6 +173,7 @@ setcglob 0x004DFB08, GameState
 setcglob 0x004E3B14, MyCurrentFrameRate
 setcglob 0x004E8BF0, gDifficultyLevel
 setcglob 0x004EB018, gBitsPerPixel
+setcglob 0x004EB048, _gMousePos
 setcglob 0x004EB048, MousePositionX
 setcglob 0x004EB04C, MousePositionY
 setcglob 0x004ED870, RandSeed
@@ -226,6 +227,7 @@ setcglob 0x006D9B50, _templates_UnitTypeCount
 setcglob 0x006DC470, MissionMapData
 setcglob 0x006DC538, _ViewportHeight
 setcglob 0x006DC540, _templates_buildattribs
+setcglob 0x006E5854, _image_placement_marker_buildable_concrete
 setcglob 0x006E9840, _sinValues
 setcglob 0x006F9840, _MapName
 setcglob 0x00704A98, _cosValues
@@ -236,8 +238,10 @@ setcglob 0x00782068, _templates_bulletattribs
 setcglob 0x00782AA0, _FreeSpawnLocations
 setcglob 0x00786C48, _ColoursBinData
 setcglob 0x00786D48, _ViewportWidth
+setcglob 0x00786FE8, _image_placement_marker_buildable
 setcglob 0x00786FEC, _SpawnLocationCount
 setcglob 0x00786FF8, _TileBitflags
+setcglob 0x00795440, _image_placement_marker_nonbuildable
 setcglob 0x00795518, _radarcolor16_sidecolor
 setcglob 0x00795538, gUnitTypeNum
 setcglob 0x0079553C, gBuildingTypeNum
@@ -299,6 +303,7 @@ setcglob 0x00417E50, WOL__StartHostINetGame
 setcglob 0x004184A0, WOL__OpenWebsite				; (char *URL)
 setcglob 0x00425720, QueueMessage
 setcglob 0x00425830, FreeMessageSlot
+setcglob 0x00428C30, GetOwnershipStatusOfCell
 setcglob 0x0042B590, DebugFatal
 setcglob 0x0042BB60, _ReadFile
 setcglob 0x0042BB80, _WriteFile
@@ -314,6 +319,7 @@ setcglob 0x0042E450, Graphlib__LoadFontFile
 setcglob 0x0042F3D0, GetColor16bit
 ; Image
 setcglob 0x004305F0, BlitClipTImage1
+setcglob 0x00430770, BlitClipTImage2
 setcglob 0x00430860, ClearTImage
 setcglob 0x00431F50, BlitFontChar_0
 ; Other
@@ -330,6 +336,7 @@ setcglob 0x0044C480, RevealMap
 setcglob 0x0044C4F0, Map__PlayerDefeated
 setcglob 0x0044C520, Map__SetDeadOrder
 setcglob 0x0044CD10, UpdateShroudInRegion
+setcglob 0x0044DA90, FindFreeSpotForInfantry
 setcglob 0x0044DAC0, GetBuildingOnConcreteCount
 setcglob 0x0044E3B0, RevealCircle
 setcglob 0x0044E790, GetFreeCrateIndex
@@ -400,7 +407,7 @@ setcglob 0x0046BE50, CSide__UpdateBuildingAndUnitIconsAndBaseBoundaries
 setcglob 0x0046C450, CSide__MyVersionOfBuilding
 setcglob 0x0046C570, CSide__MyVersionOfUnit
 setcglob 0x0046C7B0, CSide__AddCash
-setcglob 0x0046CCA0, CSide_46CCA0_get_queue_pos
+setcglob 0x0046CCA0, CSide__GetQueuePos
 setcglob 0x0046CD00, CSide__AddToQueue
 setcglob 0x0046D2E0, ChangeUnitOwner
 setcglob 0x0046D6D0, CaptureBuilding
@@ -433,8 +440,9 @@ setcglob 0x004979A0, GetRandomAdjacentTile
 setcglob 0x0049CA10, DestroyBuilding
 setcglob 0x0049CDE0, DestroyUnit
 setcglob 0x0049D2E0, DamageTiles
-setcglob 0x0049D280, Unit_49D280_occupiedbybuilding
+setcglob 0x0049D280, UnitTileOccupiedByBuilding
 setcglob 0x0049DEB0, UnitAdjustState
+setcglob 0x0049E140, Unit_49E140
 setcglob 0x0049F1B0, MakeUnitsStealthInRange
 setcglob 0x0049F4D0, RevealTilesSeenByBuildingsAndUnits
 setcglob 0x0049F5F0, Unit_49F5F0

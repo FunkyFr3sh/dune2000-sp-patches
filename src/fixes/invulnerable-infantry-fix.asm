@@ -9,7 +9,7 @@ hack 0x0049D815, 0x0049D81F ; DamageTiles
     ; Work-around: add additional check if infantry stays on tile occupied by building.
     ; If there's not building tile, allow infantry to be damaged even if it's still in state 8 due to a bug
     push esi
-    call Unit_49D280_occupiedbybuilding
+    call UnitTileOccupiedByBuilding
     add esp, 4
     dec al ; Flip the bool result of function
 .Skip:
