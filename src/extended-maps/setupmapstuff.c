@@ -152,6 +152,10 @@ void Mod__setupmapstuff()
   // Store the original side ID upon starting a map
   gOldSideId = gSideId;
 
+  // Reset last played property of sounds in sound table
+  for (int i = 0; i < _sampletablecount; i++)
+    gSampleTable[i]->last_played = 0;
+
   // Clean garbage data for conditions which use some fields for internal data storage
   for (int i = 0; i < _gConditionCount; i++)
   {

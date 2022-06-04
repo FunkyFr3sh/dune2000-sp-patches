@@ -250,6 +250,8 @@ setcglob 0x00795544, gExplosionTypeNum
 setcglob 0x00795608, SoundClassObject
 setcglob 0x00795608, _gSampleMgr
 setcglob 0x007975A8, gTextTable
+setcglob 0x007975B8, gSampleTable
+setcglob 0x007975BC, _sampletablecount
 setcglob 0x0079759C, CUIManagerObject
 setcglob 0x00797A98, CurrentSoundTrack
 setcglob 0x00797E1C, gRestartGame

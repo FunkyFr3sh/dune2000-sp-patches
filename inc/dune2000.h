@@ -18,8 +18,6 @@ typedef struct dwXYStruct
   int Y;
 } dwXYStruct;
 
-typedef void ISampleManager;
-
 #include "dune2000/side.h"
 #include "dune2000/ai.h"
 #include "dune2000/templates.h"
@@ -30,6 +28,7 @@ typedef void ISampleManager;
 #include "dune2000/vars.h"
 #include "dune2000/order.h"
 #include "dune2000/graphlib.h"
+#include "dune2000/sound.h"
 
 typedef struct GameEvent // 168 byte
 {
@@ -357,6 +356,8 @@ extern unsigned char        gExplosionTypeNum;
 extern int                  SoundClassObject;
 extern ISampleManager *     _gSampleMgr;
 extern TextTableStruct **   gTextTable;
+extern SampleTableStruct ** gSampleTable;
+extern int                  _sampletablecount;
 extern int                  CUIManagerObject;
 
 extern bool                 gRestartGame;

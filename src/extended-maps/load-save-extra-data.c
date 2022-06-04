@@ -26,7 +26,11 @@ void LoadGameExtraData(void *buffer, size_t size, size_t count, FILE *file)
   (void)count;
   // Call which got replaced
   _ReadFile(&gNetWorms, 1, 1, file);
-  // Write font palettes
+  // Read font palettes
   for (int i = 0; i < 16; i++)
     _ReadFile(_FontPals[i], gBitsPerPixel * 2, 1, file);
+
+  // Reset last played property of sounds in sound table
+  for (int i = 0; i < _sampletablecount; i++)
+    gSampleTable[i]->last_played = 0;
 }
