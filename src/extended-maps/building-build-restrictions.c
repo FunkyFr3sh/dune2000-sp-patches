@@ -3,16 +3,19 @@
 #include "macros/patch.h"
 #include "dune2000.h"
 
-void GetOwnershipStatusOfCellExt(int x, int y, unsigned char side_id, _BYTE *flags, int building_type)
+// Custom implementation of function GetOwnershipStatusOfCell
+LJMP(0x00428C30, _Mod__GetOwnershipStatusOfCell);
+
+void Mod__GetOwnershipStatusOfCell(int x, int y, unsigned char side_id, _BYTE *flags)
 {
   unsigned int tile_flags; // eax
-  (void)building_type;
 
   if ( x >= 0 && x < gGameMap.width && y >= 0 && y < gGameMap.height )
   {
     tile_flags = gGameMap.map[x + _CellNumbersWidthSpan[y]].__tile_bitflags;
     // New logic - only tile with Build On flag provides build radius
-    if ( (tile_flags & (TileFlags_10_OCC_BUILDING | TileFlags_8000_BUILD_ON )) == (TileFlags_10_OCC_BUILDING | TileFlags_8000_BUILD_ON ))
+    bool tile_buildable = (_TileBitflags[gGameMap.map[x + _CellNumbersWidthSpan[y]].back_up_tile_index] & TileFlags_8000_BUILD_ON) == TileFlags_8000_BUILD_ON;
+    if ( (tile_flags & TileFlags_10_OCC_BUILDING) && tile_buildable )
     {
       if ( (tile_flags & 7) == side_id )
       {
@@ -138,8 +141,8 @@ bool Mod__HandleBuildingPlacement(eSideType side_id, int tile_bitfield, int tile
               do
               {
                 // New logic start
-                // Call extended version of GetOwnershipStatusOfCell
-                GetOwnershipStatusOfCellExt(check_x++, check_y, side_id, &flags, building_type);
+                // Call modded version of GetOwnershipStatusOfCell
+                Mod__GetOwnershipStatusOfCell(check_x++, check_y, side_id, &flags);
                 // New logic end
               }
               while ( check_x < check_max_x );
