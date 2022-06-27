@@ -191,6 +191,7 @@ setcglob 0x005173F4, gGameTicks
 setcglob 0x00517500, _cheatstates
 setcglob 0x00517780, _radarcolor_byte_517780_spicecolor
 setcglob 0x00517898, _radarcolor_word_517898_spicecolor
+setcglob 0x005178AC, _blitflag
 setcglob 0x005178B4, PointerToMainImage
 setcglob 0x005178D8, _ScreenShakes
 setcglob 0x00517B98, gCrates

@@ -297,6 +297,7 @@ extern unsigned int         gGameTicks;
 extern char                 _cheatstates[8];
 extern char                 _radarcolor_byte_517780_spicecolor;
 extern short                _radarcolor_word_517898_spicecolor;
+extern char                 _blitflag;
 
 extern short                _ScreenShakes;
 extern CrateStruct          gCrates[30];

@@ -115,6 +115,10 @@ void EvAct_SwitchMySide(int side_id, int ai_switch, bool reveal_base)
     RevealTilesSeenByBuildingsAndUnits(gSideId);
   if (ai_switch & 1)
     _gAIArray[gSideId].__IsAI = 0;
+  // Fix powerbar after switching side
+  GetSide(side_id)->__PowerPercent2 = 0xFFFF;
+  // Fix broken building/unit icons after switching side
+  _blitflag = 1;
 }
 
 void EvAct_HideMap()
