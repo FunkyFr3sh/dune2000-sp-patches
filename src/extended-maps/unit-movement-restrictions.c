@@ -271,15 +271,14 @@ LJMP(0x004466D8, 0x00443D3B); // Jump back and skip call of SetMouseCursor funct
 
 void SetMouseCursorForUnitMovementRestriction()
 {
-  int tile_y = (_gMousePos.y + _ViewportYPos - _OptionsBarHeight) / 32;
-  int tile_x = (_gMousePos.x + _ViewportXPos) / 32;
-  int tile_flags = gGameMap.map[tile_x + _CellNumbersWidthSpan[tile_y]].__tile_bitflags;
+  dwXYStruct pos;
+  pos.Y = (_gMousePos.y + _ViewportYPos - _OptionsBarHeight) / 32;
+  pos.X = (_gMousePos.x + _ViewportXPos) / 32;
   for (Unit *unit = GetSide(gSideId)->__FirstUnitPtr; unit; unit = unit->Next)
   {
     if (!unit->__IsSelected)
       continue;
-    UnitAtribStruct *unit_template = &_templates_unitattribs[unit->Type];
-    if (CheckTerrainRestriction(tile_flags, unit_template->__IsInfantry?TileFlags_4000_WALK_ON:TileFlags_2000_DRIVE_ON, unit_template->MovementRestriction))
+    if (Mod__CanUnitUseSquare(pos, unit, gSideId, 0))
     {
       SetMouseCursor(CURSOR_MOVE);
       return;
