@@ -185,14 +185,15 @@ void EvAct_UnitSpawn(int xpos, int ypos, int side_id, int amount, int facing, in
     if (_templates_unitattribs[(int)unit_list[i]].__Behavior != UnitBehavior_SANDWORM)
       GetNearestFreeTileForUnit(&x, &y, 12u);
     int unit_index = ModelAddUnit(side_id, unit_list[i], x, y, x, y, 0, 0);
+    if (unit_index == -1)
+      continue;
     Unit *unit = GetUnit(side_id, unit_index);
-    if (unit)
-    {
-      unit->__Facing = facing << 2;
-      unit->__FacingTurret = facing << 2;
-      unit->__FacingTurretTarget = facing << 2;
-      unit->Tag = tag;
-    }
+    if (!unit)
+      continue;
+    unit->__Facing = facing << 2;
+    unit->__FacingTurret = facing << 2;
+    unit->__FacingTurretTarget = facing << 2;
+    unit->Tag = tag;
   }
 }
 
@@ -280,18 +281,21 @@ int EvAct_AddUnit(int xpos, int ypos, int side_id, int properties, int unit_type
   // Add unit
   int unit_index = ModelAddUnit(side_id, unit_type, xpos, ypos, target_x, target_y, 0, 0);
   // Set unit properties
-  Unit *unit = GetUnit(side_id, unit_index);
-  if (unit)
+  if (unit_index != -1)
   {
-    if (!movement)
+    Unit *unit = GetUnit(side_id, unit_index);
+    if (unit)
     {
-      unit->__Facing = facing << 2;
-      unit->__FacingTurret = facing << 2;
-      unit->__FacingTurretTarget = facing << 2;
+      if (!movement)
+      {
+        unit->__Facing = facing << 2;
+        unit->__FacingTurret = facing << 2;
+        unit->__FacingTurretTarget = facing << 2;
+      }
+      if (properties & 1)
+        unit->Flags |= UFLAGS_10_STEALTH;
+      unit->Tag = tag;
     }
-    if (properties & 1)
-      unit->Flags |= UFLAGS_10_STEALTH;
-    unit->Tag = tag;
   }
   // Revert back owner side attributes
   if (occ_building && (orig_owner_side != side_id))
@@ -636,6 +640,8 @@ void EvAct_AddBuildingDestruct(int xpos, int ypos, int side_id, int building_typ
 {
   int old_screen_shakes = _ScreenShakes;
   int building_index = ModelAddBuilding(side_id, building_type, xpos, ypos, 0, 1, 1);
+  if (building_index == -1)
+    return;
   DestroyBuilding(side_id, building_index, 0);
   CSide *side = GetSide(side_id);
   side->__BuildingsBuilt--;
