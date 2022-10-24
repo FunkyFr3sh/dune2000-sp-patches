@@ -58,6 +58,7 @@ OBJS            ?= callsites.o \
 	src/extended-maps/load-save-extra-data.o \
 	src/extended-maps/building-build-restrictions.o \
 	src/extended-maps/unit-movement-restrictions.o \
+	src/extended-maps/show-neutral-become-hostile-msg-rule.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \

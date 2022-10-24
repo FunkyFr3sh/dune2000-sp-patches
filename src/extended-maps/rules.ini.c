@@ -25,6 +25,7 @@ uint32_t  rulesExt__buildSpeedPercentageEasy    = 125;
 uint32_t  rulesExt__buildSpeedPercentageHard    = 75;
 bool      rulesExt__uncloakRemainingStealthUnit = true;
 uint8_t   rulesExt__maxChatMessages             = 5;
+bool      rulesExt__showNeutralBecomeHostileMsg = true;
 
 static void LoadVars(LPCTSTR fileName);
 
@@ -81,4 +82,5 @@ static void LoadVars(LPCTSTR fileName)
     rulesExt__buildSpeedPercentageHard = IniGetInt("Vars", "buildSpeedPercentageHard", rulesExt__buildSpeedPercentageHard, fileName);
     rulesExt__uncloakRemainingStealthUnit = IniGetBool("Vars", "uncloakRemainingStealthUnit", rulesExt__uncloakRemainingStealthUnit, fileName);
     rulesExt__maxChatMessages = IniGetInt("Vars", "maxChatMessages", rulesExt__maxChatMessages, fileName);
+    rulesExt__showNeutralBecomeHostileMsg = IniGetBool("Vars", "showNeutralBecomeHostileMsg", rulesExt__showNeutralBecomeHostileMsg, fileName);
 }
