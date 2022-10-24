@@ -171,7 +171,7 @@ typedef struct CAI_
   int32_t MaxBuildings[100];
   char c_field_19EC;
   char AttackSidePriority[8];
-  char field_19F5;
+  char AutoBerserkMode; // Newly added parameter (mod)
   char field_19F6;
   char field_19F7;
   float UnitBuildPriority[60];

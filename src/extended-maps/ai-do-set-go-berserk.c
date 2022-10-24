@@ -2,7 +2,8 @@
 #include "dune2000.h"
 #include "macros/patch.h"
 
-// If a Practice AI went berserk or started without buildings/units and later gets a MCV, it will not go berserk and build base normally
+// 1. If a Practice AI went berserk or started without buildings/units and later gets a MCV, it will not go berserk and build base normally
+// 2. Add new AI property AutoBerserkMode
 
 // Custom implementation of function CAI__DoSetGoBerserk
 CALL(0x0041B73F, _Mod__CAI__DoSetGoBerserk);
@@ -25,7 +26,13 @@ void __thiscall Mod__CAI__DoSetGoBerserk(CAI_ *this)
   if ( (gGameTicks & 7) == this->AISide )
   {
     side = GetSide((eSideType)this->AISide);
-    if ( ai->EnablePractice )
+    // New logic start
+    // Manage AutoBerserkMode AI property
+    // 0 = Enabled only for practice AI
+    // 1 = Disabled
+    // 2 = Enabled also for non-practice AI
+    if ( (ai->EnablePractice && ai->AutoBerserkMode == 0) || (ai->AutoBerserkMode == 2) )
+    // New logic end
     {
       if ( !ai->__GoBeserk_OtherStates )
       {

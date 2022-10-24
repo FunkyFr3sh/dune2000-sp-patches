@@ -59,6 +59,7 @@ OBJS            ?= callsites.o \
 	src/extended-maps/building-build-restrictions.o \
 	src/extended-maps/unit-movement-restrictions.o \
 	src/extended-maps/show-neutral-become-hostile-msg-rule.o \
+	src/extended-maps/ai-do-set-go-berserk.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \
@@ -88,7 +89,6 @@ OBJS            ?= callsites.o \
 	src/fixes/ai-build-concrete-fix.o \
 	src/fixes/ai-upgrade-buildings-fix.o \
 	src/fixes/ai-starport-bug-fix.o \
-	src/fixes/ai-reset-berserk-when-got-mcv.o \
 	src/fixes/no-building-damage-when-sold.o \
 	src/fixes/starport-sell-refund-fix.o \
 	src/fixes/upgrade-cancel-refund-fix.o \
