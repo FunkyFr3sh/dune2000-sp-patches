@@ -187,12 +187,14 @@ setcglob 0x005136E8, MapsResourcePath
 setcglob 0x00513A20, _FontBinData
 setcglob 0x00513B20, _FontData
 setcglob 0x00515B60, _FontPals
+setcglob 0x00516430, _TacticalData
 setcglob 0x005173F4, gGameTicks
 setcglob 0x00517500, _cheatstates
 setcglob 0x00517780, _radarcolor_byte_517780_spicecolor
 setcglob 0x00517898, _radarcolor_word_517898_spicecolor
 setcglob 0x005178AC, _blitflag
 setcglob 0x005178B4, PointerToMainImage
+setcglob 0x005178B4, gBackBuf
 setcglob 0x005178D8, _ScreenShakes
 setcglob 0x00517B98, gCrates
 setcglob 0x00517DE8, gGameMap

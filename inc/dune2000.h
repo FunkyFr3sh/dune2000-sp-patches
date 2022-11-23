@@ -54,6 +54,30 @@ typedef struct TechPosEntry
   char PosY;
 } TechPosEntry;
 
+typedef struct TacticalStruct
+{
+  int __SidebarMode;
+  int __PrevSidebarMode;
+  int __SidebarButtonMode;
+  char __RadarState;
+  char __CanPlace;
+  char field_E;
+  char field_F;
+  int __Strip1ScrollPos1;
+  int __Strip2ScrollPos1;
+  int __Strip1ScrollPos2;
+  int __Strip2ScrollPos2;
+  int __BandboxStartX;
+  int __BandboxStartY;
+  bool __DraggingBandbox;
+  POINT __Bookmarks[4];
+  int __radarfade;
+  char __isLowOnFunds;
+  char __RadarOnline;
+  char field_52;
+  char field_53;
+} TacticalStruct;
+
 // ### Constants ###
 
 enum Sides
@@ -293,12 +317,14 @@ extern char                 MapsResourcePath[];
 extern char                 _FontBinData[256];
 extern FontHeader           _FontData[8];
 extern int *                _FontPals[16];
+extern TacticalStruct       _TacticalData;  
 extern unsigned int         gGameTicks;
 extern char                 _cheatstates[8];
 extern char                 _radarcolor_byte_517780_spicecolor;
 extern short                _radarcolor_word_517898_spicecolor;
 extern char                 _blitflag;
 
+extern TImage               *gBackBuf;
 extern short                _ScreenShakes;
 extern CrateStruct          gCrates[30];
 extern GameMapStruct        gGameMap;

@@ -119,6 +119,8 @@ void EvAct_SwitchMySide(int side_id, int ai_switch, bool reveal_base)
   GetSide(side_id)->__PowerPercent2 = 0xFFFF;
   // Fix broken building/unit icons after switching side
   _blitflag = 1;
+  // Force radar side icon to redraw
+  _TacticalData.__radarfade = 1;
 }
 
 void EvAct_HideMap()
