@@ -99,6 +99,7 @@ OBJS            ?= callsites.o \
 	src/fixes/infiltrated-flag-cursor-fix.o \
 	src/fixes/unit-build-availability-check-fix.o \
 	src/fixes/dont-target-invulnerable-carryall.o \
+	src/fixes/ai-place-built-building-fix.o \
 	\
 	src/hotkeys/hotkeys.o \
 	src/hotkeys/hotkeys-func.o \

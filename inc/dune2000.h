@@ -394,6 +394,9 @@ bool            IsCurrentlyShown(char *menu);
 void            WOL__StartGuestINetGame();
 void            WOL__StartHostINetGame();
 void            WOL__OpenWebsite(char *URL);
+// AI
+void __thiscall CAI_PlaceBuiltBuilding(CAI_ *this);
+// Others
 void            QueueMessage(const char *message, int type);
 void            FreeMessageSlot();
 void            GetOwnershipStatusOfCell(int x, int y, char side, _BYTE *flags);

@@ -305,6 +305,9 @@ setcglob 0x00411E70, IsCurrentlyShown
 setcglob 0x00417C40, WOL__StartGuestINetGame
 setcglob 0x00417E50, WOL__StartHostINetGame
 setcglob 0x004184A0, WOL__OpenWebsite				; (char *URL)
+;AI
+setcglob 0x0041EF30, CAI_PlaceBuiltBuilding
+;Others
 setcglob 0x00425720, QueueMessage
 setcglob 0x00425830, FreeMessageSlot
 setcglob 0x00428C30, GetOwnershipStatusOfCell
