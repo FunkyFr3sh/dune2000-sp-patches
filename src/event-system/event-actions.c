@@ -780,7 +780,7 @@ void EvAct_TransferCredits(int side_id, eTransferCreditsOperation operation, int
     case TRANSFERCREDITS_VALUE_TO_SPICE_STORAGE:
     case TRANSFERCREDITS_VALUE_TO_SPICE_FORCE:
     {
-      int transfer_cash_drip = LIMIT(side->CashDrip, 0, remaining_transfer);
+      int transfer_cash_drip = HLIMIT(side->CashDrip, remaining_transfer);
       remaining_transfer -= transfer_cash_drip;
       side->SpiceDrip += transfer_cash_drip;
       side->CashDrip -= transfer_cash_drip;
