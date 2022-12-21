@@ -264,7 +264,7 @@ setcglob 0x00797E78, KeyIsDown2
 setcglob 0x00798384, _colormask1
 setcglob 0x00798390, KeyIsDown1
 setcglob 0x007984C0, gTotalPlayers
-setcglob 0x007984C4, _canQueue_IsMultiplayer
+setcglob 0x007984C4, _IsMultiplayer
 setcglob 0x007984D4, BitsPerPixelChanged
 setcglob 0x007984D8, MenuDraw_FromTopPixel		;       int MenuDraw::FromTopPixel
 setcglob 0x00798510, WindowActivated

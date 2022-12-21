@@ -394,7 +394,7 @@ extern eGameType            gGameType;
 extern int                  _colormask1;
 
 extern unsigned char        gTotalPlayers;
-extern char                 _canQueue_IsMultiplayer;
+extern char                 _IsMultiplayer;
 extern bool                 BitsPerPixelChanged;
 
 

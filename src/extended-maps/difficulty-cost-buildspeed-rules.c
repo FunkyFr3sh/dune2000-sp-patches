@@ -13,7 +13,7 @@ CALL(0x00442BE6, _Mod__GetDifficultyCostPercentage); // GetBuildingCost
 int Mod__GetDifficultyCostPercentage(unsigned char side_id)
 {
   char difficulty;
-  if ( _canQueue_IsMultiplayer )
+  if ( _IsMultiplayer )
   {
     difficulty = _OrderData[side_id].c_field_36;
   }
@@ -41,7 +41,7 @@ CALL(0x00442B91, _Mod__GetDifficultyBuildSpeedPercentage); // GetBuildingBuildSp
 int Mod__GetDifficultyBuildSpeedPercentage(unsigned char side_id)
 {
   char difficulty;
-  if ( _canQueue_IsMultiplayer )
+  if ( _IsMultiplayer )
   {
     difficulty = _OrderData[side_id].c_field_36;
   }

@@ -354,7 +354,7 @@ void Mod__setupmapstuff()
     }
 
   radarmap();
-  if ( _SpawnLocationCount != 8 && (gGameType == GAME_SKIRMISH || _canQueue_IsMultiplayer) )
+  if ( _SpawnLocationCount != 8 && (gGameType == GAME_SKIRMISH || _IsMultiplayer) )
   {
     DebugFatal("Setup.cpp", "Map needs %d flags (found %d)", 8, (unsigned __int8)_SpawnLocationCount);
   }
@@ -364,7 +364,7 @@ void Mod__setupmapstuff()
   v123.right = gGameMap.width;
   v123.bottom = gGameMap.height;
   UpdateSpiceInRegion(&v123);
-  if ( _canQueue_IsMultiplayer )
+  if ( _IsMultiplayer )
   {
     if ( gGameType != 1 )
     {
@@ -612,7 +612,7 @@ LABEL_107:
             if ( _templates_unitattribs[v121].__Behavior == UnitBehavior_SANDWORM )
             {
               ++worm_count;
-              if ( (!_canQueue_IsMultiplayer && gGameType != 1) || worm_count <= gNetWorms )
+              if ( (!_IsMultiplayer && gGameType != 1) || worm_count <= gNetWorms )
               {
                 v98 = object_array_xpos[v93];
                 y = object_array_ypos[v93];

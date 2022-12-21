@@ -173,6 +173,7 @@ cextern CreditsScreenBottom
 cextern gGameTicks
 cextern _GameOver
 cextern RandSeed
+cextern _IsMultiplayer
 cextern _gDiplomacy
 cextern SoundClassObject
 cextern WindowActivated
