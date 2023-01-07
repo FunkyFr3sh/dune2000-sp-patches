@@ -102,6 +102,7 @@ OBJS            ?= callsites.o \
 	src/fixes/ai-place-built-building-fix.o \
 	src/fixes/score-screen-volume-fix.o \
 	src/fixes/deactivate-ai-broken-orders-fix.o \
+	src/fixes/ai-ignore-units-with-flag11.o \
 	\
 	src/hotkeys/hotkeys.o \
 	src/hotkeys/hotkeys-func.o \
