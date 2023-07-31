@@ -75,3 +75,4 @@ cextern HandleSpecialValue
 cextern HitCrate
 cextern Mod__PickupCrate
 cextern InitFontColors
+cextern DebugUnitCrash
