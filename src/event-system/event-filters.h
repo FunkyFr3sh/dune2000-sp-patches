@@ -313,4 +313,6 @@ typedef enum eObjectCheckType
 bool CheckIfUnitMatchesFilter(ObjectFilterStruct *filter, Unit *unit, eSideType side_id);
 bool CheckIfBuildingMatchesFilter(ObjectFilterStruct *filter, Building *building, eSideType side_id);
 bool CheckIfCrateMatchesFilter(ObjectFilterStruct *filter, CrateStruct *crate);
-bool CheckIfTileMatchesFilter(ObjectFilterStruct *filter, GameMapTileStruct *tile, int pos_x, int pos_y, bool check_pos);
+bool CheckIfTileMatchesFilter(ObjectFilterStruct *filter, GameMapTileStruct *tile, int pos_x, int pos_y);
+
+void GetBoundsForPosFilter(ObjectFilterStruct *filter, int *min_x, int *min_y, int *max_x, int *max_y);

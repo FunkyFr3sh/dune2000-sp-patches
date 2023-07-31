@@ -1,12 +1,34 @@
 #include "dune2000.h"
 #include "event-filters.h"
 #include "event-utils.h"
+#include "event-core.h"
+#include "utils.h"
 
-bool EvaluateFilterPosition(ObjectFilterStruct *filter, int pos_x, int pos_y)
+bool EvaluateFilterPosition(ObjectFilterStruct *filter, int pos_pixels_x, int pos_pixels_y)
 {
   if (filter->pos_flags & OBJFILTERPOSFLAG_DOCHECK)
   {
-    bool result = (pos_x >= filter->pos_min_x) && (pos_y >= filter->pos_min_y) && (pos_x <= filter->pos_max_x) && (pos_y <= filter->pos_max_y);
+    int pos_x = pos_pixels_x >> 5;
+    int pos_y = pos_pixels_y >> 5;
+    int pos_type = (filter->pos_flags >> 2) & 3;
+    int pos_min_x = GetVariableValueOrConst(filter->pos_flags, 4, filter->pos_min_x);
+    int pos_min_y = GetVariableValueOrConst(filter->pos_flags, 5, filter->pos_min_y);
+    int pos_max_x = GetVariableValueOrConst(filter->pos_flags, 6, filter->pos_max_x);
+    int pos_max_y = GetVariableValueOrConst(filter->pos_flags, 7, filter->pos_max_y);
+    int center_x = pos_min_x;
+    int center_y = pos_min_y;
+    int center_pixels_x = center_x * 32 + 16;
+    int center_pixels_y = center_y * 32 + 16;
+    int radius = pos_max_x;
+    int radius_pixels = radius;
+    bool result = false;
+    switch (pos_type)
+    {
+      case 0: result = (pos_x >= pos_min_x) && (pos_y >= pos_min_y) && (pos_x <= pos_max_x) && (pos_y <= pos_max_y); break;
+      case 1: result = (abs(pos_x - center_x) <= radius) && (abs(pos_y - center_y) <= radius); break;
+      case 2: result = (pos_x - center_x) * (pos_x - center_x) + (pos_y - center_y) * (pos_y - center_y) <= radius * radius; break;
+      case 3: result = (pos_pixels_x - center_pixels_x) * (pos_pixels_x - center_pixels_x) + (pos_pixels_y - center_pixels_y) * (pos_pixels_y - center_pixels_y) <= radius_pixels * radius_pixels; break;
+    }
     return !result != !(filter->pos_flags & OBJFILTERPOSFLAG_NEGATE);
   }
   return true;
@@ -50,13 +72,13 @@ bool CheckIfUnitMatchesCriteria(Unit *unit, eSideType side_id, eUnitFilterCriter
 bool CheckIfUnitMatchesFilter(ObjectFilterStruct *filter, Unit *unit, eSideType side_id)
 {
   // Check for position
-  if (!EvaluateFilterPosition(filter, unit->__PosX >> 21, unit->__PosY >> 21))
+  if (!EvaluateFilterPosition(filter, unit->__PosX >> 16, unit->__PosY >> 16))
     return false;
   // Check for criteria
   bool criteria_result[8];
   for (int i = 0; i < 8; i++)
   {
-    int value = filter->criteria_value[i];
+    int value = GetVariableValueOrConst(filter->criteria_var_flags, i, filter->criteria_value[i]);
     criteria_result[i] = CheckIfUnitMatchesCriteria(unit, side_id, filter->criteria_type[i] & 63, filter->criteria_type[i] & 64, filter->criteria_type[i] & 128, value);
   }
   return EvaluateFilterExpression(filter, criteria_result);
@@ -67,15 +89,15 @@ bool CheckIfBuildingMatchesCriteria(Building *building, eSideType side_id, eBuil
 bool CheckIfBuildingMatchesFilter(ObjectFilterStruct *filter, Building *building, eSideType side_id)
 {
   // Check for position
-  int pos_x = building->__PosX >> 21;
-  int pos_y = (building->__PosY >> 21) - (_templates_buildattribs[building->Type]._____ArtHeight / 32);
+  int pos_x = (building->__PosX >> 16) + 16;
+  int pos_y = (building->__PosY >> 16) - _templates_buildattribs[building->Type]._____ArtHeight + 16;
   if (!EvaluateFilterPosition(filter, pos_x, pos_y))
     return false;
   // Check for criteria
   bool criteria_result[8];
   for (int i = 0; i < 8; i++)
   {
-    int value = filter->criteria_value[i];
+    int value = GetVariableValueOrConst(filter->criteria_var_flags, i, filter->criteria_value[i]);
     criteria_result[i] = CheckIfBuildingMatchesCriteria(building, side_id, filter->criteria_type[i] & 63, filter->criteria_type[i] & 64, filter->criteria_type[i] & 128, value);
   }
   return EvaluateFilterExpression(filter, criteria_result);
@@ -88,13 +110,13 @@ bool CheckIfCrateMatchesFilter(ObjectFilterStruct *filter, CrateStruct *crate)
   if (!crate->__is_active)
     return false;
   // Check for position
-  if (!EvaluateFilterPosition(filter, crate->__x, crate->__y))
+  if (!EvaluateFilterPosition(filter, crate->__x * 32 + 16, crate->__y * 32 + 16))
     return false;
   // Check for criteria
   bool criteria_result[8];
   for (int i = 0; i < 8; i++)
   {
-    int value = filter->criteria_value[i];
+    int value = GetVariableValueOrConst(filter->criteria_var_flags, i, filter->criteria_value[i]);
     criteria_result[i] = CheckIfCrateMatchesCriteria(crate, filter->criteria_type[i] & 63, filter->criteria_type[i] & 64, filter->criteria_type[i] & 128, value);
   }
   return EvaluateFilterExpression(filter, criteria_result);
@@ -102,16 +124,16 @@ bool CheckIfCrateMatchesFilter(ObjectFilterStruct *filter, CrateStruct *crate)
 
 bool CheckIfTileMatchesCriteria(GameMapTileStruct *tile, int pos_x, int pos_y, eTileFilterCriteriaType criteria_type, bool negation, bool comparison, int value);
 
-bool CheckIfTileMatchesFilter(ObjectFilterStruct *filter, GameMapTileStruct *tile, int pos_x, int pos_y, bool check_pos)
+bool CheckIfTileMatchesFilter(ObjectFilterStruct *filter, GameMapTileStruct *tile, int pos_x, int pos_y)
 {
   // Check for position
-  if (check_pos && !EvaluateFilterPosition(filter, pos_x, pos_y))
+  if (!EvaluateFilterPosition(filter, pos_x * 32 + 16, pos_y * 32 + 16))
     return false;
   // Check for criteria
   bool criteria_result[8];
   for (int i = 0; i < 8; i++)
   {
-    int value = filter->criteria_value[i];
+    int value = GetVariableValueOrConst(filter->criteria_var_flags, i, filter->criteria_value[i]);
     criteria_result[i] = CheckIfTileMatchesCriteria(tile, pos_x, pos_y, filter->criteria_type[i] & 63, filter->criteria_type[i] & 64, filter->criteria_type[i] & 128, value);
   }
   return EvaluateFilterExpression(filter, criteria_result);
@@ -517,4 +539,42 @@ bool ObjectCheck(int side_id, int obj_index, eObjectCheckType check_type, int po
   //else
   //  DebugFatal("event-filters.c", "Invalid object type %d to check for (side %d index %d)", unit->ObjectType, side_id, obj_index);
   return false;
+}
+
+void GetBoundsForPosFilter(ObjectFilterStruct *filter, int *min_x, int *min_y, int *max_x, int *max_y)
+{
+  *min_x = 0;
+  *min_y = 0;
+  *max_x = gGameMapWidth-1;
+  *max_y = gGameMapHeight-1;
+  if ((filter->pos_flags & OBJFILTERPOSFLAG_DOCHECK) && !(filter->pos_flags & OBJFILTERPOSFLAG_NEGATE))
+  {
+    int pos_min_x = GetVariableValueOrConst(filter->pos_flags, 4, filter->pos_min_x);
+    int pos_min_y = GetVariableValueOrConst(filter->pos_flags, 5, filter->pos_min_y);
+    int pos_max_x = GetVariableValueOrConst(filter->pos_flags, 6, filter->pos_max_x);
+    int pos_max_y = GetVariableValueOrConst(filter->pos_flags, 7, filter->pos_max_y);
+    int pos_type = (filter->pos_flags >> 2) & 3;
+    switch (pos_type)
+    {
+      case 0:
+        *min_x = pos_min_x;
+        *min_y = pos_min_y;
+        *max_x = pos_max_x;
+        *max_y = pos_max_y;
+        break;
+      case 1:
+      case 2:
+        *min_x = LLIMIT(pos_min_x - pos_max_x, *min_x);
+        *min_y = LLIMIT(pos_min_y - pos_max_x, *min_y);
+        *max_x = HLIMIT(pos_min_x + pos_max_x, *max_x);
+        *max_y = HLIMIT(pos_min_y + pos_max_x, *max_y);
+        break;
+      case 3:
+        *min_x = LLIMIT(pos_min_x - pos_max_x / 32, *min_x);
+        *min_y = LLIMIT(pos_min_y - pos_max_x / 32, *min_y);
+        *max_x = HLIMIT(pos_min_x + pos_max_x / 32, *max_x);
+        *max_y = HLIMIT(pos_min_y + pos_max_x / 32, *max_y);
+        break;
+    }
+  }
 }

@@ -31,7 +31,10 @@ enum EventFlags
 {
   EVENTFLAG_AUTO_BLOCK = 1,
   EVENTFLAG_BLOCKED = 2,
-  EVENTFLAG_CONDITIONS_OR = 4
+  EVENTFLAG_CONDITIONS_OR = 4,
+  EVENTFLAG_OBJECT_INDEX = 8,
+  EVENTFLAG_SKIP_VAR = 16,
+  EVENTFLAG_LIMIT_VAR = 32
 };
 
 enum EventTypes
@@ -154,7 +157,29 @@ enum EventTypes
   ET_ORDER_UPGRADE_PICK,
   ET_ORDER_UPGRADE_CANCEL,
   ET_ORDER_SPECIAL_WEAPON,
-  ET_109
+  ET_109,
+  // Reserved
+  ET_110,
+  ET_111,
+  ET_112,
+  ET_113,
+  ET_114,
+  ET_115,
+  ET_116,
+  ET_117,
+  ET_118,
+  ET_119,
+  // Variable operations
+  ET_SET_VARIABLE,
+  ET_121,
+  ET_122,
+  ET_123,
+  ET_124,
+  ET_GET_RANDOM_VALUE,
+  ET_GET_RANDOM_COORDS,
+  ET_GET_VALUE_FROM_LIST,
+  ET_GET_COORDS_FROM_LIST,
+  ET_GET_AREA_FROM_LIST
 };
 
 // Condition-related structs
@@ -235,13 +260,22 @@ enum ConditionFilterFlags
   CONDITIONFILTERFLAG_STRICT_EQUAL = 1
 };
 
+typedef struct EventVariable
+{
+  int value;
+  int old_value;
+  bool initialized;
+} EventVariable;
+
 // Variables
 
 #define MAX_EVENTS 1024
 #define MAX_CONDITIONS 256
+#define MAX_EVENT_VARIABLES 256
 
 extern EventData _gEventArray[MAX_EVENTS];
 extern ConditionData _gConditionArray[MAX_CONDITIONS];
+extern EventVariable gEventVariableArray[MAX_EVENT_VARIABLES];
 
 extern int tick_random_value;
 
@@ -250,3 +284,6 @@ extern int tick_random_value;
 bool EvaluateCondition(int condition_index);
 void ExecuteEvent(int event_index);
 void ExecuteEventAction(int event_type, EventContext *e);
+int GetVariableValueOrConst(int flags, int flag_index, int var_index_or_const);
+void SetVariableValue(int var_index, int value);
+int GetVariableValue(int var_index);

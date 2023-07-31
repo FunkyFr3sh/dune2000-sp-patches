@@ -15,6 +15,7 @@
 
 EventData _gEventArray[MAX_EVENTS];
 ConditionData _gConditionArray[MAX_CONDITIONS];
+EventVariable gEventVariableArray[MAX_EVENT_VARIABLES];
 
 // Other variables
 
@@ -210,16 +211,16 @@ bool EvaluateCondition(int condition_index)
   int args[7];
   for (int i = 0; i < 2; i++)
   {
-    coord_x[i] = condition->coord_x[i];
-    coord_y[i] = condition->coord_y[i];
+    coord_x[i] = GetVariableValueOrConst(condition->coord_var_flags, i*2, condition->coord_x[i]);
+    coord_y[i] = GetVariableValueOrConst(condition->coord_var_flags, i*2+1, condition->coord_y[i]);
   }
-  args[0] = condition->side_id;
-  args[1] = condition->arg1;
-  args[2] = condition->arg2;
-  args[3] = condition->val1;
-  args[4] = condition->val2;
-  args[5] = condition->val3;
-  args[6] = condition->val4;
+  args[0] = GetVariableValueOrConst(condition->arg_var_flags, 0, condition->side_id);
+  args[1] = GetVariableValueOrConst(condition->arg_var_flags, 1, condition->arg1);
+  args[2] = GetVariableValueOrConst(condition->arg_var_flags, 2, condition->arg2);
+  args[3] = GetVariableValueOrConst(condition->arg_var_flags, 3, condition->val1);
+  args[4] = GetVariableValueOrConst(condition->arg_var_flags, 4, condition->val2);
+  args[5] = GetVariableValueOrConst(condition->arg_var_flags, 5, condition->val3);
+  args[6] = GetVariableValueOrConst(condition->arg_var_flags, 6, condition->val4);
   // Run condition
   switch ( condition->condition_type )
   {
@@ -293,13 +294,22 @@ void ExecuteEvent(int event_index)
   EventContext e;
   for (int i = 0; i < 4; i++)
   {
-    e.coord_x[i] = event->coord_x[i];
-    e.coord_y[i] = event->coord_y[i];
+    e.coord_x[i] = GetVariableValueOrConst(event->coord_var_flags, i*2, event->coord_x[i]);
+    e.coord_y[i] = GetVariableValueOrConst(event->coord_var_flags, i*2+1, event->coord_y[i]);
   }
   for (int i = 0; i < 5; i++)
-    e.args[i] = event->args[i];
-  e.args[5] = event->value;
+    e.args[i] = GetVariableValueOrConst(event->arg_var_flags, i, event->args[i]);
+  e.args[5] = GetVariableValueOrConst(event->arg_var_flags, 5, event->value);
   e.data = event->data;
+  int skip = GetVariableValueOrConst(event->event_flags, 4, event->filter_skip);
+  int limit = GetVariableValueOrConst(event->event_flags, 5, event->data[0]);
+  // Handle event if object index is used instead of filter
+  if (event->event_flags & EVENTFLAG_OBJECT_INDEX)
+  {
+    e.index = GetVariableValue(event->filter_skip);
+    ExecuteEventAction(et, &e);
+    return;
+  }
   // Unit manipulation events: process all side's units
   if ((et >= ET_DESTROY_UNIT && et <= ET_SHOW_UNIT_DATA)
       || et == ET_ORDER_REPAIR_SINGLE_UNIT
@@ -307,8 +317,6 @@ void ExecuteEvent(int event_index)
       || et == ET_ORDER_UNIT_DEPLOY
       || et == ET_ORDER_BUILDING_ATTACK_UNIT)
   {
-    int skip = event->filter_skip;
-    int limit = event->data[0];
     if (et == ET_ORDER_UNIT_ATTACK_UNIT
         || et == ET_ORDER_BUILDING_ATTACK_UNIT)
       limit = 1;
@@ -356,8 +364,6 @@ void ExecuteEvent(int event_index)
       || et == ET_ORDER_BUILDING_REPAIR
       || et == ET_ORDER_BUILDING_SELL)
   {
-    int skip = event->filter_skip;
-    int limit = event->data[0];
     if (et == ET_ORDER_DOCK_WITH_REFINERY
         || et == ET_ORDER_REPAIR_SELECTED_UNITS
         || et == ET_ORDER_UNIT_ATTACK_BUILDING
@@ -401,8 +407,6 @@ void ExecuteEvent(int event_index)
   // Crate manipulation events: process all crates
   if (et >= ET_REMOVE_CRATE && et <= ET_SHOW_CRATE_DATA)
   {
-    int skip = event->filter_skip;
-    int limit = event->data[0];
     int affected = 0;
     // Process all crates
     for (int i = 0; i < MAX_CRATES; i++)
@@ -426,20 +430,18 @@ void ExecuteEvent(int event_index)
   // Tile manipulation events: process all tiles
   if (et >= ET_CHANGE_TILE && et <= ET_SHOW_TILE_DATA)
   {
-    int skip = event->filter_skip;
-    int limit = event->data[0];
     int affected = 0;
-    ObjectFilterStruct *filter = (ObjectFilterStruct *)&e.data[1];
-    bool check_pos = (filter->pos_flags & OBJFILTERPOSFLAG_DOCHECK) && !(filter->pos_flags & OBJFILTERPOSFLAG_NEGATE);
-    int min_x = check_pos?filter->pos_min_x:0;
-    int min_y = check_pos?filter->pos_min_y:0;
-    int max_x = check_pos?filter->pos_max_x:gGameMapWidth-1;
-    int max_y = check_pos?filter->pos_max_y:gGameMapHeight-1;
+    // Position optimization
+    int min_x;
+    int min_y;
+    int max_x;
+    int max_y;
+    GetBoundsForPosFilter((ObjectFilterStruct *)&e.data[1], &min_x, &min_y, &max_x, &max_y);
     // Process all tiles
     for (int y = min_y; y <= max_y; y++)
       for (int x = min_x; x <= max_x; x++)
       {
-        if (CheckIfTileMatchesFilter((ObjectFilterStruct *)&e.data[1], &gGameMap.map[x + _CellNumbersWidthSpan[y]], x, y, (filter->pos_flags & OBJFILTERPOSFLAG_DOCHECK) && (filter->pos_flags & OBJFILTERPOSFLAG_NEGATE)))
+        if (CheckIfTileMatchesFilter((ObjectFilterStruct *)&e.data[1], &gGameMap.map[x + _CellNumbersWidthSpan[y]], x, y))
         {
           if (skip)
             skip--;
@@ -590,7 +592,42 @@ void ExecuteEventAction(int event_type, EventContext *e)
   case ET_ORDER_UPGRADE_PICK:             GenerateUpgradePickOrder            (A_SIDE, A_ITEM);           break;
   case ET_ORDER_UPGRADE_CANCEL:           EvAct_OrderUpgradeCancel            (A_SIDE, A_BOOL);           break;
   case ET_ORDER_SPECIAL_WEAPON:           GenerateSpecialWeaponOrder          (A_SIDE, A_ITEM, COORD0);   break;
+  // Variable operations
+  case ET_SET_VARIABLE:                   EvAct_SetVariable                   (A_ITEM, A_ENUM, A_VALUE);                  break;
+  case ET_GET_RANDOM_VALUE:               EvAct_GetRandomValue                (A_ITEM, A_VALUE, *((int *)&e->data[1]));   break;
+  case ET_GET_RANDOM_COORDS:              EvAct_GetRandomCoords               (COORD0, COORD1, A_ITEM);                   break;
+  case ET_GET_VALUE_FROM_LIST:            EvAct_GetValueFromList              (A_AMNT, A_ITEM, A_ENUM, A_BOOL, (uint8_t *)e->data);  break;
+  case ET_GET_COORDS_FROM_LIST:           EvAct_GetCoordsFromList             (A_AMNT, A_ITEM, A_ENUM, A_BOOL, (uint8_t *)e->data);  break;
+  case ET_GET_AREA_FROM_LIST:             EvAct_GetAreaFromList               (A_AMNT, A_ITEM, A_ENUM, A_BOOL, (uint8_t *)e->data);  break;
   default:
     DebugFatal("event-core.c", "Unknown event type %d", event_type);
   }
+}
+
+int GetVariableValueOrConst(int flags, int flag_index, int var_index_or_const)
+{
+  if (flags & (1 << flag_index))
+    return gEventVariableArray[var_index_or_const].value;
+  else
+    return var_index_or_const;
+}
+
+void SetVariableValue(int var_index, int value)
+{
+  EventVariable *v = &gEventVariableArray[var_index];
+  if (v->initialized)
+  {
+    v->old_value = v->value;
+  }
+  else
+  {
+    v->initialized = true;
+    v->old_value = value;
+  }
+  v->value = value;
+}
+
+int GetVariableValue(int var_index)
+{
+  return gEventVariableArray[var_index].value;
 }

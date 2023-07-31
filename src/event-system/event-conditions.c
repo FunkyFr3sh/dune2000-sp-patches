@@ -233,16 +233,15 @@ bool Cond_CheckTiles(ConditionData *condition)
   bool strict_equal = condition->arg1 & CONDITIONFILTERFLAG_STRICT_EQUAL;
   int amount = LLIMIT(condition->arg2, 1);
   int matched = 0;
-  ObjectFilterStruct *filter = (ObjectFilterStruct *)condition;
-  bool check_pos = (filter->pos_flags & OBJFILTERPOSFLAG_DOCHECK) && !(filter->pos_flags & OBJFILTERPOSFLAG_NEGATE);
-  int min_x = check_pos?filter->pos_min_x:0;
-  int min_y = check_pos?filter->pos_min_y:0;
-  int max_x = check_pos?filter->pos_max_x:gGameMapWidth-1;
-  int max_y = check_pos?filter->pos_max_y:gGameMapHeight-1;
+  int min_x;
+  int min_y;
+  int max_x;
+  int max_y;
+  GetBoundsForPosFilter((ObjectFilterStruct *)condition, &min_x, &min_y, &max_x, &max_y);
   for (int y = min_y; y <= max_y; y++)
     for (int x = min_x; x <= max_x; x++)
     {
-      if (CheckIfTileMatchesFilter((ObjectFilterStruct *)condition, &gGameMap.map[x + _CellNumbersWidthSpan[y]], x, y, (filter->pos_flags & OBJFILTERPOSFLAG_DOCHECK) && (filter->pos_flags & OBJFILTERPOSFLAG_NEGATE)))
+      if (CheckIfTileMatchesFilter((ObjectFilterStruct *)condition, &gGameMap.map[x + _CellNumbersWidthSpan[y]], x, y))
         matched++;
       // Already found enough matches, no need to search further
       if (!strict_equal && matched == amount)
@@ -256,41 +255,29 @@ bool Cond_CheckTiles(ConditionData *condition)
   return false;
 }
 
-bool Cond_SpiceInArea(int xpos, int ypos, int width, int height, int amount)
+bool Cond_SpiceInArea(int min_x, int min_y, int max_x, int max_y, int amount)
 {
   int total_amount = 0;
-  for (int y = 0; y < height; y++)
+  for (int y = min_y; y <= max_y; y++)
   {
-    int yy = y + ypos;
-    if (yy >= gGameMapHeight)
-      continue;
-    for (int x = 0; x < width; x++)
+    for (int x = min_x; x <= max_x; x++)
     {
-      int xx = x + xpos;
-      if (xx >= gGameMapWidth)
-        continue;
-      total_amount += (gGameMap.map[xx + _CellNumbersWidthSpan[yy]].__tile_bitflags >> 20) & 7;
+      total_amount += (gGameMap.map[x + _CellNumbersWidthSpan[y]].__tile_bitflags >> 20) & 7;
     }
   }
   return total_amount >= amount;
 }
 
-bool Cond_DamageInArea(int xpos, int ypos, int width, int height, bool specific_terrain, int terrain_type, int damage)
+bool Cond_DamageInArea(int min_x, int min_y, int max_x, int max_y, bool specific_terrain, int terrain_type, int damage)
 {
   int total_damage = 0;
-  for (int y = 0; y < height; y++)
+  for (int y = min_y; y <= max_y; y++)
   {
-    int yy = y + ypos;
-    if (yy >= gGameMapHeight)
-      continue;
-    for (int x = 0; x < width; x++)
+    for (int x = min_x; x <= max_x; x++)
     {
-      int xx = x + xpos;
-      if (xx >= gGameMapWidth)
-        continue;
-      int terr = (gGameMap.map[xx + _CellNumbersWidthSpan[yy]].__tile_bitflags >> 29) & 7;
+      int terr = (gGameMap.map[x + _CellNumbersWidthSpan[y]].__tile_bitflags >> 29) & 7;
       if (terr == terrain_type || !specific_terrain)
-        total_damage += gGameMap.map[xx + _CellNumbersWidthSpan[yy]].__damage;
+        total_damage += gGameMap.map[x + _CellNumbersWidthSpan[y]].__damage;
     }
   }
   return total_damage >= damage;

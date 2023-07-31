@@ -152,6 +152,22 @@ void EvAct_RevealMap(int xpos, int ypos, int radius)
     RevealCircle(xpos, ypos, radius);
 }
 
+void GetTextStringToBuffer(int string_id, char *buffer, int buffer_size)
+{
+  // Attempt to get custom text from mission ini file
+  char mapIniPath[256];
+  char id[12];
+  sprintf(mapIniPath, ".\\%s%s", GameType == GT_SINGLEPLAYER ? MissionsResourcePath : MapsResourcePath, PathChangeExtension(MissionMap, ".ini"));
+  sprintf(id, "%d", string_id);
+  IniGetString("Text", id, "", buffer, buffer_size, mapIniPath);
+  if (!strlen(buffer))
+  {
+    // Get text from string table
+    char *string_from_table = Data__GetTextString(string_id, 1);
+    strncpy(buffer, string_from_table, buffer_size);
+  }
+}
+
 void EvAct_ShowMessage(int xoff, int yoff, int ref_id, int screen_pos, int color, eMsgSoundMode sound_mode, bool type_on, int duration, ShowMessageEventData *data)
 {
   // Play message sound
@@ -162,19 +178,44 @@ void EvAct_ShowMessage(int xoff, int yoff, int ref_id, int screen_pos, int color
     case MSGSOUNDMODE_CUSTOM:       Sound__PlaySample(data->sample_id, 1, 0, 0); break;
     case MSGSOUNDMODE_CUSTOM_FORCE: ISampleManager__EndSample(_gSampleMgr, 0); Sound__PlaySample(data->sample_id, 1, 0, 1); break;
   }
-  // Attempt to get custom text from mission ini file
-  char mapIniPath[256];
-  char id[12];
-  char custom_text[512];
-  char *text_to_show;
-  sprintf(mapIniPath, ".\\%s%s", GameType == GT_SINGLEPLAYER ? MissionsResourcePath : MapsResourcePath, PathChangeExtension(MissionMap, ".ini"));
-  sprintf(id, "%d", data->message_index);
-  IniGetString("Text", id, "", custom_text, 512, mapIniPath);
-  if (strlen(custom_text) > 0)
-    text_to_show = custom_text;
-  else
-    // Get text from string table
-    text_to_show = Data__GetTextString(data->message_index, 1);
+  // Get the main string
+  char text_to_show[512];
+  char var_text[512];
+  GetTextStringToBuffer(data->string_index, text_to_show, sizeof(text_to_show));
+  // Substitute variables in string
+  unsigned int pos = 0;
+  unsigned int len = strlen(text_to_show);
+  for (unsigned int i = 0; i < sizeof(data->variable_index); i++)
+  {
+    bool found = false;
+    while (text_to_show[pos] && !found)
+    {
+      if (text_to_show[pos] == '@')
+      {
+        if (data->variable_type[i])
+        {
+          switch (data->variable_type[i])
+          {
+            case MSGVARIABLETYPE_NUMBER: sprintf(var_text, "%d", GetVariableValue(data->variable_index[i])); break;
+            case MSGVARIABLETYPE_TIME: { int secs = GetVariableValue(data->variable_index[i]) / 25; sprintf(var_text, "%02d:%02d", secs / 60, secs % 60); break;};
+            case MSGVARIABLETYPE_STRING_FROM_TABLE: GetTextStringToBuffer(GetVariableValue(data->variable_index[i]), var_text, sizeof(var_text));
+          }
+          unsigned int var_text_len = strlen(var_text);
+          if (len + var_text_len - 1 >= sizeof(text_to_show))
+            break;
+          for (unsigned int j = len; j > pos; j--)
+            text_to_show[j + var_text_len - 1] = text_to_show[j];
+          for (unsigned int j = 0; j < var_text_len; j++)
+            text_to_show[pos + j] = var_text[j];
+          pos += var_text_len - 1;
+          len += var_text_len - 1;
+        }
+        found = true;
+      }
+      pos++;
+    }
+  }
+  // Show message
   QueueMessageExt(text_to_show, duration, ref_id, screen_pos, xoff, yoff, color, type_on);
 }
 
@@ -389,16 +430,16 @@ int EvAct_AddCrate(int xpos, int ypos, int crate_type, int image, int ext_data, 
   return index;
 }
 
-void EvAct_AddConcrete(int xpos, int ypos, int width, int height, int side_id, int tilebitmask)
+void EvAct_AddConcrete(int min_x, int min_y, int max_x, int max_y, int side_id, int tilebitmask)
 {
   if (tilebitmask)
-    ModelAddConcrete(side_id, CSide__MyVersionOfBuilding(GetSide(side_id), _templates_GroupIDs.Concrete1, 0), xpos, ypos, 0, tilebitmask);
+    ModelAddConcrete(side_id, CSide__MyVersionOfBuilding(GetSide(side_id), _templates_GroupIDs.Concrete1, 0), min_x, min_y, 0, tilebitmask);
   else
   {
-    for (int y = 0; y < height; y++)
-      for (int x = 0; x < width; x++)
+    for (int y = min_y; y <= max_y; y++)
+      for (int x = min_x; x <= max_x; x++)
       {
-        GameMapTileStruct *tile = &gGameMap.map[xpos + x + _CellNumbersWidthSpan[ypos + y]];
+        GameMapTileStruct *tile = &gGameMap.map[x + _CellNumbersWidthSpan[y]];
         if ((tile->__tile_bitflags & TileFlags_8000_BUILD_ON) && !(tile->__tile_bitflags & TileFlags_800_HAS_CONCRETE))
         {
           tile->__tile_bitflags &= ~0xE0000;
@@ -1228,4 +1269,85 @@ void EvAct_OrderUpgradeCancel(int side_id, bool force)
   if (force)
     side->__BuildingUpgradeQueue.__on_hold = 1;
   GenerateUpgradeCancelOrder(side_id, side->__BuildingUpgradeQueue.__type);
+}
+
+void EvAct_SetVariable(int var_index, eValueOperation operation, int value)
+{
+  SetVariableValue(var_index, ValueOperation(GetVariableValue(var_index), value, operation));
+}
+
+void EvAct_GetRandomValue(int target_var, int min_value, int max_value)
+{
+  if (min_value > max_value)
+  {
+    int tmp = max_value;
+    max_value = min_value;
+    min_value = tmp;
+  }
+  int range = max_value - min_value + 1;
+  SetVariableValue(target_var, (rand() % range) + min_value);
+}
+
+void EvAct_GetRandomCoords(int min_x, int min_y, int max_x, int max_y, int first_var)
+{
+  SetVariableValue(first_var,     (rand() % (max_x - min_x + 1)) + min_x);
+  SetVariableValue(first_var + 1, (rand() % (max_y - min_y + 1)) + min_y);
+}
+
+void EvAct_GetValueFromList(int amount, int target_var, int mode, int index_var, uint8_t *value_list)
+{
+  int index;
+  if (!amount)
+    DebugFatal("event-actions.c", "List has zero values!");
+  if (mode)
+  {
+    index = rand() % amount;
+  }
+  else
+  {
+    index = GetVariableValue(index_var);
+    if ((index >= amount) || (index < 0))
+      DebugFatal("event-actions.c", "Indexing list of values out of range! Index: %d Amount: %d", index, amount);
+  }
+  SetVariableValue(target_var, value_list[index]);
+}
+
+void EvAct_GetCoordsFromList(int amount, int first_var, int mode, int index_var, uint8_t *value_list)
+{
+  int index;
+  if (!amount)
+    DebugFatal("event-actions.c", "List has zero coordinates!");
+  if (mode)
+  {
+    index = rand() % amount;
+  }
+  else
+  {
+    index = GetVariableValue(index_var);
+    if ((index >= amount) || (index < 0))
+      DebugFatal("event-actions.c", "Indexing list of coordinates out of range! Index: %d Amount: %d", index, amount);
+  }
+  SetVariableValue(first_var,     value_list[index * 2 + 1]);
+  SetVariableValue(first_var + 1, value_list[index * 2 + 2]);
+}
+
+void EvAct_GetAreaFromList(int amount, int first_var, int mode, int index_var, uint8_t *value_list)
+{
+  int index;
+  if (!amount)
+    DebugFatal("event-actions.c", "List has zero areas!");
+  if (mode)
+  {
+    index = rand() % amount;
+  }
+  else
+  {
+    index = GetVariableValue(index_var);
+    if ((index >= amount) || (index < 0))
+      DebugFatal("event-actions.c", "Indexing list of areas out of range! Index: %d Amount: %d", index, amount);
+  }
+  SetVariableValue(first_var,     value_list[index * 4 + 1]);
+  SetVariableValue(first_var + 1, value_list[index * 4 + 2]);
+  SetVariableValue(first_var + 2, value_list[index * 4 + 3]);
+  SetVariableValue(first_var + 3, value_list[index * 4 + 4]);
 }

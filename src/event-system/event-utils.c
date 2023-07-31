@@ -11,7 +11,9 @@ int ValueOperation(int val1, int val2, eValueOperation operation)
     case VALUEOPERATION_SET:        return val2; break;
     case VALUEOPERATION_ADD:        return val1 + val2; break;
     case VALUEOPERATION_SUBSTRACT:  return val1 - val2; break;
+    case VALUEOPERATION_MULTIPLY:   return (val1 * val2); break;
     case VALUEOPERATION_MULPERCENT: return (val1 * val2) / 100; break;
+    case VALUEOPERATION_DIVIDE:     if (!val2) DebugFatal("event-utils.c", "Division by zero!"); return val1 / val2; break;
     case VALUEOPERATION_MODULO:     if (!val2) DebugFatal("event-utils.c", "Division by zero!"); return val1 % val2; break;
     case VALUEOPERATION_CAPMAX:     return HLIMIT(val1, val2); break;
     case VALUEOPERATION_CAPMIN:     return LLIMIT(val1, val2); break;

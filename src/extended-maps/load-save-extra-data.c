@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "macros/patch.h"
 #include "dune2000.h"
+#include "../event-system/event-core.h"
 
 CALL(0x00441836, _SaveGameExtraData); // SaveGame
 
@@ -15,6 +16,8 @@ void SaveGameExtraData(void *buffer, size_t size, size_t count, FILE *file)
   // Write font palettes
   for (int i = 0; i < 16; i++)
     _WriteFile(_FontPals[i], gBitsPerPixel * 2, 1, file);
+  // Write event variables
+  _WriteFile(gEventVariableArray, sizeof(gEventVariableArray), 1, file);
 }
 
 CALL(0x00441C79, _LoadGameExtraData); // LoadGame
@@ -29,6 +32,8 @@ void LoadGameExtraData(void *buffer, size_t size, size_t count, FILE *file)
   // Read font palettes
   for (int i = 0; i < 16; i++)
     _ReadFile(_FontPals[i], gBitsPerPixel * 2, 1, file);
+  // Read event variables
+  _ReadFile(gEventVariableArray, sizeof(gEventVariableArray), 1, file);
 
   // Reset last played property of sounds in sound table
   for (int i = 0; i < _sampletablecount; i++)

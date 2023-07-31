@@ -167,6 +167,14 @@ void Mod__setupmapstuff()
       _gConditionArray[i].val3 = 0;
   }
 
+  // Reset all event variables
+  for (int i = 0; i < MAX_EVENT_VARIABLES; i++)
+  {
+    gEventVariableArray[i].value = 0;
+    gEventVariableArray[i].old_value = 0;
+    gEventVariableArray[i].initialized = false;
+  }
+
   // First pass - back up tile and special value, set up tile flags and preplaced spice/concrete
   for (int ypos = 0; ypos < gGameMap.height; ypos++)
     for (int xpos = 0; xpos < gGameMap.width; xpos++)

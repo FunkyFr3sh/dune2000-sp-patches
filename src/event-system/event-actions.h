@@ -2,8 +2,9 @@
 typedef struct ShowMessageEventData
 {
   uint32_t sample_id;
-  uint8_t unused[16];
-  uint32_t message_index;
+  uint8_t variable_type[8];
+  uint8_t variable_index[8];
+  uint32_t string_index;
 } ShowMessageEventData;
 
 typedef enum eDeliveryType
@@ -19,6 +20,14 @@ typedef enum eMsgSoundMode
   MSGSOUNDMODE_CUSTOM,
   MSGSOUNDMODE_CUSTOM_FORCE
 } eMsgSoundMode;
+
+typedef enum eMsgVariableType
+{
+  MSGVARIABLETYPE_NONE,
+  MSGVARIABLETYPE_NUMBER,
+  MSGVARIABLETYPE_TIME,
+  MSGVARIABLETYPE_STRING_FROM_TABLE
+} eMsgVariableType;
 
 typedef enum eRemoveMessageMode
 {
@@ -78,7 +87,7 @@ int  EvAct_AddBuilding(int xpos, int ypos, int side_id, int properties, int buil
 void EvAct_AddProjectile(int src_x, int src_y, int targ_x, int targ_y, int pixel_x, int pixel_y, int spread_x, int spread_y, int side_id, int weapon_type, bool circle_spread, bool play_sound);
 void EvAct_AddExplosion(int xpos, int ypos, int pixel_x, int pixel_y, int spread_x, int spread_y, int side_id, int explosion_type, bool circle_spread, bool play_sound);
 int  EvAct_AddCrate(int xpos, int ypos, int crate_type, int image, int ext_data, int respawns, int expiration);
-void EvAct_AddConcrete(int xpos, int ypos, int width, int height, int side_id, int tilebitmask);
+void EvAct_AddConcrete(int min_x, int min_y, int max_x, int max_y, int side_id, int tilebitmask);
 void EvAct_SpiceBloom(int xpos, int ypos, int range, eSpiceBloomMode mode, bool randomizer);
 void EvAct_CenterViewport(int xpos, int ypos);
 void EvAct_ChangeMapBlock(int xpos, int ypos, int width, int height, eChangeTileMode mode, uint16_t *tiles);
@@ -135,3 +144,10 @@ void EvAct_OrderBuildPlaceBuilding(int side_id, int xpos, int ypos);
 void EvAct_OrderBuildUnitCancel(int side_id, bool any_unit, int unit_type, int queue, bool force);
 void EvAct_OrderStarportPick(int side_id, int unit_type);
 void EvAct_OrderUpgradeCancel(int side_id, bool force);
+// Variable operations
+void EvAct_SetVariable(int var_index, eValueOperation operation, int value);
+void EvAct_GetRandomValue(int target_var, int min_value, int max_value);
+void EvAct_GetRandomCoords(int min_x, int min_y, int max_x, int max_y, int first_var);
+void EvAct_GetValueFromList(int amount, int target_var, int mode, int index_var, uint8_t *value_list);
+void EvAct_GetCoordsFromList(int amount, int first_var, int mode, int index_var, uint8_t *value_list);
+void EvAct_GetAreaFromList(int amount, int first_var, int mode, int index_var, uint8_t *value_list);
