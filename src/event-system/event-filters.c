@@ -139,6 +139,34 @@ bool CheckIfTileMatchesFilter(ObjectFilterStruct *filter, GameMapTileStruct *til
   return EvaluateFilterExpression(filter, criteria_result);
 }
 
+bool CheckIfUnitTypeMatchesCriteria(int unit_type, eUnitTypeFilterCriteriaType criteria_type, bool negation, bool comparison, int value);
+
+bool CheckIfUnitTypeMatchesFilter(ObjectFilterStruct *filter, int unit_type)
+{
+  // Check for criteria
+  bool criteria_result[8];
+  for (int i = 0; i < 8; i++)
+  {
+    int value = GetVariableValueOrConst(filter->criteria_var_flags, i, filter->criteria_value[i]);
+    criteria_result[i] = CheckIfUnitTypeMatchesCriteria(unit_type, filter->criteria_type[i] & 63, filter->criteria_type[i] & 64, filter->criteria_type[i] & 128, value);
+  }
+  return EvaluateFilterExpression(filter, criteria_result);
+}
+
+bool CheckIfBuildingTypeMatchesCriteria(int building_type, eBuildingTypeFilterCriteriaType criteria_type, bool negation, bool comparison, int value);
+
+bool CheckIfBuildingTypeMatchesFilter(ObjectFilterStruct *filter, int building_type)
+{
+  // Check for criteria
+  bool criteria_result[8];
+  for (int i = 0; i < 8; i++)
+  {
+    int value = GetVariableValueOrConst(filter->criteria_var_flags, i, filter->criteria_value[i]);
+    criteria_result[i] = CheckIfBuildingTypeMatchesCriteria(building_type, filter->criteria_type[i] & 63, filter->criteria_type[i] & 64, filter->criteria_type[i] & 128, value);
+  }
+  return EvaluateFilterExpression(filter, criteria_result);
+}
+
 bool TileCheck(int pos_x, int pos_y, eTileCheckType check_type, bool comparison, int value);
 bool ObjectCheck(int side_id, int obj_index, eObjectCheckType check_type, int pos_x, int pos_y, bool comparison, int value);
 
@@ -430,6 +458,95 @@ bool CheckIfTileMatchesCriteria(GameMapTileStruct *tile, int pos_x, int pos_y, e
     case TILECRITERIATYPE_DAMAGE:     result = CompareValue(tile->__damage, value, comparison); break;
     case TILECRITERIATYPE_SHROUD:     result = CompareValue(tile->__shroud, value, comparison); break;
     default: result = TileCheck(pos_x, pos_y, criteria_type - TILECRITERIATYPE_TILECHECK, comparison, value);
+  }
+  return result != negation;
+}
+
+bool CheckIfUnitTypeMatchesCriteria(int unit_type, eUnitTypeFilterCriteriaType criteria_type, bool negation, bool comparison, int value)
+{
+  bool result = false;
+  UnitAtribStruct *unit_template = &_templates_unitattribs[unit_type];
+  int behavior = unit_template->__Behavior;
+  bool is_special_unit =
+         behavior == UnitBehavior_SANDWORM
+      || behavior == UnitBehavior_FRIGATE
+      || behavior == UnitBehavior_ORNITHOPTER
+      || behavior == UnitBehavior_CARRYALL
+      || behavior == UnitBehavior_DEATH_HAND;
+  switch(criteria_type)
+  {
+  case UNITTYPECRITERIATYPE_NONE:           result = true; break;
+  case UNITTYPECRITERIATYPE_TYPE:           result = CompareValue(unit_type, value, comparison); break;
+  case UNITTYPECRITERIATYPE_GROUP:          result = CompareValue(unit_template->__UnitType, value, comparison); break;
+  case UNITTYPECRITERIATYPE_BEHAVIOR:       result = CompareValue(unit_template->__Behavior, value, comparison); break;
+  case UNITTYPECRITERIATYPE_CATEGORY:
+    switch(value)
+    {
+    case UNITTYPECATEGORY_INFANTRY:           result = unit_template->__IsInfantry; break;
+    case UNITTYPECATEGORY_VEHICLE:            result = !(unit_template->__IsInfantry) && !is_special_unit; break;
+    case UNITTYPECATEGORY_LIGHT_VEH:          result = !(unit_template->__IsInfantry) && !(unit_template->__CanCrush) && !is_special_unit; break;
+    case UNITTYPECATEGORY_HEAVY_VEH:          result = !(unit_template->__IsInfantry) && (unit_template->__CanCrush) && !is_special_unit; break;
+    case UNITTYPECATEGORY_SPECIAL:            result = is_special_unit; break;
+    case UNITTYPECATEGORY_HAS_PRI_WEAPON:     result = unit_template->__PrimaryWeapon != -1; break;
+    case UNITTYPECATEGORY_HAS_SEC_WEAPON:     result = unit_template->__SecondaryWeapon != -1; break;
+    case UNITTYPECATEGORY_HAS_BARREL:         result = unit_template->__HasBarrel; break;
+    case UNITTYPECATEGORY_CAN_BE_UPGRADED:    result = unit_template->UnitUpgradeAllowed; break;
+    }
+    break;
+  case UNITTYPECRITERIATYPE_OWNER:          result = unit_template->__OwnerSide & (1 << value); break;
+  case UNITTYPECRITERIATYPE_TECH:           result = CompareValue(unit_template->__TechReq, value, comparison); break;
+  case UNITTYPECRITERIATYPE_PREREQ1:        result = CompareValue(unit_template->__PreReq1, value, comparison); break;
+  case UNITTYPECRITERIATYPE_PREREQ2:        result = CompareValue(unit_template->__PreReq2, value, comparison); break;
+  case UNITTYPECRITERIATYPE_ARMOR:          result = CompareValue(unit_template->__Armour, value, comparison); break;
+  case UNITTYPECRITERIATYPE_SPEED_TYPE:     result = CompareValue(unit_template->__VehicleType, value, comparison); break;
+  case UNITTYPECRITERIATYPE_PRI_WEAPON:     result = CompareValue(unit_template->__PrimaryWeapon, value, comparison); break;
+  case UNITTYPECRITERIATYPE_SEC_WEAPON:     result = CompareValue(unit_template->__SecondaryWeapon, value, comparison); break;
+  case UNITTYPECRITERIATYPE_SIGHT:          result = CompareValue(unit_template->__ViewDistance, value, comparison); break;
+  case UNITTYPECRITERIATYPE_RANGE:          result = CompareValue((unit_template->__PrimaryWeapon != -1)?_templates_bulletattribs[(int)unit_template->__PrimaryWeapon].__Range:0, value, comparison); break;
+  case UNITTYPECRITERIATYPE_SPEED:          result = CompareValue(unit_template->__Speed >> 12, value, comparison); break;
+  case UNITTYPECRITERIATYPE_RATE_OF_FIRE:   result = CompareValue(unit_template->__RateOfFire, value, comparison); break;
+  case UNITTYPECRITERIATYPE_HP100_MAX:      result = CompareValue(unit_template->__Strength / 100, value, comparison); break;
+  case UNITTYPECRITERIATYPE_FLAG:           result = unit_template->Flags & (1 << value); break;
+  }
+  return result != negation;
+}
+
+bool CheckIfBuildingTypeMatchesCriteria(int building_type, eBuildingTypeFilterCriteriaType criteria_type, bool negation, bool comparison, int value)
+{
+  bool result = true;
+  BuildingAtrbStruct *building_template = &_templates_buildattribs[building_type];
+  switch(criteria_type)
+  {
+  case BUILDINGTYPECRITERIATYPE_NONE:           result = true; break;
+  case BUILDINGTYPECRITERIATYPE_TYPE:           result = CompareValue(building_type, value, comparison); break;
+  case BUILDINGTYPECRITERIATYPE_GROUP:          result = CompareValue(building_template->GroupType, value, comparison); break;
+  case BUILDINGTYPECRITERIATYPE_BEHAVIOR:       result = CompareValue(building_template->__Behavior, value, comparison); break;
+  case BUILDINGTYPECRITERIATYPE_CATEGORY:
+    switch(value)
+    {
+    case BUILDINGTYPECATEGORY_POWER_CONS:       result = building_template->__PowerDrain > 0; break;
+    case BUILDINGTYPECATEGORY_POWER_PROD:       result = building_template->__PowerDrain < 0; break;
+    case BUILDINGTYPECATEGORY_REQ_ENOUGH_POW:   result = building_template->_____RequireEnoughPower; break;
+    case BUILDINGTYPECATEGORY_SHAKE_SCREEN:     result = building_template->_____ScreenShake > 0; break;
+    case BUILDINGTYPECATEGORY_HAS_PRI_WEAPON:   result = building_template->_____PrimaryWeapon != -1; break;
+    case BUILDINGTYPECATEGORY_HAS_SEC_WEAPON:   result = building_template->_____SecondaryWeapon != -1; break;
+    case BUILDINGTYPECATEGORY_HAS_BARREL:       result = building_template->_____BarrelArt != -1; break;
+    }
+    break;
+  case BUILDINGTYPECRITERIATYPE_OWNER:          result = building_template->_____OwnerSide & (1 << value); break;
+  case BUILDINGTYPECRITERIATYPE_TECH:           result = CompareValue(building_template->_____TechLevelBuild, value, comparison); break;
+  case BUILDINGTYPECRITERIATYPE_PREREQ1:        result = CompareValue(building_template->_____Prereq1BuildingType, value, comparison); break;
+  case BUILDINGTYPECRITERIATYPE_PREREQ2:        result = CompareValue(building_template->_____Prereq2BuildingType, value, comparison); break;
+  case BUILDINGTYPECRITERIATYPE_ARMOR:          result = CompareValue(building_template->Armour, value, comparison); break;
+  case BUILDINGTYPECRITERIATYPE_PRI_WEAPON:     result = CompareValue(building_template->_____PrimaryWeapon, value, comparison); break;
+  case BUILDINGTYPECRITERIATYPE_SEC_WEAPON:     result = CompareValue(building_template->_____SecondaryWeapon, value, comparison); break;
+  case BUILDINGTYPECRITERIATYPE_SIGHT:          result = CompareValue(building_template->_____SightRadius, value, comparison); break;
+  case BUILDINGTYPECRITERIATYPE_POWER_CONS:     result = CompareValue((building_template->__PowerDrain > 0)?building_template->__PowerDrain:0, value, comparison); break;
+  case BUILDINGTYPECRITERIATYPE_POWER_PROD:     result = CompareValue((building_template->__PowerDrain < 0)?building_template->__PowerDrain * -1:0, value, comparison); break;
+  case BUILDINGTYPECRITERIATYPE_RANGE:          result = CompareValue((building_template->_____PrimaryWeapon != -1)?_templates_bulletattribs[(int)building_template->_____PrimaryWeapon].__Range:0, value, comparison); break;
+  case BUILDINGTYPECRITERIATYPE_RATE_OF_FIRE:   result = CompareValue(building_template->_____RateOfFire, value, comparison); break;
+  case BUILDINGTYPECRITERIATYPE_HP100_MAX:      result = CompareValue(building_template->_____HitPoints / 100, value, comparison); break;
+  case BUILDINGTYPECRITERIATYPE_FLAG:           result = building_template->_____Flags & (1 << value); break;
   }
   return result != negation;
 }

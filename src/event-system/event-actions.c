@@ -1126,17 +1126,13 @@ void EvAct_ShowCrateData(int crate_index)
   QueueMessageExt(buf, 1, 250, 0, 0, 0, 0, 0);
 }
 
-void EvAct_ChangeTile(eChangeTileMode mode, int tile_index, int cell_index)
+void EvAct_ChangeTile(eChangeTileMode mode, int tile_index, int xpos, int ypos)
 {
-  int xpos = cell_index & 255;
-  int ypos = cell_index >> 8;
   ChangeMapTile(xpos, ypos, tile_index, mode);
 }
 
-void EvAct_SetTileAttribute(eFlagOperation operation, int attribute, int cell_index)
+void EvAct_SetTileAttribute(eFlagOperation operation, int attribute, int xpos, int ypos)
 {
-  int xpos = cell_index & 255;
-  int ypos = cell_index >> 8;
   GameMapTileStruct *tile = &gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]];
   TileFlags old_flags = tile->__tile_bitflags;
   tile->__tile_bitflags = FlagOperation(tile->__tile_bitflags, attribute, operation);
@@ -1159,26 +1155,20 @@ void EvAct_SetTileAttribute(eFlagOperation operation, int attribute, int cell_in
   }
 }
 
-void EvAct_SetTileDamage(eValueOperation operation, int value, int cell_index)
+void EvAct_SetTileDamage(eValueOperation operation, int value, int xpos, int ypos)
 {
-  int xpos = cell_index & 255;
-  int ypos = cell_index >> 8;
   GameMapTileStruct *tile = &gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]];
   int damage = ValueOperation(tile->__damage, value, operation);
   tile->__damage = LIMIT(damage, 0, 255);
 }
 
-void EvAct_RevealTile(int radius, int cell_index)
+void EvAct_RevealTile(int radius, int xpos, int ypos)
 {
-  int xpos = cell_index & 255;
-  int ypos = cell_index >> 8;
   RevealCircle(xpos, ypos, radius);
 }
 
-void EvAct_HideTile(int cell_index)
+void EvAct_HideTile(int xpos, int ypos)
 {
-  int xpos = cell_index & 255;
-  int ypos = cell_index >> 8;
   if ( gBitsPerPixel == 16 )
   {
     int *img = _RadarMap1 + 16;
@@ -1202,10 +1192,8 @@ void EvAct_HideTile(int cell_index)
   UpdateShroudInRegion(&r, gGameMapWidth, gGameMapHeight);
 }
 
-void EvAct_ShowTileData(int cell_index)
+void EvAct_ShowTileData(int xpos, int ypos)
 {
-  int xpos = cell_index & 255;
-  int ypos = cell_index >> 8;
   GameMapTileStruct *tile = &gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]];
   char buf[128];
   memset(buf, 0, sizeof(buf));
@@ -1294,11 +1282,11 @@ void EvAct_GetRandomCoords(int min_x, int min_y, int max_x, int max_y, int first
   SetVariableValue(first_var + 1, (rand() % (max_y - min_y + 1)) + min_y);
 }
 
-void EvAct_GetValueFromList(int amount, int target_var, int mode, int index_var, uint8_t *value_list)
+void EvAct_GetValueFromList(int event_index, int amount, int target_var, int mode, int index_var, uint8_t *value_list)
 {
   int index;
   if (!amount)
-    DebugFatal("event-actions.c", "List has zero values!");
+    DebugFatal("event-actions.c", "List has zero values! (event %d)", event_index);
   if (mode)
   {
     index = rand() % amount;
@@ -1307,16 +1295,16 @@ void EvAct_GetValueFromList(int amount, int target_var, int mode, int index_var,
   {
     index = GetVariableValue(index_var);
     if ((index >= amount) || (index < 0))
-      DebugFatal("event-actions.c", "Indexing list of values out of range! Index: %d Amount: %d", index, amount);
+      DebugFatal("event-actions.c", "Indexing list of values out of range! Index: %d Amount: %d (event %d)", index, amount, event_index);
   }
   SetVariableValue(target_var, value_list[index]);
 }
 
-void EvAct_GetCoordsFromList(int amount, int first_var, int mode, int index_var, uint8_t *value_list)
+void EvAct_GetCoordsFromList(int event_index, int amount, int first_var, int mode, int index_var, uint8_t *value_list)
 {
   int index;
   if (!amount)
-    DebugFatal("event-actions.c", "List has zero coordinates!");
+    DebugFatal("event-actions.c", "List has zero coordinates! (event %d)", event_index);
   if (mode)
   {
     index = rand() % amount;
@@ -1325,17 +1313,17 @@ void EvAct_GetCoordsFromList(int amount, int first_var, int mode, int index_var,
   {
     index = GetVariableValue(index_var);
     if ((index >= amount) || (index < 0))
-      DebugFatal("event-actions.c", "Indexing list of coordinates out of range! Index: %d Amount: %d", index, amount);
+      DebugFatal("event-actions.c", "Indexing list of coordinates out of range! Index: %d Amount: %d (event %d)", index, amount, event_index);
   }
   SetVariableValue(first_var,     value_list[index * 2 + 1]);
   SetVariableValue(first_var + 1, value_list[index * 2 + 2]);
 }
 
-void EvAct_GetAreaFromList(int amount, int first_var, int mode, int index_var, uint8_t *value_list)
+void EvAct_GetAreaFromList(int event_index, int amount, int first_var, int mode, int index_var, uint8_t *value_list)
 {
   int index;
   if (!amount)
-    DebugFatal("event-actions.c", "List has zero areas!");
+    DebugFatal("event-actions.c", "List has zero areas! (event %d)", event_index);
   if (mode)
   {
     index = rand() % amount;
@@ -1344,10 +1332,211 @@ void EvAct_GetAreaFromList(int amount, int first_var, int mode, int index_var, u
   {
     index = GetVariableValue(index_var);
     if ((index >= amount) || (index < 0))
-      DebugFatal("event-actions.c", "Indexing list of areas out of range! Index: %d Amount: %d", index, amount);
+      DebugFatal("event-actions.c", "Indexing list of areas out of range! Index: %d Amount: %d (event %d)", index, amount, event_index);
   }
   SetVariableValue(first_var,     value_list[index * 4 + 1]);
   SetVariableValue(first_var + 1, value_list[index * 4 + 2]);
   SetVariableValue(first_var + 2, value_list[index * 4 + 3]);
   SetVariableValue(first_var + 3, value_list[index * 4 + 4]);
+}
+
+void EvAct_GetCount(int target_var)
+{
+  SetVariableValue(target_var, GetVariableValue(target_var) + 1);
+}
+
+void EvAct_GetSpiceCount(int target_var, int xpos, int ypos)
+{
+  SetVariableValue(target_var, GetVariableValue(target_var) + ((gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]].__tile_bitflags >> 20) & 7));
+}
+
+void EvAct_GetDamageCount(int target_var, int xpos, int ypos)
+{
+  SetVariableValue(target_var, GetVariableValue(target_var) + gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]].__damage);
+}
+
+void EvAct_GetObjectProperty(int side_id, eDataType data_type, int offset, int index_var, int target_var)
+{
+  Unit *obj = &GetSide(side_id)->__ObjectArray[GetVariableValue(index_var)];
+  SetVariableValue(target_var, GetDataValue((char *)obj, data_type, offset));
+}
+
+void EvAct_GetCrateProperty(eDataType data_type, int offset, int index_var, int target_var)
+{
+  CrateStruct *crate = &gCrates[GetVariableValue(index_var)];
+  SetVariableValue(target_var, GetDataValue((char *)crate, data_type, offset));
+}
+
+void EvAct_GetTileProperty(eDataType data_type, int offset, int first_var, int target_var)
+{
+  int xpos = GetVariableValue(first_var);
+  int ypos = GetVariableValue(first_var + 1);
+  GameMapTileStruct *tile = &gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]];
+  SetVariableValue(target_var, GetDataValue((char *)tile, data_type, offset));
+}
+
+void EvAct_GetAIProperty(int side_id, eDataType data_type, int target_var, int offset)
+{
+  CAI_ *ai = &_gAIArray[side_id];
+  SetVariableValue(target_var, GetDataValue((char *)ai, data_type, offset));
+}
+
+void EvAct_GetMemoryData(eDataType data_type, int target_var, int address)
+{
+  if (!address)
+    DebugFatal("event-actions.c", "Memory address is NULL");
+  SetVariableValue(target_var, GetDataValue((char *)address, data_type, 0));
+}
+
+void EvAct_GetUnitTemplateProperty(eDataType data_type, int offset, int unit_type, int target_var)
+{
+  UnitAtribStruct *unit_template = &_templates_unitattribs[unit_type];
+  SetVariableValue(target_var, GetDataValue((char *)unit_template, data_type, offset));
+}
+
+void EvAct_GetBuildingTemplateProperty(eDataType data_type, int offset, int building_type, int target_var)
+{
+  BuildingAtrbStruct *building_template = &_templates_buildattribs[building_type];
+  SetVariableValue(target_var, GetDataValue((char *)building_template, data_type, offset));
+}
+
+void EvAct_GetWeaponTemplateProperty(eDataType data_type, int offset, int weapon_type, int target_var)
+{
+  BullAtrbStruct *weapon_template = &_templates_bulletattribs[weapon_type];
+  SetVariableValue(target_var, GetDataValue((char *)weapon_template, data_type, offset));
+}
+
+void EvAct_GetExplosionTemplateProperty(eDataType data_type, int offset, int explosion_type, int target_var)
+{
+  ExploisonAtrbStruct *explosion_template = &_templates_explosionattribs[explosion_type];
+  SetVariableValue(target_var, GetDataValue((char *)explosion_template, data_type, offset));
+}
+
+void EvAct_GetUnitType(int target_var, bool random, ObjectFilterStruct *filter)
+{
+  int result = -1;
+  if (random)
+  {
+    int found = 0;
+    int found_array[60];
+    for (int i = 0; i < _templates_UnitTypeCount; i++)
+    {
+      if (CheckIfUnitTypeMatchesFilter(filter, i))
+        found_array[found++] = i;
+    }
+    if (found)
+      result = found_array[rand() % found];
+  }
+  else
+  {
+    for (int i = 0; i < _templates_UnitTypeCount; i++)
+    {
+      if (CheckIfUnitTypeMatchesFilter(filter, i))
+      {
+        result = i;
+        break;
+      }
+    }
+  }
+  SetVariableValue(target_var, result);
+}
+
+void EvAct_GetBuildingType(int target_var, bool random, ObjectFilterStruct *filter)
+{
+  int result = -1;
+  if (random)
+  {
+    int found = 0;
+    int found_array[100];
+    for (int i = 0; i < 100; i++)
+    {
+      if (CheckIfBuildingTypeMatchesFilter(filter, i))
+        found_array[found++] = i;
+    }
+    if (found)
+      result = found_array[rand() % found];
+  }
+  else
+  {
+    for (int i = 0; i < 100; i++)
+    {
+      if (CheckIfBuildingTypeMatchesFilter(filter, i))
+      {
+        result = i;
+        break;
+      }
+    }
+  }
+  SetVariableValue(target_var, result);
+}
+
+void EvAct_LoopValuesFromRange(int event_index, int loop_var, int min_value, int max_value)
+{
+  for (int i = min_value; i <= max_value; i++)
+  {
+    SetVariableValue(loop_var, i);
+    ExecuteEventBlock(event_index);
+  }
+}
+
+void EvAct_LoopCoordsFromArea(int event_index, int min_x, int min_y, int max_x, int max_y, int first_var)
+{
+  for (int y = min_y; y <= max_y; y++)
+    for (int x = min_x; x <= max_x; x++)
+    {
+      SetVariableValue(first_var, x);
+      SetVariableValue(first_var + 1, y);
+      ExecuteEventBlock(event_index);
+    }
+}
+
+void EvAct_LoopValuesFromList(int event_index, int amount, int loop_var, uint8_t *value_list)
+{
+  for (int i = 0; i < amount; i++)
+  {
+    SetVariableValue(loop_var, value_list[i]);
+    ExecuteEventBlock(event_index);
+  }
+}
+
+void EvAct_LoopCoordsFromList(int event_index, int amount, int first_var, uint8_t *value_list)
+{
+  for (int i = 0; i < amount; i++)
+  {
+    SetVariableValue(first_var,     value_list[i * 2 + 1]);
+    SetVariableValue(first_var + 1, value_list[i * 2 + 2]);
+    ExecuteEventBlock(event_index);
+  }
+}
+
+void EvAct_LoopAreasFromList(int event_index, int amount, int first_var, uint8_t *value_list)
+{
+  for (int i = 0; i < amount; i++)
+  {
+    SetVariableValue(first_var,     value_list[i * 4 + 1]);
+    SetVariableValue(first_var + 1, value_list[i * 4 + 2]);
+    SetVariableValue(first_var + 2, value_list[i * 4 + 3]);
+    SetVariableValue(first_var + 3, value_list[i * 4 + 4]);
+    ExecuteEventBlock(event_index);
+  }
+}
+
+void EvAct_LoopObject(int event_index, int player_var, int index_var, int side_id, int object_index)
+{
+  SetVariableValue(player_var, side_id);
+  SetVariableValue(index_var, object_index);
+  ExecuteEventBlock(event_index);
+}
+
+void EvAct_LoopItem(int event_index, int index_var, int object_index)
+{
+  SetVariableValue(index_var, object_index);
+  ExecuteEventBlock(event_index);
+}
+
+void EvAct_LoopTiles(int event_index, int first_var, int xpos, int ypos)
+{
+  SetVariableValue(first_var, xpos);
+  SetVariableValue(first_var + 1, ypos);
+  ExecuteEventBlock(event_index);
 }

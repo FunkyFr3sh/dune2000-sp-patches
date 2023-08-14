@@ -43,3 +43,5 @@ bool Cond_UnitsLost(int side_id, int unit_type, bool total, bool equal, int valu
 bool Cond_BuildingsLost(int side_id, bool equal, int value);
 bool Cond_UnitsKilled(int side_id, int unit_type, int enemy, bool total, bool equal, int value);
 bool Cond_BuildingsKilled(int side_id, int building_type, int enemy, bool total, bool equal, int value);
+bool Cond_VariableValue(int variable, bool equal, int value);
+bool Cond_VariableChanged(int variable);

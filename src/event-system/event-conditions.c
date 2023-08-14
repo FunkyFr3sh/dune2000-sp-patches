@@ -426,3 +426,16 @@ bool Cond_BuildingsKilled(int side_id, int building_type, int enemy, bool total,
   else
     return CompareValue(side->__BuildingsKilledPerTypeAndSide[building_type].__kills_per_side[enemy], value, !equal);
 }
+
+bool Cond_VariableValue(int variable, bool equal, int value)
+{
+  return CompareValue(GetVariableValue(variable), value, !equal);
+}
+
+bool Cond_VariableChanged(int variable)
+{
+  EventVariable *v = &gEventVariableArray[variable];
+  bool result = v->old_value != v->value;
+  v->old_value = v->value;
+  return result;
+}

@@ -18,13 +18,20 @@ typedef struct EventData
   char data[25];
 } EventData;
 
+typedef struct EventExtraData
+{
+  int next_event_index;
+} EventExtraData;
+
 typedef struct EventContext
 {
+  int event_type;
+  int event_index;
   int coord_x[4];
   int coord_y[4];
   int args[6];
   char *data;
-  int index;
+  int object_index;
 } EventContext;
 
 enum EventFlags
@@ -179,7 +186,135 @@ enum EventTypes
   ET_GET_RANDOM_COORDS,
   ET_GET_VALUE_FROM_LIST,
   ET_GET_COORDS_FROM_LIST,
-  ET_GET_AREA_FROM_LIST
+  ET_GET_AREA_FROM_LIST,
+  ET_GET_UNIT_COUNT,
+  ET_GET_BUILDING_COUNT,
+  ET_GET_PROJECTILE_COUNT,
+  ET_GET_EXPLOSION_COUNT,
+  ET_GET_CRATE_COUNT,
+  ET_GET_TILE_COUNT,
+  ET_GET_SIDE_COUNT,
+  ET_GET_SPICE_COUNT,
+  ET_GET_DAMAGE_COUNT,
+  ET_139,
+  ET_GET_UNIT_PROPERTY,
+  ET_GET_BUILDING_PROPERTY,
+  ET_GET_PROJECTILE_PROPERTY,
+  ET_GET_EXPLOSION_PROPERTY,
+  ET_GET_CRATE_PROPERTY,
+  ET_GET_TILE_PROPERTY,
+  ET_146,
+  ET_GET_AI_PROPERTY,
+  ET_GET_MEMORY_DATA,
+  ET_149,
+  ET_GET_UNIT_TEMPLATE_PROPERTY,
+  ET_GET_BUILDING_TEMPLATE_PROPERTY,
+  ET_GET_WEAPON_TEMPLATE_PROPERTY,
+  ET_GET_EXPLOSION_TEMPLATE_PROPERTY,
+  ET_GET_ARMOUR_VALUE,
+  ET_GET_UNIT_TYPE,
+  ET_GET_BUILDING_TYPE,
+  ET_157,
+  ET_158,
+  ET_159,
+  ET_160,
+  ET_161,
+  ET_162,
+  ET_163,
+  ET_164,
+  ET_165,
+  ET_166,
+  ET_167,
+  ET_168,
+  ET_169,
+  ET_170,
+  ET_171,
+  ET_172,
+  ET_173,
+  ET_174,
+  ET_175,
+  ET_176,
+  ET_177,
+  ET_178,
+  ET_179,
+  ET_180,
+  ET_181,
+  ET_182,
+  ET_183,
+  ET_184,
+  ET_185,
+  ET_186,
+  ET_187,
+  ET_188,
+  ET_189,
+  ET_190,
+  ET_191,
+  ET_192,
+  ET_193,
+  ET_194,
+  ET_195,
+  ET_196,
+  ET_197,
+  ET_198,
+  ET_199,
+  ET_200,
+  ET_201,
+  ET_202,
+  ET_203,
+  ET_204,
+  ET_205,
+  ET_206,
+  ET_207,
+  ET_208,
+  ET_209,
+  ET_210,
+  ET_211,
+  ET_212,
+  ET_213,
+  ET_214,
+  ET_215,
+  ET_216,
+  ET_217,
+  ET_218,
+  ET_219,
+  ET_220,
+  ET_221,
+  ET_222,
+  ET_223,
+  ET_224,
+  ET_225,
+  ET_226,
+  ET_227,
+  ET_228,
+  ET_229,
+  ET_230,
+  ET_231,
+  ET_232,
+  ET_233,
+  ET_234,
+  ET_235,
+  ET_236,
+  ET_237,
+  ET_238,
+  ET_239,
+  // Loops
+  ET_240,
+  ET_LOOP_VALUES_FROM_RANGE,
+  ET_LOOP_COORDS_FROM_AREA,
+  ET_LOOP_VALUES_FROM_LIST,
+  ET_LOOP_COORDS_FROM_LIST,
+  ET_LOOP_AREAS_FROM_LIST,
+  ET_LOOP_UNITS,
+  ET_LOOP_BUILDINGS,
+  ET_LOOP_PROJECTILES,
+  ET_LOOP_EXPLOSIONS,
+  ET_LOOP_CRATES,
+  ET_LOOP_TILES,
+  ET_LOOP_SIDES,
+  ET_BREAK_LOOP,
+  ET_CONTINUE_LOOP,
+  // End
+  ET_END
 };
 
 // Condition-related structs
@@ -252,7 +387,10 @@ enum ConditionTypes
   // AI related
   CT_AI_PROPERTY,
   // Memory related
-  CT_MEMORY_VALUE
+  CT_MEMORY_VALUE,
+  // Variable related
+  CT_VARIABLE_VALUE,
+  CT_VARIABLE_CHANGED
 };
 
 enum ConditionFilterFlags
@@ -264,7 +402,7 @@ typedef struct EventVariable
 {
   int value;
   int old_value;
-  bool initialized;
+  unsigned int ticks;
 } EventVariable;
 
 // Variables
@@ -274,6 +412,7 @@ typedef struct EventVariable
 #define MAX_EVENT_VARIABLES 256
 
 extern EventData _gEventArray[MAX_EVENTS];
+extern EventExtraData gEventExtraData[MAX_EVENTS];
 extern ConditionData _gConditionArray[MAX_CONDITIONS];
 extern EventVariable gEventVariableArray[MAX_EVENT_VARIABLES];
 
@@ -282,8 +421,12 @@ extern int tick_random_value;
 // Functions
 
 bool EvaluateCondition(int condition_index);
+bool IsStartBlockEvent(int event_index);
+int FindEndMarkerForBlockEvent(int event_index);
+void ExecuteEventsInRange(int min_event_index, int max_event_index);
+void ExecuteEventBlock(int event_index);
 void ExecuteEvent(int event_index);
-void ExecuteEventAction(int event_type, EventContext *e);
+void ExecuteEventAction(EventContext *e);
 int GetVariableValueOrConst(int flags, int flag_index, int var_index_or_const);
 void SetVariableValue(int var_index, int value);
 int GetVariableValue(int var_index);

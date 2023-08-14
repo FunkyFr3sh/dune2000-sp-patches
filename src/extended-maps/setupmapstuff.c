@@ -172,7 +172,17 @@ void Mod__setupmapstuff()
   {
     gEventVariableArray[i].value = 0;
     gEventVariableArray[i].old_value = 0;
-    gEventVariableArray[i].initialized = false;
+    gEventVariableArray[i].ticks = 0;
+  }
+
+  // Evaluate and cache next event index of events
+  for (int i = 0; i < MAX_EVENTS; i++)
+  {
+    gEventExtraData[i].next_event_index = i + 1;
+    if (IsStartBlockEvent(i))
+    {
+      gEventExtraData[i].next_event_index = FindEndMarkerForBlockEvent(i) + 1;
+    }
   }
 
   // First pass - back up tile and special value, set up tile flags and preplaced spice/concrete

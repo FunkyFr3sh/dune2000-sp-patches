@@ -1,3 +1,4 @@
+#include "event-filters.h"
 
 typedef struct ShowMessageEventData
 {
@@ -131,12 +132,12 @@ void EvAct_PickupCrate(int side_id, int crate_index);
 void EvAct_SetCrateProperty(eDataType data_type, int offset, eValueOperation operation, int value, int crate_index);
 void EvAct_ShowCrateData(int crate_index);
 // Tile manipulation
-void EvAct_ChangeTile(eChangeTileMode mode, int tile_index, int cell_index);
-void EvAct_SetTileAttribute(eFlagOperation operation, int attribute, int cell_index);
-void EvAct_SetTileDamage(eValueOperation operation, int value, int cell_index);
-void EvAct_RevealTile(int radius, int cell_index);
-void EvAct_HideTile(int cell_index);
-void EvAct_ShowTileData(int cell_index);
+void EvAct_ChangeTile(eChangeTileMode mode, int tile_index, int xpos, int ypos);
+void EvAct_SetTileAttribute(eFlagOperation operation, int attribute, int xpos, int ypos);
+void EvAct_SetTileDamage(eValueOperation operation, int value, int xpos, int ypos);
+void EvAct_RevealTile(int radius, int xpos, int ypos);
+void EvAct_HideTile(int xpos, int ypos);
+void EvAct_ShowTileData(int xpos, int ypos);
 // Orders
 void EvAct_OrderUnitRetreat(int side_id);
 void EvAct_OrderBuildBuildingCancel(int side_id, bool force);
@@ -148,6 +149,30 @@ void EvAct_OrderUpgradeCancel(int side_id, bool force);
 void EvAct_SetVariable(int var_index, eValueOperation operation, int value);
 void EvAct_GetRandomValue(int target_var, int min_value, int max_value);
 void EvAct_GetRandomCoords(int min_x, int min_y, int max_x, int max_y, int first_var);
-void EvAct_GetValueFromList(int amount, int target_var, int mode, int index_var, uint8_t *value_list);
-void EvAct_GetCoordsFromList(int amount, int first_var, int mode, int index_var, uint8_t *value_list);
-void EvAct_GetAreaFromList(int amount, int first_var, int mode, int index_var, uint8_t *value_list);
+void EvAct_GetValueFromList(int event_index, int amount, int target_var, int mode, int index_var, uint8_t *value_list);
+void EvAct_GetCoordsFromList(int event_index, int amount, int first_var, int mode, int index_var, uint8_t *value_list);
+void EvAct_GetAreaFromList(int event_index, int amount, int first_var, int mode, int index_var, uint8_t *value_list);
+void EvAct_GetCount(int target_var);
+void EvAct_GetSpiceCount(int target_var, int xpos, int ypos);
+void EvAct_GetDamageCount(int target_var, int xpos, int ypos);
+void EvAct_GetObjectProperty(int side_id, eDataType data_type, int offset, int index_var, int target_var);
+void EvAct_GetCrateProperty(eDataType data_type, int offset, int index_var, int target_var);
+void EvAct_GetTileProperty(eDataType data_type, int offset, int first_var, int target_var);
+void EvAct_GetAIProperty(int side_id, eDataType data_type, int target_var, int offset);
+void EvAct_GetMemoryData(eDataType data_type, int target_var, int address);
+void EvAct_GetUnitTemplateProperty(eDataType data_type, int offset, int unit_type, int target_var);
+void EvAct_GetBuildingTemplateProperty(eDataType data_type, int offset, int building_type, int target_var);
+void EvAct_GetWeaponTemplateProperty(eDataType data_type, int offset, int weapon_type, int target_var);
+void EvAct_GetExplosionTemplateProperty(eDataType data_type, int offset, int explosion_type, int target_var);
+void EvAct_GetUnitType(int target_var, bool random, ObjectFilterStruct *filter);
+void EvAct_GetBuildingType(int target_var, bool random, ObjectFilterStruct *filter);
+
+// Loops
+void EvAct_LoopValuesFromRange(int event_index, int loop_var, int min_value, int max_value);
+void EvAct_LoopCoordsFromArea(int event_index, int min_x, int min_y, int max_x, int max_y, int first_var);
+void EvAct_LoopValuesFromList(int event_index, int amount, int loop_var, uint8_t *value_list);
+void EvAct_LoopCoordsFromList(int event_index, int amount, int first_var, uint8_t *value_list);
+void EvAct_LoopAreasFromList(int event_index, int amount, int first_var, uint8_t *value_list);
+void EvAct_LoopObject(int event_index, int player_var, int index_var, int side_id, int object_index);
+void EvAct_LoopItem(int event_index, int index_var, int object_index);
+void EvAct_LoopTiles(int event_index, int first_var, int xpos, int ypos);
