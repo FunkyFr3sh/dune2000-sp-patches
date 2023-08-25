@@ -21,6 +21,8 @@ EventVariable gEventVariableArray[MAX_EVENT_VARIABLES];
 
 int tick_random_value;
 char condition_results[MAX_CONDITIONS];
+int break_count;
+int continue_count;
 
 // Custom implementation of function HandleConditionsAndEvents
 CALL(0x00449A8D, _Mod__HandleConditionsAndEvents);
@@ -153,7 +155,9 @@ void Mod__HandleConditionsAndEvents()
       condition_results[condition_index] = EvaluateCondition(condition_index);
     }
     // Process events
-    ExecuteEventsInRange(0, _gEventCount);
+    break_count = 0;
+    continue_count = 0;
+    ExecuteEventsInRange(0, _gEventCount, EBT_GLOBAL);
   }
 }
 
@@ -257,7 +261,7 @@ bool EvaluateCondition(int condition_index)
 bool IsStartBlockEvent(int event_index)
 {
   int t = _gEventArray[event_index].event_type;
-  return (t >= ET_240 && t <= ET_LOOP_SIDES);
+  return (t == ET_IF || (t >= ET_LOOP_WHILE && t <= ET_LOOP_SIDES));
 }
 
 int FindEndMarkerForBlockEvent(int event_index)
@@ -265,6 +269,10 @@ int FindEndMarkerForBlockEvent(int event_index)
   int i = event_index + 1;
   while (i < _gEventCount)
   {
+    if (gEventExtraData[event_index].else_event_index == -1 &&
+        (_gEventArray[event_index].event_type == ET_IF || _gEventArray[event_index].event_type == ET_ELSE_IF) &&
+        (_gEventArray[i].event_type == ET_ELSE_IF || _gEventArray[i].event_type == ET_ELSE))
+      gEventExtraData[event_index].else_event_index = i;
     if (_gEventArray[i].event_type == ET_END)
       return i;
     if (IsStartBlockEvent(i))
@@ -275,7 +283,7 @@ int FindEndMarkerForBlockEvent(int event_index)
   return 0;
 }
 
-void ExecuteEventsInRange(int min_event_index, int max_event_index)
+void ExecuteEventsInRange(int min_event_index, int max_event_index, eEventBlockType block_type)
 {
   int event_index = min_event_index;
   while (event_index < max_event_index)
@@ -311,14 +319,33 @@ void ExecuteEventsInRange(int min_event_index, int max_event_index)
     if ( event_can_happen )
     {
       ExecuteEvent(event_index);
+      // Handle Break and Continue statements
+      if (break_count)
+      {
+        if (block_type == EBT_GLOBAL)
+          DebugFatal("event-core.c", "Break event cannot be outside of a Loop block (event %d)", event_index);
+        else
+          break;
+      }
+      if (continue_count)
+      {
+        if (block_type == EBT_GLOBAL)
+          DebugFatal("event-core.c", "Continue event cannot be outside of a Loop block (event %d)", event_index);
+        else
+        {
+          if (block_type == EBT_LOOP)
+            continue_count--;
+          break;
+        }
+      }
     }
     event_index = gEventExtraData[event_index].next_event_index;
   }
 }
 
-void ExecuteEventBlock(int event_index)
+void ExecuteEventBlock(int event_index, eEventBlockType block_type)
 {
-  ExecuteEventsInRange(event_index + 1, gEventExtraData[event_index].next_event_index - 1);
+  ExecuteEventsInRange(event_index + 1, gEventExtraData[event_index].next_event_index - 1, block_type);
 }
 
 void ExecuteEvent(int event_index)
@@ -405,6 +432,11 @@ void ExecuteEvent(int event_index)
           {
             e.object_index = unit->MyIndex;
             ExecuteEventAction(&e);
+            if (break_count)
+            {
+              break_count--;
+              break;
+            }
             affected++;
           }
         }
@@ -458,6 +490,11 @@ void ExecuteEvent(int event_index)
           {
             e.object_index = building->MyIndex;
             ExecuteEventAction(&e);
+            if (break_count)
+            {
+              break_count--;
+              break;
+            }
             affected++;
           }
         }
@@ -486,6 +523,11 @@ void ExecuteEvent(int event_index)
         {
           e.object_index = i;
           ExecuteEventAction(&e);
+          if (break_count)
+          {
+            break_count--;
+            break;
+          }
           affected++;
         }
       }
@@ -523,6 +565,11 @@ void ExecuteEvent(int event_index)
             e.coord_x[0] = x;
             e.coord_y[0] = y;
             ExecuteEventAction(&e);
+            if (break_count)
+            {
+              break_count--;
+              break;
+            }
             affected++;
           }
         }
@@ -698,7 +745,12 @@ void ExecuteEventAction(EventContext *e)
   case ET_GET_EXPLOSION_TEMPLATE_PROPERTY:EvAct_GetExplosionTemplateProperty  (A_AMNT, A_ITEM, A_ENUM, A_BOOL);                             break;
   case ET_GET_UNIT_TYPE:                  EvAct_GetUnitType                   (A_AMNT, A_BOOL, (ObjectFilterStruct *)&e->data[1]);          break;
   case ET_GET_BUILDING_TYPE:              EvAct_GetBuildingType               (A_AMNT, A_BOOL, (ObjectFilterStruct *)&e->data[1]);          break;
+  // Conditional expression
+  case ET_IF:                             EvAct_If                            (EV_IDX, (CondExprData *)&e->data[1]);                break;
+  case ET_ELSE_IF:                        DebugFatal("event-core.c", "Invalid ELSE IF event (event %d)", e->event_index);           break;
+  case ET_ELSE:                           DebugFatal("event-core.c", "Invalid ELSE event (event %d)", e->event_index);              break;
   // Loops
+  case ET_LOOP_WHILE:                     EvAct_LoopWhile                     (EV_IDX, (CondExprData *)&e->data[1]);                break;
   case ET_LOOP_VALUES_FROM_RANGE:         EvAct_LoopValuesFromRange           (EV_IDX, A_ITEM, A_VAL1, A_VAL2);                     break;
   case ET_LOOP_COORDS_FROM_AREA:          EvAct_LoopCoordsFromArea            (EV_IDX, COORD0, COORD1, A_ITEM);                     break;
   case ET_LOOP_VALUES_FROM_LIST:          EvAct_LoopValuesFromList            (EV_IDX, A_AMNT, A_ITEM, (uint8_t *)e->data);         break;
@@ -711,6 +763,10 @@ void ExecuteEventAction(EventContext *e)
   case ET_LOOP_CRATES:                    EvAct_LoopItem                      (EV_IDX, A_AMNT, OBJ_ID);                             break;
   case ET_LOOP_TILES:                     EvAct_LoopTiles                     (EV_IDX, A_AMNT, COORD0);                             break;
   case ET_LOOP_SIDES:                     EvAct_LoopItem                      (EV_IDX, A_AMNT, OBJ_ID);                             break;
+  case ET_BREAK_LOOP:                     break_count = 1;                                                                          break;
+  case ET_CONTINUE_LOOP:                  continue_count = 1;                                                                       break;
+  // End
+  case ET_END:                            DebugFatal("event-core.c", "Invalid END event (event %d)", e->event_index);               break;
   default:
     DebugFatal("event-core.c", "Unknown event type %d (event %d)", e->event_type, e->event_index);
   }

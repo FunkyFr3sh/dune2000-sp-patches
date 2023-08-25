@@ -21,6 +21,7 @@ typedef struct EventData
 typedef struct EventExtraData
 {
   int next_event_index;
+  int else_event_index;
 } EventExtraData;
 
 typedef struct EventContext
@@ -33,6 +34,13 @@ typedef struct EventContext
   char *data;
   int object_index;
 } EventContext;
+
+typedef enum eEventBlockType
+{
+  EBT_GLOBAL,
+  EBT_CONDITION,
+  EBT_LOOP
+} eEventBlockType;
 
 enum EventFlags
 {
@@ -294,11 +302,12 @@ enum EventTypes
   ET_234,
   ET_235,
   ET_236,
-  ET_237,
-  ET_238,
-  ET_239,
+  // Conditional expression
+  ET_IF,
+  ET_ELSE_IF,
+  ET_ELSE,
   // Loops
-  ET_240,
+  ET_LOOP_WHILE,
   ET_LOOP_VALUES_FROM_RANGE,
   ET_LOOP_COORDS_FROM_AREA,
   ET_LOOP_VALUES_FROM_LIST,
@@ -417,14 +426,15 @@ extern ConditionData _gConditionArray[MAX_CONDITIONS];
 extern EventVariable gEventVariableArray[MAX_EVENT_VARIABLES];
 
 extern int tick_random_value;
+extern int break_count;
 
 // Functions
 
 bool EvaluateCondition(int condition_index);
 bool IsStartBlockEvent(int event_index);
 int FindEndMarkerForBlockEvent(int event_index);
-void ExecuteEventsInRange(int min_event_index, int max_event_index);
-void ExecuteEventBlock(int event_index);
+void ExecuteEventsInRange(int min_event_index, int max_event_index, eEventBlockType block_type);
+void ExecuteEventBlock(int event_index, eEventBlockType block_type);
 void ExecuteEvent(int event_index);
 void ExecuteEventAction(EventContext *e);
 int GetVariableValueOrConst(int flags, int flag_index, int var_index_or_const);

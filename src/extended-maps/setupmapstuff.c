@@ -179,7 +179,8 @@ void Mod__setupmapstuff()
   for (int i = 0; i < MAX_EVENTS; i++)
   {
     gEventExtraData[i].next_event_index = i + 1;
-    if (IsStartBlockEvent(i))
+    gEventExtraData[i].else_event_index = -1;
+    if (IsStartBlockEvent(i) || _gEventArray[i].event_type == ET_ELSE_IF || _gEventArray[i].event_type == ET_ELSE)
     {
       gEventExtraData[i].next_event_index = FindEndMarkerForBlockEvent(i) + 1;
     }

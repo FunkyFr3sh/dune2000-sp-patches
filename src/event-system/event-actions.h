@@ -8,6 +8,16 @@ typedef struct ShowMessageEventData
   uint32_t string_index;
 } ShowMessageEventData;
 
+typedef struct CondExprData
+{
+  uint32_t operators;
+  uint16_t and_or;
+  uint8_t value_var_flags;
+  uint8_t num_operations;
+  uint8_t variable[8];
+  uint8_t value[8];
+} CondExprData;
+
 typedef enum eDeliveryType
 {
   DELIVERYTYPE_REINFORCE = 1,
@@ -167,7 +177,11 @@ void EvAct_GetExplosionTemplateProperty(eDataType data_type, int offset, int exp
 void EvAct_GetUnitType(int target_var, bool random, ObjectFilterStruct *filter);
 void EvAct_GetBuildingType(int target_var, bool random, ObjectFilterStruct *filter);
 
+// Conditional expression
+void EvAct_If(int event_index, CondExprData *cond_expr);
+
 // Loops
+void EvAct_LoopWhile(int event_index, CondExprData *cond_expr);
 void EvAct_LoopValuesFromRange(int event_index, int loop_var, int min_value, int max_value);
 void EvAct_LoopCoordsFromArea(int event_index, int min_x, int min_y, int max_x, int max_y, int first_var);
 void EvAct_LoopValuesFromList(int event_index, int amount, int loop_var, uint8_t *value_list);

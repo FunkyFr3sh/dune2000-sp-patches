@@ -1478,12 +1478,101 @@ void EvAct_GetBuildingType(int target_var, bool random, ObjectFilterStruct *filt
   SetVariableValue(target_var, result);
 }
 
+bool EvaluateConditionalExpression(CondExprData *cond_expr)
+{
+  // Evaluate results of individual operations
+  bool operation_result[8];
+  for (int i = 0; i < 8; i++)
+  {
+    if (i < cond_expr->num_operations)
+    {
+      int first_val = GetVariableValue(cond_expr->variable[i]);
+      int second_val = GetVariableValueOrConst(cond_expr->value_var_flags, i, cond_expr->value[i]);
+      int operation = (cond_expr->operators >> (i * 4)) & 15;
+      switch (operation)
+      {
+        case 0: operation_result[i] = first_val == second_val; break;
+        case 1: operation_result[i] = first_val != second_val; break;
+        case 2: operation_result[i] = first_val >= second_val; break;
+        case 3: operation_result[i] = first_val >  second_val; break;
+        case 4: operation_result[i] = first_val <= second_val; break;
+        case 5: operation_result[i] = first_val <  second_val; break;
+        case 6: operation_result[i] = (first_val & (1 << second_val)) != 0; break;
+        case 7: operation_result[i] = (first_val & (1 << second_val)) == 0; break;
+      }
+    }
+    else
+      operation_result[i] = true;
+  }
+  // Evaluate and/or expression
+  char and_or[7];
+  for (int i = 0; i < 7; i++)
+    and_or[i] = (cond_expr->and_or >> (i * 2)) & 3;
+  int totalshifts = 0;
+  for (int and_or_level = 3; and_or_level >= 0; and_or_level--)
+  {
+    int shifts = 0;
+    for (int i = 0; i < cond_expr->num_operations-1 - totalshifts; i++)
+    {
+      if (and_or[i - shifts] == and_or_level)
+      {
+        if (and_or_level & 1)
+          operation_result[i - shifts] = operation_result[i - shifts] || operation_result[i - shifts + 1];
+        else
+          operation_result[i - shifts] = operation_result[i - shifts] && operation_result[i - shifts + 1];
+        for (int j = i - shifts + 1; j < cond_expr->num_operations-1 - totalshifts; j++)
+          operation_result[j] = operation_result[j+1];
+        for (int j = i - shifts; j < cond_expr->num_operations-1 - totalshifts; j++)
+          and_or[j] = and_or[j+1];
+        shifts++;
+      }
+    }
+    totalshifts += shifts;
+  }
+  return operation_result[0];
+}
+
+void EvAct_If(int event_index, CondExprData *cond_expr)
+{
+  int else_event_index = gEventExtraData[event_index].else_event_index;
+  if (EvaluateConditionalExpression(cond_expr))
+    ExecuteEventsInRange(event_index + 1, (else_event_index != -1)?(else_event_index):(gEventExtraData[event_index].next_event_index - 1), EBT_CONDITION);
+  else if (else_event_index != -1)
+  {
+    if (_gEventArray[else_event_index].event_type == ET_ELSE_IF)
+      EvAct_If(else_event_index, (CondExprData *)&_gEventArray[else_event_index].data[1]);
+    else if (_gEventArray[else_event_index].event_type == ET_ELSE)
+      ExecuteEventsInRange(else_event_index + 1, gEventExtraData[event_index].next_event_index - 1, EBT_CONDITION);
+  }
+}
+
+void EvAct_LoopWhile(int event_index, CondExprData *cond_expr)
+{
+  int num_cycles = 0;
+  while (EvaluateConditionalExpression(cond_expr))
+  {
+    if (num_cycles++ >= 65536)
+      DebugFatal("event-actions.c", "Infinite loop detected (event %d)", event_index);
+    ExecuteEventBlock(event_index, EBT_LOOP);
+    if (break_count)
+    {
+      break_count--;
+      break;
+    }
+  }
+}
+
 void EvAct_LoopValuesFromRange(int event_index, int loop_var, int min_value, int max_value)
 {
   for (int i = min_value; i <= max_value; i++)
   {
     SetVariableValue(loop_var, i);
-    ExecuteEventBlock(event_index);
+    ExecuteEventBlock(event_index, EBT_LOOP);
+    if (break_count)
+    {
+      break_count--;
+      break;
+    }
   }
 }
 
@@ -1494,7 +1583,12 @@ void EvAct_LoopCoordsFromArea(int event_index, int min_x, int min_y, int max_x, 
     {
       SetVariableValue(first_var, x);
       SetVariableValue(first_var + 1, y);
-      ExecuteEventBlock(event_index);
+      ExecuteEventBlock(event_index, EBT_LOOP);
+      if (break_count)
+      {
+        break_count--;
+        break;
+      }
     }
 }
 
@@ -1503,7 +1597,12 @@ void EvAct_LoopValuesFromList(int event_index, int amount, int loop_var, uint8_t
   for (int i = 0; i < amount; i++)
   {
     SetVariableValue(loop_var, value_list[i]);
-    ExecuteEventBlock(event_index);
+    ExecuteEventBlock(event_index, EBT_LOOP);
+    if (break_count)
+    {
+      break_count--;
+      break;
+    }
   }
 }
 
@@ -1513,7 +1612,12 @@ void EvAct_LoopCoordsFromList(int event_index, int amount, int first_var, uint8_
   {
     SetVariableValue(first_var,     value_list[i * 2 + 1]);
     SetVariableValue(first_var + 1, value_list[i * 2 + 2]);
-    ExecuteEventBlock(event_index);
+    ExecuteEventBlock(event_index, EBT_LOOP);
+    if (break_count)
+    {
+      break_count--;
+      break;
+    }
   }
 }
 
@@ -1525,7 +1629,12 @@ void EvAct_LoopAreasFromList(int event_index, int amount, int first_var, uint8_t
     SetVariableValue(first_var + 1, value_list[i * 4 + 2]);
     SetVariableValue(first_var + 2, value_list[i * 4 + 3]);
     SetVariableValue(first_var + 3, value_list[i * 4 + 4]);
-    ExecuteEventBlock(event_index);
+    ExecuteEventBlock(event_index, EBT_LOOP);
+    if (break_count)
+    {
+      break_count--;
+      break;
+    }
   }
 }
 
@@ -1533,18 +1642,18 @@ void EvAct_LoopObject(int event_index, int player_var, int index_var, int side_i
 {
   SetVariableValue(player_var, side_id);
   SetVariableValue(index_var, object_index);
-  ExecuteEventBlock(event_index);
+  ExecuteEventBlock(event_index, EBT_LOOP);
 }
 
 void EvAct_LoopItem(int event_index, int index_var, int object_index)
 {
   SetVariableValue(index_var, object_index);
-  ExecuteEventBlock(event_index);
+  ExecuteEventBlock(event_index, EBT_LOOP);
 }
 
 void EvAct_LoopTiles(int event_index, int first_var, int xpos, int ypos)
 {
   SetVariableValue(first_var, xpos);
   SetVariableValue(first_var + 1, ypos);
-  ExecuteEventBlock(event_index);
+  ExecuteEventBlock(event_index, EBT_LOOP);
 }
