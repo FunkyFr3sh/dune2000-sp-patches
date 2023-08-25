@@ -292,15 +292,21 @@ void EvAct_DamageTiles(int xpos, int ypos, int pixel_x, int pixel_y, int spread_
   }
 }
 
-int EvAct_AddUnit(int xpos, int ypos, int side_id, int properties, int unit_type, int movement, int facing, int tag)
+void EvAct_AddUnit(int xpos, int ypos, int side_id, int properties, int unit_type, int movement, int facing, int tag, int target_var)
 {
   GameMapTileStruct *tile = &gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]];
   // Do not add unit if tile is already occupied by unit
   if (_templates_unitattribs[unit_type].__Behavior != UnitBehavior_SANDWORM && tile->__tile_bitflags & TileFlags_8_OCC_UNIT)
-    return -1;
+  {
+    SetVariableValue(target_var, -1);
+    return;
+  }
   // Do not add next infantry if all 5 slots are already occupied
   if (_templates_unitattribs[unit_type].__IsInfantry && ((tile->__tile_bitflags & 0x3E0) == 0x3E0))
-    return -1;
+  {
+    SetVariableValue(target_var, -1);
+    return;
+  }
   // If tile is occupied by building belonging to different side, change owner side flags
   bool occ_building = (tile->__tile_bitflags & TileFlags_10_OCC_BUILDING) != 0;
   int orig_owner_side = tile->__tile_bitflags & 7;
@@ -343,10 +349,11 @@ int EvAct_AddUnit(int xpos, int ypos, int side_id, int properties, int unit_type
   // Revert back owner side attributes
   if (occ_building && (orig_owner_side != side_id))
     tile->__tile_bitflags = (tile->__tile_bitflags & ~7) | orig_owner_side;
-  return unit_index;
+  // Store unit index into variable
+  SetVariableValue(target_var, unit_index);
 }
 
-int EvAct_AddBuilding(int xpos, int ypos, int side_id, int properties, int building_type, int method, int facing, int tag)
+void EvAct_AddBuilding(int xpos, int ypos, int side_id, int properties, int building_type, int method, int facing, int tag, int target_var)
 {
   bool initialsetup = false;
   bool captured = false;
@@ -381,7 +388,8 @@ int EvAct_AddBuilding(int xpos, int ypos, int side_id, int properties, int build
     // Building tag
     bld->Tag = tag;
   }
-  return building_index;
+  // Store unit index into variable
+  SetVariableValue(target_var, building_index);
 }
 
 void EvAct_AddProjectile(int src_x, int src_y, int targ_x, int targ_y, int pixel_x, int pixel_y, int spread_x, int spread_y, int side_id, int weapon_type, bool circle_spread, bool play_sound)
@@ -821,7 +829,7 @@ void EvAct_TransferCredits(int side_id, eTransferCreditsOperation operation, int
     case TRANSFERCREDITS_VALUE_TO_SPICE_STORAGE:
     case TRANSFERCREDITS_VALUE_TO_SPICE_FORCE:
     {
-      int transfer_cash_drip = HLIMIT(side->CashDrip, remaining_transfer);
+      int transfer_cash_drip = LIMIT(side->CashDrip, 0, remaining_transfer);
       remaining_transfer -= transfer_cash_drip;
       side->SpiceDrip += transfer_cash_drip;
       side->CashDrip -= transfer_cash_drip;
