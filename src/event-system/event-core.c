@@ -21,6 +21,8 @@ EventVariable gEventVariableArray[MAX_EVENT_VARIABLES];
 
 int tick_random_value;
 char condition_results[MAX_CONDITIONS];
+int event_hooks[HOOK_TYPE_COUNT];
+int exit_count;
 int break_count;
 int continue_count;
 
@@ -155,6 +157,7 @@ void Mod__HandleConditionsAndEvents()
       condition_results[condition_index] = EvaluateCondition(condition_index);
     }
     // Process events
+    exit_count = 0;
     break_count = 0;
     continue_count = 0;
     ExecuteEventsInRange(0, _gEventCount, EBT_GLOBAL);
@@ -261,7 +264,7 @@ bool EvaluateCondition(int condition_index)
 bool IsStartBlockEvent(int event_index)
 {
   int t = _gEventArray[event_index].event_type;
-  return (t == ET_IF || (t >= ET_LOOP_WHILE && t <= ET_LOOP_SIDES));
+  return (t == ET_CALLABLE_BLOCK_START || t == ET_HOOK_BLOCK_START || t == ET_IF || (t >= ET_LOOP_WHILE && t <= ET_LOOP_SIDES));
 }
 
 int FindEndMarkerForBlockEvent(int event_index)
@@ -319,18 +322,29 @@ void ExecuteEventsInRange(int min_event_index, int max_event_index, eEventBlockT
     if ( event_can_happen )
     {
       ExecuteEvent(event_index);
-      // Handle Break and Continue statements
-      if (break_count)
+      // Handle Exit, Break and Continue statements
+      if (exit_count)
       {
         if (block_type == EBT_GLOBAL)
-          DebugFatal("event-core.c", "Break event cannot be outside of a Loop block (event %d)", event_index);
+          DebugFatal("event-core.c", "Exit event cannot be used outside of a Block (event %d)", event_index);
+        else
+        {
+          if (block_type == EBT_BLOCK)
+            exit_count--;
+          break;
+        }
+      }
+      if (break_count)
+      {
+        if (block_type == EBT_GLOBAL || block_type == EBT_BLOCK)
+          DebugFatal("event-core.c", "Break event cannot be used outside of a Loop (event %d)", event_index);
         else
           break;
       }
       if (continue_count)
       {
-        if (block_type == EBT_GLOBAL)
-          DebugFatal("event-core.c", "Continue event cannot be outside of a Loop block (event %d)", event_index);
+        if (block_type == EBT_GLOBAL || block_type == EBT_BLOCK)
+          DebugFatal("event-core.c", "Continue event cannot be used outside of a Loop (event %d)", event_index);
         else
         {
           if (block_type == EBT_LOOP)
@@ -745,6 +759,11 @@ void ExecuteEventAction(EventContext *e)
   case ET_GET_EXPLOSION_TEMPLATE_PROPERTY:EvAct_GetExplosionTemplateProperty  (A_AMNT, A_ITEM, A_ENUM, A_BOOL);                             break;
   case ET_GET_UNIT_TYPE:                  EvAct_GetUnitType                   (A_AMNT, A_BOOL, (ObjectFilterStruct *)&e->data[1]);          break;
   case ET_GET_BUILDING_TYPE:              EvAct_GetBuildingType               (A_AMNT, A_BOOL, (ObjectFilterStruct *)&e->data[1]);          break;
+  // Blocks
+  case ET_CALLABLE_BLOCK_START:                                                                                                     break;
+  case ET_HOOK_BLOCK_START:                                                                                                         break;
+  case ET_EXECUTE_BLOCK:                  EvAct_ExecuteBlock                  (EV_IDX, A_VAL1);                                     break;
+  case ET_EXIT_FROM_BLOCK:                exit_count = 1;                                                                           break;
   // Conditional expression
   case ET_IF:                             EvAct_If                            (EV_IDX, (CondExprData *)&e->data[1]);                break;
   case ET_ELSE_IF:                        DebugFatal("event-core.c", "Invalid ELSE IF event (event %d)", e->event_index);           break;
@@ -770,6 +789,21 @@ void ExecuteEventAction(EventContext *e)
   default:
     DebugFatal("event-core.c", "Unknown event type %d (event %d)", e->event_type, e->event_index);
   }
+}
+
+int ExecuteEventHook(int hook_type, int num_vars, int var0, int var1, int var2)
+{
+  // Set variables
+  if (num_vars >= 1)
+    SetVariableValue(0, var0);
+  if (num_vars >= 2)
+    SetVariableValue(1, var1);
+  if (num_vars >= 3)
+    SetVariableValue(2, var2);
+  // Execute hook
+  if (event_hooks[hook_type] != -1)
+    ExecuteEventBlock(event_hooks[hook_type], EBT_BLOCK);
+  return GetVariableValue(0);
 }
 
 int GetVariableValueOrConst(int flags, int flag_index, int var_index_or_const)

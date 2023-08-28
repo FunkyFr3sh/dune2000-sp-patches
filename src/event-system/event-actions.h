@@ -177,6 +177,9 @@ void EvAct_GetExplosionTemplateProperty(eDataType data_type, int offset, int exp
 void EvAct_GetUnitType(int target_var, bool random, ObjectFilterStruct *filter);
 void EvAct_GetBuildingType(int target_var, bool random, ObjectFilterStruct *filter);
 
+// Blocks
+void EvAct_ExecuteBlock(int event_index, int target_event_index);
+
 // Conditional expression
 void EvAct_If(int event_index, CondExprData *cond_expr);
 

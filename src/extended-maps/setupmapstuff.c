@@ -186,6 +186,22 @@ void Mod__setupmapstuff()
     }
   }
 
+  // Handle event hooks
+  for (int i = 0; i < HOOK_TYPE_COUNT; i++)
+    event_hooks[i] = -1;
+  for (int i = 0; i < MAX_EVENTS; i++)
+  {
+    if (_gEventArray[i].event_type == ET_HOOK_BLOCK_START)
+    {
+      if (_gEventArray[i].args[0] >= HOOK_TYPE_COUNT)
+        DebugFatal("setupmapstuff.c", "Invalid hook type %d (event %d)", _gEventArray[i].args[0], i);
+      if (event_hooks[_gEventArray[i].args[0]] == -1)
+        event_hooks[_gEventArray[i].args[0]] = i;
+      else
+        DebugFatal("setupmapstuff.c", "Hook of the same type is defined more than once (event %d)", i);
+    }
+  }
+
   // First pass - back up tile and special value, set up tile flags and preplaced spice/concrete
   for (int ypos = 0; ypos < gGameMap.height; ypos++)
     for (int xpos = 0; xpos < gGameMap.width; xpos++)
@@ -447,6 +463,7 @@ void Mod__setupmapstuff()
      DebugFatal("Setup.cpp", "No worms found on this map (%s)", _MapName);
     } */
     // New logic end
+    ExecuteEventHook(HOOK_SETUPMAPSTUFF, 0, 0, 0, 0);
     return;
   }
   v54 = 1;
@@ -711,4 +728,5 @@ LABEL_105:
     v99 = v89;
     goto LABEL_104;
   }
+  ExecuteEventHook(HOOK_SETUPMAPSTUFF, 0, 0, 0, 0);
 }

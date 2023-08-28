@@ -38,6 +38,7 @@ typedef struct EventContext
 typedef enum eEventBlockType
 {
   EBT_GLOBAL,
+  EBT_BLOCK,
   EBT_CONDITION,
   EBT_LOOP
 } eEventBlockType;
@@ -298,10 +299,11 @@ enum EventTypes
   ET_230,
   ET_231,
   ET_232,
-  ET_233,
-  ET_234,
-  ET_235,
-  ET_236,
+  // Blocks
+  ET_CALLABLE_BLOCK_START,
+  ET_HOOK_BLOCK_START,
+  ET_EXECUTE_BLOCK,
+  ET_EXIT_FROM_BLOCK,
   // Conditional expression
   ET_IF,
   ET_ELSE_IF,
@@ -324,6 +326,13 @@ enum EventTypes
   ET_CONTINUE_LOOP,
   // End
   ET_END
+};
+
+#define HOOK_TYPE_COUNT 1
+
+enum HookTypes
+{
+  HOOK_SETUPMAPSTUFF
 };
 
 // Condition-related structs
@@ -426,6 +435,7 @@ extern ConditionData _gConditionArray[MAX_CONDITIONS];
 extern EventVariable gEventVariableArray[MAX_EVENT_VARIABLES];
 
 extern int tick_random_value;
+extern int event_hooks[HOOK_TYPE_COUNT];
 extern int break_count;
 
 // Functions
@@ -437,6 +447,7 @@ void ExecuteEventsInRange(int min_event_index, int max_event_index, eEventBlockT
 void ExecuteEventBlock(int event_index, eEventBlockType block_type);
 void ExecuteEvent(int event_index);
 void ExecuteEventAction(EventContext *e);
+int ExecuteEventHook(int hook_type, int num_vars, int var0, int var1, int var3);
 int GetVariableValueOrConst(int flags, int flag_index, int var_index_or_const);
 void SetVariableValue(int var_index, int value);
 int GetVariableValue(int var_index);

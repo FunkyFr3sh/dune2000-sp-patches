@@ -1532,6 +1532,14 @@ bool EvaluateConditionalExpression(CondExprData *cond_expr)
   return operation_result[0];
 }
 
+void EvAct_ExecuteBlock(int event_index, int target_event_index)
+{
+  if (_gEventArray[target_event_index].event_type == ET_CALLABLE_BLOCK_START)
+    ExecuteEventBlock(target_event_index, EBT_BLOCK);
+  else
+    DebugFatal("event-actions.c", "Execute block: Target event must be of type Callable Block Start (event %d)", event_index);
+}
+
 void EvAct_If(int event_index, CondExprData *cond_expr)
 {
   int else_event_index = gEventExtraData[event_index].else_event_index;

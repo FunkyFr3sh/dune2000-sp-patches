@@ -352,7 +352,15 @@ bool DoPickupCrate(int crate_index, Unit *unit, unsigned char side_id)
     case CT_EXECUTE_EVENT:
     {
       // New crate type: execute event
-      ExecuteEvent(crate->ext_data_field);
+      if (_gEventArray[crate->ext_data_field].event_type == ET_CALLABLE_BLOCK_START)
+      {
+        SetVariableValue(0, crate_index);
+        SetVariableValue(1, side_id);
+        SetVariableValue(2, unit->MyIndex);
+        ExecuteEventBlock(crate->ext_data_field, EBT_BLOCK);
+      }
+      else
+        ExecuteEvent(crate->ext_data_field);
       return 0;
     }
     case CT_SPICE_BLOOM_SPAWNER:
