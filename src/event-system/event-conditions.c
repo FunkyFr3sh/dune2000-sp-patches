@@ -1,8 +1,8 @@
 #include "dune2000.h"
 #include "event-utils.h"
 #include "event-core.h"
+#include "event-actions.h"
 #include "event-conditions.h"
-#include "event-filters.h"
 #include "rules.h"
 #include "utils.h"
 
@@ -96,15 +96,15 @@ bool Cond_Revealed(int xpos, int ypos, int run_count, ConditionData *condition)
   return false;
 }
 
-bool Cond_Credits(int side_id, eCreditsCheck check_for, bool specific_side, int credits)
+bool Cond_Credits(int side_id, eGetCreditsType check_for, bool specific_side, int credits)
 {
   CSide *side = GetSide(specific_side?side_id:gSideId);
   switch (check_for)
   {
-    case CREDITSCHECK_TOTAL:        return (side->CashReal + side->SpiceReal) >= credits;
-    case CREDITSCHECK_SPICE:        return (side->SpiceReal) >= credits;
-    case CREDITSCHECK_CASH:         return (side->CashReal) >= credits;
-    case CREDITSCHECK_MAX_STORAGE:  return (side->__MaxStorage) >= credits;
+    case GETCREDITSTYPE_TOTAL:        return (side->CashReal + side->SpiceReal) >= credits;
+    case GETCREDITSTYPE_SPICE:        return (side->SpiceReal) >= credits;
+    case GETCREDITSTYPE_CASH:         return (side->CashReal) >= credits;
+    case GETCREDITSTYPE_MAX_STORAGE:  return (side->__MaxStorage) >= credits;
   }
   return false;
 }
@@ -283,16 +283,16 @@ bool Cond_DamageInArea(int min_x, int min_y, int max_x, int max_y, bool specific
   return total_damage >= damage;
 }
 
-bool Cond_Power(int side_id, ePowerCheck check_for, bool equal, int value)
+bool Cond_Power(int side_id, eGetPowerType check_for, bool equal, int value)
 {
   CSide *side = GetSide(side_id);
   switch (check_for)
   {
-    case POWERCHECK_PERCENT:      return CompareValue(side->__PowerPercent1, value, !equal);
-    case POWERCHECK_TOTAL_OUTPUT: return CompareValue(side->__PowerOutput, value, !equal);
-    case POWERCHECK_TOTAL_DRAIN:  return CompareValue(side->__PowerDrained, value, !equal);
-    case POWERCHECK_EXTRA_OUTPUT: return CompareValue(side->__PowerOutput - side->__PowerDrained, value, !equal);
-    case POWERCHECK_EXTRA_DRAIN:  return CompareValue(side->__PowerDrained - side->__PowerOutput, value, !equal);
+    case GETPOWERTYPE_PERCENT:      return CompareValue(side->__PowerPercent1, value, !equal);
+    case GETPOWERTYPE_TOTAL_OUTPUT: return CompareValue(side->__PowerOutput, value, !equal);
+    case GETPOWERTYPE_TOTAL_DRAIN:  return CompareValue(side->__PowerDrained, value, !equal);
+    case GETPOWERTYPE_EXTRA_OUTPUT: return CompareValue(side->__PowerOutput - side->__PowerDrained, value, !equal);
+    case GETPOWERTYPE_EXTRA_DRAIN:  return CompareValue(side->__PowerDrained - side->__PowerOutput, value, !equal);
   }
   return false;
 }

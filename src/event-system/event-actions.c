@@ -1478,6 +1478,138 @@ void EvAct_GetBuildingType(int target_var, bool random, ObjectFilterStruct *filt
   SetVariableValue(target_var, result);
 }
 
+void EvAct_GetGameTicks(int target_var)
+{
+  SetVariableValue(target_var, gGameTicks);
+}
+
+void EvAct_GetMySideId(int target_var)
+{
+  SetVariableValue(target_var, gSideId);
+}
+
+void EvAct_GetDifficulty(int target_var)
+{
+  SetVariableValue(target_var, gDifficultyLevel);
+}
+
+void EvAct_GetDiplomacy(int source, int target, int target_var)
+{
+  SetVariableValue(target_var, _gDiplomacy[source][target]);
+}
+
+void EvAct_GetTech(int side_id, int target_var)
+{
+  SetVariableValue(target_var, _gMiscData.Tech[side_id]);
+}
+
+void EvAct_GetHouseId(int side_id, int target_var)
+{
+  SetVariableValue(target_var, _IRValues[side_id]);
+}
+
+void EvAct_GetCredits(int side_id, eGetCreditsType what, int target_var)
+{
+  CSide *side = GetSide(side_id);
+  switch (what)
+  {
+    case GETCREDITSTYPE_TOTAL:        SetVariableValue(target_var, side->CashReal + side->SpiceReal); break;
+    case GETCREDITSTYPE_SPICE:        SetVariableValue(target_var, side->SpiceReal); break;
+    case GETCREDITSTYPE_CASH:         SetVariableValue(target_var, side->CashReal); break;
+    case GETCREDITSTYPE_MAX_STORAGE:  SetVariableValue(target_var, side->__MaxStorage); break;
+  }
+}
+
+void EvAct_GetPower(int side_id, eGetPowerType what, int target_var)
+{
+  CSide *side = GetSide(side_id);
+  switch (what)
+  {
+    case GETPOWERTYPE_PERCENT:      SetVariableValue(target_var, side->__PowerPercent1); break;
+    case GETPOWERTYPE_TOTAL_OUTPUT: SetVariableValue(target_var, side->__PowerOutput); break;
+    case GETPOWERTYPE_TOTAL_DRAIN:  SetVariableValue(target_var, side->__PowerDrained); break;
+    case GETPOWERTYPE_EXTRA_OUTPUT: SetVariableValue(target_var, side->__PowerOutput - side->__PowerDrained); break;
+    case GETPOWERTYPE_EXTRA_DRAIN:  SetVariableValue(target_var, side->__PowerDrained - side->__PowerOutput); break;
+  }
+}
+
+void EvAct_GetBuildingUpgrades(int side_id, int building_group, int target_var)
+{
+  SetVariableValue(target_var, GetSide(side_id)->__BuildingGroupUpgradeCount[building_group]);
+}
+
+void EvAct_GetStarportStock(int side_id, int unit_type, int target_var)
+{
+  SetVariableValue(target_var, GetSide(side_id)->__StarportUnitTypeStock[unit_type]);
+}
+
+void EvAct_GetStarportCost(int side_id, int unit_type, int target_var)
+{
+  SetVariableValue(target_var, GetSide(side_id)->__StarportUnitTypeCost[unit_type]);
+}
+
+void EvAct_GetStarportPick(int side_id, int unit_type, int target_var)
+{
+  SetVariableValue(target_var, GetSide(side_id)->__StarportUnitTypePicked[unit_type]);
+}
+
+void EvAct_GetSpiceHarvested(int side_id, int target_var)
+{
+  SetVariableValue(target_var, GetSide(side_id)->__SpiceHarvested);
+}
+
+void EvAct_GetUnitsBuilt(int side_id, int unit_type, bool total, int target_var)
+{
+  CSide *side = GetSide(side_id);
+  if (total)
+    SetVariableValue(target_var, side->__UnitsBuilt);
+  else
+    SetVariableValue(target_var, side->__UnitsBuiltPerType[unit_type]);
+}
+
+void EvAct_GetBuildingsBuilt(int side_id, int building_type, bool total, int target_var)
+{
+  CSide *side = GetSide(side_id);
+  if (total)
+    SetVariableValue(target_var, side->__BuildingsBuilt);
+  else
+    SetVariableValue(target_var, side->__BuildingsBuiltPerType[building_type]);
+}
+
+void EvAct_GetUnitsLost(int side_id, int unit_type, bool total, int target_var)
+{
+  CSide *side = GetSide(side_id);
+  if (total)
+    SetVariableValue(target_var, side->__UnitsLost);
+  else
+    SetVariableValue(target_var, side->__UnitsLostPerType[unit_type]);
+}
+
+void EvAct_GetBuildingsLost(int side_id, int target_var)
+{
+  CSide *side = GetSide(side_id);
+  return SetVariableValue(target_var, side->__BuildingsLost);
+}
+
+void EvAct_GetUnitsKilled(int side_id, int enemy, int unit_type, bool total, int target_var)
+{
+  CSide *side = GetSide(side_id);
+  if (total)
+    SetVariableValue(target_var, side->__UnitsKilled);
+  else
+    SetVariableValue(target_var, side->__UnitsKilledPerTypeAndSide[unit_type].__kills_per_side[enemy]);
+}
+
+void EvAct_GetBuildingsKilled(int side_id, int enemy, int building_type, bool total, int target_var)
+{
+  CSide *side = GetSide(side_id);
+  if (total)
+    SetVariableValue(target_var, side->__BuildingsKilled);
+  else
+    SetVariableValue(target_var, side->__BuildingsKilledPerTypeAndSide[building_type].__kills_per_side[enemy]);
+}
+
+
 bool EvaluateConditionalExpression(CondExprData *cond_expr)
 {
   // Evaluate results of individual operations
@@ -1646,9 +1778,9 @@ void EvAct_LoopAreasFromList(int event_index, int amount, int first_var, uint8_t
   }
 }
 
-void EvAct_LoopObject(int event_index, int player_var, int index_var, int side_id, int object_index)
+void EvAct_LoopObject(int event_index, int side_var, int index_var, int side_id, int object_index)
 {
-  SetVariableValue(player_var, side_id);
+  SetVariableValue(side_var, side_id);
   SetVariableValue(index_var, object_index);
   ExecuteEventBlock(event_index, EBT_LOOP);
 }

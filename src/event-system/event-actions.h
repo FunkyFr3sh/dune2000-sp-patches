@@ -80,6 +80,23 @@ typedef enum eChangeTileMode
   CHANGETILE_RESTORE
 } eChangeTileMode;
 
+typedef enum eGetCreditsType
+{
+  GETCREDITSTYPE_TOTAL,
+  GETCREDITSTYPE_SPICE,
+  GETCREDITSTYPE_CASH,
+  GETCREDITSTYPE_MAX_STORAGE
+}eGetCreditsType;
+
+typedef enum eGetPowerType
+{
+  GETPOWERTYPE_PERCENT,
+  GETPOWERTYPE_TOTAL_OUTPUT,
+  GETPOWERTYPE_TOTAL_DRAIN,
+  GETPOWERTYPE_EXTRA_OUTPUT,
+  GETPOWERTYPE_EXTRA_DRAIN
+}eGetPowerType;
+
 void EvAct_AddDelivery(int xpos, int ypos, int side_id, int amount, int deploy_action, int delay, eDeliveryType delivery_type, char *unit_list);
 void EvAct_SetDiplomacy(int source_side, int target_side, int allegiance_type, bool both_sided);
 void EvAct_PlaySound(int sample_id, bool force, bool point_sound, int xpos, int ypos);
@@ -176,6 +193,25 @@ void EvAct_GetWeaponTemplateProperty(eDataType data_type, int offset, int weapon
 void EvAct_GetExplosionTemplateProperty(eDataType data_type, int offset, int explosion_type, int target_var);
 void EvAct_GetUnitType(int target_var, bool random, ObjectFilterStruct *filter);
 void EvAct_GetBuildingType(int target_var, bool random, ObjectFilterStruct *filter);
+void EvAct_GetGameTicks(int target_var);
+void EvAct_GetMySideId(int target_var);
+void EvAct_GetDifficulty(int target_var);
+void EvAct_GetDiplomacy(int source, int target, int target_var);
+void EvAct_GetTech(int side_id, int target_var);
+void EvAct_GetHouseId(int side_id, int target_var);
+void EvAct_GetCredits(int side_id, eGetCreditsType what, int target_var);
+void EvAct_GetPower(int side_id, eGetPowerType what, int target_var);
+void EvAct_GetBuildingUpgrades(int side_id, int building_group, int target_var);
+void EvAct_GetStarportStock(int side_id, int unit_type, int target_var);
+void EvAct_GetStarportCost(int side_id, int unit_type, int target_var);
+void EvAct_GetStarportPick(int side_id, int unit_type, int target_var);
+void EvAct_GetSpiceHarvested(int side_id, int target_var);
+void EvAct_GetUnitsBuilt(int side_id, int unit_type, bool total, int target_var);
+void EvAct_GetBuildingsBuilt(int side_id, int building_type, bool total, int target_var);
+void EvAct_GetUnitsLost(int side_id, int unit_type, bool total, int target_var);
+void EvAct_GetBuildingsLost(int side_id, int target_var);
+void EvAct_GetUnitsKilled(int side_id, int enemy, int unit_type, bool total, int target_var);
+void EvAct_GetBuildingsKilled(int side_id, int enemy, int building_type, bool total, int target_var);
 
 // Blocks
 void EvAct_ExecuteBlock(int event_index, int target_event_index);
@@ -190,6 +226,6 @@ void EvAct_LoopCoordsFromArea(int event_index, int min_x, int min_y, int max_x, 
 void EvAct_LoopValuesFromList(int event_index, int amount, int loop_var, uint8_t *value_list);
 void EvAct_LoopCoordsFromList(int event_index, int amount, int first_var, uint8_t *value_list);
 void EvAct_LoopAreasFromList(int event_index, int amount, int first_var, uint8_t *value_list);
-void EvAct_LoopObject(int event_index, int player_var, int index_var, int side_id, int object_index);
+void EvAct_LoopObject(int event_index, int side_var, int index_var, int side_id, int object_index);
 void EvAct_LoopItem(int event_index, int index_var, int object_index);
 void EvAct_LoopTiles(int event_index, int first_var, int xpos, int ypos);

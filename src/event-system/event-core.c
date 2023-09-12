@@ -7,8 +7,8 @@
 #include "utils.h"
 #include "event-utils.h"
 #include "event-core.h"
-#include "event-conditions.h"
 #include "event-actions.h"
+#include "event-conditions.h"
 
 // New extended arrays for event and condition data
 
@@ -759,6 +759,25 @@ void ExecuteEventAction(EventContext *e)
   case ET_GET_EXPLOSION_TEMPLATE_PROPERTY:EvAct_GetExplosionTemplateProperty  (A_AMNT, A_ITEM, A_ENUM, A_BOOL);                             break;
   case ET_GET_UNIT_TYPE:                  EvAct_GetUnitType                   (A_AMNT, A_BOOL, (ObjectFilterStruct *)&e->data[1]);          break;
   case ET_GET_BUILDING_TYPE:              EvAct_GetBuildingType               (A_AMNT, A_BOOL, (ObjectFilterStruct *)&e->data[1]);          break;
+  case ET_GET_GAME_TICKS:                 EvAct_GetGameTicks                  (A_BOOL);                                                     break;
+  case ET_GET_MY_SIDE_ID:                 EvAct_GetMySideId                   (A_BOOL);                                                     break;
+  case ET_GET_DIFFICULTY:                 EvAct_GetDifficulty                 (A_BOOL);                                                     break;
+  case ET_GET_DIPLOMACY:                  EvAct_GetDiplomacy                  (A_SIDE, A_ITEM, A_BOOL);                                     break;
+  case ET_GET_TECH:                       EvAct_GetTech                       (A_SIDE, A_BOOL);                                             break;
+  case ET_GET_HOUSE_ID:                   EvAct_GetHouseId                    (A_SIDE, A_BOOL);                                             break;
+  case ET_GET_CREDITS:                    EvAct_GetCredits                    (A_SIDE, A_ENUM, A_BOOL);                                     break;
+  case ET_GET_POWER:                      EvAct_GetPower                      (A_SIDE, A_ENUM, A_BOOL);                                     break;
+  case ET_GET_BUILDING_UPGRADES:          EvAct_GetBuildingUpgrades           (A_SIDE, A_ITEM, A_BOOL);                                     break;
+  case ET_GET_STARPORT_STOCK:             EvAct_GetStarportStock              (A_SIDE, A_ITEM, A_BOOL);                                     break;
+  case ET_GET_STARPORT_COST:              EvAct_GetStarportCost               (A_SIDE, A_ITEM, A_BOOL);                                     break;
+  case ET_GET_STARPORT_PICK:              EvAct_GetStarportPick               (A_SIDE, A_ITEM, A_BOOL);                                     break;
+  case ET_GET_SPICE_HARVESTED:            EvAct_GetSpiceHarvested             (A_SIDE, A_BOOL);                                             break;
+  case ET_GET_UNITS_BUILT:                EvAct_GetUnitsBuilt                 (A_SIDE, A_ITEM, A_ENUM, A_BOOL);                             break;
+  case ET_GET_BUILDINGS_BUILT:            EvAct_GetBuildingsBuilt             (A_SIDE, A_ITEM, A_ENUM, A_BOOL);                             break;
+  case ET_GET_UNITS_LOST:                 EvAct_GetUnitsLost                  (A_SIDE, A_ITEM, A_ENUM, A_BOOL);                             break;
+  case ET_GET_BUILDINGS_LOST:             EvAct_GetBuildingsLost              (A_SIDE, A_BOOL);                                             break;
+  case ET_GET_UNITS_KILLED:               EvAct_GetUnitsKilled                (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL);                     break;
+  case ET_GET_BUILDINGS_KILLED:           EvAct_GetBuildingsKilled            (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL);                     break;
   // Blocks
   case ET_CALLABLE_BLOCK_START:                                                                                                     break;
   case ET_HOOK_BLOCK_START:                                                                                                         break;
@@ -793,6 +812,8 @@ void ExecuteEventAction(EventContext *e)
 
 int ExecuteEventHook(int hook_type, int num_vars, int var0, int var1, int var2)
 {
+  if (event_hooks[hook_type] == -1)
+    return var0;
   // Set variables
   if (num_vars >= 1)
     SetVariableValue(0, var0);
@@ -801,8 +822,7 @@ int ExecuteEventHook(int hook_type, int num_vars, int var0, int var1, int var2)
   if (num_vars >= 3)
     SetVariableValue(2, var2);
   // Execute hook
-  if (event_hooks[hook_type] != -1)
-    ExecuteEventBlock(event_hooks[hook_type], EBT_BLOCK);
+  ExecuteEventBlock(event_hooks[hook_type], EBT_BLOCK);
   return GetVariableValue(0);
 }
 
