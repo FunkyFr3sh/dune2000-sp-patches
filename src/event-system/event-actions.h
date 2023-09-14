@@ -97,6 +97,17 @@ typedef enum eGetPowerType
   GETPOWERTYPE_EXTRA_DRAIN
 }eGetPowerType;
 
+typedef enum eIfConditionType
+{
+  IFCONDTYPE_EXPRESSION,
+  IFCONDTYPE_CHECK_UNIT,
+  IFCONDTYPE_CHECK_BUILDING,
+  IFCONDTYPE_CHECK_CRATE,
+  IFCONDTYPE_CHECK_TILE,
+  IFCONDTYPE_CHECK_UNIT_TYPE,
+  IFCONDTYPE_CHECK_BUILDING_TYPE
+}eIfConditionType;
+
 void EvAct_AddDelivery(int xpos, int ypos, int side_id, int amount, int deploy_action, int delay, eDeliveryType delivery_type, char *unit_list);
 void EvAct_SetDiplomacy(int source_side, int target_side, int allegiance_type, bool both_sided);
 void EvAct_PlaySound(int sample_id, bool force, bool point_sound, int xpos, int ypos);
@@ -217,7 +228,7 @@ void EvAct_GetBuildingsKilled(int side_id, int enemy, int building_type, bool to
 void EvAct_ExecuteBlock(int event_index, int target_event_index);
 
 // Conditional expression
-void EvAct_If(int event_index, CondExprData *cond_expr);
+void EvAct_If(int event_index, eIfConditionType condition_type, int side_var, int object_index_var, CondExprData *cond_expr);
 
 // Loops
 void EvAct_LoopWhile(int event_index, CondExprData *cond_expr);

@@ -1672,15 +1672,40 @@ void EvAct_ExecuteBlock(int event_index, int target_event_index)
     DebugFatal("event-actions.c", "Execute block: Target event must be of type Callable Block Start (event %d)", event_index);
 }
 
-void EvAct_If(int event_index, CondExprData *cond_expr)
+void EvAct_If(int event_index, eIfConditionType condition_type, int side_var, int object_index_var, CondExprData *cond_expr)
 {
   int else_event_index = gEventExtraData[event_index].else_event_index;
-  if (EvaluateConditionalExpression(cond_expr))
+  int side_id = GetVariableValue(side_var);
+  int object_index = GetVariableValue(object_index_var);
+  bool result = false;
+  switch (condition_type)
+  {
+    case IFCONDTYPE_EXPRESSION:           result = EvaluateConditionalExpression(cond_expr); break;
+    case IFCONDTYPE_CHECK_UNIT:           result = CheckIfUnitMatchesFilter((ObjectFilterStruct *)cond_expr, &(GetSide(side_id)->__ObjectArray[object_index]), side_id); break;
+    case IFCONDTYPE_CHECK_BUILDING:       result = CheckIfBuildingMatchesFilter((ObjectFilterStruct *)cond_expr, (Building *)&(GetSide(side_id)->__ObjectArray[object_index]), side_id); break;
+    case IFCONDTYPE_CHECK_CRATE:          result = CheckIfCrateMatchesFilter((ObjectFilterStruct *)cond_expr, &gCrates[object_index]); break;
+    case IFCONDTYPE_CHECK_TILE:
+    {
+      int x = object_index;
+      int y = GetVariableValue(object_index_var + 1);
+      result = CheckIfTileMatchesFilter((ObjectFilterStruct *)cond_expr, &gGameMap.map[x + _CellNumbersWidthSpan[y]], x, y);
+      break;
+    }
+    case IFCONDTYPE_CHECK_UNIT_TYPE:      result = CheckIfUnitTypeMatchesFilter((ObjectFilterStruct *)cond_expr, object_index); break;
+    case IFCONDTYPE_CHECK_BUILDING_TYPE:  result = CheckIfBuildingTypeMatchesFilter((ObjectFilterStruct *)cond_expr, object_index); break;
+  }
+  if (result)
     ExecuteEventsInRange(event_index + 1, (else_event_index != -1)?(else_event_index):(gEventExtraData[event_index].next_event_index - 1), EBT_CONDITION);
   else if (else_event_index != -1)
   {
     if (_gEventArray[else_event_index].event_type == ET_ELSE_IF)
-      EvAct_If(else_event_index, (CondExprData *)&_gEventArray[else_event_index].data[1]);
+    {
+      EventData *e = &_gEventArray[else_event_index];
+      condition_type = GetVariableValueOrConst(e->arg_var_flags, 1, e->args[0]);
+      side_var = GetVariableValueOrConst(e->arg_var_flags, 2, e->args[2]);
+      object_index_var = GetVariableValueOrConst(e->arg_var_flags, 3, e->args[3]);
+      EvAct_If(else_event_index, condition_type, side_var, object_index_var, (CondExprData *)&e->data[1]);
+    }
     else if (_gEventArray[else_event_index].event_type == ET_ELSE)
       ExecuteEventsInRange(else_event_index + 1, gEventExtraData[event_index].next_event_index - 1, EBT_CONDITION);
   }

@@ -784,7 +784,7 @@ void ExecuteEventAction(EventContext *e)
   case ET_EXECUTE_BLOCK:                  EvAct_ExecuteBlock                  (EV_IDX, A_VAL1);                                     break;
   case ET_EXIT_FROM_BLOCK:                exit_count = 1;                                                                           break;
   // Conditional expression
-  case ET_IF:                             EvAct_If                            (EV_IDX, (CondExprData *)&e->data[1]);                break;
+  case ET_IF:                             EvAct_If                            (EV_IDX, A_AMNT, A_ITEM, A_ENUM, (CondExprData *)&e->data[1]);                break;
   case ET_ELSE_IF:                        DebugFatal("event-core.c", "Invalid ELSE IF event (event %d)", e->event_index);           break;
   case ET_ELSE:                           DebugFatal("event-core.c", "Invalid ELSE event (event %d)", e->event_index);              break;
   // Loops
