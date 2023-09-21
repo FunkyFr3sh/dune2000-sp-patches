@@ -449,6 +449,7 @@ void ExecuteEvent(int event_index)
             if (break_count)
             {
               break_count--;
+              arg_side_id = -1;
               break;
             }
             affected++;
@@ -507,6 +508,7 @@ void ExecuteEvent(int event_index)
             if (break_count)
             {
               break_count--;
+              arg_side_id = -1;
               break;
             }
             affected++;

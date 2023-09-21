@@ -20,6 +20,8 @@ void SaveGameExtraData(void *buffer, size_t size, size_t count, FILE *file)
   _WriteFile(gEventVariableArray, sizeof(gEventVariableArray), 1, file);
   // Write event extra data
   _WriteFile(gEventExtraData, sizeof(gEventExtraData), 1, file);
+  // Write event hooks
+  _WriteFile(event_hooks, sizeof(event_hooks), 1, file);
 }
 
 CALL(0x00441C79, _LoadGameExtraData); // LoadGame
@@ -38,6 +40,8 @@ void LoadGameExtraData(void *buffer, size_t size, size_t count, FILE *file)
   _ReadFile(gEventVariableArray, sizeof(gEventVariableArray), 1, file);
   // Read event extra data
   _ReadFile(gEventExtraData, sizeof(gEventExtraData), 1, file);
+  // Read event hooks
+  _ReadFile(event_hooks, sizeof(event_hooks), 1, file);
 
   // Reset last played property of sounds in sound table
   for (int i = 0; i < _sampletablecount; i++)

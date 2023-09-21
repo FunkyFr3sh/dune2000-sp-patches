@@ -60,6 +60,7 @@ OBJS            ?= callsites.o \
 	src/extended-maps/unit-movement-restrictions.o \
 	src/extended-maps/show-neutral-become-hostile-msg-rule.o \
 	src/extended-maps/ai-do-set-go-berserk.o \
+        src/extended-maps/event-hooks.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \

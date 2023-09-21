@@ -332,6 +332,8 @@ setcglob 0x00430770, BlitClipTImage2
 setcglob 0x00430860, ClearTImage
 setcglob 0x00431F50, BlitFontChar_0
 ; Other
+setcglob 0x00442A00, GetUnitBuildSpeedPercentage
+setcglob 0x00442B10, GetBuildingBuildSpeedPercentage
 setcglob 0x00442BB0, w__GetUnitCost
 setcglob 0x00442BE0, GetBuildingCost
 setcglob 0x004430D0, w_CanUnitBeBuilt
@@ -447,10 +449,14 @@ setcglob 0x0048DCC0, Data__GetTextString			; (int id, int unk)
 setcglob 0x0048DD90, Data__GetSoundTableID
 ; Other
 setcglob 0x004979A0, GetRandomAdjacentTile
+setcglob 0x00497B90, UpdateUnit
+setcglob 0x0049B7F0, UpdateBuilding
+setcglob 0x0049BE60, UpdateBullet
 setcglob 0x0049CA10, DestroyBuilding
 setcglob 0x0049CDE0, DestroyUnit
-setcglob 0x0049D2E0, DamageTiles
 setcglob 0x0049D280, UnitTileOccupiedByBuilding
+setcglob 0x0049D2E0, DamageTiles
+setcglob 0x0049DD80, UpdateExplosion
 setcglob 0x0049DEB0, UnitAdjustState
 setcglob 0x0049E140, Unit_49E140
 setcglob 0x0049F1B0, MakeUnitsStealthInRange

@@ -445,9 +445,11 @@ void            BlitClipTImage2(TImage *lpTITo, RECT *rect, int toX, int toY, TI
 void            ClearTImage(TImage *a1, int color, int unusable);
 void            BlitFontChar_0(TImage *dest, int x, int y, TImage *src, _WORD *pal);
 // Other
+unsigned int    GetUnitBuildSpeedPercentage(unsigned char unit_type, unsigned char side_id);
+unsigned int    GetBuildingBuildSpeedPercentage(unsigned char side_id);
 unsigned int    w__GetUnitCost(int type, eSideType side);
 unsigned int    GetBuildingCost(int building_type, int num_upgrades, eSideType side_id);
-bool            w_CanUnitBeBuilt(unsigned __int8 side_id, unsigned __int8 unitType, char bool1);
+bool            w_CanUnitBeBuilt(unsigned char side_id, unsigned char unitType, char bool1);
 bool            CanSideUpgradeBuildingGroup(eSideType side_id, eBuildingGroupType building_group);
 
 int             GetRandomValue(char *, int);
@@ -457,7 +459,7 @@ void            SetMouseCursor(int cursor);
 int             RevealMap();
 void            Map__PlayerDefeated(uint8_t sideId);
 
-char            UpdateShroudInRegion(RECT *rect, unsigned __int8 width, unsigned __int8 height);
+char            UpdateShroudInRegion(RECT *rect, unsigned char width, unsigned char height);
 unsigned int    FindFreeSpotForInfantry(TileFlags tile_flags);
 void            GetBuildingOnConcreteCount(char side_id, unsigned char building_type, unsigned char x, unsigned char y, unsigned int *buildTileCount1, unsigned int *concreteTileCount1);
 void            RevealCircle(int x, int y, int size);
@@ -560,10 +562,14 @@ char *          Data__GetTextString(int stringId, bool showError);
 int             Data__GetSoundTableID(const char *key);
 // Other
 bool            GetRandomAdjacentTile(unsigned __int8 *x_ptr, unsigned __int8 *y_ptr);
+char            UpdateUnit(Unit *arg0, eSideType side_id, __int16 myIndex);
+bool            UpdateBuilding(Building *bld, int side_id, __int16 building_index);
+char            UpdateBullet(Bullet *bul, eSideType side_id);
 void            DestroyBuilding(int side, int objIndex, char a3);
 void            DestroyUnit(eSideType side, __int16 index);
-char            DamageTiles(unsigned int xpos, unsigned int ypos, unsigned int a3, unsigned __int8 bulletType, int ai_side, __int16 ai_index, char a7);
 
+char            DamageTiles(unsigned int xpos, unsigned int ypos, unsigned int a3, unsigned __int8 bulletType, int ai_side, __int16 ai_index, char a7);
+bool            UpdateExplosion(Explosion *arg0, eSideType a1);
 bool            UnitAdjustState(Unit *unit, eUnitState state);
 bool            Unit_49E140(Unit *unit);
 void            MakeUnitsStealthInRange(unsigned __int8 x, unsigned __int8 y, eSideType side);
