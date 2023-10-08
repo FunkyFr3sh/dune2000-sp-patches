@@ -18,9 +18,10 @@
 ;    jmp hackend
     
 ; Display red building placement marker on tiles with spice
-@PATCH 0x00428B3C ; HandleConcretePlacement
-    test eax, 0x7013F8
-@ENDPATCH
+; Superseded by Mod__HandleConcretePlacement
+;@PATCH 0x00428B3C ; HandleConcretePlacement
+;    test eax, 0x7013F8
+;@ENDPATCH
 
 ; Superseded by Mod__HandleBuildingPlacement
 ;@PATCH 0x0042881C ; HandleBuildingPlacement
@@ -58,5 +59,3 @@ hack 0x0044F022, 0x0044F033 ; SpiceMound
     cmp eax, 0x10000
     jnz 0x44F0CF
     jmp hackend
-
-

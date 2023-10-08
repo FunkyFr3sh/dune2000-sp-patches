@@ -8,8 +8,9 @@
 ;@CLEAR 0x0042867A, 0x90, 0x0042868F ; HandleBuildingPlacement
 ;@CLEAR 0x00428830, 0x90, 0x00428838 ; HandleBuildingPlacement
 
-@CLEAR 0x00428992, 0x90, 0x004289A7 ; HandleConcretePlacement
-@CLEAR 0x00428B5D, 0x90, 0x00428B63 ; HandleConcretePlacement
+; Superseded by Mod__HandleConcretePlacement
+;@CLEAR 0x00428992, 0x90, 0x004289A7 ; HandleConcretePlacement
+;@CLEAR 0x00428B5D, 0x90, 0x00428B63 ; HandleConcretePlacement
 
 @CLEAR 0x00428C47, 0x00, 0x00428C48 ; getownershipstatusofcell
 
