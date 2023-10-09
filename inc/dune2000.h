@@ -572,7 +572,8 @@ char            DamageTiles(unsigned int xpos, unsigned int ypos, unsigned int a
 bool            UpdateExplosion(Explosion *arg0, eSideType a1);
 bool            UnitAdjustState(Unit *unit, eUnitState state);
 bool            Unit_49E140(Unit *unit);
-void            MakeUnitsStealthInRange(unsigned __int8 x, unsigned __int8 y, eSideType side);
+char            tile_driveon_49E290(eSideType side, unsigned char *x, unsigned char *y);
+void            MakeUnitsStealthInRange(unsigned char x, unsigned char y, eSideType side);
 int             RevealTilesSeenByBuildingsAndUnits(eSideType side);
 bool            Unit_49F5F0(Unit *unit);
 
@@ -586,6 +587,8 @@ Unit *          GetNextUnitOnTile(unsigned int x, unsigned int y, unsigned int s
 bool            BuildingOccupiesTile(Building *building, unsigned __int8 x, unsigned __int8 y);
 bool            GetBuildingOnTile_0(int x, int y, Building **building_ptr, eSideType *side_id, _WORD *index);
 
+int16_t         GetRefineryIndex(eSideType side_id);
+Building *      GetNearestBuildingWithBehavior(unsigned char x, unsigned char y, eSideType side_id, BuildingBehaviorType behavior, _BYTE *exit_x1, _BYTE *exit_y1);
 bool            GetNearestFreeTileForUnit(unsigned char *x, unsigned char *y, unsigned char a3);
 void            cinit();
 

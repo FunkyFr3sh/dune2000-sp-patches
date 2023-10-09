@@ -108,7 +108,7 @@ typedef enum eIfConditionType
   IFCONDTYPE_CHECK_BUILDING_TYPE
 }eIfConditionType;
 
-void EvAct_AddDelivery(int xpos, int ypos, int side_id, int amount, int deploy_action, int delay, eDeliveryType delivery_type, char *unit_list);
+void EvAct_AddDelivery(int xpos, int ypos, int side_id, int amount, int tag, int deploy_action, int delay, eDeliveryType delivery_type, char *unit_list);
 void EvAct_SetDiplomacy(int source_side, int target_side, int allegiance_type, bool both_sided);
 void EvAct_PlaySound(int sample_id, bool force, bool point_sound, int xpos, int ypos);
 void EvAct_SetCash(int side_id, eValueOperation operation, int value);

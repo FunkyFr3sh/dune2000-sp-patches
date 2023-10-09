@@ -12,7 +12,7 @@
 #include "../extended-maps/crates-func.h"
 #include "../extended-maps/messages-func.h"
 
-void EvAct_AddDelivery(int xpos, int ypos, int side_id, int amount, int deploy_action, int delay, eDeliveryType delivery_type, char *unit_list)
+void EvAct_AddDelivery(int xpos, int ypos, int side_id, int amount, int tag, int deploy_action, int delay, eDeliveryType delivery_type, char *unit_list)
 {
   CSide *side = GetSide(side_id);
   if (delivery_type == DELIVERYTYPE_STARPORT && side->__PrimaryStarport == -1)
@@ -37,6 +37,7 @@ void EvAct_AddDelivery(int xpos, int ypos, int side_id, int amount, int deploy_a
   side->__Deliveries[found_free_slot].__delivery_time = gGameTicks + delay;
   side->__Deliveries[found_free_slot].__deploy_action = deploy_action;
   side->__Deliveries[found_free_slot].__delivery_type = delivery_type;
+  side->__Deliveries[found_free_slot].tag = tag;
   memcpy(side->__Deliveries[found_free_slot].__units, unit_list, amount);
   side->__Deliveries[found_free_slot].__units[amount] = -1;
   if (delivery_type == DELIVERYTYPE_STARPORT)

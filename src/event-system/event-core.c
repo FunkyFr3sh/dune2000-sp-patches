@@ -619,8 +619,8 @@ void ExecuteEventAction(EventContext *e)
   switch ( e->event_type )
   {
   // Vanilla / General
-  case ET_REINFORCEMENT:          EvAct_AddDelivery         (COORD0, A_SIDE, A_AMNT, A_BOOL, A_VAL1, DELIVERYTYPE_REINFORCE, e->data); break;
-  case ET_STARPORT_DELIVERY:      EvAct_AddDelivery         (COORD0, A_SIDE, A_AMNT, A_BOOL, A_VAL1, DELIVERYTYPE_STARPORT,  e->data); break;
+  case ET_REINFORCEMENT:          EvAct_AddDelivery         (COORD0, A_SIDE, A_AMNT, A_ITEM, A_BOOL, A_VAL1, DELIVERYTYPE_REINFORCE, e->data); break;
+  case ET_STARPORT_DELIVERY:      EvAct_AddDelivery         (COORD0, A_SIDE, A_AMNT, A_ITEM, A_BOOL, A_VAL1, DELIVERYTYPE_STARPORT,  e->data); break;
   case ET_ALLEGIANCE:             EvAct_SetDiplomacy        (A_SIDE, A_ITEM, A_ENUM, A_BOOL); break;
   case ET_LEAVE:                  CSide__BlowupAll_surrender(GetSide(A_SIDE)); break;
   case ET_BESERK:                 _gAIArray[A_SIDE].__GoBeserk_OtherStates = 1; break;

@@ -459,6 +459,7 @@ setcglob 0x0049D2E0, DamageTiles
 setcglob 0x0049DD80, UpdateExplosion
 setcglob 0x0049DEB0, UnitAdjustState
 setcglob 0x0049E140, Unit_49E140
+setcglob 0x0049E290, tile_driveon_49E290
 setcglob 0x0049F1B0, MakeUnitsStealthInRange
 setcglob 0x0049F4D0, RevealTilesSeenByBuildingsAndUnits
 setcglob 0x0049F5F0, Unit_49F5F0
@@ -473,6 +474,8 @@ setcglob 0x004A54A0, GetNextUnitOnTile
 setcglob 0x004A5570, BuildingOccupiesTile
 setcglob 0x004A5640, GetBuildingOnTile_0
 setcglob 0x004A5980, IsAnyInfantrySelected
+setcglob 0x004A5E80, GetRefineryIndex
+setcglob 0x004A5F80, GetNearestBuildingWithBehavior
 setcglob 0x004A60E0, GetNearestFreeTileForUnit
 setcglob 0x004B1890, cinit
 

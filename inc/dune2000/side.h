@@ -487,7 +487,7 @@ typedef struct DeliveryStruct
   char field_34;
   char __delivery_type;
   char __deploy_action;
-  char field_37;
+  char tag; // Additional field for extended functionality (mod)
 }DeliveryStruct;
 
 typedef struct BuildQueueStruct

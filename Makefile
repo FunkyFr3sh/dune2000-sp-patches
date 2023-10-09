@@ -61,6 +61,7 @@ OBJS            ?= callsites.o \
 	src/extended-maps/show-neutral-become-hostile-msg-rule.o \
 	src/extended-maps/ai-do-set-go-berserk.o \
         src/extended-maps/event-hooks.o \
+        src/extended-maps/delivery-tag.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \
