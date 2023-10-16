@@ -103,6 +103,40 @@ bool CheckIfBuildingMatchesFilter(ObjectFilterStruct *filter, Building *building
   return EvaluateFilterExpression(filter, criteria_result);
 }
 
+bool CheckIfBulletMatchesCriteria(Bullet *bullet, eBulletFilterCriteriaType criteria_type, bool negation, bool comparison, int value);
+
+bool CheckIfBulletMatchesFilter(ObjectFilterStruct *filter, Bullet *bullet)
+{
+  // Check for position
+  if (!EvaluateFilterPosition(filter, bullet->__PosX >> 16, bullet->__PosY >> 16))
+    return false;
+  // Check for criteria
+  bool criteria_result[8];
+  for (int i = 0; i < 8; i++)
+  {
+    int value = GetVariableValueOrConst(filter->criteria_var_flags, i, filter->criteria_value[i]);
+    criteria_result[i] = CheckIfBulletMatchesCriteria(bullet, filter->criteria_type[i] & 63, filter->criteria_type[i] & 64, filter->criteria_type[i] & 128, value);
+  }
+  return EvaluateFilterExpression(filter, criteria_result);
+}
+
+bool CheckIfExplosionMatchesCriteria(Explosion *explosion, eExplosionFilterCriteriaType criteria_type, bool negation, bool comparison, int value);
+
+bool CheckIfExplosionMatchesFilter(ObjectFilterStruct *filter, Explosion *explosion)
+{
+  // Check for position
+  if (!EvaluateFilterPosition(filter, explosion->__PosX >> 16, explosion->__PosY >> 16))
+    return false;
+  // Check for criteria
+  bool criteria_result[8];
+  for (int i = 0; i < 8; i++)
+  {
+    int value = GetVariableValueOrConst(filter->criteria_var_flags, i, filter->criteria_value[i]);
+    criteria_result[i] = CheckIfExplosionMatchesCriteria(explosion, filter->criteria_type[i] & 63, filter->criteria_type[i] & 64, filter->criteria_type[i] & 128, value);
+  }
+  return EvaluateFilterExpression(filter, criteria_result);
+}
+
 bool CheckIfCrateMatchesCriteria(CrateStruct *crate, eCrateFilterCriteriaType criteria_type, bool negation, bool comparison, int value);
 
 bool CheckIfCrateMatchesFilter(ObjectFilterStruct *filter, CrateStruct *crate)
@@ -135,6 +169,20 @@ bool CheckIfTileMatchesFilter(ObjectFilterStruct *filter, GameMapTileStruct *til
   {
     int value = GetVariableValueOrConst(filter->criteria_var_flags, i, filter->criteria_value[i]);
     criteria_result[i] = CheckIfTileMatchesCriteria(tile, pos_x, pos_y, filter->criteria_type[i] & 63, filter->criteria_type[i] & 64, filter->criteria_type[i] & 128, value);
+  }
+  return EvaluateFilterExpression(filter, criteria_result);
+}
+
+bool CheckIfSideMatchesCriteria(eSideType side_id, eSideFilterCriteriaType criteria_type, bool negation, bool comparison, int value);
+
+bool CheckIfSideMatchesFilter(ObjectFilterStruct *filter, int side_id)
+{
+  // Check for criteria
+  bool criteria_result[8];
+  for (int i = 0; i < 8; i++)
+  {
+    int value = GetVariableValueOrConst(filter->criteria_var_flags, i, filter->criteria_value[i]);
+    criteria_result[i] = CheckIfSideMatchesCriteria(side_id, filter->criteria_type[i] & 63, filter->criteria_type[i] & 64, filter->criteria_type[i] & 128, value);
   }
   return EvaluateFilterExpression(filter, criteria_result);
 }
@@ -405,6 +453,60 @@ bool CheckIfBuildingMatchesCriteria(Building *building, eSideType side_id, eBuil
   return result != negation;
 }
 
+bool CheckIfBulletMatchesCriteria(Bullet *bullet, eBulletFilterCriteriaType criteria_type, bool negation, bool comparison, int value)
+{
+  bool result = true;
+  BullAtrbStruct *bullet_template = &_templates_bulletattribs[bullet->Type];
+  switch(criteria_type)
+  {
+  case BULLETCRITERIATYPE_NONE:             result = true; break;
+  case BULLETCRITERIATYPE_TYPE:             result = CompareValue(bullet->Type, value, comparison); break;
+  case BULLETCRITERIATYPE_CATEGORY:
+    switch(value)
+    {
+    case BULLETCATEGORY_ANTI_AIRCRAFT:  result = bullet_template->AntiAircraft != 0; break;
+    }
+    break;
+  case BULLETCRITERIATYPE_TAG:              result = CompareValue(bullet->Tag, value, comparison); break;
+  case BULLETCRITERIATYPE_DAMAGE:           result = CompareValue(bullet_template->__Damage, value, comparison); break;
+  case BULLETCRITERIATYPE_RANGE:            result = CompareValue(bullet_template->__Range, value, comparison); break;
+  case BULLETCRITERIATYPE_SPEED:            result = CompareValue(bullet_template->__ProjectileSpeed, value, comparison); break;
+  case BULLETCRITERIATYPE_WARHEAD:          result = CompareValue(bullet_template->Warhead, value, comparison); break;
+  case BULLETCRITERIATYPE_HIT_EXPLOSION:    result = CompareValue(bullet_template->__HitExplosion, value, comparison); break;
+  case BULLETCRITERIATYPE_TRAIL_EXPLOSION:  result = CompareValue(bullet_template->__TrailExplosion, value, comparison); break;
+  case BULLETCRITERIATYPE_FLAG:             result = bullet->Flags & (1 << value); break;
+  case BULLETCRITERIATYPE_MOVE_STEPS:       result = CompareValue(bullet->__MoveSteps, value, comparison); break;
+  case BULLETCRITERIATYPE_SPEED_X:          result = CompareValue(bullet->__SpeedX, value, comparison); break;
+  case BULLETCRITERIATYPE_SPEED_Y:          result = CompareValue(bullet->__SpeedY, value, comparison); break;
+  case BULLETCRITERIATYPE_FIRER_INDEX:      result = CompareValue(bullet->__FirerIndex, value, comparison); break;
+  case BULLETCRITERIATYPE_HOMING_INDEX:     result = CompareValue(bullet->__HomingIndex, value, comparison); break;
+  case BULLETCRITERIATYPE_HOMING_SIDE:      result = CompareValue(bullet->__HomingSideId, value, comparison); break;
+  case BULLETCRITERIATYPE_TARGET_X:         result = CompareValue(bullet->__TargetX, value, comparison); break;
+  case BULLETCRITERIATYPE_TARGET_Y:         result = CompareValue(bullet->__TargetY, value, comparison); break;
+  case BULLETCRITERIATYPE_POS_Z:            result = CompareValue(bullet->__PosZHeight, value, comparison); break;
+  case BULLETCRITERIATYPE_ANIM_FRAME:       result = CompareValue(bullet->__AnimationFrame, value, comparison); break;
+  //default: result = TileCheck(crate->__x, crate->__y, criteria_type - CRATECRITERIATYPE_TILECHECK, comparison, value);
+  }
+  return result != negation;
+}
+
+bool CheckIfExplosionMatchesCriteria(Explosion *explosion, eExplosionFilterCriteriaType criteria_type, bool negation, bool comparison, int value)
+{
+  bool result = true;
+  switch(criteria_type)
+  {
+  case EXPLOSIONCRITERIATYPE_NONE:        result = true; break;
+  case EXPLOSIONCRITERIATYPE_TYPE:        result = CompareValue(explosion->Type, value, comparison); break;
+  case EXPLOSIONCRITERIATYPE_TAG:         result = CompareValue(explosion->Tag, value, comparison); break;
+  case EXPLOSIONCRITERIATYPE_FLAG:        result = explosion->Flags & (1 << value); break;
+  case EXPLOSIONCRITERIATYPE_ANIM_FRAME:  result = CompareValue(explosion->__AnimationFrame, value, comparison); break;
+  case EXPLOSIONCRITERIATYPE_ANIM_DELAY:  result = CompareValue(explosion->__AnimationDelay, value, comparison); break;
+  case EXPLOSIONCRITERIATYPE_POS_Z:       result = CompareValue(explosion->__PosZHeight, value, comparison); break;
+  //default: result = TileCheck(crate->__x, crate->__y, criteria_type - CRATECRITERIATYPE_TILECHECK, comparison, value);
+  }
+  return result != negation;
+}
+
 bool CheckIfCrateMatchesCriteria(CrateStruct *crate, eCrateFilterCriteriaType criteria_type, bool negation, bool comparison, int value)
 {
   bool result = true;
@@ -458,6 +560,53 @@ bool CheckIfTileMatchesCriteria(GameMapTileStruct *tile, int pos_x, int pos_y, e
     case TILECRITERIATYPE_DAMAGE:     result = CompareValue(tile->__damage, value, comparison); break;
     case TILECRITERIATYPE_SHROUD:     result = CompareValue(tile->__shroud, value, comparison); break;
     default: result = TileCheck(pos_x, pos_y, criteria_type - TILECRITERIATYPE_TILECHECK, comparison, value);
+  }
+  return result != negation;
+}
+
+bool CheckIfSideMatchesCriteria(eSideType side_id, eSideFilterCriteriaType criteria_type, bool negation, bool comparison, int value)
+{
+  bool result = false;
+  CSide *side = GetSide(side_id);
+  switch(criteria_type)
+  {
+    case SIDECRITERIATYPE_NONE:             result = true; break;
+    case SIDECRITERIATYPE_INDEX:            result = CompareValue(side_id, value, comparison); break;
+    case SIDECRITERIATYPE_HOUSE_ID:         result = CompareValue(side->fHouseID, value, comparison); break;
+    case SIDECRITERIATYPE_TECH:             result = CompareValue(_gMiscData.Tech[side_id], value, comparison); break;
+    case TILECRITERIATYPE_CATEGORY:
+      switch(value)
+      {
+      case SIDECATEGORY_MY_SIDE:            result = side_id == gSideId; break;
+      case SIDECATEGORY_ALLY_TO_MY_SIDE:    result = _gDiplomacy[side_id][gSideId] == 0; break;
+      case SIDECATEGORY_ENEMY_TO_MY_SIDE:   result = _gDiplomacy[side_id][gSideId] == 1; break;
+      case SIDECATEGORY_NEUTRAL_TO_MY_SIDE: result = _gDiplomacy[side_id][gSideId] == 2; break;
+      case SIDECATEGORY_AI_ENABLED:         result = _gAIArray[side_id].__IsAI != 0; break;
+      case SIDECATEGORY_PARTICIPATES_GAME:  result = side->__ParticipatesInGame != 0; break;
+      case SIDECATEGORY_UNITS_EXIST:        result = _gUnitsExist[side_id] != 0; break;
+      case SIDECATEGORY_BUILDINGS_EXIST:    result = _gBuildingsExist[side_id] != 0; break;
+      }
+      break;
+    case SIDECRITERIATYPE_ALLY_TO:          result = _gDiplomacy[side_id][value] == 0; break;
+    case SIDECRITERIATYPE_ENEMY_TO:         result = _gDiplomacy[side_id][value] == 1; break;
+    case SIDECRITERIATYPE_NEUTRAL_TO:       result = _gDiplomacy[side_id][value] == 2; break;
+    case SIDECRITERIATYPE_CREDITS:          result = CompareValue(side->CashReal + side->SpiceReal, value, comparison); break;
+    case SIDECRITERIATYPE_SPICE:            result = CompareValue(side->SpiceReal, value, comparison); break;
+    case SIDECRITERIATYPE_CASH:             result = CompareValue(side->CashReal, value, comparison); break;
+    case SIDECRITERIATYPE_STORAGE:          result = CompareValue(side->__MaxStorage, value, comparison); break;
+    case SIDECRITERIATYPE_POWER_PERCENT:    result = CompareValue(side->__PowerPercent1, value, comparison); break;
+    case SIDECRITERIATYPE_POWER_OUTPUT:     result = CompareValue(side->__PowerOutput, value, comparison); break;
+    case SIDECRITERIATYPE_POWER_DRAIN:      result = CompareValue(side->__PowerDrained, value, comparison); break;
+    case SIDECRITERIATYPE_1_UPGRADE:        result = side->__BuildingGroupUpgradeCount[value] >= 1; break;
+    case SIDECRITERIATYPE_2_UPGRADES:       result = side->__BuildingGroupUpgradeCount[value] >= 2; break;
+    case SIDECRITERIATYPE_3_UPGRADES:       result = side->__BuildingGroupUpgradeCount[value] >= 3; break;
+    case SIDECRITERIATYPE_HARVESTED:        result = CompareValue(side->__SpiceHarvested, value, comparison); break;
+    case SIDECRITERIATYPE_UNITS_BUILT:      result = CompareValue(side->__UnitsBuilt, value, comparison); break;
+    case SIDECRITERIATYPE_BUILDINGS_BUILT:  result = CompareValue(side->__BuildingsBuilt, value, comparison); break;
+    case SIDECRITERIATYPE_UNITS_LOST:       result = CompareValue(side->__UnitsLost, value, comparison); break;
+    case SIDECRITERIATYPE_BUILDINGS_LOST:   result = CompareValue(side->__BuildingsLost, value, comparison); break;
+    case SIDECRITERIATYPE_UNITS_KILLED:     result = CompareValue(side->__UnitsKilled, value, comparison); break;
+    case SIDECRITERIATYPE_BUILDINGS_KILLED: result = CompareValue(side->__BuildingsKilled, value, comparison); break;
   }
   return result != negation;
 }

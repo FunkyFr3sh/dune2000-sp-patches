@@ -393,24 +393,36 @@ void EvAct_AddBuilding(int xpos, int ypos, int side_id, int properties, int buil
   SetVariableValue(target_var, building_index);
 }
 
-void EvAct_AddProjectile(int src_x, int src_y, int targ_x, int targ_y, int pixel_x, int pixel_y, int spread_x, int spread_y, int side_id, int weapon_type, bool circle_spread, bool play_sound)
+void EvAct_AddBullet(int src_x, int src_y, int targ_x, int targ_y, int pixel_x, int pixel_y, int spread_x, int spread_y, int side_id, int weapon_type, bool circle_spread, bool play_sound, int tag, int target_var)
 {
   int pixel_pos_x = targ_x * 32 + pixel_x;
   int pixel_pos_y = targ_y * 32 + pixel_y;
   random_spread(&pixel_pos_x, &pixel_pos_y, spread_x, spread_y, circle_spread);
 
-  ModelAddBullet(side_id, weapon_type, 0, -1, src_x*32+16, src_y*32+16, pixel_pos_x, pixel_pos_y, -1, -1);
+  int bullet_index = ModelAddBullet(side_id, weapon_type, 0, -1, src_x*32+16, src_y*32+16, pixel_pos_x, pixel_pos_y, -1, -1);
+  SetVariableValue(target_var, bullet_index);
+  if (bullet_index != -1)
+  {
+    Bullet *bullet = (Bullet *)&GetSide(side_id)->__ObjectArray[bullet_index];
+    bullet->Tag = tag;
+  }
   if (play_sound)
     PlaySoundAt(_templates_bulletattribs[weapon_type].__FiringSound, src_x, src_y);
 }
 
-void EvAct_AddExplosion(int xpos, int ypos, int pixel_x, int pixel_y, int spread_x, int spread_y, int side_id, int explosion_type, bool circle_spread, bool play_sound)
+void EvAct_AddExplosion(int xpos, int ypos, int pixel_x, int pixel_y, int spread_x, int spread_y, int side_id, int explosion_type, bool circle_spread, bool play_sound, int tag, int target_var)
 {
   int pixel_pos_x = xpos * 32 + pixel_x;
   int pixel_pos_y = ypos * 32 + pixel_y;
   random_spread(&pixel_pos_x, &pixel_pos_y, spread_x, spread_y, circle_spread);
 
-  ModelAddExplosion(side_id, explosion_type, pixel_pos_x, pixel_pos_y, 0, 0, 0, 0, 0);
+  int explosion_index = ModelAddExplosion(side_id, explosion_type, pixel_pos_x, pixel_pos_y, 0, 0, 0, 0, 0);
+  SetVariableValue(target_var, explosion_index);
+  if (explosion_index != -1)
+  {
+    Explosion *explosion = (Explosion *)&GetSide(side_id)->__ObjectArray[explosion_index];
+    explosion->Tag = tag;
+  }
   if (play_sound)
   {
     PlaySoundAt(_templates_explosionattribs[explosion_type].__Sound, xpos, ypos);
@@ -1268,9 +1280,16 @@ void EvAct_OrderUpgradeCancel(int side_id, bool force)
   GenerateUpgradeCancelOrder(side_id, side->__BuildingUpgradeQueue.__type);
 }
 
-void EvAct_SetVariable(int var_index, eValueOperation operation, int value)
+void EvAct_SetVariable(int target_var, bool use_offset, int offset_var, eValueOperation operation, int value)
 {
-  SetVariableValue(var_index, ValueOperation(GetVariableValue(var_index), value, operation));
+  if (use_offset)
+    target_var += GetVariableValue(offset_var);
+  SetVariableValue(target_var, ValueOperation(GetVariableValue(target_var), value, operation));
+}
+
+void EvAct_GetVariable(int target_var, int src_var_base, int src_var_offset)
+{
+  SetVariableValue(target_var, GetVariableValue(src_var_base + GetVariableValue(src_var_offset)));
 }
 
 void EvAct_GetRandomValue(int target_var, int min_value, int max_value)
@@ -1382,6 +1401,12 @@ void EvAct_GetTileProperty(eDataType data_type, int offset, int first_var, int t
   int ypos = GetVariableValue(first_var + 1);
   GameMapTileStruct *tile = &gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]];
   SetVariableValue(target_var, GetDataValue((char *)tile, data_type, offset));
+}
+
+void EvAct_GetSideProperty(int side_id, eDataType data_type, int target_var, int offset)
+{
+  CSide *side = GetSide(side_id);
+  SetVariableValue(target_var, GetDataValue((char *)side, data_type, offset));
 }
 
 void EvAct_GetAIProperty(int side_id, eDataType data_type, int target_var, int offset)
@@ -1684,6 +1709,8 @@ void EvAct_If(int event_index, eIfConditionType condition_type, int side_var, in
     case IFCONDTYPE_EXPRESSION:           result = EvaluateConditionalExpression(cond_expr); break;
     case IFCONDTYPE_CHECK_UNIT:           result = CheckIfUnitMatchesFilter((ObjectFilterStruct *)cond_expr, &(GetSide(side_id)->__ObjectArray[object_index]), side_id); break;
     case IFCONDTYPE_CHECK_BUILDING:       result = CheckIfBuildingMatchesFilter((ObjectFilterStruct *)cond_expr, (Building *)&(GetSide(side_id)->__ObjectArray[object_index]), side_id); break;
+    case IFCONDTYPE_CHECK_BULLET:         result = CheckIfBulletMatchesFilter((ObjectFilterStruct *)cond_expr, (Bullet *)&(GetSide(side_id)->__ObjectArray[object_index])); break;
+    case IFCONDTYPE_CHECK_EXPLOSION:      result = CheckIfExplosionMatchesFilter((ObjectFilterStruct *)cond_expr, (Explosion *)&(GetSide(side_id)->__ObjectArray[object_index])); break;
     case IFCONDTYPE_CHECK_CRATE:          result = CheckIfCrateMatchesFilter((ObjectFilterStruct *)cond_expr, &gCrates[object_index]); break;
     case IFCONDTYPE_CHECK_TILE:
     {
@@ -1692,6 +1719,7 @@ void EvAct_If(int event_index, eIfConditionType condition_type, int side_var, in
       result = CheckIfTileMatchesFilter((ObjectFilterStruct *)cond_expr, &gGameMap.map[x + _CellNumbersWidthSpan[y]], x, y);
       break;
     }
+    case IFCONDTYPE_CHECK_SIDE:           result = CheckIfSideMatchesFilter((ObjectFilterStruct *)cond_expr, object_index); break;
     case IFCONDTYPE_CHECK_UNIT_TYPE:      result = CheckIfUnitTypeMatchesFilter((ObjectFilterStruct *)cond_expr, object_index); break;
     case IFCONDTYPE_CHECK_BUILDING_TYPE:  result = CheckIfBuildingTypeMatchesFilter((ObjectFilterStruct *)cond_expr, object_index); break;
   }

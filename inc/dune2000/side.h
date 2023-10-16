@@ -343,28 +343,28 @@ typedef struct Building
 
 typedef struct Bullet
 {
-  int32_t field_0__Range;
+  int32_t __MoveSteps;
   uint32_t Flags;
-  int32_t dw_field_8;
-  int32_t dw_field_C;
-  int32_t field_10__ProjectileSpeed;
-  int16_t w_field_14_firer;
-  int16_t __homing_i;
+  int32_t __SpeedX;
+  int32_t __SpeedY;
+  int32_t __Speed;
+  int16_t __FirerIndex;
+  int16_t __HomingIndex;
   uint8_t Type;
-  char __homing_s;
-  char c_field_1A;
+  uint8_t __HomingSideId;
+  uint8_t __MySideId;
   char c_field_1B;
-  int16_t w_field_1C;
-  int16_t w_field_1E;
+  int16_t __TargetX;
+  int16_t __TargetY;
   uint32_t dw_field_20;
-  uint32_t dw_field_24_x;
-  uint32_t dw_field_28_y;
-  uint32_t dw_field_2C_z;
-  char field_30;
+  uint32_t __PosX;
+  uint32_t __PosY;
+  uint32_t __PosZHeight;
+  uint8_t Tag;  // Additional field for extended functionality (mod)
   char field_31;
   char field_32;
   char field_33;
-  int32_t dw_field_34;
+  int32_t dw_field_34_arc_trajectory;
   char field_38;
   char field_39;
   char field_3A;
@@ -377,7 +377,7 @@ typedef struct Bullet
   char field_41;
   char field_42;
   char field_43;
-  uint8_t unsigned44_art;
+  uint8_t __AnimationFrame;
   char c_field_45;
   char c_field_46;
   char field_47;
@@ -445,12 +445,12 @@ typedef struct Bullet
 typedef struct Explosion
 {
   uint8_t Type;
-  uint8_t __explosionAni;
-  char c_field_2;
+  uint8_t __AnimationFrame;
+  uint8_t __AnimationDelay;
   char field_3;
   int32_t Flags;
   int16_t w_field_8;
-  char field_A;
+  uint8_t Tag; // Additional field for extended functionality (mod)
   char field_B;
   uint32_t __PosX;
   uint32_t __PosY;

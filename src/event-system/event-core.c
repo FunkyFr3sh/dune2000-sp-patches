@@ -520,6 +520,84 @@ void ExecuteEvent(int event_index)
     }
     return;
   }
+  // Bullet manipulation events: process all side's bullets
+  if (et == ET_GET_BULLET_COUNT || et == ET_LOOP_BULLETS)
+  {
+    if (et == ET_GET_BULLET_COUNT)
+      SetVariableValue(e.args[0], 0);
+    int affected = 0;
+    int arg_side_id = e.args[1];
+    for (int side_id = 0; side_id < 8; side_id++)
+    {
+      if ((arg_side_id != 8) && (arg_side_id != side_id))
+        continue;
+      e.args[1] = side_id;
+      CSide *side = GetSide(side_id);
+      // Process all bullets
+      for (Bullet *bullet = side->__FirstBulletPtr; bullet; bullet = bullet->Next)
+      {
+        if (CheckIfBulletMatchesFilter((ObjectFilterStruct *)&e.data[1], bullet))
+        {
+          if (skip)
+            skip--;
+          else
+          {
+            e.object_index = bullet->MyIndex;
+            ExecuteEventAction(&e);
+            if (break_count)
+            {
+              break_count--;
+              arg_side_id = -1;
+              break;
+            }
+            affected++;
+          }
+        }
+        if (limit && (affected == limit))
+          return;
+      }
+    }
+    return;
+  }
+  // Explosion manipulation events: process all side's explosions
+  if (et == ET_GET_EXPLOSION_COUNT || et == ET_LOOP_EXPLOSIONS)
+  {
+    if (et == ET_GET_EXPLOSION_COUNT)
+      SetVariableValue(e.args[0], 0);
+    int affected = 0;
+    int arg_side_id = e.args[1];
+    for (int side_id = 0; side_id < 8; side_id++)
+    {
+      if ((arg_side_id != 8) && (arg_side_id != side_id))
+        continue;
+      e.args[1] = side_id;
+      CSide *side = GetSide(side_id);
+      // Process all explosions
+      for (Explosion *explosion = side->__FirstExplosionPtr; explosion; explosion = explosion->Next)
+      {
+        if (CheckIfExplosionMatchesFilter((ObjectFilterStruct *)&e.data[1], explosion))
+        {
+          if (skip)
+            skip--;
+          else
+          {
+            e.object_index = explosion->MyIndex;
+            ExecuteEventAction(&e);
+            if (break_count)
+            {
+              break_count--;
+              arg_side_id = -1;
+              break;
+            }
+            affected++;
+          }
+        }
+        if (limit && (affected == limit))
+          return;
+      }
+    }
+    return;
+  }
   // Crate manipulation events: process all crates
   if ((et >= ET_REMOVE_CRATE && et <= ET_SHOW_CRATE_DATA)
       || et == ET_GET_CRATE_COUNT
@@ -594,6 +672,36 @@ void ExecuteEvent(int event_index)
       }
     return;
   }
+  // Side manipulation events: process all crates
+  if (et == ET_GET_SIDE_COUNT || et == ET_LOOP_SIDES)
+  {
+    if (et == ET_GET_SIDE_COUNT)
+      SetVariableValue(e.args[0], 0);
+    int affected = 0;
+    // Process all sides
+    for (int i = 0; i < 8; i++)
+    {
+      if (CheckIfSideMatchesFilter((ObjectFilterStruct *)&e.data[1], i))
+      {
+        if (skip)
+          skip--;
+        else
+        {
+          e.object_index = i;
+          ExecuteEventAction(&e);
+          if (break_count)
+          {
+            break_count--;
+            break;
+          }
+          affected++;
+        }
+      }
+      if (limit && (affected == limit))
+        return;
+    }
+    return;
+  }
   // Normal events: just execute action
   ExecuteEventAction(&e);
 }
@@ -644,8 +752,8 @@ void ExecuteEventAction(EventContext *e)
   case ET_DAMAGE_TILES:           EvAct_DamageTiles         (COORD0, COORD2, COORD3, A_SIDE, A_ITEM, A_ENUM, A_BOOL); break;
   case ET_ADD_UNIT:               EvAct_AddUnit             (COORD0, A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL, A_VAL1, A_VAL2); break;
   case ET_ADD_BUILDING:           EvAct_AddBuilding         (COORD0, A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL, A_VAL1, A_VAL2); break;
-  case ET_ADD_PROJECTILE:         EvAct_AddProjectile       (COORD0, COORD1, COORD2, COORD3, A_SIDE, A_ITEM, A_ENUM, A_BOOL); break;
-  case ET_ADD_EXPLOSION:          EvAct_AddExplosion        (COORD0, COORD2, COORD3, A_SIDE, A_ITEM, A_ENUM, A_BOOL); break;
+  case ET_ADD_BULLET:             EvAct_AddBullet           (COORD0, COORD1, COORD2, COORD3, A_SIDE, A_ITEM, A_ENUM, A_BOOL, A_VAL1, A_VAL2); break;
+  case ET_ADD_EXPLOSION:          EvAct_AddExplosion        (COORD0, COORD2, COORD3, A_SIDE, A_ITEM, A_ENUM, A_BOOL, A_VAL1, A_VAL2); break;
   case ET_ADD_CRATE:              EvAct_AddCrate            (COORD0, A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_VAL1); break;
   case ET_ADD_CONCRETE:           EvAct_AddConcrete         (COORD0, COORD1, A_SIDE, A_VAL1); break;
   case ET_SPICE_BLOOM:            EvAct_SpiceBloom          (COORD0, A_AMNT, A_ENUM, A_BOOL); break;
@@ -732,7 +840,8 @@ void ExecuteEventAction(EventContext *e)
   case ET_ORDER_UPGRADE_CANCEL:           EvAct_OrderUpgradeCancel            (A_SIDE, A_BOOL);                         break;
   case ET_ORDER_SPECIAL_WEAPON:           GenerateSpecialWeaponOrder          (A_SIDE, A_ITEM, COORD0);                 break;
   // Variable operations
-  case ET_SET_VARIABLE:                   EvAct_SetVariable                   (A_ITEM, A_ENUM, A_VAL1);                                     break;
+  case ET_SET_VARIABLE:                   EvAct_SetVariable                   (A_AMNT, A_ITEM, A_ENUM, A_BOOL, A_VAL1);                     break;
+  case ET_GET_VARIABLE:                   EvAct_GetVariable                   (A_ITEM, A_ENUM, A_BOOL);                                     break;
   case ET_GET_RANDOM_VALUE:               EvAct_GetRandomValue                (A_ITEM, A_VAL1, A_VAL2);                                     break;
   case ET_GET_RANDOM_COORDS:              EvAct_GetRandomCoords               (COORD0, COORD1, A_ITEM);                                     break;
   case ET_GET_VALUE_FROM_LIST:            EvAct_GetValueFromList              (EV_IDX, A_AMNT, A_ITEM, A_ENUM, A_BOOL, (uint8_t *)e->data); break;
@@ -740,7 +849,7 @@ void ExecuteEventAction(EventContext *e)
   case ET_GET_AREA_FROM_LIST:             EvAct_GetAreaFromList               (EV_IDX, A_AMNT, A_ITEM, A_ENUM, A_BOOL, (uint8_t *)e->data); break;
   case ET_GET_UNIT_COUNT:                 EvAct_GetCount                      (A_AMNT);                                                     break;
   case ET_GET_BUILDING_COUNT:             EvAct_GetCount                      (A_AMNT);                                                     break;
-  case ET_GET_PROJECTILE_COUNT:           EvAct_GetCount                      (A_AMNT);                                                     break;
+  case ET_GET_BULLET_COUNT:               EvAct_GetCount                      (A_AMNT);                                                     break;
   case ET_GET_EXPLOSION_COUNT:            EvAct_GetCount                      (A_AMNT);                                                     break;
   case ET_GET_CRATE_COUNT:                EvAct_GetCount                      (A_AMNT);                                                     break;
   case ET_GET_TILE_COUNT:                 EvAct_GetCount                      (A_AMNT);                                                     break;
@@ -749,10 +858,11 @@ void ExecuteEventAction(EventContext *e)
   case ET_GET_DAMAGE_COUNT:               EvAct_GetDamageCount                (A_AMNT, COORD0);                                             break;
   case ET_GET_UNIT_PROPERTY:              EvAct_GetObjectProperty             (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL);                     break;
   case ET_GET_BUILDING_PROPERTY:          EvAct_GetObjectProperty             (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL);                     break;
-  case ET_GET_PROJECTILE_PROPERTY:        EvAct_GetObjectProperty             (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL);                     break;
+  case ET_GET_BULLET_PROPERTY:            EvAct_GetObjectProperty             (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL);                     break;
   case ET_GET_EXPLOSION_PROPERTY:         EvAct_GetObjectProperty             (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL);                     break;
   case ET_GET_CRATE_PROPERTY:             EvAct_GetCrateProperty              (A_AMNT, A_ITEM, A_ENUM, A_BOOL);                             break;
   case ET_GET_TILE_PROPERTY:              EvAct_GetTileProperty               (A_AMNT, A_ITEM, A_ENUM, A_BOOL);                             break;
+  case ET_GET_SIDE_PROPERTY:              EvAct_GetSideProperty               (A_SIDE, A_AMNT, A_BOOL, A_VAL1);                             break;
   case ET_GET_AI_PROPERTY:                EvAct_GetAIProperty                 (A_SIDE, A_AMNT, A_BOOL, A_VAL1);                             break;
   case ET_GET_MEMORY_DATA:                EvAct_GetMemoryData                 (A_AMNT, A_BOOL, A_VAL1);                                     break;
   case ET_GET_UNIT_TEMPLATE_PROPERTY:     EvAct_GetUnitTemplateProperty       (A_AMNT, A_ITEM, A_ENUM, A_BOOL);                             break;
@@ -798,7 +908,7 @@ void ExecuteEventAction(EventContext *e)
   case ET_LOOP_AREAS_FROM_LIST:           EvAct_LoopAreasFromList             (EV_IDX, A_AMNT, A_ITEM, (uint8_t *)e->data);         break;
   case ET_LOOP_UNITS:                     EvAct_LoopObject                    (EV_IDX, A_AMNT, A_ITEM, A_SIDE, OBJ_ID);             break;
   case ET_LOOP_BUILDINGS:                 EvAct_LoopObject                    (EV_IDX, A_AMNT, A_ITEM, A_SIDE, OBJ_ID);             break;
-  case ET_LOOP_PROJECTILES:               EvAct_LoopObject                    (EV_IDX, A_AMNT, A_ITEM, A_SIDE, OBJ_ID);             break;
+  case ET_LOOP_BULLETS:                   EvAct_LoopObject                    (EV_IDX, A_AMNT, A_ITEM, A_SIDE, OBJ_ID);             break;
   case ET_LOOP_EXPLOSIONS:                EvAct_LoopObject                    (EV_IDX, A_AMNT, A_ITEM, A_SIDE, OBJ_ID);             break;
   case ET_LOOP_CRATES:                    EvAct_LoopItem                      (EV_IDX, A_AMNT, OBJ_ID);                             break;
   case ET_LOOP_TILES:                     EvAct_LoopTiles                     (EV_IDX, A_AMNT, COORD0);                             break;

@@ -17,11 +17,16 @@ int ValueOperation(int val1, int val2, eValueOperation operation)
     case VALUEOPERATION_MODULO:     if (!val2) DebugFatal("event-utils.c", "Division by zero!"); return val1 % val2; break;
     case VALUEOPERATION_CAPMAX:     return HLIMIT(val1, val2); break;
     case VALUEOPERATION_CAPMIN:     return LLIMIT(val1, val2); break;
+    case VALUEOPERATION_ADDCAP255:  return HLIMIT(val1 + val2, 255); break;
+    case VALUEOPERATION_SUBCAP0:    return LLIMIT(val1 - val2, 0); break;
     case VALUEOPERATION_BITAND:     return val1 & val2; break;
     case VALUEOPERATION_BITOR:      return val1 | val2; break;
     case VALUEOPERATION_BITXOR:     return val1 ^ val2; break;
     case VALUEOPERATION_BITLSHIFT:  return val1 << val2; break;
     case VALUEOPERATION_BITRSHIFT:  return val1 >> val2; break;
+    case VALUEOPERATION_BITSET:     return val1 | (1 << val2); break;
+    case VALUEOPERATION_BITUNSET:   return val1 & ~(1 << val2); break;
+    case VALUEOPERATION_BITFLIP:    return val1 ^ (1 << val2); break;
     case VALUEOPERATION_SETRANDOM:  return rand()%val2; break;
     case VALUEOPERATION_ADDRANDOM:  return val1 + rand()%val2; break;
     case VALUEOPERATION_SUBRANDOM:  return val1 - rand()%val2; break;

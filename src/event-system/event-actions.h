@@ -102,8 +102,11 @@ typedef enum eIfConditionType
   IFCONDTYPE_EXPRESSION,
   IFCONDTYPE_CHECK_UNIT,
   IFCONDTYPE_CHECK_BUILDING,
+  IFCONDTYPE_CHECK_BULLET,
+  IFCONDTYPE_CHECK_EXPLOSION,
   IFCONDTYPE_CHECK_CRATE,
   IFCONDTYPE_CHECK_TILE,
+  IFCONDTYPE_CHECK_SIDE,
   IFCONDTYPE_CHECK_UNIT_TYPE,
   IFCONDTYPE_CHECK_BUILDING_TYPE
 }eIfConditionType;
@@ -123,8 +126,8 @@ void EvAct_PlayMusic(char *name);
 void EvAct_DamageTiles(int xpos, int ypos, int pixel_x, int pixel_y, int spread_x, int spread_y, int side_id, int weapon_type, bool circle_spread, bool hit_explosion);
 void EvAct_AddUnit(int xpos, int ypos, int side_id, int properties, int unit_type, int movement, int facing, int tag, int target_var);
 void EvAct_AddBuilding(int xpos, int ypos, int side_id, int properties, int building_type, int method, int facing, int tag, int target_var);
-void EvAct_AddProjectile(int src_x, int src_y, int targ_x, int targ_y, int pixel_x, int pixel_y, int spread_x, int spread_y, int side_id, int weapon_type, bool circle_spread, bool play_sound);
-void EvAct_AddExplosion(int xpos, int ypos, int pixel_x, int pixel_y, int spread_x, int spread_y, int side_id, int explosion_type, bool circle_spread, bool play_sound);
+void EvAct_AddBullet(int src_x, int src_y, int targ_x, int targ_y, int pixel_x, int pixel_y, int spread_x, int spread_y, int side_id, int weapon_type, bool circle_spread, bool play_sound, int tag, int target_var);
+void EvAct_AddExplosion(int xpos, int ypos, int pixel_x, int pixel_y, int spread_x, int spread_y, int side_id, int explosion_type, bool circle_spread, bool play_sound, int tag, int target_var);
 int  EvAct_AddCrate(int xpos, int ypos, int crate_type, int image, int ext_data, int respawns, int expiration);
 void EvAct_AddConcrete(int min_x, int min_y, int max_x, int max_y, int side_id, int tilebitmask);
 void EvAct_SpiceBloom(int xpos, int ypos, int range, eSpiceBloomMode mode, bool randomizer);
@@ -184,7 +187,8 @@ void EvAct_OrderBuildUnitCancel(int side_id, bool any_unit, int unit_type, int q
 void EvAct_OrderStarportPick(int side_id, int unit_type);
 void EvAct_OrderUpgradeCancel(int side_id, bool force);
 // Variable operations
-void EvAct_SetVariable(int var_index, eValueOperation operation, int value);
+void EvAct_SetVariable(int target_var, bool use_offset, int offset_var, eValueOperation operation, int value);
+void EvAct_GetVariable(int target_var, int src_var_base, int src_var_offset);
 void EvAct_GetRandomValue(int target_var, int min_value, int max_value);
 void EvAct_GetRandomCoords(int min_x, int min_y, int max_x, int max_y, int first_var);
 void EvAct_GetValueFromList(int event_index, int amount, int target_var, int mode, int index_var, uint8_t *value_list);
@@ -196,6 +200,7 @@ void EvAct_GetDamageCount(int target_var, int xpos, int ypos);
 void EvAct_GetObjectProperty(int side_id, eDataType data_type, int offset, int index_var, int target_var);
 void EvAct_GetCrateProperty(eDataType data_type, int offset, int index_var, int target_var);
 void EvAct_GetTileProperty(eDataType data_type, int offset, int first_var, int target_var);
+void EvAct_GetSideProperty(int side_id, eDataType data_type, int target_var, int offset);
 void EvAct_GetAIProperty(int side_id, eDataType data_type, int target_var, int offset);
 void EvAct_GetMemoryData(eDataType data_type, int target_var, int address);
 void EvAct_GetUnitTemplateProperty(eDataType data_type, int offset, int unit_type, int target_var);
