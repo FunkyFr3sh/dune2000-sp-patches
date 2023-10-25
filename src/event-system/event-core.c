@@ -181,19 +181,22 @@ bool EvaluateCondition(int condition_index)
   // Fill condition context
   int coord_x[2];
   int coord_y[2];
-  int args[7];
+  int args[7] = {0};
   for (int i = 0; i < 2; i++)
   {
     coord_x[i] = GetVariableValueOrConst(condition->coord_var_flags, i*2, condition->coord_x[i]);
     coord_y[i] = GetVariableValueOrConst(condition->coord_var_flags, i*2+1, condition->coord_y[i]);
   }
-  args[0] = GetVariableValueOrConst(condition->arg_var_flags, 0, condition->side_id);
-  args[1] = GetVariableValueOrConst(condition->arg_var_flags, 1, condition->arg1);
-  args[2] = GetVariableValueOrConst(condition->arg_var_flags, 2, condition->arg2);
-  args[3] = GetVariableValueOrConst(condition->arg_var_flags, 3, condition->val1);
-  args[4] = GetVariableValueOrConst(condition->arg_var_flags, 4, condition->val2);
-  args[5] = GetVariableValueOrConst(condition->arg_var_flags, 5, condition->val3);
-  args[6] = GetVariableValueOrConst(condition->arg_var_flags, 6, condition->val4);
+  if ((condition->condition_type < CT_CHECKUNITS) || (condition->condition_type > CT_CHECKTILES))
+  {
+    args[0] = GetVariableValueOrConst(condition->arg_var_flags, 0, condition->side_id);
+    args[1] = GetVariableValueOrConst(condition->arg_var_flags, 1, condition->arg1);
+    args[2] = GetVariableValueOrConst(condition->arg_var_flags, 2, condition->arg2);
+    args[3] = GetVariableValueOrConst(condition->arg_var_flags, 3, condition->val1);
+    args[4] = GetVariableValueOrConst(condition->arg_var_flags, 4, condition->val2);
+    args[5] = GetVariableValueOrConst(condition->arg_var_flags, 5, condition->val3);
+    args[6] = GetVariableValueOrConst(condition->arg_var_flags, 6, condition->val4);
+  }
   // Run condition
   switch ( condition->condition_type )
   {
@@ -402,7 +405,23 @@ void ExecuteEvent(int event_index)
       e.coord_y[0] = GetVariableValue(event->filter_skip + 1);
     }
     else
+    {
       e.object_index = GetVariableValue(event->filter_skip);
+      // Clear and backup unit selection
+      if (et == ET_SELECT_UNIT)
+        for (Unit *unit = GetSide(e.args[1])->__FirstUnitPtr; unit; unit = unit->Next)
+        {
+          unit->PrevWasSelected = unit->__IsSelected;
+          unit->__IsSelected = 0;
+        }
+      // Clear and backup building selection
+      if (et == ET_SELECT_BUILDING)
+        for (Building *building = GetSide(e.args[1])->__FirstBuildingPtr; building; building = building->Next)
+        {
+          building->PrevWasSelected = building->__IsSelected;
+          building->__IsSelected = 0;
+        }
+    }
     ExecuteEventAction(&e);
     return;
   }
