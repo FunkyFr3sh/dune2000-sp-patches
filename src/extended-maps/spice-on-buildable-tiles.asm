@@ -44,9 +44,10 @@
 
 ; Do not let MCV deploy on tiles with spice AND crate
 ; This merges the deploy-mcv-on-crate-fix
-@PATCH 0x004432AB ; CheckIfMCVCanBeDeployedOn
-    test eax, 0x7013F8
-@ENDPATCH
+; Superseded by Mod__CheckIfMCVCanBeDeployedOn
+;@PATCH 0x004432AB ; CheckIfMCVCanBeDeployedOn
+;    test eax, 0x7013F8
+;@ENDPATCH
 
 @PATCH 0x004230AB ; CAI::CanIDeployMCVHere
     and ebx, 0x70B000

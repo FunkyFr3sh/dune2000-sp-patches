@@ -107,6 +107,7 @@ OBJS            ?= callsites.o \
 	src/fixes/score-screen-volume-fix.o \
 	src/fixes/deactivate-ai-broken-orders-fix.o \
 	src/fixes/ai-ignore-units-with-flag11.o \
+        src/fixes/deploy-mcv-on-unbuildable-tile-fix.o \
 	\
 	src/hotkeys/hotkeys.o \
 	src/hotkeys/hotkeys-func.o \
