@@ -18,8 +18,8 @@ gstring uibb_r8FileName, "UIBB.R8", 100
 
 
 ;map too small crash fixes
-@CLEAR_INT 0x0044B6BC, 0x0044B6D8 ; __Do_Tooltips() - TOOLTIPS: Map item out of range
-@LJMP 0x0044B6BC, 0x0044BAD7 ; __Do_Tooltips() - TOOLTIPS: Map item out of range
+;@CLEAR_INT 0x0044B6BC, 0x0044B6D8 ; __Do_Tooltips() - TOOLTIPS: Map item out of range ; Superseded by _Mod__HandleTooltips
+;@LJMP 0x0044B6BC, 0x0044BAD7 ; __Do_Tooltips() - TOOLTIPS: Map item out of range ; Superseded by _Mod__HandleTooltips
 @CLEAR_INT 0x004434A4, 0x004434B6 ; Model__HandleGameLoopEvents() - Invalid index to gGameMap.map (1)
 @LJMP 0x004434A4, 0x00443C7F ; Model__HandleGameLoopEvents() - Invalid index to gGameMap.map (1)
 @CLEAR_INT 0x0045946C, 0x0045947E ; Generate_Unit_Move_Order(int_int_int) - Invalid targetX
@@ -523,57 +523,57 @@ hack 0x00444D79 ; patch3
     jmp 0x00444DBF
 
 
-hack  0x0044BB50, 0x0044BB58 ; patch4
-    cmp byte[HighResPatchEnabled], 1
-    jz .patch
-    mov eax,ecx
-    mov ecx,dword[0x4E41FC]
-    jmp 0x0044BB58
-    
-.patch:
-    xchg eax,ecx
-    mov ecx,dword[0x4E41FC]
-    shr eax,0x1
-    add ecx,edx
-    xor edx,edx
-    add eax,ecx
-    mov CX,0x0B8
-    mov dword[esp+0x14],eax
-    mov eax,dword[0x4EB04C]
-    sub eax,ecx
-    add edx,0x2F
-    div dl
-    cbw
-    mov ecx,edx
-    shr edx,0x1
-    imul ecx,eax
-    mov dword[esp+0x10],eax
-    mov eax,dword[0x4E4200]
-    add eax,ecx
-    add edx,eax
-    mov eax,dword[0x516430]
-    mov ecx,dword[esp+0x10]
-    xor ebx,ebx
-    inc ebx
-    jmp 0x0044BB96
+;hack  0x0044BB50, 0x0044BB58 ; patch4 ; Superseded by _Mod__HandleTooltips
+;    cmp byte[HighResPatchEnabled], 1
+;    jz .patch
+;    mov eax,ecx
+;    mov ecx,dword[0x4E41FC]
+;    jmp 0x0044BB58
+;
+;.patch:
+;    xchg eax,ecx
+;    mov ecx,dword[0x4E41FC]
+;    shr eax,0x1
+;    add ecx,edx
+;    xor edx,edx
+;    add eax,ecx
+;    mov CX,0x0B8
+;    mov dword[esp+0x14],eax
+;    mov eax,dword[0x4EB04C]
+;    sub eax,ecx
+;    add edx,0x2F
+;    div dl
+;    cbw
+;    mov ecx,edx
+;    shr edx,0x1
+;    imul ecx,eax
+;    mov dword[esp+0x10],eax
+;    mov eax,dword[0x4E4200]
+;    add eax,ecx
+;    add edx,eax
+;    mov eax,dword[0x516430]
+;    mov ecx,dword[esp+0x10]
+;    xor ebx,ebx
+;    inc ebx
+;    jmp 0x0044BB96
 
 
-hack  0x0044BE0B ; patch5
-    cmp byte[HighResPatchEnabled], 1
-    jz .patch
-    cmp eax,1
-    jbe 0x0044BE15
-    jmp 0x0044BE10
-    
-.patch:
-    cmp eax,ebx
-    jbe .loc1
-    xchg eax,ebx
-    
-.loc1:
-    cmp ecx,0x3
-    jg 0x0044C10F
-    jmp 0x0044BE19
+;hack  0x0044BE0B ; patch5 ; Superseded by _Mod__HandleTooltips
+;    cmp byte[HighResPatchEnabled], 1
+;    jz .patch
+;    cmp eax,1
+;    jbe 0x0044BE15
+;    jmp 0x0044BE10
+;
+;.patch:
+;    cmp eax,ebx
+;    jbe .loc1
+;    xchg eax,ebx
+;
+;.loc1:
+;    cmp ecx,0x3
+;    jg 0x0044C10F
+;    jmp 0x0044BE19
 
 
 hack 0x004A3E9D, 0x004A3EA4 ; patch6 ;align top left

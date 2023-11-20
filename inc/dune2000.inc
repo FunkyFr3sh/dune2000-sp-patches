@@ -180,7 +180,7 @@ cextern WindowActivated
 
 
 ; ### Functions ###
-cextern Graphlib__TextOnScreen
+cextern BlitFontChars
 cextern Model__ExecuteGameEvent
 cextern CUIManager__LoadDune2000Cfg
 cextern CUIManager__SaveDune2000Cfg
@@ -194,7 +194,7 @@ cextern cinit
 cextern WOL__SendGameResultsToServer
 cextern Mission__LoadObjectives
 cextern DrawMenu
-cextern Data__GetTextId
+cextern GetTextID
 cextern GetSide
 cextern Sound__PlayMusic
 cextern Sound__SetMusicVolume

@@ -55,6 +55,14 @@ typedef enum eSetMessageColorMode
   SETMSGCOLORMODE_TIME_TRANSITION_2
 } eSetMessageColorMode;
 
+typedef enum eSetTooltipColorMode
+{
+  SETTOOLTIPCOLORMODE_KEEP,
+  SETTOOLTIPCOLORMODE_YELLOW,
+  SETTOOLTIPCOLORMODE_GRAY,
+  SETTOOLTIPCOLORMODE_CUSTOM
+} eSetTooltipColorMode;
+
 typedef enum eSpiceBloomMode
 {
   SPICEBLOOM_CLASSIC,
@@ -97,6 +105,18 @@ typedef enum eGetPowerType
   GETPOWERTYPE_EXTRA_DRAIN
 }eGetPowerType;
 
+typedef enum eGetMousePositionType
+{
+  GETMOUSEPOSITIONTYPE_ABSOLUTE,
+  GETMOUSEPOSITIONTYPE_MAPPIXEL,
+  GETMOUSEPOSITIONTYPE_MAPTILE,
+  GETMOUSEPOSITIONTYPE_RADARPOSITION,
+  GETMOUSEPOSITIONTYPE_BUILDINGICON,
+  GETMOUSEPOSITIONTYPE_UNITICON,
+  GETMOUSEPOSITIONTYPE_STARPORTICON,
+  GETMOUSEPOSITIONTYPE_UPGRADEICON
+}eGetMousePositionType;
+
 typedef enum eIfConditionType
 {
   IFCONDTYPE_EXPRESSION,
@@ -138,6 +158,7 @@ void EvAct_AddBuildingDestruct(int xpos, int ypos, int side_id, int building_typ
 void EvAct_ActivateTimer(int condition_index);
 void EvAct_RemoveMessage(eRemoveMessageMode mode, int ref_id, int amount);
 void EvAct_SetMessageColor(int color_index, eSetMessageColorMode mode, int transition_speed, int transition_stages, int color1, int color2);
+void EvAct_SetTooltip(int line, eSetTooltipColorMode color_mode, int color, ShowMessageEventData *data);
 // Side manipulation
 void EvAct_TransferCredits(int side_id, eTransferCreditsOperation operation, int value);
 void EvAct_SetBuildingUpgrades(int side_id, int building_group, eValueOperation operation, int value);
@@ -228,6 +249,12 @@ void EvAct_GetUnitsLost(int side_id, int unit_type, bool total, int target_var);
 void EvAct_GetBuildingsLost(int side_id, int target_var);
 void EvAct_GetUnitsKilled(int side_id, int enemy, int unit_type, bool total, int target_var);
 void EvAct_GetBuildingsKilled(int side_id, int enemy, int building_type, bool total, int target_var);
+void EvAct_GetMousePosition(eGetMousePositionType what, int first_var);
+void EvAct_GetKeyboardMouseState(int target_var, int key);
+void EvAct_GetUnitUnderCursor(int side_var, int index_var, bool ignore_shroud, bool ignore_stealth);
+void EvAct_GetBuildingUnderCursor(int side_var, int index_var, bool ignore_shroud);
+void EvAct_GetSidebarButtonUnderCursor(int button, int target_var, bool click_on_it);
+void EvAct_GetGameInterfaceData(eDataType data_type, int offset, int target_var);
 
 // Blocks
 void EvAct_ExecuteBlock(int event_index, int target_event_index);

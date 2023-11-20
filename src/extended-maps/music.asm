@@ -51,7 +51,7 @@ hack 0x004700FC, 0x00470102 ; Sound__PlayMusic() - Save current soundtrack
     
 hack 0x0047663C, 0x00476647 ; Show all tracks in the music player listbox - FindFirst - use filename as listbox entry
     push eax
-    call Data__GetTextId
+    call GetTextID
     add esp, 4
     cmp eax, 0 ; 0 = string does not exist in string table
     jnz .out
@@ -65,7 +65,7 @@ hack 0x0047663C, 0x00476647 ; Show all tracks in the music player listbox - Find
     
 hack 0x004766D2, 0x004766DD ; Show all tracks in the music player listbox - FindNext - use filename as listbox entry
     push ecx
-    call Data__GetTextId
+    call GetTextID
     add esp, 4
     cmp eax, 0 ; 0 = string does not exist in string table
     jnz .out

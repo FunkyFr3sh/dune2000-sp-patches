@@ -20,7 +20,7 @@ char *FakeData__GetTextString_Briefing(int stringId, bool showError)
         
         // If no custom briefing is specified, fall back to text from TEXT.UIB
         if (!strlen(result))
-          return Data__GetTextString(stringId, showError);
+          return GetTextString(stringId, showError);
         
         // Avoid double appearance of custom briefing if vanilla UIL file is used - elliminate "IG_*M*Text2" strings
         if (!strncmp(gTextTable[stringId]->id, "IG_", 3))
@@ -35,5 +35,5 @@ char *FakeData__GetTextString_Briefing(int stringId, bool showError)
         return result;
     }
     else 
-        return Data__GetTextString(stringId, showError);
+        return GetTextString(stringId, showError);
 }

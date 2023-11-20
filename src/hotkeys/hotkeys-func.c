@@ -1,6 +1,7 @@
 #include "hotkeys.h"
 #include "patch.h"
 #include "dune2000.h"
+#include "../event-system/event-core.h"
 
 //http://msdn.microsoft.com/en-us/library/windows/desktop/dd375731(v=vs.85).aspx
 
@@ -53,6 +54,20 @@ int PlayRandomSong = VK_OEM_PLUS;
 
 void HandleKeyEvent(int key, bool keyIsDown)
 {
+    if (GameState == GS_MAINLOOP && !gUIMgr->dw_field_110_index && key != OptionsMenu)
+    {
+      if (keyIsDown)
+      {
+        if (ExecuteEventHook(HOOK_KEYBOARD_MOUSE_DOWN, 2, 0, key, 0))
+          return;
+      }
+      else
+      {
+        if (ExecuteEventHook(HOOK_KEYBOARD_MOUSE_UP, 2, 0, key, 0))
+          return;
+      }
+    }
+
     int destKey;
 
     if (key == SelectAllUnits) destKey = 'E';
@@ -111,10 +126,10 @@ void HandleKeyEvent(int key, bool keyIsDown)
     
     switch (destKey)
     {
-        case VK_MBUTTON:
-        case VK_XBUTTON1:
-        case VK_XBUTTON2:
-            return; // those keys were not supported by the original game so we are not forwarding them if not assigned to any function
+        //case VK_MBUTTON:
+        //case VK_XBUTTON1:
+        //case VK_XBUTTON2:
+        //    return; // those keys were not supported by the original game so we are not forwarding them if not assigned to any function
         case VK_F1:
         case VK_F2:
         case VK_F3:
@@ -141,4 +156,20 @@ void HandleKeyEvent(int key, bool keyIsDown)
     
     if (keyIsDown) KeyIsDown1[destKey] = true;
     KeyIsDown2[destKey] = keyIsDown;
+    if (key == VK_LBUTTON)
+    {
+      _MouseLeftState = keyIsDown;
+      if (keyIsDown)
+        _MouseLeftDown = 1;
+      else
+        _MouseLeftUp = 1;
+    }
+    if (key == VK_RBUTTON)
+    {
+      _MouseRightState = keyIsDown;
+      if (keyIsDown)
+        _MouseRightDown = 1;
+      else
+        _MouseRightUp = 1;
+    }
 }

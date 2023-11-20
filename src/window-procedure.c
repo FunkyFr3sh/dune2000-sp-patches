@@ -38,6 +38,7 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
             }
             break;
         }
+        case WM_MBUTTONDBLCLK:
         case WM_MBUTTONDOWN:
         {
             HandleKeyEvent(VK_MBUTTON, true);

@@ -76,3 +76,4 @@ cextern HitCrate
 cextern Mod__PickupCrate
 cextern InitFontColors
 cextern DebugUnitCrash
+cextern ExecuteEventHook

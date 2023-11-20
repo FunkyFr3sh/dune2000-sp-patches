@@ -784,6 +784,7 @@ void ExecuteEventAction(EventContext *e)
   case ET_ACTIVATE_TIMER:         EvAct_ActivateTimer       (A_VAL1); break;
   case ET_REMOVE_MESSAGE:         EvAct_RemoveMessage       (A_SIDE, A_AMNT, A_ITEM); break;
   case ET_SET_MESSAGE_COLOR:      EvAct_SetMessageColor     (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_VAL1, A_VAL2); break;
+  case ET_SET_TOOLTIP:            EvAct_SetTooltip          (A_ITEM, A_ENUM, A_VAL1, (ShowMessageEventData *)&e->data[1]);
   // Side manipulation
   case ET_TRANSFER_CREDITS:       EvAct_TransferCredits     (A_SIDE, A_ENUM, A_VAL1); break;
   case ET_SET_BUILDING_UPGRADES:  EvAct_SetBuildingUpgrades (A_SIDE, A_ITEM, A_ENUM, A_VAL1); break;
@@ -909,6 +910,12 @@ void ExecuteEventAction(EventContext *e)
   case ET_GET_BUILDINGS_LOST:             EvAct_GetBuildingsLost              (A_SIDE, A_BOOL);                                             break;
   case ET_GET_UNITS_KILLED:               EvAct_GetUnitsKilled                (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL);                     break;
   case ET_GET_BUILDINGS_KILLED:           EvAct_GetBuildingsKilled            (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL);                     break;
+  case ET_GET_MOUSE_POSITION:             EvAct_GetMousePosition              (A_ITEM, A_ENUM);                                             break;
+  case ET_GET_KEYBOARD_MOUSE_STATE:       EvAct_GetKeyboardMouseState         (A_ITEM, A_ENUM);                                             break;
+  case ET_GET_UNIT_UNDER_CURSOR:          EvAct_GetUnitUnderCursor            (A_ITEM, A_ENUM, A_BOOL, A_VAL1);                             break;
+  case ET_GET_BUILDING_UNDER_CURSOR:      EvAct_GetBuildingUnderCursor        (A_ITEM, A_ENUM, A_BOOL);                                     break;
+  case ET_GET_SIDEBAR_BUTTON_UNDER_CURSOR:EvAct_GetSidebarButtonUnderCursor   (A_ITEM, A_ENUM, A_BOOL);                                     break;
+  case ET_GET_GAME_INTERFACE_DATA:        EvAct_GetGameInterfaceData          (A_AMNT, A_ITEM, A_ENUM);                                     break;
   // Blocks
   case ET_CALLABLE_BLOCK_START:                                                                                                     break;
   case ET_HOOK_BLOCK_START:                                                                                                         break;

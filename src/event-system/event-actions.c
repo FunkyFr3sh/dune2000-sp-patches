@@ -11,6 +11,7 @@
 #include "event-core.h"
 #include "../extended-maps/crates-func.h"
 #include "../extended-maps/messages-func.h"
+#include "../extended-maps/tooltips.h"
 
 void EvAct_AddDelivery(int xpos, int ypos, int side_id, int amount, int tag, int deploy_action, int delay, eDeliveryType delivery_type, char *unit_list)
 {
@@ -164,8 +165,48 @@ void GetTextStringToBuffer(int string_id, char *buffer, int buffer_size)
   if (!strlen(buffer))
   {
     // Get text from string table
-    char *string_from_table = Data__GetTextString(string_id, 1);
+    char *string_from_table = GetTextString(string_id, 1);
     strncpy(buffer, string_from_table, buffer_size);
+  }
+}
+
+void GetMessageText(char *buffer, unsigned int buffer_len, ShowMessageEventData *data)
+{
+  // Get the main string
+  GetTextStringToBuffer(data->string_index, buffer, buffer_len);
+  // Substitute variables in string
+  char var_text[512];
+  unsigned int pos = 0;
+  unsigned int len = strlen(buffer);
+  for (unsigned int i = 0; i < sizeof(data->variable_index); i++)
+  {
+    bool found = false;
+    while (buffer[pos] && !found)
+    {
+      if (buffer[pos] == '@')
+      {
+        if (data->variable_type[i])
+        {
+          switch (data->variable_type[i])
+          {
+            case MSGVARIABLETYPE_NUMBER: sprintf(var_text, "%d", GetVariableValue(data->variable_index[i])); break;
+            case MSGVARIABLETYPE_TIME: { int secs = GetVariableValue(data->variable_index[i]) / 25; sprintf(var_text, "%02d:%02d", secs / 60, secs % 60); break;};
+            case MSGVARIABLETYPE_STRING_FROM_TABLE: GetTextStringToBuffer(GetVariableValue(data->variable_index[i]), var_text, sizeof(var_text));
+          }
+          unsigned int var_text_len = strlen(var_text);
+          if (len + var_text_len - 1 >= buffer_len)
+            break;
+          for (unsigned int j = len; j > pos; j--)
+            buffer[j + var_text_len - 1] = buffer[j];
+          for (unsigned int j = 0; j < var_text_len; j++)
+            buffer[pos + j] = var_text[j];
+          pos += var_text_len - 1;
+          len += var_text_len - 1;
+        }
+        found = true;
+      }
+      pos++;
+    }
   }
 }
 
@@ -179,45 +220,11 @@ void EvAct_ShowMessage(int xoff, int yoff, int ref_id, int screen_pos, int color
     case MSGSOUNDMODE_CUSTOM:       Sound__PlaySample(data->sample_id, 1, 0, 0); break;
     case MSGSOUNDMODE_CUSTOM_FORCE: ISampleManager__EndSample(_gSampleMgr, 0); Sound__PlaySample(data->sample_id, 1, 0, 1); break;
   }
-  // Get the main string
-  char text_to_show[512];
-  char var_text[512];
-  GetTextStringToBuffer(data->string_index, text_to_show, sizeof(text_to_show));
-  // Substitute variables in string
-  unsigned int pos = 0;
-  unsigned int len = strlen(text_to_show);
-  for (unsigned int i = 0; i < sizeof(data->variable_index); i++)
-  {
-    bool found = false;
-    while (text_to_show[pos] && !found)
-    {
-      if (text_to_show[pos] == '@')
-      {
-        if (data->variable_type[i])
-        {
-          switch (data->variable_type[i])
-          {
-            case MSGVARIABLETYPE_NUMBER: sprintf(var_text, "%d", GetVariableValue(data->variable_index[i])); break;
-            case MSGVARIABLETYPE_TIME: { int secs = GetVariableValue(data->variable_index[i]) / 25; sprintf(var_text, "%02d:%02d", secs / 60, secs % 60); break;};
-            case MSGVARIABLETYPE_STRING_FROM_TABLE: GetTextStringToBuffer(GetVariableValue(data->variable_index[i]), var_text, sizeof(var_text));
-          }
-          unsigned int var_text_len = strlen(var_text);
-          if (len + var_text_len - 1 >= sizeof(text_to_show))
-            break;
-          for (unsigned int j = len; j > pos; j--)
-            text_to_show[j + var_text_len - 1] = text_to_show[j];
-          for (unsigned int j = 0; j < var_text_len; j++)
-            text_to_show[pos + j] = var_text[j];
-          pos += var_text_len - 1;
-          len += var_text_len - 1;
-        }
-        found = true;
-      }
-      pos++;
-    }
-  }
+  // Get message text
+  char buffer[512];
+  GetMessageText(buffer, sizeof(buffer), data);
   // Show message
-  QueueMessageExt(text_to_show, duration, ref_id, screen_pos, xoff, yoff, color, type_on);
+  QueueMessageExt(buffer, duration, ref_id, screen_pos, xoff, yoff, color, type_on);
 }
 
 void EvAct_UnitSpawn(int xpos, int ypos, int side_id, int amount, int facing, int tag, char *unit_list)
@@ -807,6 +814,18 @@ void EvAct_SetMessageColor(int color_index, eSetMessageColorMode mode, int trans
       break;
     }
   }
+}
+
+void EvAct_SetTooltip(int line, eSetTooltipColorMode color_mode, int color, ShowMessageEventData *data)
+{
+  switch (color_mode)
+  {
+    case SETTOOLTIPCOLORMODE_KEEP: break;
+    case SETTOOLTIPCOLORMODE_YELLOW: gTooltipExtraData[line].color = _tooltipcolor_yellow; break;
+    case SETTOOLTIPCOLORMODE_GRAY: gTooltipExtraData[line].color = _tooltipcolor_gray; break;
+    case SETTOOLTIPCOLORMODE_CUSTOM: gTooltipExtraData[line].color = color; break;
+  }
+  GetMessageText(gTooltipExtraData[line].text, 100, data);
 }
 
 void EvAct_TransferCredits(int side_id, eTransferCreditsOperation operation, int value)
@@ -1635,6 +1654,164 @@ void EvAct_GetBuildingsKilled(int side_id, int enemy, int building_type, bool to
     SetVariableValue(target_var, side->__BuildingsKilledPerTypeAndSide[building_type].__kills_per_side[enemy]);
 }
 
+void EvAct_GetMousePosition(eGetMousePositionType what, int first_var)
+{
+  SetVariableValue(first_var, -1);
+  SetVariableValue(first_var + 1, -1);
+  switch (what)
+  {
+    case GETMOUSEPOSITIONTYPE_ABSOLUTE:
+    {
+      SetVariableValue(first_var, _gMousePos.x);
+      SetVariableValue(first_var + 1, _gMousePos.y);
+      break;
+    }
+    case GETMOUSEPOSITIONTYPE_MAPPIXEL:
+    {
+      if (_gMousePos.x < _ViewportWidth && _gMousePos.y > _OptionsBarHeight)
+      {
+        SetVariableValue(first_var, _gMousePos.x + _ViewportXPos);
+        SetVariableValue(first_var + 1, _gMousePos.y + _ViewportYPos - _OptionsBarHeight);
+      }
+      break;
+    }
+    case GETMOUSEPOSITIONTYPE_MAPTILE:
+    {
+      if (_gMousePos.x < _ViewportWidth && _gMousePos.y > _OptionsBarHeight)
+      {
+        SetVariableValue(first_var, (_gMousePos.x + _ViewportXPos) / 32);
+        SetVariableValue(first_var + 1, (_gMousePos.y + _ViewportYPos - _OptionsBarHeight) / 32);
+      }
+      break;
+    }
+    case GETMOUSEPOSITIONTYPE_RADARPOSITION:
+    {
+      int radar_image_width = 128;
+      int radar_image_height = 128;
+      int radar_image_left = (radar_image_width - gGameMap.width) / 2;
+      int radar_image_top = (radar_image_height - gGameMap.height) / 2;
+      if ( _gMousePos.x >= radar_image_left + _RadarLocationX
+        && _gMousePos.x < radar_image_width + _RadarLocationX - radar_image_left
+        && _gMousePos.y >= radar_image_top + _RadarLocationY
+        && _gMousePos.y < radar_image_height + _RadarLocationY - radar_image_top
+        && !_TacticalData.__RadarState
+        && _TacticalData.__RadarOnline)
+      {
+        SetVariableValue(first_var, _gMousePos.x - radar_image_left - _RadarLocationX);
+        SetVariableValue(first_var + 1, _gMousePos.y - radar_image_top - _RadarLocationY);
+      }
+      break;
+    }
+    case GETMOUSEPOSITIONTYPE_BUILDINGICON:
+    {
+      if (_TacticalData.__SidebarMode == 1 && _gMousePos.x > SideBarPanelLeftUIPosX && _gMousePos.x < SideBarPanelLeftUIPosX + _SidebarIconWidth && _gMousePos.y > SideBarPanelsPosY && _gMousePos.y < SideBarPanelsPosY + SideBarIconHeight * SideBarIconCount)
+      {
+        unsigned int icon_number = (_gMousePos.y - SideBarPanelsPosY) / SideBarIconHeight + _TacticalData.__Strip1ScrollPos1;
+        CSide *side = GetSide(gSideId);
+        if (icon_number < side->__BuildingIconCount)
+          SetVariableValue(first_var, side->__BuildingIcons[icon_number]);
+      }
+      break;
+    }
+    case GETMOUSEPOSITIONTYPE_UNITICON:
+    {
+      if (_TacticalData.__SidebarMode == 1 && _gMousePos.x > SideBarPanelRightUIPosX && _gMousePos.x < SideBarPanelRightUIPosX + _SidebarIconWidth && _gMousePos.y > SideBarPanelsPosY && _gMousePos.y < SideBarPanelsPosY + SideBarIconHeight * SideBarIconCount)
+      {
+        unsigned int icon_number = (_gMousePos.y - SideBarPanelsPosY) / SideBarIconHeight + _TacticalData.__Strip2ScrollPos1;
+        CSide *side = GetSide(gSideId);
+        if (icon_number < side->__UnitIconCount)
+          SetVariableValue(first_var, side->__UnitIcons[icon_number]);
+      }
+      break;
+    }
+    case GETMOUSEPOSITIONTYPE_STARPORTICON:
+    {
+      if (_TacticalData.__SidebarMode == 2 && _gMousePos.x > SideBarPanelLeftUIPosX && _gMousePos.x < SideBarPanelRightUIPosX + _SidebarIconWidth && _gMousePos.y > SideBarPanelsPosY && _gMousePos.y < SideBarPanelsPosY + SideBarIconHeight * 4)
+      {
+        unsigned int icon_number = 2 * ((_gMousePos.y - SideBarPanelsPosY) / SideBarIconHeight);
+        if (_gMousePos.x > SideBarPanelLeftUIPosX + _SidebarIconWidth)
+          icon_number++;
+        CSide *side = GetSide(gSideId);
+        SetVariableValue(first_var, side->__StarportIcons[icon_number]);
+      }
+      break;
+    }
+    case GETMOUSEPOSITIONTYPE_UPGRADEICON:
+    {
+      if (_TacticalData.__SidebarMode == 3 && _gMousePos.x > SideBarPanelLeftUIPosX && _gMousePos.x < SideBarPanelRightUIPosX + _SidebarIconWidth && _gMousePos.y > SideBarPanelsPosY && _gMousePos.y < SideBarPanelsPosY + SideBarIconHeight * 4)
+      {
+        unsigned int icon_number = 2 * ((_gMousePos.y - SideBarPanelsPosY) / SideBarIconHeight);
+        if (_gMousePos.x > SideBarPanelLeftUIPosX + _SidebarIconWidth)
+          icon_number++;
+        CSide *side = GetSide(gSideId);
+        int building_type = side->__UpgradeIcons[icon_number];
+        if (building_type >= 0 && CanSideUpgradeBuildingGroup(gSideId, _templates_buildattribs[building_type].GroupType))
+          SetVariableValue(first_var, building_type);
+      }
+      break;
+    }
+  }
+}
+
+void EvAct_GetKeyboardMouseState(int target_var, int key)
+{
+  SetVariableValue(target_var, _KeyboardKeyState[key]);
+}
+
+void EvAct_GetUnitUnderCursor(int side_var, int index_var, bool ignore_shroud, bool ignore_stealth)
+{
+  SetVariableValue(side_var, SIDE_NONE);
+  SetVariableValue(index_var, -1);
+  if (_gMousePos.y <= _OptionsBarHeight)
+    return;
+  if (_gMousePos.x >= _ViewportWidth)
+    return;
+  int tile_x = (_ViewportXPos + _gMousePos.x) / 32;
+  int tile_y = (_ViewportYPos + _gMousePos.y - _OptionsBarHeight) / 32;
+  int tile_flags = gGameMap.map[_CellNumbersWidthSpan[tile_y] + tile_x].__tile_bitflags;
+  int shroud = gGameMap.map[_CellNumbersWidthSpan[tile_y] + tile_x].__shroud;
+  if (!ignore_shroud && (shroud & 0xF) == 1)
+    return;
+  eSideType side_id = tile_flags & 7;
+  _WORD index;
+  GetUnitOnTile(_ViewportXPos + _gMousePos.x, _ViewportYPos + _gMousePos.y - _OptionsBarHeight, &side_id, &index, !ignore_stealth && side_id != gSideId);
+  SetVariableValue(side_var, side_id);
+  SetVariableValue(index_var, index);
+}
+
+void EvAct_GetBuildingUnderCursor(int side_var, int index_var, bool ignore_shroud)
+{
+  SetVariableValue(side_var, SIDE_NONE);
+  SetVariableValue(index_var, -1);
+  if (_gMousePos.y <= _OptionsBarHeight)
+    return;
+  if (_gMousePos.x >= _ViewportWidth)
+    return;
+  int tile_x = (_ViewportXPos + _gMousePos.x) / 32;
+  int tile_y = (_ViewportYPos + _gMousePos.y - _OptionsBarHeight) / 32;
+  int tile_flags = gGameMap.map[_CellNumbersWidthSpan[tile_y] + tile_x].__tile_bitflags;
+  int shroud = gGameMap.map[_CellNumbersWidthSpan[tile_y] + tile_x].__shroud;
+  if (!ignore_shroud && (shroud & 0xF) == 1)
+    return;
+  eSideType side_id = tile_flags & 7;
+  _WORD index;
+  Building *bld;
+  if (GetBuildingOnTile_0(tile_x, tile_y, &bld, &side_id, &index))
+  {
+    SetVariableValue(side_var, side_id);
+    SetVariableValue(index_var, index);
+  }
+}
+
+void EvAct_GetSidebarButtonUnderCursor(int button, int target_var, bool click_on_it)
+{
+  SetVariableValue(target_var, HandleSidebarButton(button, click_on_it));
+}
+
+void EvAct_GetGameInterfaceData(eDataType data_type, int offset, int target_var)
+{
+  SetVariableValue(target_var, GetDataValue((char *)&_TacticalData, data_type, offset));
+}
 
 bool EvaluateConditionalExpression(CondExprData *cond_expr)
 {

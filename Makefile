@@ -60,7 +60,8 @@ OBJS            ?= callsites.o \
 	src/extended-maps/unit-movement-restrictions.o \
 	src/extended-maps/show-neutral-become-hostile-msg-rule.o \
 	src/extended-maps/ai-do-set-go-berserk.o \
-        src/extended-maps/event-hooks.o \
+        src/extended-maps/tooltips.o \
+        src/extended-maps/event-hooks-func.o \
         src/extended-maps/delivery-tag.o \
 	\
 	src/event-system/event-core.o \
@@ -83,7 +84,6 @@ OBJS            ?= callsites.o \
 	src/fixes/gettickcount-fix-func.o \
 	src/fixes/gettickcount-fix.o \
 	src/fixes/resolution-fix.o \
-	src/fixes/upgrade-cost-fix.o \
 	src/fixes/damage-position-fix.o \
 	src/fixes/selfdestruct-sound-fix.o \
 	src/fixes/damaged-unit-speed-fix.o \

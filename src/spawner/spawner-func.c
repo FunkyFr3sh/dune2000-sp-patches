@@ -32,7 +32,7 @@ void InitSpawner()
     gNetAIPlayers = 7;
 
     GameState = GS_MAINLOOP;
-    CUIManager__LoadMission(CUIManagerObject, NetMap);
+    CUIManager__LoadMission(gUIMgr, NetMap);
 }
 
 // ### Write ###

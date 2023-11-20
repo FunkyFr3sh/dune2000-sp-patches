@@ -29,6 +29,7 @@ typedef struct dwXYStruct
 #include "dune2000/order.h"
 #include "dune2000/graphlib.h"
 #include "dune2000/sound.h"
+#include "dune2000/uimgr.h"
 
 typedef struct GameEvent // 168 byte
 {
@@ -77,6 +78,32 @@ typedef struct TacticalStruct
   char field_52;
   char field_53;
 } TacticalStruct;
+
+typedef struct TooltipStruct
+{
+  char __LongString[80];
+  POINT __ScreenPosition;
+  POINT __LastPosition;
+  char __IsShown;
+  unsigned int __Timer;
+  RECT __UnusedRect;
+  RECT __TotalRect;
+  RECT __LongStringRect;
+  char __ShortString[12];
+  RECT __ShortStringRect;
+  int __Cost;
+  int __Color;
+  TImage *__BackupImage;
+} TooltipStruct;
+
+typedef struct SidebarButtonData
+{
+  TImage *__images[3];
+  int __xpos;
+  int __ypos;
+  char __status;
+  char __prevstatus;
+} SidebarButtonData;
 
 // ### Constants ###
 
@@ -198,6 +225,25 @@ enum CursorTypes
   CURSORS_MAX = 33,
 };
 
+enum eSidebarButton
+{
+  SIDEBARBUTTON_UPARROW1 = 0,
+  SIDEBARBUTTON_DOWNARROW1 = 1,
+  SIDEBARBUTTON_UPARROW2 = 2,
+  SIDEBARBUTTON_DOWNARROW2 = 3,
+  SIDEBARBUTTON_REPAIR = 4,
+  SIDEBARBUTTON_SELL = 5,
+  SIDEBARBUTTON_MAPTOGGLE = 6,
+  SIDEBARBUTTON_GUARD = 7,
+  SIDEBARBUTTON_RETREAT = 8,
+  SIDEBARBUTTON_UPGRADE = 9,
+  SIDEBARBUTTON_STARPORT = 10,
+  SIDEBARBUTTON_OPTIONS = 11,
+  SIDEBARBUTTON_MAIN1 = 12,
+  SIDEBARBUTTON_MAIN2 = 13,
+  SIDEBARBUTTON_PURCHASE = 14,
+};
+
 // Side (HouseClass)
 #define HC_SIDEID 0x24252
 #define HC_CREDITS 0x2425C
@@ -301,12 +347,29 @@ extern unsigned char MissionNumber;
 
 extern int                  GameState;
 
+extern int                  _RadarLocationX;
+extern int                  _RadarLocationY;
+extern int                  _SideBarIconCount;
+extern int                  _SidebarIconWidth;
+extern int                  _SideBarIconHeight1;
+extern int                  _SideBarIconHeight2;
+extern int                  _SidebarStrip1XPos;
+extern int                  _SidebarStrip1YPos;
+extern int                  _SidebarStrip2XPos;
+extern int                  _SidebarStrip2YPos;
+extern int                  _PowerBarUIPosX;
+extern int                  _PowerBarUIPosY;
+extern int                  _CreditsTextXPos;
 extern short                gDifficultyLevel;
+extern char                 _gFullscreen_DebugModes_pathfinddebug;
 extern int                  gBitsPerPixel;
+extern int                  _ScreenClipWidth;
+extern int                  _ScreenClipHeight;
 extern POINT                _gMousePos;
 extern int                  MousePositionX;
 extern int                  MousePositionY;
 extern int                  RandSeed;
+extern char                 _bool_shroud_4DFB04;
 extern CAI_                 _gAIArray[];
 // extern MessageData          _gMessageData; // Replaced by mod
 extern char                 ResourcePath[];
@@ -317,11 +380,25 @@ extern char                 MapsResourcePath[];
 extern char                 _FontBinData[256];
 extern FontHeader           _FontData[8];
 extern int *                _FontPals[16];
-extern TacticalStruct       _TacticalData;  
+extern SidebarButtonData    _SidebarButtons[15];
+extern TacticalStruct       _TacticalData;
+extern int                  _TileTooltips[800];
 extern unsigned int         gGameTicks;
+extern unsigned int         _NeutralUnitText;
+extern int                  _UnitGroupTextIds[60];
+extern int                  _tooltipcolor_yellow;
 extern char                 _cheatstates[8];
+extern TooltipStruct        _Tooltipdata;
+extern TImage *             _TooltipBackupImage;
+extern int                  _tooltipcolor_gray;
+extern unsigned int         _NeutralStructureText;
+extern unsigned int         _UnrevealedText;
+extern int                  _BuildingGroupTextIds[100];
+extern unsigned int         _EnemyUnitText;
 extern char                 _radarcolor_byte_517780_spicecolor;
+extern unsigned int         _EnemyStructureText;
 extern short                _radarcolor_word_517898_spicecolor;
+extern int                  _StoredMouseCursorIndex;
 extern char                 _blitflag;
 
 extern TImage               *gBackBuf;
@@ -353,10 +430,12 @@ extern OrderStruct          _OrderData[8];
 
 
 extern GroupIDsStruct       _templates_GroupIDs;
+extern TImage *             _SideBarPowerImages[4];
 extern void *               _RadarMap1;
 extern POINT                _SpawnLocations[8];
 extern int                  _tiledata[1000];
 extern char                 _templates_UnitTypeCount;
+extern char                 _templates_UnitGroupNameList[60][50];
 
 extern int                  _ViewportHeight;
 extern BuildingAtrbStruct   _templates_buildattribs[100];
@@ -374,32 +453,43 @@ extern int                  _ViewportWidth;
 extern TImage *             _image_placement_marker_buildable;
 extern char                 _SpawnLocationCount;
 extern unsigned int         _TileBitflags[800];
+extern char                 _templates_BuildingGroupNameList[100][50];
 extern TImage *             _image_placement_marker_nonbuildable;
 extern uint16_t             _radarcolor16_sidecolor[8];
 extern unsigned char        gUnitTypeNum;
 extern unsigned char        gBuildingTypeNum;
 extern unsigned char        gBulletTypeNum;
 extern unsigned char        gExplosionTypeNum;
+extern int                  _CreditsTextYPos;
 extern int                  SoundClassObject;
 extern ISampleManager *     _gSampleMgr;
 extern TextTableStruct **   gTextTable;
 extern SampleTableStruct ** gSampleTable;
 extern int                  _sampletablecount;
-extern int                  CUIManagerObject;
+extern CUIManager *         gUIMgr;
 
 extern bool                 gRestartGame;
 extern int                  GameType;
 extern eGameType            gGameType;
 
+extern char                 _KeyboardKeyState[256];
 extern int                  _colormask1;
 
+extern char                 _KeyboardKeyDown[256];
 extern unsigned char        gTotalPlayers;
 extern char                 _IsMultiplayer;
 extern bool                 BitsPerPixelChanged;
 
 
+extern int                  _MouseLeftState;
+extern int                  _MouseLeftDown;
+extern int                  _MouseLeftUp;
+extern int                  _MouseRightState;
+extern int                  _MouseRightDown;
+extern int                  _MouseRightUp;
 extern int                  _ViewportXPos;
 extern int                  _ViewportYPos;
+extern int                  _MouseCursorID;
 extern unsigned char        MySideID;
 extern unsigned char        gSideId;
 extern char                 _gDiplomacy[8][8];
@@ -431,10 +521,13 @@ size_t          _ReadFile(void *buffer, size_t size, size_t count, FILE *file);
 size_t          _WriteFile(void *buffer, size_t size, size_t count, FILE *file);
 
 // Graphlib
-void            Graphlib__TextOnScreen(int *image, char *text, int x, int y, bool bold_unk, int color_unk, int unk2);
+void            BlitHorizontalLineRGB(TImage *img, int x, int y, int length, int color);
+void            BlitBeveledRectRGB(TImage *img, RECT *rect, int fill, int hightlight, int shadow);
+void            BlitFontChars(TImage *img, char *string, int x, int y, unsigned __int8 font, int color1, int color2);
 void            Graphlib__DrawRightAlignedText(int *image, char *text, int x, int y, bool bold_unk, int color_unk, int unk2);
 void            Graphlib__DrawTextWithBlackShadow(TImage *image, char *text, int x, int y, int unk, int color_unk);
 int             GetStringPixelWidth(const char *string, unsigned char font);
+char            GetFontHeight(unsigned __int8 font);
 
 void *          GetFontPaletteHandle(unsigned char a1);
 void            Graphlib__LoadFontFile();
@@ -449,6 +542,7 @@ unsigned int    GetUnitBuildSpeedPercentage(unsigned char unit_type, unsigned ch
 unsigned int    GetBuildingBuildSpeedPercentage(unsigned char side_id);
 unsigned int    w__GetUnitCost(int type, eSideType side);
 unsigned int    GetBuildingCost(int building_type, int num_upgrades, eSideType side_id);
+char            HandleSidebarButton(int idx, bool pressed_down);
 bool            w_CanUnitBeBuilt(unsigned char side_id, unsigned char unitType, char bool1);
 bool            CanSideUpgradeBuildingGroup(eSideType side_id, eBuildingGroupType building_group);
 
@@ -549,16 +643,16 @@ void __thiscall Sound__SetMusicVolume(int soundClassObject, int volume);
 void            Sound__PlayMusic(char *fileName);
 // CUIManager
 void            CUIManager__JumpToMenu(char *menu);
-void __thiscall CUIManager__LoadMission(int cUIManagerObject, char *map);
+void __thiscall CUIManager__LoadMission(CUIManager * cUIManagerObject, char *map);
 void            CUIManager__LoadDune2000Cfg();
 void            CUIManager__SaveDune2000Cfg();
-void __thiscall CUIManager__StartGame(int cUIManagerObject);
+void __thiscall CUIManager__StartGame(CUIManager * cUIManagerObject);
 
 void            CUIManager__CreateWigNet();
 void            CUIManager__GetCD(char *arg);
 // Data
-
-char *          Data__GetTextString(int stringId, bool showError);
+int             GetTextID(char *String1);
+char *          GetTextString(int stringId, bool showError);
 int             Data__GetSoundTableID(const char *key);
 // Other
 bool            GetRandomAdjacentTile(unsigned __int8 *x_ptr, unsigned __int8 *y_ptr);
@@ -582,10 +676,11 @@ CSide *         GetSide(int sideId);
 Unit *          GetUnit(eSideType side, index objIndex);
 Building *      GetBuilding(eSideType side, index objIndex);
 bool            UnitOccupiesTile(Unit *unit, char x, char y);
-Unit *          GetUnitOnTile(unsigned int x, unsigned int y, eSideType *side, _WORD *index, bool bool1);
+Unit *          GetUnitOnTile(unsigned int x, unsigned int y, eSideType *side_id, _WORD *index, bool exclude_cloaked);
 Unit *          GetNextUnitOnTile(unsigned int x, unsigned int y, unsigned int side, _WORD *unit_index);
 bool            BuildingOccupiesTile(Building *building, unsigned __int8 x, unsigned __int8 y);
 bool            GetBuildingOnTile_0(int x, int y, Building **building_ptr, eSideType *side_id, _WORD *index);
+bool            GetBuildingOnTile_1(int x, int y, eSideType *side_id_ptr, int a3);
 
 int16_t         GetRefineryIndex(eSideType side_id);
 Building *      GetNearestBuildingWithBehavior(unsigned char x, unsigned char y, eSideType side_id, BuildingBehaviorType behavior, _BYTE *exit_x1, _BYTE *exit_y1);

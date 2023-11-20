@@ -171,12 +171,29 @@ setcglob 0x004DEDB4, CreditsScreenTop
 setcglob 0x004DEDBC, CreditsScreenBottom
 setcglob 0x004DFB08, GameState
 setcglob 0x004E3B14, MyCurrentFrameRate
+setcglob 0x004E41E4, _RadarLocationX
+setcglob 0x004E41E8, _RadarLocationY
+setcglob 0x004E41EC, _SideBarIconCount
+setcglob 0x004E41F0, _SidebarIconWidth
+setcglob 0x004E41F4, _SideBarIconHeight1
+setcglob 0x004E41F8, _SideBarIconHeight2
+setcglob 0x004E41FC, _SidebarStrip1XPos
+setcglob 0x004E4200, _SidebarStrip1YPos
+setcglob 0x004E4204, _SidebarStrip2XPos
+setcglob 0x004E4208, _SidebarStrip2YPos
+setcglob 0x004E420C, _PowerBarUIPosX
+setcglob 0x004E4210, _PowerBarUIPosY
+setcglob 0x004E4214, _CreditsTextXPos
 setcglob 0x004E8BF0, gDifficultyLevel
+setcglob 0x004EB008, _gFullscreen_DebugModes_pathfinddebug
 setcglob 0x004EB018, gBitsPerPixel
+setcglob 0x004EB028, _ScreenClipWidth
+setcglob 0x004EB02C, _ScreenClipHeight
 setcglob 0x004EB048, _gMousePos
 setcglob 0x004EB048, MousePositionX
 setcglob 0x004EB04C, MousePositionY
 setcglob 0x004ED870, RandSeed
+setcglob 0x004DFB04, _bool_shroud_4DFB04
 setcglob 0x004F4118, _gAIArray
 setcglob 0x00504030, _gMessageData
 setcglob 0x00513488, ResourcePath
@@ -187,11 +204,25 @@ setcglob 0x005136E8, MapsResourcePath
 setcglob 0x00513A20, _FontBinData
 setcglob 0x00513B20, _FontData
 setcglob 0x00515B60, _FontPals
+setcglob 0x005162C8, _SidebarButtons
 setcglob 0x00516430, _TacticalData
+setcglob 0x00516770, _TileTooltips
 setcglob 0x005173F4, gGameTicks
+setcglob 0x005173F8, _NeutralUnitText
+setcglob 0x00517408, _UnitGroupTextIds
+setcglob 0x005174FC, _tooltipcolor_yellow
 setcglob 0x00517500, _cheatstates
+setcglob 0x00517508, _Tooltipdata
+setcglob 0x005175C8, _TooltipBackupImage
+setcglob 0x005175D0, _tooltipcolor_gray
+setcglob 0x005175D4, _NeutralStructureText
+setcglob 0x005175E0, _UnrevealedText
+setcglob 0x005175E8, _BuildingGroupTextIds
+setcglob 0x00517778, _EnemyUnitText
 setcglob 0x00517780, _radarcolor_byte_517780_spicecolor
+setcglob 0x00517784, _EnemyStructureText
 setcglob 0x00517898, _radarcolor_word_517898_spicecolor
+setcglob 0x0051789C, _StoredMouseCursorIndex
 setcglob 0x005178AC, _blitflag
 setcglob 0x005178B4, PointerToMainImage
 setcglob 0x005178B4, gBackBuf
@@ -223,10 +254,12 @@ setcglob 0x006B91F8, _OrderData
 setcglob 0x006B9518, NetMessageString
 setcglob 0x006B9864, LimitedModelRate
 setcglob 0x006D60D8, _templates_GroupIDs
+setcglob 0x006D6130, _SideBarPowerImages
 setcglob 0x006D7BA0, _RadarMap1
 setcglob 0x006D7BA8, _SpawnLocations
 setcglob 0x006D7DE8, _tiledata
 setcglob 0x006D9B50, _templates_UnitTypeCount
+setcglob 0x006DA7D8, _templates_UnitGroupNameList
 setcglob 0x006DC470, MissionMapData
 setcglob 0x006DC538, _ViewportHeight
 setcglob 0x006DC540, _templates_buildattribs
@@ -244,32 +277,43 @@ setcglob 0x00786D48, _ViewportWidth
 setcglob 0x00786FE8, _image_placement_marker_buildable
 setcglob 0x00786FEC, _SpawnLocationCount
 setcglob 0x00786FF8, _TileBitflags
+setcglob 0x00787E08, _templates_BuildingGroupNameList
 setcglob 0x00795440, _image_placement_marker_nonbuildable
 setcglob 0x00795518, _radarcolor16_sidecolor
 setcglob 0x00795538, gUnitTypeNum
 setcglob 0x0079553C, gBuildingTypeNum
 setcglob 0x00795540, gBulletTypeNum
 setcglob 0x00795544, gExplosionTypeNum
+setcglob 0x00795560, _CreditsTextYPos
 setcglob 0x00795608, SoundClassObject
 setcglob 0x00795608, _gSampleMgr
 setcglob 0x007975A8, gTextTable
 setcglob 0x007975B8, gSampleTable
 setcglob 0x007975BC, _sampletablecount
-setcglob 0x0079759C, CUIManagerObject
+setcglob 0x0079759C, gUIMgr
 setcglob 0x00797A98, CurrentSoundTrack
 setcglob 0x00797E1C, gRestartGame
 setcglob 0x00797E34, GameType
 setcglob 0x00797E34, gGameType
 setcglob 0x00797E78, KeyIsDown2
+setcglob 0x00797E78, _KeyboardKeyState
 setcglob 0x00798384, _colormask1
 setcglob 0x00798390, KeyIsDown1
+setcglob 0x00798390, _KeyboardKeyDown
 setcglob 0x007984C0, gTotalPlayers
 setcglob 0x007984C4, _IsMultiplayer
 setcglob 0x007984D4, BitsPerPixelChanged
 setcglob 0x007984D8, MenuDraw_FromTopPixel		;       int MenuDraw::FromTopPixel
 setcglob 0x00798510, WindowActivated
+setcglob 0x00798520, _MouseLeftState
+setcglob 0x00798524, _MouseLeftDown
+setcglob 0x00798528, _MouseLeftUp
+setcglob 0x0079852C, _MouseRightState
+setcglob 0x00798530, _MouseRightDown
+setcglob 0x00798534, _MouseRightUp
 setcglob 0x00798538, _ViewportXPos
 setcglob 0x0079853C, _ViewportYPos
+setcglob 0x00798540, _MouseCursorID
 setcglob 0x00798544, MySideID
 setcglob 0x00798544, gSideId
 setcglob 0x00798830, _gDiplomacy
@@ -318,10 +362,13 @@ setcglob 0x0042BB60, _ReadFile
 setcglob 0x0042BB80, _WriteFile
 setcglob 0x0042BC60, CreateGlobe
 ; Graphlib
-setcglob 0x0042DC00, Graphlib__TextOnScreen
+setcglob 0x0042D450, BlitHorizontalLineRGB
+setcglob 0x0042D660, BlitBeveledRectRGB
+setcglob 0x0042DC00, BlitFontChars
 setcglob 0x0042DD50, Graphlib__DrawRightAlignedText
 setcglob 0x0042DD90, Graphlib__DrawTextWithBlackShadow
 setcglob 0x0042DFB0, GetStringPixelWidth
+setcglob 0x0042E1A0, GetFontHeight
 setcglob 0x0042E1C0, Graphlib_font_pal
 setcglob 0x0042E420, GetFontPaletteHandle
 setcglob 0x0042E450, Graphlib__LoadFontFile
@@ -336,6 +383,7 @@ setcglob 0x00442A00, GetUnitBuildSpeedPercentage
 setcglob 0x00442B10, GetBuildingBuildSpeedPercentage
 setcglob 0x00442BB0, w__GetUnitCost
 setcglob 0x00442BE0, GetBuildingCost
+setcglob 0x00443040, HandleSidebarButton
 setcglob 0x004430D0, w_CanUnitBeBuilt
 setcglob 0x004431D0, CanSideUpgradeBuildingGroup
 setcglob 0x00443370, IsAnyStarportUnitPicked
@@ -444,8 +492,8 @@ setcglob 0x0047BAE0, CUIManager__SendInGameMsgTo
 setcglob 0x00480F30, CUIManager__CreateWigNet
 setcglob 0x00482690, CUIManager__GetCD					 ;       Get_CD::Get_CD(void)
 ; Data
-setcglob 0x0048DC10, Data__GetTextId			; (char *key, int unk)
-setcglob 0x0048DCC0, Data__GetTextString			; (int id, int unk)
+setcglob 0x0048DC10, GetTextID			; (char *key, int unk)
+setcglob 0x0048DCC0, GetTextString			; (int id, int unk)
 setcglob 0x0048DD90, Data__GetSoundTableID
 ; Other
 setcglob 0x004979A0, GetRandomAdjacentTile
@@ -473,6 +521,7 @@ setcglob 0x004A5270, GetUnitOnTile
 setcglob 0x004A54A0, GetNextUnitOnTile
 setcglob 0x004A5570, BuildingOccupiesTile
 setcglob 0x004A5640, GetBuildingOnTile_0
+setcglob 0x004A56F0, GetBuildingOnTile_1
 setcglob 0x004A5980, IsAnyInfantrySelected
 setcglob 0x004A5E80, GetRefineryIndex
 setcglob 0x004A5F80, GetNearestBuildingWithBehavior

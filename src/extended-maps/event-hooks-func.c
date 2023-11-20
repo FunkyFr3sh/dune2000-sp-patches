@@ -2,6 +2,26 @@
 #include "dune2000.h"
 #include "../event-system/event-core.h"
 
+// Set mouse cursor hook
+
+// Custom implementation of function SetMouseCursor
+LJMP(0x0044C420, _Mod__SetMouseCursor);
+
+void Mod__SetMouseCursor(int cursor)
+{
+  if ( gUIMgr->dw_field_110_index )
+  {
+    _MouseCursorID = 0;
+    _StoredMouseCursorIndex = cursor;
+  }
+  else
+  {
+    cursor = ExecuteEventHook(HOOK_SETMOUSECURSOR, 1, cursor, 0, 0);
+    _StoredMouseCursorIndex = cursor;
+    _MouseCursorID = cursor;
+  }
+}
+
 // Update unit hooks
 
 CALL(0x00458F15, _Ext_UpdateUnit); // ModelUpdates
