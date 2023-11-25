@@ -398,7 +398,8 @@ LABEL_64:
             unit_cost = w__GetUnitCost(side_->__UnitIcons[unit_icon_index], gSideId);
             clip_right = _SidebarStrip2XPos;
             strcpy(gTooltipExtraData[0].text, tooltip_string);
-            sprintf(gTooltipExtraData[1].text, "$%d", unit_cost);
+            if (unit_cost)
+              sprintf(gTooltipExtraData[1].text, "$%d", unit_cost);
             tooltip_type = TOOLTIPTYPE_BUILD_UNIT;
             tooltip_arg1 = unit_type;
           }
@@ -416,7 +417,8 @@ LABEL_64:
           building_cost = GetBuildingCost(side_->__BuildingIcons[building_icon_index], 0, gSideId);
           clip_right = _SidebarStrip1XPos;
           strcpy(gTooltipExtraData[0].text, tooltip_string);
-          sprintf(gTooltipExtraData[1].text, "$%d", building_cost);
+          if (building_cost)
+            sprintf(gTooltipExtraData[1].text, "$%d", building_cost);
           tooltip_type = TOOLTIPTYPE_BUILD_BUILDING;
           tooltip_arg1 = building_type;
         }

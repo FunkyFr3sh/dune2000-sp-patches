@@ -903,6 +903,9 @@ void ExecuteEventAction(EventContext *e)
   case ET_GET_STARPORT_STOCK:             EvAct_GetStarportStock              (A_SIDE, A_ITEM, A_BOOL);                                     break;
   case ET_GET_STARPORT_COST:              EvAct_GetStarportCost               (A_SIDE, A_ITEM, A_BOOL);                                     break;
   case ET_GET_STARPORT_PICK:              EvAct_GetStarportPick               (A_SIDE, A_ITEM, A_BOOL);                                     break;
+  case ET_GET_BUILDING_QUEUE_STATE:       EvAct_GetBuildingQueueState         (A_SIDE, A_AMNT, A_ITEM, A_BOOL);                             break;
+  case ET_GET_UNIT_QUEUE_STATE:           EvAct_GetUnitQueueState             (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL, A_VAL1);             break;
+  case ET_GET_UPGRADE_QUEUE_STATE:        EvAct_GetUpgradeQueueState          (A_SIDE, A_AMNT, A_ITEM, A_BOOL);                             break;
   case ET_GET_SPICE_HARVESTED:            EvAct_GetSpiceHarvested             (A_SIDE, A_BOOL);                                             break;
   case ET_GET_UNITS_BUILT:                EvAct_GetUnitsBuilt                 (A_SIDE, A_ITEM, A_ENUM, A_BOOL);                             break;
   case ET_GET_BUILDINGS_BUILT:            EvAct_GetBuildingsBuilt             (A_SIDE, A_ITEM, A_ENUM, A_BOOL);                             break;

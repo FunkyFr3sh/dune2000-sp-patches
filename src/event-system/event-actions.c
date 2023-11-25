@@ -1598,6 +1598,44 @@ void EvAct_GetStarportPick(int side_id, int unit_type, int target_var)
   SetVariableValue(target_var, GetSide(side_id)->__StarportUnitTypePicked[unit_type]);
 }
 
+void EvAct_GetBuildingQueueState(int side_id, eDataType data_type, int offset, int target_var)
+{
+  CSide *side = GetSide(side_id);
+  SetVariableValue(target_var, GetDataValue((char *)&side->__BuildingBuildQueue, data_type, offset));
+}
+
+void EvAct_GetUnitQueueState(int side_id, eDataType data_type, int offset, int queue, int queue_num, int target_var)
+{
+  CSide *side = GetSide(side_id);
+  if (queue)
+  {
+    queue_num = -1;
+    for (int i = 0; i < 10; i++)
+    {
+      int unit_type_built = side->__UnitBuildQueue[i].__type;
+      if (unit_type_built == -1)
+        continue;
+      int prereq1_group = _templates_unitattribs[unit_type_built].__PreReq1;
+      char *queue_groups = (char *)&_templates_GroupIDs;
+      if (prereq1_group == queue_groups[(queue <= 6)?queue:queue+3])
+      {
+        queue_num = i;
+        break;
+      }
+    }
+  }
+  if (queue_num >= 0)
+    SetVariableValue(target_var, GetDataValue((char *)&side->__UnitBuildQueue[queue_num], data_type, offset));
+  else
+    SetVariableValue(target_var, -1);
+}
+
+void EvAct_GetUpgradeQueueState(int side_id, eDataType data_type, int offset, int target_var)
+{
+  CSide *side = GetSide(side_id);
+  SetVariableValue(target_var, GetDataValue((char *)&side->__BuildingUpgradeQueue, data_type, offset));
+}
+
 void EvAct_GetSpiceHarvested(int side_id, int target_var)
 {
   SetVariableValue(target_var, GetSide(side_id)->__SpiceHarvested);
