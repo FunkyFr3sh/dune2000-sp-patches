@@ -862,6 +862,8 @@ void ExecuteEventAction(EventContext *e)
   // Variable operations
   case ET_SET_VARIABLE:                   EvAct_SetVariable                   (A_AMNT, A_ITEM, A_ENUM, A_BOOL, A_VAL1);                     break;
   case ET_GET_VARIABLE:                   EvAct_GetVariable                   (A_ITEM, A_ENUM, A_BOOL);                                     break;
+  case ET_SET_FLOAT_VARIABLE:             EvAct_SetFloatVariable              (A_AMNT, A_ITEM, A_ENUM, A_BOOL, A_VAL1);                     break;
+  case ET_CONVERT_VARIABLE:               EvAct_ConvertVariable               (A_ITEM, A_ENUM, A_BOOL);                                     break;
   case ET_GET_RANDOM_VALUE:               EvAct_GetRandomValue                (A_ITEM, A_VAL1, A_VAL2);                                     break;
   case ET_GET_RANDOM_COORDS:              EvAct_GetRandomCoords               (COORD0, COORD1, A_ITEM);                                     break;
   case ET_GET_VALUE_FROM_LIST:            EvAct_GetValueFromList              (EV_IDX, A_AMNT, A_ITEM, A_ENUM, A_BOOL, (uint8_t *)e->data); break;

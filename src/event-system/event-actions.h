@@ -1,5 +1,11 @@
 #include "event-filters.h"
 
+typedef union int_or_float
+{
+  int int_val;
+  float float_val;
+} int_or_float;
+
 typedef struct ShowMessageEventData
 {
   uint32_t sample_id;
@@ -37,7 +43,22 @@ typedef enum eMsgVariableType
   MSGVARIABLETYPE_NONE,
   MSGVARIABLETYPE_NUMBER,
   MSGVARIABLETYPE_TIME,
-  MSGVARIABLETYPE_STRING_FROM_TABLE
+  MSGVARIABLETYPE_HEXNUMBER,
+  MSGVARIABLETYPE_FLOAT1,
+  MSGVARIABLETYPE_FLOAT2,
+  MSGVARIABLETYPE_FLOAT3,
+  MSGVARIABLETYPE_FLOAT4,
+  MSGVARIABLETYPE_STRING_FROM_TABLE,
+  MSGVARIABLETYPE_UNIT_NAME,
+  MSGVARIABLETYPE_BUILDING_NAME,
+  MSGVARIABLETYPE_UNIT_TYPE,
+  MSGVARIABLETYPE_BUILDING_TYPE,
+  MSGVARIABLETYPE_UNIT_GROUP,
+  MSGVARIABLETYPE_BUILDING_GROUP,
+  MSGVARIABLETYPE_WEAPON_NAME,
+  MSGVARIABLETYPE_EXPLOSION_NAME,
+  MSGVARIABLETYPE_WARHEAD_NAME,
+  MSGVARIABLETYPE_ARMOUR_TYPE
 } eMsgVariableType;
 
 typedef enum eRemoveMessageMode
@@ -210,6 +231,8 @@ void EvAct_OrderUpgradeCancel(int side_id, bool force);
 // Variable operations
 void EvAct_SetVariable(int target_var, bool use_offset, int offset_var, eValueOperation operation, int value);
 void EvAct_GetVariable(int target_var, int src_var_base, int src_var_offset);
+void EvAct_SetFloatVariable(int target_var, bool use_offset, int offset_var, eValueOperation operation, int value);
+void EvAct_ConvertVariable(int first_var, int number_of_vars, int operation);
 void EvAct_GetRandomValue(int target_var, int min_value, int max_value);
 void EvAct_GetRandomCoords(int min_x, int min_y, int max_x, int max_y, int first_var);
 void EvAct_GetValueFromList(int event_index, int amount, int target_var, int mode, int index_var, uint8_t *value_list);

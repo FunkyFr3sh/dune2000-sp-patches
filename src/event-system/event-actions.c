@@ -170,6 +170,8 @@ void GetTextStringToBuffer(int string_id, char *buffer, int buffer_size)
   }
 }
 
+void dummy(void);
+
 void GetMessageText(char *buffer, unsigned int buffer_len, ShowMessageEventData *data)
 {
   // Get the main string
@@ -187,21 +189,72 @@ void GetMessageText(char *buffer, unsigned int buffer_len, ShowMessageEventData 
       {
         if (data->variable_type[i])
         {
+          var_text[0] = 0;
+          int_or_float val;
+          val.int_val = GetVariableValue(data->variable_index[i]);
           switch (data->variable_type[i])
           {
-            case MSGVARIABLETYPE_NUMBER: sprintf(var_text, "%d", GetVariableValue(data->variable_index[i])); break;
-            case MSGVARIABLETYPE_TIME: { int secs = GetVariableValue(data->variable_index[i]) / 25; sprintf(var_text, "%02d:%02d", secs / 60, secs % 60); break;};
-            case MSGVARIABLETYPE_STRING_FROM_TABLE: GetTextStringToBuffer(GetVariableValue(data->variable_index[i]), var_text, sizeof(var_text));
+            case MSGVARIABLETYPE_NUMBER: sprintf(var_text, "%d", val.int_val); break;
+            case MSGVARIABLETYPE_TIME: { int secs = val.int_val / 25; sprintf(var_text, "%02d:%02d", secs / 60, secs % 60); break;};
+            case MSGVARIABLETYPE_HEXNUMBER: sprintf(var_text, "%08X", val.int_val); break;
+            case MSGVARIABLETYPE_FLOAT1: sprintf(var_text, "%.1f", *(float *)&val.float_val); break;
+            case MSGVARIABLETYPE_FLOAT2: sprintf(var_text, "%.2f", *(float *)&val.float_val); break;
+            case MSGVARIABLETYPE_FLOAT3: sprintf(var_text, "%.3f", *(float *)&val.float_val); break;
+            case MSGVARIABLETYPE_FLOAT4: sprintf(var_text, "%.4f", *(float *)&val.float_val); break;
+            case MSGVARIABLETYPE_STRING_FROM_TABLE: GetTextStringToBuffer(val.int_val, var_text, sizeof(var_text)); break;
+            case MSGVARIABLETYPE_UNIT_NAME:
+            {
+              if (val.int_val >= 0 && val.int_val < 60)
+              {
+                int unit_group = _templates_unitattribs[val.int_val].__UnitType;
+                int string_id = _UnitGroupTextIds[unit_group];
+                strcpy(var_text, (string_id != -1)?GetTextString(string_id, 0):_templates_UnitGroupNameList[unit_group]);
+              }
+              break;
+            };
+            case MSGVARIABLETYPE_BUILDING_NAME:
+            {
+              if (val.int_val >= 0 && val.int_val < 100)
+              {
+                int building_group = _templates_buildattribs[val.int_val].GroupType;
+                int string_id = _BuildingGroupTextIds[building_group];
+                strcpy(var_text, (string_id != -1)?GetTextString(string_id, 0):_templates_BuildingGroupNameList[building_group]);
+              }
+              break;
+            };
+            case MSGVARIABLETYPE_UNIT_TYPE: if (val.int_val >= 0 && val.int_val < 60) {strcpy(var_text, _templates_UnitNameList[val.int_val]);} break;
+            case MSGVARIABLETYPE_BUILDING_TYPE: if (val.int_val >= 0 && val.int_val < 100) {strcpy(var_text, _templates_BuildingNameList[val.int_val]);} break;
+            case MSGVARIABLETYPE_UNIT_GROUP: if (val.int_val >= 0 && val.int_val < 60) {strcpy(var_text, _templates_UnitGroupNameList[val.int_val]);} break;
+            case MSGVARIABLETYPE_BUILDING_GROUP: if (val.int_val >= 0 && val.int_val < 100) {strcpy(var_text, _templates_BuildingGroupNameList[val.int_val]);} break;
+            case MSGVARIABLETYPE_WEAPON_NAME: if (val.int_val >= 0 && val.int_val < 64) {strcpy(var_text, _templates_BulletNameList[val.int_val]);} break;
+            case MSGVARIABLETYPE_EXPLOSION_NAME: if (val.int_val >= 0 && val.int_val < 64) {strcpy(var_text, _templates_ExplosionNameList[val.int_val]);} break;
+            case MSGVARIABLETYPE_WARHEAD_NAME: if (val.int_val >= 0 && val.int_val < 30) {strcpy(var_text, _WarheadNames[val.int_val]);} break;
+            case MSGVARIABLETYPE_ARMOUR_TYPE: if (val.int_val >= 0 && val.int_val < 12) {strcpy(var_text, _ArmourNames[val.int_val]);} break;
           }
           unsigned int var_text_len = strlen(var_text);
+
           if (len + var_text_len - 1 >= buffer_len)
             break;
-          for (unsigned int j = len; j > pos; j--)
-            buffer[j + var_text_len - 1] = buffer[j];
+          if (var_text_len > 0)
+          {
+            for (unsigned int j = len; j > pos; j--)
+            {
+              buffer[j + var_text_len - 1] = buffer[j];
+            }
+          }
+          else
+          {
+            for (unsigned int j = pos; j < len; j++)
+            {
+              buffer[j] = buffer[j + 1];
+              dummy();
+            }
+          }
           for (unsigned int j = 0; j < var_text_len; j++)
             buffer[pos + j] = var_text[j];
           pos += var_text_len - 1;
           len += var_text_len - 1;
+
         }
         found = true;
       }
@@ -1311,6 +1364,40 @@ void EvAct_GetVariable(int target_var, int src_var_base, int src_var_offset)
   SetVariableValue(target_var, GetVariableValue(src_var_base + GetVariableValue(src_var_offset)));
 }
 
+void EvAct_SetFloatVariable(int target_var, bool use_offset, int offset_var, eValueOperation operation, int value)
+{
+  if (use_offset)
+    target_var += GetVariableValue(offset_var);
+  int_or_float operand1;
+  int_or_float operand2;
+  int_or_float result;
+  operand1.int_val = GetVariableValue(target_var);
+  operand2.int_val = value;
+  result.float_val = ValueOperationFloat(operand1.float_val, operand2.float_val, operation);
+  SetVariableValue(target_var, result.int_val);
+}
+
+void EvAct_ConvertVariable(int first_var, int number_of_vars, int operation)
+{
+  for (int i = 0; i < number_of_vars; i++)
+  {
+    if (operation == 0)
+    {
+      int operand = GetVariableValue(first_var + i);
+      int_or_float result;
+      result.float_val = (float)operand;
+      SetVariableValue(first_var + i, result.int_val);
+    }
+    else
+    {
+      int_or_float operand;
+      operand.int_val = GetVariableValue(first_var + i);
+      int result = (int)operand.float_val;
+      SetVariableValue(first_var + i, result);
+    }
+  }
+}
+
 void EvAct_GetRandomValue(int target_var, int min_value, int max_value)
 {
   if (min_value > max_value)
@@ -1472,7 +1559,7 @@ void EvAct_GetUnitType(int target_var, bool random, ObjectFilterStruct *filter)
   {
     int found = 0;
     int found_array[60];
-    for (int i = 0; i < _templates_UnitTypeCount; i++)
+    for (int i = 0; i < gUnitTypeNum; i++)
     {
       if (CheckIfUnitTypeMatchesFilter(filter, i))
         found_array[found++] = i;
@@ -1482,7 +1569,7 @@ void EvAct_GetUnitType(int target_var, bool random, ObjectFilterStruct *filter)
   }
   else
   {
-    for (int i = 0; i < _templates_UnitTypeCount; i++)
+    for (int i = 0; i < gUnitTypeNum; i++)
     {
       if (CheckIfUnitTypeMatchesFilter(filter, i))
       {
@@ -1501,7 +1588,7 @@ void EvAct_GetBuildingType(int target_var, bool random, ObjectFilterStruct *filt
   {
     int found = 0;
     int found_array[100];
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < gBuildingTypeNum; i++)
     {
       if (CheckIfBuildingTypeMatchesFilter(filter, i))
         found_array[found++] = i;
@@ -1511,7 +1598,7 @@ void EvAct_GetBuildingType(int target_var, bool random, ObjectFilterStruct *filt
   }
   else
   {
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < gBuildingTypeNum; i++)
     {
       if (CheckIfBuildingTypeMatchesFilter(filter, i))
       {

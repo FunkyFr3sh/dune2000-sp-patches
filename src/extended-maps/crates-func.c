@@ -208,7 +208,7 @@ bool DoPickupCrate(int crate_index, Unit *unit, unsigned char side_id)
       int behavior;
       do
       {
-        unit_type = GetRandomValue("C:\\MsDev\\Projects\\July2000\\code\\unit.cpp", 8928) % _templates_UnitTypeCount;
+        unit_type = GetRandomValue("C:\\MsDev\\Projects\\July2000\\code\\unit.cpp", 8928) % _templates_UnitGroupCount;
         unit_version = CSide__MyVersionOfUnit(side, unit_type, 0);
         behavior = _templates_unitattribs[unit_version].__Behavior;
       }
@@ -224,7 +224,7 @@ bool DoPickupCrate(int crate_index, Unit *unit, unsigned char side_id)
         {
           do
           {
-            unit_type = GetRandomValue("C:\\MsDev\\Projects\\July2000\\code\\unit.cpp", 8939) % _templates_UnitTypeCount;
+            unit_type = GetRandomValue("C:\\MsDev\\Projects\\July2000\\code\\unit.cpp", 8939) % _templates_UnitGroupCount;
             unit_version = CSide__MyVersionOfUnit(side, unit_type, 0);
           }
           while ( !_templates_unitattribs[unit_version].__IsInfantry );

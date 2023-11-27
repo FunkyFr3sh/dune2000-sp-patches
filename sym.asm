@@ -258,14 +258,17 @@ setcglob 0x006D6130, _SideBarPowerImages
 setcglob 0x006D7BA0, _RadarMap1
 setcglob 0x006D7BA8, _SpawnLocations
 setcglob 0x006D7DE8, _tiledata
-setcglob 0x006D9B50, _templates_UnitTypeCount
+setcglob 0x006D9B50, _templates_UnitGroupCount
 setcglob 0x006DA7D8, _templates_UnitGroupNameList
+setcglob 0x006DB390, _templates_BulletNameList
 setcglob 0x006DC470, MissionMapData
 setcglob 0x006DC538, _ViewportHeight
 setcglob 0x006DC540, _templates_buildattribs
+setcglob 0x006E5850, _templates_BuildingGroupCount
 setcglob 0x006E5854, _image_placement_marker_buildable_concrete
 setcglob 0x006E9840, _sinValues
 setcglob 0x006F9840, _MapName
+setcglob 0x006F9908, _templates_BuildingNameList
 setcglob 0x00704A98, _cosValues
 setcglob 0x0077E250, _templates_unitattribs
 setcglob 0x00781E54, _RadarMap2
@@ -274,10 +277,14 @@ setcglob 0x00782068, _templates_bulletattribs
 setcglob 0x00782AA0, _FreeSpawnLocations
 setcglob 0x00786C48, _ColoursBinData
 setcglob 0x00786D48, _ViewportWidth
+setcglob 0x00786D90, _ArmourNames
 setcglob 0x00786FE8, _image_placement_marker_buildable
 setcglob 0x00786FEC, _SpawnLocationCount
 setcglob 0x00786FF8, _TileBitflags
 setcglob 0x00787E08, _templates_BuildingGroupNameList
+setcglob 0x007891B0, _templates_UnitNameList
+setcglob 0x0078FB30, _WarheadNames
+setcglob 0x007943A8, _templates_ExplosionNameList
 setcglob 0x00795440, _image_placement_marker_nonbuildable
 setcglob 0x00795518, _radarcolor16_sidecolor
 setcglob 0x00795538, gUnitTypeNum
@@ -787,6 +794,10 @@ setcglob 0x004BC5B0, stat
 ;; ### C Compiler stuff ###
 
 cglobal __chkstk_ms
+cglobal dummy
 
 __chkstk_ms:
+  ret
+
+dummy:
   ret

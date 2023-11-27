@@ -44,7 +44,9 @@ float ValueOperationFloat(float val1, float val2, eValueOperation operation)
     case VALUEOPERATION_SET:        return val2; break;
     case VALUEOPERATION_ADD:        return val1 + val2; break;
     case VALUEOPERATION_SUBSTRACT:  return val1 - val2; break;
+    case VALUEOPERATION_MULTIPLY:   return (val1 * val2); break;
     case VALUEOPERATION_MULPERCENT: return (val1 * val2) / 100; break;
+    case VALUEOPERATION_DIVIDE:     if (val2 == 0.0) DebugFatal("event-utils.c", "Division by zero!"); return val1 / val2; break;
     case VALUEOPERATION_CAPMAX:     return HLIMIT(val1, val2); break;
     case VALUEOPERATION_CAPMIN:     return LLIMIT(val1, val2); break;
     default: DebugFatal("event-utils.c", "Invalid operation %d for floating-point value.", operation);
