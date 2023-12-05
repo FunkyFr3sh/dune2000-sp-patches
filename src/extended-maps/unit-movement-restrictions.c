@@ -98,6 +98,10 @@ BOOL Mod__CanUnitUseSquare(dwXYStruct x, Unit *unit, eSideType side_id, char rou
       {
         goto LABEL_33;
       }
+      if (unit_->EnemyIndex == -1)
+      {
+        goto LABEL_33;
+      }
       v15 = GetUnit((eSideType)unit_->EnemySide, unit_->EnemyIndex);
       if ( !v15 )
       {

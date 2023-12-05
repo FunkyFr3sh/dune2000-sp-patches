@@ -147,9 +147,12 @@ void Mod__HandleTooltips()
                 tooltip_string = &tmp_string;
                 tooltip_type = TOOLTIPTYPE_UNIT;
               }
-              strcpy(gTooltipExtraData[0].text, tooltip_string);
-              tooltip_arg1 = side_id;
-              tooltip_arg2 = index;
+              if (tooltip_string)
+              {
+                strcpy(gTooltipExtraData[0].text, tooltip_string);
+                tooltip_arg1 = side_id;
+                tooltip_arg2 = index;
+              }
             }
             else if ( GetBuildingOnTile_1(tile_x, tile_y, (eSideType *)&side_id, (int)&index) )
             {
