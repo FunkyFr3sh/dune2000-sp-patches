@@ -675,6 +675,7 @@ bool            UnitAdjustState(Unit *unit, eUnitState state);
 bool            Unit_49E140(Unit *unit);
 char            tile_driveon_49E290(eSideType side, unsigned char *x, unsigned char *y);
 void            MakeUnitsStealthInRange(unsigned char x, unsigned char y, eSideType side);
+void            PlayUnitResponse(char a1);
 int             RevealTilesSeenByBuildingsAndUnits(eSideType side);
 bool            Unit_49F5F0(Unit *unit);
 

@@ -516,6 +516,7 @@ setcglob 0x0049DEB0, UnitAdjustState
 setcglob 0x0049E140, Unit_49E140
 setcglob 0x0049E290, tile_driveon_49E290
 setcglob 0x0049F1B0, MakeUnitsStealthInRange
+setcglob 0x0049F240, PlayUnitResponse
 setcglob 0x0049F4D0, RevealTilesSeenByBuildingsAndUnits
 setcglob 0x0049F5F0, Unit_49F5F0
 setcglob 0x004A31D0, GameWindowProcedure

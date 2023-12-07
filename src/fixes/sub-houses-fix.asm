@@ -27,6 +27,15 @@ hack 0x0049F25C, 0x0049F26E ; SubHousesPlayUnitResponseFix
     mov ebx,0x00000002
     jmp hackend
 
+; Fix wrong sound played when clicking on unit with repair cursor and playing as Emperor or higher
+hack 0x00445303, 0x00445309 ; HandleGameLoopEvents
+    mov dl,[_IRValues + eax]
+    cmp dl,2
+    jbe .Skip
+    mov dl,2
+.Skip:
+    jmp hackend
+
 ; When interacting with the sidebar (i.e. building a unit), this only works if side is <= 2, so disable the if side == 2 check, so sides that are not 0 or 1 will use 2 (Ordos)
 @CLEAR 0x0046F919, 0x90, 0x0046F91C ; SubHousesSidebarResponseFix
 

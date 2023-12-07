@@ -177,6 +177,7 @@ cextern _IsMultiplayer
 cextern _gDiplomacy
 cextern SoundClassObject
 cextern WindowActivated
+cextern _IRValues
 
 
 ; ### Functions ###
