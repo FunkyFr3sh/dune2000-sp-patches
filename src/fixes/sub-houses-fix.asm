@@ -8,6 +8,15 @@ sstring EmptyString, ""
 ; On the score screen there's a check to see if you have a > 2 side, jump past it!
 @CLEAR 0x0043DA29, 0x90, 0x0043DA41 ; SubHousesScoreFix
 
+; Fix Enemy house not valid error on score screen
+hack 0x0043D86F, 0x0043D876 ; CreateScore
+    mov al, [ecx * 4 + 0x797C01]
+    cmp al, 2
+    jbe .Skip
+    mov al, 2
+.Skip:
+    jmp hackend
+
 ; Skip the error message "Unknown side %d for losing movie" when losing a mission playing as side > 2
 @CLEAR 0x0043C111, 0x90, 0x0043C124 ; LoadMovie
 
