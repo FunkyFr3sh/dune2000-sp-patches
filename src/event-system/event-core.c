@@ -540,7 +540,7 @@ void ExecuteEvent(int event_index)
     return;
   }
   // Bullet manipulation events: process all side's bullets
-  if (et == ET_GET_BULLET_COUNT || et == ET_LOOP_BULLETS)
+  if (et == ET_SET_BULLET_PROPERTY || et == ET_GET_BULLET_COUNT || et == ET_LOOP_BULLETS)
   {
     if (et == ET_GET_BULLET_COUNT)
       SetVariableValue(e.args[0], 0);
@@ -579,7 +579,7 @@ void ExecuteEvent(int event_index)
     return;
   }
   // Explosion manipulation events: process all side's explosions
-  if (et == ET_GET_EXPLOSION_COUNT || et == ET_LOOP_EXPLOSIONS)
+  if (et == ET_SET_EXPLOSION_PROPERTY || et == ET_GET_EXPLOSION_COUNT || et == ET_LOOP_EXPLOSIONS)
   {
     if (et == ET_GET_EXPLOSION_COUNT)
       SetVariableValue(e.args[0], 0);
@@ -777,10 +777,11 @@ void ExecuteEventAction(EventContext *e)
   case ET_ADD_CONCRETE:           EvAct_AddConcrete         (COORD0, COORD1, A_SIDE, A_VAL1); break;
   case ET_SPICE_BLOOM:            EvAct_SpiceBloom          (COORD0, A_AMNT, A_ENUM, A_BOOL); break;
   case ET_SHAKE_SCREEN:           _ScreenShakes = A_VAL1; break;
-  case ET_CENTER_VIEWPORT:        EvAct_CenterViewport      (COORD0); break;
+  case ET_CHANGE_VIEWPORT:        EvAct_ChangeViewport      (COORD0, A_ENUM, A_BOOL); break;
   case ET_CHANGE_MAP_BLOCK:       EvAct_ChangeMapBlock      (COORD0, COORD1, A_ENUM, (uint16_t *)&e->data[1]); break;
   case ET_TRANSFORM_TILES:        EvAct_TransformTiles      (A_AMNT, A_ENUM, (uint16_t *)&e->data[1]); break;
   case ET_ADD_BUILDING_DESTRUCT:  EvAct_AddBuildingDestruct (COORD0, A_SIDE, A_ITEM); break;
+  case ET_ADD_HOMING_BULLET:      EvAct_AddHomingBullet     (COORD0, COORD1, A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL, A_VAL1, A_VAL2); break;
   case ET_ACTIVATE_TIMER:         EvAct_ActivateTimer       (A_VAL1); break;
   case ET_REMOVE_MESSAGE:         EvAct_RemoveMessage       (A_SIDE, A_AMNT, A_ITEM); break;
   case ET_SET_MESSAGE_COLOR:      EvAct_SetMessageColor     (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_VAL1, A_VAL2); break;
@@ -817,6 +818,10 @@ void ExecuteEventAction(EventContext *e)
   case ET_SET_BUILDING_PROPERTY:  EvAct_SetBuildingProperty (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_VAL1, OBJ_ID); break;
   case ET_SELECT_BUILDING:        EvAct_SelectBuilding      (A_SIDE, A_BOOL, OBJ_ID); break;
   case ET_SHOW_BUILDING_DATA:     EvAct_ShowBuildingData    (A_SIDE, OBJ_ID); break;
+  // Bullet manipulation
+  case ET_SET_BULLET_PROPERTY:    EvAct_SetBulletProperty   (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_VAL1, OBJ_ID); break;
+  // Explosion manipulation
+  case ET_SET_EXPLOSION_PROPERTY: EvAct_SetExplosionProperty(A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_VAL1, OBJ_ID); break;
   // Crate manipulation
   case ET_REMOVE_CRATE:           EvAct_RemoveCrate         (OBJ_ID); break;
   case ET_PICKUP_CRATE:           EvAct_PickupCrate         (A_SIDE, OBJ_ID); break;
@@ -891,11 +896,15 @@ void ExecuteEventAction(EventContext *e)
   case ET_GET_BUILDING_TEMPLATE_PROPERTY: EvAct_GetBuildingTemplateProperty   (A_AMNT, A_ITEM, A_ENUM, A_BOOL);                             break;
   case ET_GET_WEAPON_TEMPLATE_PROPERTY:   EvAct_GetWeaponTemplateProperty     (A_AMNT, A_ITEM, A_ENUM, A_BOOL);                             break;
   case ET_GET_EXPLOSION_TEMPLATE_PROPERTY:EvAct_GetExplosionTemplateProperty  (A_AMNT, A_ITEM, A_ENUM, A_BOOL);                             break;
-  case ET_GET_UNIT_TYPE:                  EvAct_GetUnitType                   (A_AMNT, A_BOOL, (ObjectFilterStruct *)&e->data[1]);          break;
-  case ET_GET_BUILDING_TYPE:              EvAct_GetBuildingType               (A_AMNT, A_BOOL, (ObjectFilterStruct *)&e->data[1]);          break;
+  case ET_GET_ARMOUR_VALUE:               EvAct_GetArmourValue                (A_AMNT, A_ITEM, A_ENUM, A_BOOL, A_VAL1);                     break;
+  case ET_GET_SPEED_VALUE:                EvAct_GetSpeedValue                 (A_AMNT, A_ITEM, A_ENUM);                                     break;
+  case ET_GET_GROUP_ID_VALUE:             EvAct_GetGroupIDValue               (A_AMNT, A_ITEM);                                             break;
+  case ET_GET_UNIT_TYPE:                  EvAct_GetUnitType                   (A_SIDE, A_AMNT, A_ENUM, A_BOOL, (ObjectFilterStruct *)&e->data[1]);break;
+  case ET_GET_BUILDING_TYPE:              EvAct_GetBuildingType               (A_SIDE, A_AMNT, A_ENUM, A_BOOL, (ObjectFilterStruct *)&e->data[1]);break;
   case ET_GET_GAME_TICKS:                 EvAct_GetGameTicks                  (A_BOOL);                                                     break;
   case ET_GET_MY_SIDE_ID:                 EvAct_GetMySideId                   (A_BOOL);                                                     break;
   case ET_GET_DIFFICULTY:                 EvAct_GetDifficulty                 (A_BOOL);                                                     break;
+  case ET_GET_RULE:                       EvAct_GetRule                       (A_ITEM, A_BOOL);                                             break;
   case ET_GET_DIPLOMACY:                  EvAct_GetDiplomacy                  (A_SIDE, A_ITEM, A_BOOL);                                     break;
   case ET_GET_TECH:                       EvAct_GetTech                       (A_SIDE, A_BOOL);                                             break;
   case ET_GET_HOUSE_ID:                   EvAct_GetHouseId                    (A_SIDE, A_BOOL);                                             break;
@@ -921,13 +930,19 @@ void ExecuteEventAction(EventContext *e)
   case ET_GET_BUILDING_UNDER_CURSOR:      EvAct_GetBuildingUnderCursor        (A_ITEM, A_ENUM, A_BOOL);                                     break;
   case ET_GET_SIDEBAR_BUTTON_UNDER_CURSOR:EvAct_GetSidebarButtonUnderCursor   (A_ITEM, A_ENUM, A_BOOL);                                     break;
   case ET_GET_GAME_INTERFACE_DATA:        EvAct_GetGameInterfaceData          (A_AMNT, A_ITEM, A_ENUM);                                     break;
+  case ET_GET_OBJECT_POSITION:            EvAct_GetObjectPosition             (A_SIDE, A_ITEM, A_ENUM, A_BOOL);                             break;
+  case ET_GET_DIRECTION:                  EvAct_GetDirection                  (A_ITEM, A_ENUM, A_BOOL);                                     break;
+  case ET_GET_POSITION_ON_CIRCLE:         EvAct_GetPositionOnCircle           (A_AMNT, A_BOOL, A_VAL1, A_VAL2);                             break;
+  case ET_GET_NEAREST_BUILDING_TILE:      EvAct_GetNearestBuildingTile        (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL);                     break;
+  case ET_GET_DISTANCE:                   EvAct_GetDistance                   (A_AMNT, A_ITEM, A_ENUM, A_BOOL);                             break;
+  case ET_CHECK_DISTANCE:                 EvAct_CheckDistance                 (A_AMNT, A_ITEM, A_VAL1, A_VAL2);                             break;
   // Blocks
   case ET_CALLABLE_BLOCK_START:                                                                                                     break;
   case ET_HOOK_BLOCK_START:                                                                                                         break;
   case ET_EXECUTE_BLOCK:                  EvAct_ExecuteBlock                  (EV_IDX, A_VAL1);                                     break;
   case ET_EXIT_FROM_BLOCK:                exit_count = 1;                                                                           break;
   // Conditional expression
-  case ET_IF:                             EvAct_If                            (EV_IDX, A_AMNT, A_ITEM, A_ENUM, (CondExprData *)&e->data[1]);                break;
+  case ET_IF:                             EvAct_If                            (EV_IDX, A_AMNT, A_ITEM, A_ENUM, (CondExprData *)&e->data[1]);break;
   case ET_ELSE_IF:                        DebugFatal("event-core.c", "Invalid ELSE IF event (event %d)", e->event_index);           break;
   case ET_ELSE:                           DebugFatal("event-core.c", "Invalid ELSE event (event %d)", e->event_index);              break;
   // Loops

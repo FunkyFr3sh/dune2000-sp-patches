@@ -137,6 +137,13 @@ typedef struct ExploisonAtrbStruct
   int __Sound;
 }ExploisonAtrbStruct;
 
+typedef struct WarheadStruct
+{
+  char Verses[12];
+  int Radius;
+  char InfDeath;
+}WarheadStruct;
+
 typedef struct GroupIDsStruct
 {
   char __carryall;

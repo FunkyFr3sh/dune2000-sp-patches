@@ -172,10 +172,11 @@ void EvAct_AddExplosion(int xpos, int ypos, int pixel_x, int pixel_y, int spread
 int  EvAct_AddCrate(int xpos, int ypos, int crate_type, int image, int ext_data, int respawns, int expiration);
 void EvAct_AddConcrete(int min_x, int min_y, int max_x, int max_y, int side_id, int tilebitmask);
 void EvAct_SpiceBloom(int xpos, int ypos, int range, eSpiceBloomMode mode, bool randomizer);
-void EvAct_CenterViewport(int xpos, int ypos);
+void EvAct_ChangeViewport(int xpos, int ypos, int mode, int units);
 void EvAct_ChangeMapBlock(int xpos, int ypos, int width, int height, eChangeTileMode mode, uint16_t *tiles);
 void EvAct_TransformTiles(int amount, eChangeTileMode mode, uint16_t *tiles);
 void EvAct_AddBuildingDestruct(int xpos, int ypos, int side_id, int building_type);
+void EvAct_AddHomingBullet(int src_x, int src_y, int pixel_x, int pixel_y, int side_id, int weapon_type, int enemy_side, int enemy_index_var, bool play_sound, int tag, int target_var);
 void EvAct_ActivateTimer(int condition_index);
 void EvAct_RemoveMessage(eRemoveMessageMode mode, int ref_id, int amount);
 void EvAct_SetMessageColor(int color_index, eSetMessageColorMode mode, int transition_speed, int transition_stages, int color1, int color2);
@@ -209,6 +210,10 @@ void EvAct_SetBuildingFlag(int side_id, eFlagOperation operation, int flag, int 
 void EvAct_SetBuildingProperty(int side_id, eDataType data_type, int offset, eValueOperation operation, int value, int building_index);
 void EvAct_SelectBuilding(int side_id, bool exclude_from_restore, int building_index);
 void EvAct_ShowBuildingData(int side_id, int building_index);
+// Bullet manipulation
+void EvAct_SetBulletProperty(int side_id, eDataType data_type, int offset, eValueOperation operation, int value, int bullet_index);
+// Explosion manipulation
+void EvAct_SetExplosionProperty(int side_id, eDataType data_type, int offset, eValueOperation operation, int value, int explosion_index);
 // Crate manipulation
 void EvAct_RemoveCrate(int crate_index);
 void EvAct_PickupCrate(int side_id, int crate_index);
@@ -251,11 +256,15 @@ void EvAct_GetUnitTemplateProperty(eDataType data_type, int offset, int unit_typ
 void EvAct_GetBuildingTemplateProperty(eDataType data_type, int offset, int building_type, int target_var);
 void EvAct_GetWeaponTemplateProperty(eDataType data_type, int offset, int weapon_type, int target_var);
 void EvAct_GetExplosionTemplateProperty(eDataType data_type, int offset, int explosion_type, int target_var);
-void EvAct_GetUnitType(int target_var, bool random, ObjectFilterStruct *filter);
-void EvAct_GetBuildingType(int target_var, bool random, ObjectFilterStruct *filter);
+void EvAct_GetArmourValue(int armour_type, int select_by, int weapon_type, int warhead_type, int target_var);
+void EvAct_GetSpeedValue(int vehicle_type, int terrain_type, int target_var);
+void EvAct_GetGroupIDValue(int what, int target_var);
+void EvAct_GetUnitType(int side_id, int target_var, bool my_version_only, bool random, ObjectFilterStruct *filter);
+void EvAct_GetBuildingType(int side_id, int target_var, bool my_version_only, bool random, ObjectFilterStruct *filter);
 void EvAct_GetGameTicks(int target_var);
 void EvAct_GetMySideId(int target_var);
 void EvAct_GetDifficulty(int target_var);
+void EvAct_GetRule(int rule, int target_var);
 void EvAct_GetDiplomacy(int source, int target, int target_var);
 void EvAct_GetTech(int side_id, int target_var);
 void EvAct_GetHouseId(int side_id, int target_var);
@@ -281,6 +290,12 @@ void EvAct_GetUnitUnderCursor(int side_var, int index_var, bool ignore_shroud, b
 void EvAct_GetBuildingUnderCursor(int side_var, int index_var, bool ignore_shroud);
 void EvAct_GetSidebarButtonUnderCursor(int button, int target_var, bool click_on_it);
 void EvAct_GetGameInterfaceData(eDataType data_type, int offset, int target_var);
+void EvAct_GetObjectPosition(int side_id, int index_var, int format, int target_var);
+void EvAct_GetDirection(int first_pos_var, int second_pos_var, int target_var);
+void EvAct_GetPositionOnCircle(int center_pos_var, int angle, int distance, int target_var);
+void EvAct_GetNearestBuildingTile(int side_id, int index_var, int from_pos_var, int format, int target_var);
+void EvAct_GetDistance(int first_pos_var, int second_pos_var, int mode, int target_var);
+void EvAct_CheckDistance(int first_pos_var, int second_pos_var, int distance, int target_var);
 
 // Blocks
 void EvAct_ExecuteBlock(int event_index, int target_event_index);

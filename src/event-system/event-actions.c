@@ -12,6 +12,7 @@
 #include "../extended-maps/crates-func.h"
 #include "../extended-maps/messages-func.h"
 #include "../extended-maps/tooltips.h"
+#include "rules.h"
 
 void EvAct_AddDelivery(int xpos, int ypos, int side_id, int amount, int tag, int deploy_action, int delay, eDeliveryType delivery_type, char *unit_list)
 {
@@ -643,10 +644,20 @@ void EvAct_SpiceBloom(int xpos, int ypos, int range, eSpiceBloomMode mode, bool 
   }
 }
 
-void EvAct_CenterViewport(int xpos, int ypos)
+void EvAct_ChangeViewport(int xpos, int ypos, int mode, int units)
 {
-  _ViewportXPos = LIMIT(xpos * 32 - (_ViewportWidth / 2) + 16, 0, gGameMapWidth * 32 - _ViewportWidth);
-  _ViewportYPos = LIMIT(ypos * 32 - (_ViewportHeight / 2) + 16, 0, gGameMapHeight * 32 - _ViewportHeight);
+  if (!units)
+  {
+    xpos = xpos * 32 + (mode?0:16);
+    ypos = ypos * 32 + (mode?0:16);
+  }
+  if (!mode)
+  {
+    xpos = xpos - (_ViewportWidth / 2);
+    ypos = ypos - (_ViewportHeight / 2);
+  }
+  _ViewportXPos = LIMIT(xpos, 0, gGameMapWidth * 32 - _ViewportWidth);
+  _ViewportYPos = LIMIT(ypos, 0, gGameMapHeight * 32 - _ViewportHeight);
 }
 
 void ChangeMapTile(int xpos, int ypos, int new_tile_index, eChangeTileMode mode)
@@ -773,6 +784,43 @@ void EvAct_AddBuildingDestruct(int xpos, int ypos, int side_id, int building_typ
   Building *bld = GetBuilding(side_id, building_index);
   bld->__DeadStateTimeCounter = 1;
   _ScreenShakes = old_screen_shakes;
+}
+
+void EvAct_AddHomingBullet(int src_x, int src_y, int pixel_x, int pixel_y, int side_id, int weapon_type, int enemy_side, int enemy_index_var, bool play_sound, int tag, int target_var)
+{
+  int pixel_pos_x = src_x * 32 + pixel_x;
+  int pixel_pos_y = src_y * 32 + pixel_y;
+  int enemy_index = GetVariableValue(enemy_index_var);
+
+  int target_x = 0;
+  int target_y = 0;
+  Unit *enemy_unit = &gSideArray[enemy_side].__ObjectArray[enemy_index];
+  if (enemy_unit)
+  {
+    if (enemy_unit->ObjectType == 1)
+    {
+      target_x = enemy_unit->__PosX >> 16;
+      target_y = enemy_unit->__PosY >> 16;
+    }
+    else if (enemy_unit->ObjectType == 2)
+    {
+      Building *enemy_building = (Building *)enemy_unit;
+      ClosestBuildingTile(enemy_building, pixel_pos_x / 32, pixel_pos_y / 32, &target_x, &target_y);
+      target_x = target_x * 32 + 16;
+      target_y = target_y * 32 + 16;
+      enemy_index = -1;
+      enemy_side = -1;
+    }
+  }
+  int bullet_index = ModelAddBullet(side_id, weapon_type, 0, -1, pixel_pos_x, pixel_pos_y, target_x, target_y, enemy_index, enemy_side);
+  SetVariableValue(target_var, bullet_index);
+  if (bullet_index != -1)
+  {
+    Bullet *bullet = (Bullet *)&GetSide(side_id)->__ObjectArray[bullet_index];
+    bullet->Tag = tag;
+  }
+  if (play_sound)
+    PlaySoundAt(_templates_bulletattribs[weapon_type].__FiringSound, pixel_pos_x / 32, pixel_pos_y / 32);
 }
 
 void EvAct_ActivateTimer(int condition_index)
@@ -1184,6 +1232,18 @@ void EvAct_ShowBuildingData(int side_id, int building_index)
   ShowDataOnScreen(buf, (unsigned char *)bld);
 }
 
+void EvAct_SetBulletProperty(int side_id, eDataType data_type, int offset, eValueOperation operation, int value, int bullet_index)
+{
+  Bullet *bul = (Bullet *)&gSideArray[side_id].__ObjectArray[bullet_index];
+  SetDataValue((char *)bul, data_type, offset, operation, value);
+}
+
+void EvAct_SetExplosionProperty(int side_id, eDataType data_type, int offset, eValueOperation operation, int value, int explosion_index)
+{
+  Explosion *exp = (Explosion *)&gSideArray[side_id].__ObjectArray[explosion_index];
+  SetDataValue((char *)exp, data_type, offset, operation, value);
+}
+
 void EvAct_RemoveCrate(int crate_index)
 {
   CrateStruct *crate = &gCrates[crate_index];
@@ -1552,58 +1612,131 @@ void EvAct_GetExplosionTemplateProperty(eDataType data_type, int offset, int exp
   SetVariableValue(target_var, GetDataValue((char *)explosion_template, data_type, offset));
 }
 
-void EvAct_GetUnitType(int target_var, bool random, ObjectFilterStruct *filter)
+void EvAct_GetArmourValue(int armour_type, int select_by, int weapon_type, int warhead_type, int target_var)
+{
+  if (select_by == 0)
+    warhead_type = _templates_bulletattribs[weapon_type].Warhead;
+  SetVariableValue(target_var, _WarheadData[warhead_type].Verses[armour_type]);
+}
+
+void EvAct_GetSpeedValue(int vehicle_type, int terrain_type, int target_var)
+{
+  int_or_float val;
+  val.float_val = _speed_values[terrain_type][vehicle_type];
+  SetVariableValue(target_var, val.int_val);
+}
+
+void EvAct_GetGroupIDValue(int what, int target_var)
+{
+  SetVariableValue(target_var, GetDataValue((char *)&_templates_GroupIDs, DATATYPE_BYTE, what));
+}
+
+void EvAct_GetUnitType(int side_id, int target_var, bool my_version_only, bool random, ObjectFilterStruct *filter)
 {
   int result = -1;
   if (random)
   {
     int found = 0;
     int found_array[60];
-    for (int i = 0; i < gUnitTypeNum; i++)
+    if (my_version_only)
     {
-      if (CheckIfUnitTypeMatchesFilter(filter, i))
-        found_array[found++] = i;
+      for (int i = 0; i < _templates_UnitGroupCount; i++)
+      {
+        int my_version = CSide__MyVersionOfUnit(GetSide(side_id), i, 0);
+        if (CheckIfUnitTypeMatchesFilter(filter, my_version))
+          found_array[found++] = my_version;
+      }
+    }
+    else
+    {
+      for (int i = 0; i < gUnitTypeNum; i++)
+      {
+        if (CheckIfUnitTypeMatchesFilter(filter, i))
+          found_array[found++] = i;
+      }
     }
     if (found)
       result = found_array[rand() % found];
   }
   else
   {
-    for (int i = 0; i < gUnitTypeNum; i++)
+    if (my_version_only)
     {
-      if (CheckIfUnitTypeMatchesFilter(filter, i))
+      for (int i = 0; i < _templates_UnitGroupCount; i++)
       {
-        result = i;
-        break;
+        int my_version = CSide__MyVersionOfUnit(GetSide(side_id), i, 0);
+        if (CheckIfUnitTypeMatchesFilter(filter, my_version))
+        {
+          result = my_version;
+          break;
+        }
+      }
+    }
+    else
+    {
+      for (int i = 0; i < gUnitTypeNum; i++)
+      {
+        if (CheckIfUnitTypeMatchesFilter(filter, i))
+        {
+          result = i;
+          break;
+        }
       }
     }
   }
   SetVariableValue(target_var, result);
 }
 
-void EvAct_GetBuildingType(int target_var, bool random, ObjectFilterStruct *filter)
+void EvAct_GetBuildingType(int side_id, int target_var, bool my_version_only, bool random, ObjectFilterStruct *filter)
 {
   int result = -1;
   if (random)
   {
     int found = 0;
     int found_array[100];
-    for (int i = 0; i < gBuildingTypeNum; i++)
+    if (my_version_only)
     {
-      if (CheckIfBuildingTypeMatchesFilter(filter, i))
-        found_array[found++] = i;
+      for (int i = 0; i < _templates_BuildingGroupCount; i++)
+      {
+        int my_version = CSide__MyVersionOfBuilding(GetSide(side_id), i, 0);
+        if (CheckIfBuildingTypeMatchesFilter(filter, my_version))
+          found_array[found++] = my_version;
+      }
+    }
+    else
+    {
+      for (int i = 0; i < gBuildingTypeNum; i++)
+      {
+        if (CheckIfBuildingTypeMatchesFilter(filter, i))
+          found_array[found++] = i;
+      }
     }
     if (found)
       result = found_array[rand() % found];
   }
   else
   {
-    for (int i = 0; i < gBuildingTypeNum; i++)
+    if (my_version_only)
     {
-      if (CheckIfBuildingTypeMatchesFilter(filter, i))
+      for (int i = 0; i < _templates_BuildingGroupCount; i++)
       {
-        result = i;
-        break;
+        int my_version = CSide__MyVersionOfBuilding(GetSide(side_id), i, 0);
+        if (CheckIfBuildingTypeMatchesFilter(filter, my_version))
+        {
+          result = my_version;
+          break;
+        }
+      }
+    }
+    else
+    {
+      for (int i = 0; i < gBuildingTypeNum; i++)
+      {
+        if (CheckIfBuildingTypeMatchesFilter(filter, i))
+        {
+          result = i;
+          break;
+        }
       }
     }
   }
@@ -1623,6 +1756,57 @@ void EvAct_GetMySideId(int target_var)
 void EvAct_GetDifficulty(int target_var)
 {
   SetVariableValue(target_var, gDifficultyLevel);
+}
+
+void EvAct_GetRule(int rule, int target_var)
+{
+  int result = 0;
+  switch(rule)
+  {
+    case 0: result = _gVariables.harvestUnloadDelay; break;
+    case 1: result = _gVariables.harvestBlobValue; break;
+    case 2: result = _gVariables.harvestLoadSpiceDelay; break;
+    case 3: result = _gVariables.starportUpdateDelay; break;
+    case 4: result = _gVariables.starportStockIncreaseDelay; break;
+    case 5: result = _gVariables.starportStockIncreaseProb; break;
+    case 6: result = _gVariables.starportCostVariationPercent; break;
+    case 7: result = _gVariables.starportFrigateDelay; break;
+    case 8: result = _gVariables.refineryExplosionOffsetX; break;
+    case 9: result = _gVariables.refineryExplosionOffsetY; break;
+    case 10: result = _gVariables.HarvesterDriveDistance; break;
+    case 11: result = _gVariables.RepairDriveDistance; break;
+    case 12: result = _gVariables.BuildingRepairValue; break;
+    case 13: result = _gVariables.UnitRepairValue; break;
+    case 14: result = _gVariables.SinglePlayerDelay; break;
+    case 15: result = _gVariables.NumberOfFremen; break;
+    case 16: result = _gVariables.SandWormAppetite; break;
+    case 17: result = _gVariables.SandWormInitialSleep; break;
+    case 18: result = _gVariables.SandWormFedSleep; break;
+    case 19: result = _gVariables.SandWormShotSleep; break;
+    case 20: result = _gVariables.NumberOfCrates; break;
+    case 21: result = _gVariables.CratesPerPlayer; break;
+    case 22: result = _gVariables.DevastatorExplodeDelay; break;
+    case 23: result = _gVariables.IgnoreDistance; break;
+    case 24: result = _gVariables.CrateCash; break;
+    case 25: result = _gVariables.ShowWarnings; break;
+    case 26: result = _gVariables.DeathHandAccuracy; break;
+    case 27: result = rulesExt__InfiniteSpice; break;
+    case 28: result = rulesExt__infantryReleaseLimit; break;
+    case 29: result = rulesExt__infantryReleaseChance; break;
+    case 30: result = rulesExt__buildingsAlwaysNeedPrerequisites; break;
+    case 31: result = rulesExt__returnCreditsToSpiceStorage; break;
+    case 32: result = rulesExt__intervalsAreOffByOneTick; break;
+    case 33: result = rulesExt__guardModeRadius; break;
+    case 34: result = rulesExt__alwaysShowRadar; break;
+    case 35: result = rulesExt__costPercentageEasy; break;
+    case 36: result = rulesExt__costPercentageHard; break;
+    case 37: result = rulesExt__buildSpeedPercentageEasy; break;
+    case 38: result = rulesExt__buildSpeedPercentageHard; break;
+    case 39: result = rulesExt__uncloakRemainingStealthUnit; break;
+    case 40: result = rulesExt__maxChatMessages; break;
+    case 41: result = rulesExt__showNeutralBecomeHostileMsg; break;
+  }
+  SetVariableValue(target_var, result);
 }
 
 void EvAct_GetDiplomacy(int source, int target, int target_var)
@@ -1936,6 +2120,124 @@ void EvAct_GetSidebarButtonUnderCursor(int button, int target_var, bool click_on
 void EvAct_GetGameInterfaceData(eDataType data_type, int offset, int target_var)
 {
   SetVariableValue(target_var, GetDataValue((char *)&_TacticalData, data_type, offset));
+}
+
+void EvAct_GetObjectPosition(int side_id, int index_var, int format, int target_var)
+{
+  int index = GetVariableValue(index_var);
+  Unit *unit = &gSideArray[side_id].__ObjectArray[index];
+  int result_x = 0;
+  int result_y = 0;
+  switch(unit->ObjectType)
+  {
+    case 1:
+    {
+      result_x = unit->__PosX >> 16;
+      result_y = unit->__PosY >> 16;
+      break;
+    }
+    case 2:
+    {
+      Building *bld = (Building *)unit;
+      result_x = (bld->__PosX >> 16) + 16;
+      result_y = (bld->__PosY >> 16) + 16 - _templates_buildattribs[bld->Type]._____ArtHeight;
+      break;
+    }
+    case 3:
+    {
+      Bullet *bul = (Bullet *)unit;
+      result_x = bul->__PosX >> 16;
+      result_y = bul->__PosY >> 16;
+      break;
+    }
+    case 4:
+    {
+      Explosion *exp = (Explosion *)unit;
+      result_x = exp->__PosX >> 16;
+      result_y = exp->__PosY >> 16;
+      break;
+    }
+  }
+  if (format)
+  {
+    result_x /= 32;
+    result_y /= 32;
+  }
+  SetVariableValue(target_var, result_x);
+  SetVariableValue(target_var + 1, result_y);
+}
+
+void EvAct_GetDirection(int first_pos_var, int second_pos_var, int target_var)
+{
+  int pos1x = GetVariableValue(first_pos_var);
+  int pos1y = GetVariableValue(first_pos_var + 1);
+  int pos2x = GetVariableValue(second_pos_var);
+  int pos2y = GetVariableValue(second_pos_var + 1);
+  SetVariableValue(target_var, GetFacing(pos1x, pos1y, pos2x, pos2y));
+}
+
+void EvAct_GetPositionOnCircle(int center_pos_var, int angle, int distance, int target_var)
+{
+  int xpos = GetVariableValue(center_pos_var);
+  int ypos = GetVariableValue(center_pos_var + 1);
+  xpos += _sinValues[distance + ((16 - angle) & 31) * 512] / 2048;
+  ypos += _cosValues[distance + ((16 - angle) & 31) * 512] / 2048;
+  SetVariableValue(target_var, xpos);
+  SetVariableValue(target_var + 1, ypos);
+}
+
+void EvAct_GetNearestBuildingTile(int side_id, int index_var, int from_pos_var, int format, int target_var)
+{
+  int from_pos_x = GetVariableValue(from_pos_var) / 32;
+  int from_pos_y = GetVariableValue(from_pos_var + 1) / 32;
+  int result_x = 0;
+  int result_y = 0;
+  int idx = GetVariableValue(index_var);
+  ClosestBuildingTile(GetBuilding(side_id, idx), from_pos_x, from_pos_y, &result_x, &result_y);
+  if (!format)
+  {
+    result_x = result_x * 32 + 16;
+    result_y = result_y * 32 + 16;
+  }
+  SetVariableValue(target_var, result_x);
+  SetVariableValue(target_var + 1, result_y);
+}
+
+void EvAct_GetDistance(int first_pos_var, int second_pos_var, int mode, int target_var)
+{
+  int pos1x = GetVariableValue(first_pos_var);
+  int pos1y = GetVariableValue(first_pos_var + 1);
+  int pos2x = GetVariableValue(second_pos_var);
+  int pos2y = GetVariableValue(second_pos_var + 1);
+  int diff_x = pos1x - pos2x;
+  int diff_y = pos1y - pos2y;
+  int result = 0;
+  if (!mode)
+  {
+    result = diff_x * diff_x + diff_y * diff_y;
+  }
+  else
+  {
+    if (!diff_x)
+      result = abs(diff_y);
+    else if (!diff_y)
+      result = abs(diff_x);
+    else
+      result = sqrt(diff_x * diff_x + diff_y * diff_y);
+  }
+  SetVariableValue(target_var, result);
+}
+
+void EvAct_CheckDistance(int first_pos_var, int second_pos_var, int distance, int target_var)
+{
+  int pos1x = GetVariableValue(first_pos_var);
+  int pos1y = GetVariableValue(first_pos_var + 1);
+  int pos2x = GetVariableValue(second_pos_var);
+  int pos2y = GetVariableValue(second_pos_var + 1);
+  int diff_x = pos1x - pos2x;
+  int diff_y = pos1y - pos2y;
+  int result = (diff_x * diff_x + diff_y * diff_y) <= (distance * distance);
+  SetVariableValue(target_var, result);
 }
 
 bool EvaluateConditionalExpression(CondExprData *cond_expr)

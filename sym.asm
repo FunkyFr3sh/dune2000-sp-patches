@@ -284,7 +284,9 @@ setcglob 0x00786FF8, _TileBitflags
 setcglob 0x00787E08, _templates_BuildingGroupNameList
 setcglob 0x007891B0, _templates_UnitNameList
 setcglob 0x0078FB30, _WarheadNames
+setcglob 0x00790550, _WarheadData
 setcglob 0x007943A8, _templates_ExplosionNameList
+setcglob 0x00795128, _speed_values
 setcglob 0x00795440, _image_placement_marker_nonbuildable
 setcglob 0x00795518, _radarcolor16_sidecolor
 setcglob 0x00795538, gUnitTypeNum
@@ -324,6 +326,7 @@ setcglob 0x00798540, _MouseCursorID
 setcglob 0x00798544, MySideID
 setcglob 0x00798544, gSideId
 setcglob 0x00798830, _gDiplomacy
+setcglob 0x00798870, gSideArray
 setcglob 0x008CD4F0, _IRValues
 setcglob 0x008CD51C, OSMajorVersion
 setcglob 0x008CD520, OSMinorVersion
@@ -461,6 +464,7 @@ setcglob 0x0045A3F0, GenerateUnitDeployOrder
 setcglob 0x0045A440, GenerateSpecialWeaponOrder
 setcglob 0x0045B7E0, Model__ResetVars
 setcglob 0x0045BF00, Model__ExecuteGameEvent
+setcglob 0x0045DFE0, GetFacing
 ; Setup
 setcglob 0x00460C80, Setup__LoadUIBBFile
 setcglob 0x00460EC0, Setup__LoadUI_LanguageFile
@@ -509,6 +513,7 @@ setcglob 0x0049B7F0, UpdateBuilding
 setcglob 0x0049BE60, UpdateBullet
 setcglob 0x0049CA10, DestroyBuilding
 setcglob 0x0049CDE0, DestroyUnit
+setcglob 0x0049D170, ClosestBuildingTile
 setcglob 0x0049D280, UnitTileOccupiedByBuilding
 setcglob 0x0049D2E0, DamageTiles
 setcglob 0x0049DD80, UpdateExplosion

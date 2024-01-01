@@ -12,3 +12,5 @@ bool StringStartsWith(const char *str, const char *value);
 
 char *PathChangeExtension(char *fileName, char *extension);
 char *PathGetFileNameWithoutExtension(char *fileName);
+
+double sqrt(double n);

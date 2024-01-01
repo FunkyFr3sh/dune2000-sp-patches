@@ -460,7 +460,9 @@ extern unsigned int         _TileBitflags[800];
 extern char                 _templates_BuildingGroupNameList[100][50];
 extern char                 _templates_UnitNameList[60][450];
 extern char                 _WarheadNames[30][50];
+extern WarheadStruct        _WarheadData[30];
 extern char                 _templates_ExplosionNameList[64][50];
+extern float                _speed_values[8][4];
 extern TImage *             _image_placement_marker_nonbuildable;
 extern uint16_t             _radarcolor16_sidecolor[8];
 extern unsigned char        gUnitTypeNum;
@@ -500,6 +502,7 @@ extern int                  _MouseCursorID;
 extern unsigned char        MySideID;
 extern unsigned char        gSideId;
 extern char                 _gDiplomacy[8][8];
+extern CSide                gSideArray[8];
 extern unsigned char        _IRValues[8];
 extern int                  OSMajorVersion;
 extern int                  OSMinorVersion;
@@ -620,6 +623,7 @@ void            GenerateUnitDeployOrder(char side_id, __int16 unit_index);
 void            GenerateSpecialWeaponOrder(char side_id, char unit_behavior, char x, char y);
 void            Model__ResetVars();
 void            Model__ExecuteGameEvent(GameEvent event);
+char            GetFacing(int x1, int y1, int x2, int y2);
 // Setup
 void            Setup__LoadUIBBFile();
 
@@ -668,6 +672,7 @@ bool            UpdateBuilding(Building *bld, int side_id, __int16 building_inde
 char            UpdateBullet(Bullet *bul, eSideType side_id);
 void            DestroyBuilding(int side, int objIndex, char a3);
 void            DestroyUnit(eSideType side, __int16 index);
+void            ClosestBuildingTile(Building *building, int xpos, int ypos, int *result_x, int *result_y);
 
 char            DamageTiles(unsigned int xpos, unsigned int ypos, unsigned int a3, unsigned __int8 bulletType, int ai_side, __int16 ai_index, char a7);
 bool            UpdateExplosion(Explosion *arg0, eSideType a1);
