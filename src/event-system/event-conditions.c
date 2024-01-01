@@ -255,29 +255,41 @@ bool Cond_CheckTiles(ConditionData *condition)
   return false;
 }
 
-bool Cond_SpiceInArea(int min_x, int min_y, int max_x, int max_y, int amount)
+bool Cond_SpiceInArea(int xpos, int ypos, int width, int height, int amount)
 {
   int total_amount = 0;
-  for (int y = min_y; y <= max_y; y++)
+  for (int y = 0; y < height; y++)
   {
-    for (int x = min_x; x <= max_x; x++)
+    int yy = y + ypos;
+    if (yy >= gGameMapHeight)
+      continue;
+    for (int x = 0; x < width; x++)
     {
-      total_amount += (gGameMap.map[x + _CellNumbersWidthSpan[y]].__tile_bitflags >> 20) & 7;
+      int xx = x + xpos;
+      if (xx >= gGameMapWidth)
+        continue;
+      total_amount += (gGameMap.map[xx + _CellNumbersWidthSpan[yy]].__tile_bitflags >> 20) & 7;
     }
   }
   return total_amount >= amount;
 }
 
-bool Cond_DamageInArea(int min_x, int min_y, int max_x, int max_y, bool specific_terrain, int terrain_type, int damage)
+bool Cond_DamageInArea(int xpos, int ypos, int width, int height, bool specific_terrain, int terrain_type, int damage)
 {
   int total_damage = 0;
-  for (int y = min_y; y <= max_y; y++)
+  for (int y = 0; y < height; y++)
   {
-    for (int x = min_x; x <= max_x; x++)
+    int yy = y + ypos;
+    if (yy >= gGameMapHeight)
+      continue;
+    for (int x = 0; x < width; x++)
     {
-      int terr = (gGameMap.map[x + _CellNumbersWidthSpan[y]].__tile_bitflags >> 29) & 7;
+      int xx = x + xpos;
+      if (xx >= gGameMapWidth)
+        continue;
+      int terr = (gGameMap.map[xx + _CellNumbersWidthSpan[yy]].__tile_bitflags >> 29) & 7;
       if (terr == terrain_type || !specific_terrain)
-        total_damage += gGameMap.map[x + _CellNumbersWidthSpan[y]].__damage;
+        total_damage += gGameMap.map[xx + _CellNumbersWidthSpan[yy]].__damage;
     }
   }
   return total_damage >= damage;
