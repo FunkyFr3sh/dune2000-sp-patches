@@ -28,6 +28,7 @@ CALL(0x00458F15, _Ext_UpdateUnit); // ModelUpdates
 
 char Ext_UpdateUnit(Unit *unit, eSideType side_id, __int16 myIndex)
 {
+  side_id &= 255;
   if (ExecuteEventHook(HOOK_PREUPDATEUNIT, 3, 0, side_id, myIndex))
     return 1;
   int result = UpdateUnit(unit, side_id, myIndex);
@@ -40,6 +41,7 @@ CALL(0x00458FEC, _Ext_UpdateBuilding); // ModelUpdates
 
 bool Ext_UpdateBuilding(Building *bld, int side_id, __int16 building_index)
 {
+  side_id &= 255;
   if (ExecuteEventHook(HOOK_PREUPDATEBUILDING, 3, 0, side_id, building_index))
     return 1;
   int result = UpdateBuilding(bld, side_id, building_index);
@@ -50,8 +52,9 @@ bool Ext_UpdateBuilding(Building *bld, int side_id, __int16 building_index)
 
 CALL(0x004590A9, _Ext_UpdateBullet); // ModelUpdates
 
-char Ext_UpdateBullet(Bullet *bul, eSideType side_id)
+char Ext_UpdateBullet(Bullet *bul, int side_id)
 {
+  side_id &= 255;
   if (ExecuteEventHook(HOOK_PREUPDATEBULLET, 3, 0, side_id, bul->MyIndex))
     return 1;
   int result = UpdateBullet(bul, side_id);
@@ -62,8 +65,9 @@ char Ext_UpdateBullet(Bullet *bul, eSideType side_id)
 
 CALL(0x004590EC, _Ext_UpdateExplosion); // ModelUpdates
 
-bool Ext_UpdateExplosion(Explosion *exp, eSideType side_id)
+bool Ext_UpdateExplosion(Explosion *exp, int side_id)
 {
+  side_id &= 255;
   if (ExecuteEventHook(HOOK_PREUPDATEEXPLOSION, 3, 0, side_id, exp->MyIndex))
     return 1;
   int result = UpdateExplosion(exp, side_id);

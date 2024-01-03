@@ -36,7 +36,7 @@ typedef struct CrateStruct
   uint8_t __image;
   uint8_t __times_to_respawn;
   uint8_t ext_data_field; // Field for extended crate functionality (mod)
-  uint8_t field_7;
+  uint8_t custom_byte_1; // Field for extended crate functionality (mod)
   int32_t __timing;
 }CrateStruct;
 

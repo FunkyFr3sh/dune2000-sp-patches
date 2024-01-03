@@ -115,7 +115,7 @@ typedef struct Unit
   uint8_t __ReloadDelayCounter;
   uint8_t __FlickerFrames;
   char __CurrentAnimFrame;
-  char field_1F;
+  uint8_t custom_byte_1; // Additional field for extended functionality (mod)
   int32_t __CurrentAnimType;
   uint8_t __Lying;
   uint8_t __CurrentAnimDelayCounter_SandwormSleepTimeCounter;
@@ -152,7 +152,7 @@ typedef struct Unit
   char __Facing;
   char __FacingTurret;
   char __FacingTurretTarget;
-  char field_57;
+  uint8_t custom_byte_2; // Additional field for extended functionality (mod)
   int16_t RefineryIndex;
   int16_t RepairPadIndex;
   char __RouteX[12];
@@ -162,7 +162,7 @@ typedef struct Unit
   int16_t __RouteTotalSteps;
   int16_t __RouteRetryDelayCounter;
   char RB_c_field_7A;
-  char field_7B;
+  uint8_t custom_byte_3; // Additional field for extended functionality (mod)
   struct Unit *Next;
   struct Unit *Prev;
   int32_t __dw_field_84_ptr;
@@ -292,30 +292,16 @@ typedef struct Building
   uint8_t __AttackerSide;
   char field_51;
   int16_t __AttackerIndex;
-  char field_54;
-  char field_55;
-  char field_56;
-  char field_57;
-  char field_58;
-  char field_59;
-  char field_5A;
-  char field_5B;
-  char field_5C;
-  char field_5D;
-  char field_5E;
-  char field_5F;
-  char field_60;
-  char field_61;
-  char field_62;
-  char field_63;
-  char field_64;
-  char field_65;
-  char field_66;
-  char field_67;
-  char field_68;
-  char field_69;
-  char field_6A;
-  char field_6B;
+  uint8_t custom_byte_1; // Additional field for extended functionality (mod)
+  uint8_t custom_byte_2; // Additional field for extended functionality (mod)
+  uint8_t custom_byte_3; // Additional field for extended functionality (mod)
+  uint8_t custom_byte_4; // Additional field for extended functionality (mod)
+  uint16_t custom_word_1; // Additional field for extended functionality (mod)
+  uint16_t custom_word_2; // Additional field for extended functionality (mod)
+  uint32_t custom_dword_1; // Additional field for extended functionality (mod)
+  uint32_t custom_dword_2; // Additional field for extended functionality (mod)
+  uint32_t custom_dword_3; // Additional field for extended functionality (mod)
+  uint32_t custom_dword_4; // Additional field for extended functionality (mod)
   char field_6C;
   char field_6D;
   char field_6E;
@@ -381,30 +367,16 @@ typedef struct Bullet
   char c_field_45;
   char c_field_46;
   char field_47;
-  char field_48;
-  char field_49;
-  char field_4A;
-  char field_4B;
-  char field_4C;
-  char field_4D;
-  char field_4E;
-  char field_4F;
-  char field_50;
-  char field_51;
-  char field_52;
-  char field_53;
-  char field_54;
-  char field_55;
-  char field_56;
-  char field_57;
-  char field_58;
-  char field_59;
-  char field_5A;
-  char field_5B;
-  char field_5C;
-  char field_5D;
-  char field_5E;
-  char field_5F;
+  uint8_t custom_byte_1; // Additional field for extended functionality (mod)
+  uint8_t custom_byte_2; // Additional field for extended functionality (mod)
+  uint8_t custom_byte_3; // Additional field for extended functionality (mod)
+  uint8_t custom_byte_4; // Additional field for extended functionality (mod)
+  uint16_t custom_word_1; // Additional field for extended functionality (mod)
+  uint16_t custom_word_2; // Additional field for extended functionality (mod)
+  uint32_t custom_dword_1; // Additional field for extended functionality (mod)
+  uint32_t custom_dword_2; // Additional field for extended functionality (mod)
+  uint32_t custom_dword_3; // Additional field for extended functionality (mod)
+  uint32_t custom_dword_4; // Additional field for extended functionality (mod)
   char field_60;
   char field_61;
   char field_62;
@@ -455,7 +427,16 @@ typedef struct Explosion
   uint32_t __PosX;
   uint32_t __PosY;
   uint32_t __PosZHeight;
-  uint8_t gap_18[24];
+  uint8_t custom_byte_1; // Additional field for extended functionality (mod)
+  uint8_t custom_byte_2; // Additional field for extended functionality (mod)
+  uint8_t custom_byte_3; // Additional field for extended functionality (mod)
+  uint8_t custom_byte_4; // Additional field for extended functionality (mod)
+  uint16_t custom_word_1; // Additional field for extended functionality (mod)
+  uint16_t custom_word_2; // Additional field for extended functionality (mod)
+  uint32_t custom_dword_1; // Additional field for extended functionality (mod)
+  uint32_t custom_dword_2; // Additional field for extended functionality (mod)
+  uint32_t custom_dword_3; // Additional field for extended functionality (mod)
+  uint32_t custom_dword_4; // Additional field for extended functionality (mod)
   uint32_t dw_field_30;
   uint32_t dw_field_34;
   uint8_t gap_38[68];

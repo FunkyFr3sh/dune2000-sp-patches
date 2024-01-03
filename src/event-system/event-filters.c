@@ -449,6 +449,16 @@ bool CheckIfBuildingMatchesCriteria(Building *building, eSideType side_id, eBuil
   case BUILDINGCRITERIATYPE_DEAD_TIME:      result = CompareValue(building->__DeadStateTimeCounter, value, comparison); break;
   case BUILDINGCRITERIATYPE_RELOAD_TIME:    result = CompareValue(building->__ReloadDelayCounter_refinery, value, comparison); break;
   case BUILDINGCRITERIATYPE_TURN_TIME:      result = CompareValue(building->__TurretTurnDelayCounter, value, comparison); break;
+  case BUILDINGCRITERIATYPE_CUST_BYTE_1:    result = CompareValue(building->custom_byte_1, value, comparison); break;
+  case BUILDINGCRITERIATYPE_CUST_BYTE_2:    result = CompareValue(building->custom_byte_2, value, comparison); break;
+  case BUILDINGCRITERIATYPE_CUST_BYTE_3:    result = CompareValue(building->custom_byte_3, value, comparison); break;
+  case BUILDINGCRITERIATYPE_CUST_BYTE_4:    result = CompareValue(building->custom_byte_4, value, comparison); break;
+  case BUILDINGCRITERIATYPE_CUST_WORD_1:    result = CompareValue(building->custom_word_1, value, comparison); break;
+  case BUILDINGCRITERIATYPE_CUST_WORD_2:    result = CompareValue(building->custom_word_2, value, comparison); break;
+  case BUILDINGCRITERIATYPE_CUST_DWORD_1:   result = CompareValue(building->custom_dword_1, value, comparison); break;
+  case BUILDINGCRITERIATYPE_CUST_DWORD_2:   result = CompareValue(building->custom_dword_2, value, comparison); break;
+  case BUILDINGCRITERIATYPE_CUST_DWORD_3:   result = CompareValue(building->custom_dword_3, value, comparison); break;
+  case BUILDINGCRITERIATYPE_CUST_DWORD_4:   result = CompareValue(building->custom_dword_4, value, comparison); break;
   }
   return result != negation;
 }
@@ -485,6 +495,16 @@ bool CheckIfBulletMatchesCriteria(Bullet *bullet, eBulletFilterCriteriaType crit
   case BULLETCRITERIATYPE_TARGET_Y:         result = CompareValue(bullet->__TargetY, value, comparison); break;
   case BULLETCRITERIATYPE_POS_Z:            result = CompareValue(bullet->__PosZHeight, value, comparison); break;
   case BULLETCRITERIATYPE_ANIM_FRAME:       result = CompareValue(bullet->__AnimationFrame, value, comparison); break;
+  case BULLETCRITERIATYPE_CUST_BYTE_1:      result = CompareValue(bullet->custom_byte_1, value, comparison); break;
+  case BULLETCRITERIATYPE_CUST_BYTE_2:      result = CompareValue(bullet->custom_byte_2, value, comparison); break;
+  case BULLETCRITERIATYPE_CUST_BYTE_3:      result = CompareValue(bullet->custom_byte_3, value, comparison); break;
+  case BULLETCRITERIATYPE_CUST_BYTE_4:      result = CompareValue(bullet->custom_byte_4, value, comparison); break;
+  case BULLETCRITERIATYPE_CUST_WORD_1:      result = CompareValue(bullet->custom_word_1, value, comparison); break;
+  case BULLETCRITERIATYPE_CUST_WORD_2:      result = CompareValue(bullet->custom_word_2, value, comparison); break;
+  case BULLETCRITERIATYPE_CUST_DWORD_1:     result = CompareValue(bullet->custom_dword_1, value, comparison); break;
+  case BULLETCRITERIATYPE_CUST_DWORD_2:     result = CompareValue(bullet->custom_dword_2, value, comparison); break;
+  case BULLETCRITERIATYPE_CUST_DWORD_3:     result = CompareValue(bullet->custom_dword_3, value, comparison); break;
+  case BULLETCRITERIATYPE_CUST_DWORD_4:     result = CompareValue(bullet->custom_dword_4, value, comparison); break;
   //default: result = TileCheck(crate->__x, crate->__y, criteria_type - CRATECRITERIATYPE_TILECHECK, comparison, value);
   }
   return result != negation;
@@ -502,6 +522,16 @@ bool CheckIfExplosionMatchesCriteria(Explosion *explosion, eExplosionFilterCrite
   case EXPLOSIONCRITERIATYPE_ANIM_FRAME:  result = CompareValue(explosion->__AnimationFrame, value, comparison); break;
   case EXPLOSIONCRITERIATYPE_ANIM_DELAY:  result = CompareValue(explosion->__AnimationDelay, value, comparison); break;
   case EXPLOSIONCRITERIATYPE_POS_Z:       result = CompareValue(explosion->__PosZHeight, value, comparison); break;
+  case EXPLOSIONCRITERIATYPE_CUST_BYTE_1: result = CompareValue(explosion->custom_byte_1, value, comparison); break;
+  case EXPLOSIONCRITERIATYPE_CUST_BYTE_2: result = CompareValue(explosion->custom_byte_2, value, comparison); break;
+  case EXPLOSIONCRITERIATYPE_CUST_BYTE_3: result = CompareValue(explosion->custom_byte_3, value, comparison); break;
+  case EXPLOSIONCRITERIATYPE_CUST_BYTE_4: result = CompareValue(explosion->custom_byte_4, value, comparison); break;
+  case EXPLOSIONCRITERIATYPE_CUST_WORD_1: result = CompareValue(explosion->custom_word_1, value, comparison); break;
+  case EXPLOSIONCRITERIATYPE_CUST_WORD_2: result = CompareValue(explosion->custom_word_2, value, comparison); break;
+  case EXPLOSIONCRITERIATYPE_CUST_DWORD_1:result = CompareValue(explosion->custom_dword_1, value, comparison); break;
+  case EXPLOSIONCRITERIATYPE_CUST_DWORD_2:result = CompareValue(explosion->custom_dword_2, value, comparison); break;
+  case EXPLOSIONCRITERIATYPE_CUST_DWORD_3:result = CompareValue(explosion->custom_dword_3, value, comparison); break;
+  case EXPLOSIONCRITERIATYPE_CUST_DWORD_4:result = CompareValue(explosion->custom_dword_4, value, comparison); break;
   //default: result = TileCheck(crate->__x, crate->__y, criteria_type - CRATECRITERIATYPE_TILECHECK, comparison, value);
   }
   return result != negation;
@@ -529,6 +559,7 @@ bool CheckIfCrateMatchesCriteria(CrateStruct *crate, eCrateFilterCriteriaType cr
   case CRATECRITERIATYPE_RESPAWN_TIMES: result = CompareValue(crate->__times_to_respawn, value, comparison); break;
   case CRATECRITERIATYPE_TIME_TICKS:    result = CompareValue(crate->__timing, value, comparison); break;
   case CRATECRITERIATYPE_TIME_SECS:     result = CompareValue(crate->__timing / 25, value, comparison); break;
+  case CRATECRITERIATYPE_CUST_BYTE_1:   result = CompareValue(crate->custom_byte_1, value, comparison); break;
   default: result = TileCheck(crate->__x, crate->__y, criteria_type - CRATECRITERIATYPE_TILECHECK, comparison, value);
   }
   return result != negation;

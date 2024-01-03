@@ -1308,11 +1308,10 @@ void EvAct_SetTileAttribute(eFlagOperation operation, int attribute, int xpos, i
   }
 }
 
-void EvAct_SetTileDamage(eValueOperation operation, int value, int xpos, int ypos)
+void EvAct_SetTileProperty(eDataType data_type, int offset, eValueOperation operation, int value, int xpos, int ypos)
 {
   GameMapTileStruct *tile = &gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]];
-  int damage = ValueOperation(tile->__damage, value, operation);
-  tile->__damage = LIMIT(damage, 0, 255);
+  SetDataValue((char *)tile, data_type, offset, operation, value);
 }
 
 void EvAct_RevealTile(int radius, int xpos, int ypos)

@@ -830,7 +830,7 @@ void ExecuteEventAction(EventContext *e)
   // Tile manipulation
   case ET_CHANGE_TILE:            EvAct_ChangeTile          (A_ENUM, A_VAL1, COORD0); break;
   case ET_SET_TILE_ATTRIBUTE:     EvAct_SetTileAttribute    (A_ENUM, A_VAL1, COORD0); break;
-  case ET_SET_TILE_DAMAGE:        EvAct_SetTileDamage       (A_ENUM, A_VAL1, COORD0); break;
+  case ET_SET_TILE_PROPERTY:      EvAct_SetTileProperty     (A_AMNT, A_ITEM, A_ENUM, A_VAL1, COORD0); break;
   case ET_REVEAL_TILE:            EvAct_RevealTile          (A_AMNT, COORD0); break;
   case ET_HIDE_TILE:              EvAct_HideTile            (COORD0); break;
   case ET_SHOW_TILE_DATA:         EvAct_ShowTileData        (COORD0); break;

@@ -222,7 +222,7 @@ void EvAct_ShowCrateData(int crate_index);
 // Tile manipulation
 void EvAct_ChangeTile(eChangeTileMode mode, int tile_index, int xpos, int ypos);
 void EvAct_SetTileAttribute(eFlagOperation operation, int attribute, int xpos, int ypos);
-void EvAct_SetTileDamage(eValueOperation operation, int value, int xpos, int ypos);
+void EvAct_SetTileProperty(eDataType data_type, int offset, eValueOperation operation, int value, int xpos, int ypos);
 void EvAct_RevealTile(int radius, int xpos, int ypos);
 void EvAct_HideTile(int xpos, int ypos);
 void EvAct_ShowTileData(int xpos, int ypos);
