@@ -30,21 +30,7 @@ typedef struct dwXYStruct
 #include "dune2000/graphlib.h"
 #include "dune2000/sound.h"
 #include "dune2000/uimgr.h"
-
-typedef struct GameEvent // 168 byte
-{
-    int unknown1;
-    int unknown2;
-    int ticks;
-    
-    //cellX 30
-    //ticks 8
-    //cellY 28
-    //Order 35
-    //unknown1 24
-    //type 38
-    //sideId 36
-}GameEvent;
+#include "dune2000/vk.h"
 
 typedef struct TechPosEntry
 {
@@ -60,7 +46,7 @@ typedef struct TacticalStruct
   int __SidebarMode;
   int __PrevSidebarMode;
   int __SidebarButtonMode;
-  char __RadarState;
+  char __RadarScoreView;
   char __CanPlace;
   char field_E;
   char field_F;
@@ -105,19 +91,17 @@ typedef struct SidebarButtonData
   char __prevstatus;
 } SidebarButtonData;
 
-// ### Constants ###
-
-enum Sides
+typedef struct HighScoreStruct
 {
-    SD_ATREIDES,
-    SD_HARKONNEN,
-    SD_ORDOS,
-    SD_EMPEROR,
-    SD_FREMEN,
-    SD_SMUGGLERS,
-    SD_MERCENARIES,
-    SD_SANDWORM
-};
+  char c_field_0_state;
+  int __rank;
+  char __name[200];
+  int __side;
+  char __missionumber;
+  int __score;
+} HighScoreStruct;
+
+// ### Constants ###
 
 typedef enum eSideType
 {
@@ -132,18 +116,6 @@ typedef enum eSideType
   SIDE_COUNT = 0x8,
   SIDE_NONE = 0xFF,
 } eSideType;
-
-enum Colors
-{
-    CL_BLUE,
-    CL_RED,
-    CL_TEAL,
-    CL_PURPLE,
-    CL_GRAY,
-    CL_BROWN,
-    CL_GOLD,
-    CL_LIGHTBROWN
-};
 
 enum GameEndStates
 {
@@ -245,25 +217,8 @@ enum eSidebarButton
 };
 
 // Side (HouseClass)
-#define HC_SIDEID 0x24252
 #define HC_CREDITS 0x2425C
 #define HC_SILO_CREDITS 0x24254
-#define HC_SPICE_HARVESTED 0x2477C
-#define HC_BUILDINGS_DESTROYED 0x24C94
-#define HC_UNITS_KILLED 0x24C90
-#define HC_BUILDINGS_OWNED 0x24784
-//not sure about this one
-#define HC_BUILDING_PRODUCTION_AVAILABLE 0x2652D
-//0x5A00 = 100%
-#define HC_BUILDING_PRODUCTION_PROGRESS 0x2651E
-#define HC_HARKONNEN_PALACE_EXISTS 0x260AA
-#define HC_CURRENTLY_PRODUCED_BUILDING_ID 0x2651C
-
-// Special Weapons
-#define SW_SABOTEUR 4
-#define SW_AIRSTRIKE 9
-#define SW_DEATH_HAND_ROCKET 10
-#define SW_FREMEN 12
 
 // ### Variables ###
 
@@ -341,11 +296,14 @@ extern int CurrentCursorId;
 
 //Others
 
-extern unsigned char MissionNumber;
+extern bool                 gAllowPageUser;
+
+extern unsigned char        MissionNumber;
 
 
 
 extern int                  GameState;
+extern int                  _firgcrap_dword_4E3AE8;
 
 extern int                  _RadarLocationX;
 extern int                  _RadarLocationY;
@@ -365,11 +323,17 @@ extern char                 _gFullscreen_DebugModes_pathfinddebug;
 extern int                  gBitsPerPixel;
 extern int                  _ScreenClipWidth;
 extern int                  _ScreenClipHeight;
+extern int                  gScrollSize;
 extern POINT                _gMousePos;
 extern int                  MousePositionX;
 extern int                  MousePositionY;
 extern int                  RandSeed;
 extern char                 _bool_shroud_4DFB04;
+extern char                 _Nullstring;
+extern char                 gPageUser[56];
+extern char                 _DrawOffered1;
+extern char                 _DrawOffered2;
+extern char                 gTournamentGame;
 extern CAI_                 _gAIArray[];
 // extern MessageData          _gMessageData; // Replaced by mod
 extern char                 ResourcePath[];
@@ -380,11 +344,14 @@ extern char                 MapsResourcePath[];
 extern char                 _FontBinData[256];
 extern FontHeader           _FontData[8];
 extern int *                _FontPals[16];
+extern HighScoreStruct      gHighScores[6];
 extern SidebarButtonData    _SidebarButtons[15];
 extern TacticalStruct       _TacticalData;
+extern char                 _UnitGroupKeyState[10];
 extern int                  _TileTooltips[800];
 extern unsigned int         gGameTicks;
 extern unsigned int         _NeutralUnitText;
+extern char                 _bool_missionfailed_517400;
 extern int                  _UnitGroupTextIds[60];
 extern int                  _tooltipcolor_yellow;
 extern char                 _cheatstates[8];
@@ -434,6 +401,7 @@ extern TImage *             _SideBarPowerImages[4];
 extern void *               _RadarMap1;
 extern POINT                _SpawnLocations[8];
 extern int                  _tiledata[1000];
+extern TImage *             _RadarHouseImages[3];
 extern char                 _templates_UnitGroupCount;
 extern char                 _templates_UnitGroupNameList[60][50];
 extern char                 _templates_BulletNameList[64][50];
@@ -475,18 +443,24 @@ extern ISampleManager *     _gSampleMgr;
 extern TextTableStruct **   gTextTable;
 extern SampleTableStruct ** gSampleTable;
 extern int                  _sampletablecount;
+extern char                 _Mouse_bool_797590;
 extern CUIManager *         gUIMgr;
+extern char                 gSendingToPlayer[104];
 
+extern _DWORD               dword_797E18;
 extern bool                 gRestartGame;
 extern int                  GameType;
 extern eGameType            gGameType;
 
 extern char                 _KeyboardKeyState[256];
 extern int                  _colormask1;
+extern POINT                _MouseClickCoords;
 
 extern char                 _KeyboardKeyDown[256];
+extern POINT                _mouse_dword_798498;
 extern unsigned char        gTotalPlayers;
 extern char                 _IsMultiplayer;
+extern char                 _DebugOn_Pathfind_WinLose_DebugNewGame;
 extern bool                 BitsPerPixelChanged;
 
 
@@ -501,6 +475,8 @@ extern int                  _ViewportYPos;
 extern int                  _MouseCursorID;
 extern unsigned char        MySideID;
 extern unsigned char        gSideId;
+extern char                 _SidesToProcess;
+extern char                 _NetPlayerNamesArray[8][60];
 extern char                 _gDiplomacy[8][8];
 extern CSide                gSideArray[8];
 extern unsigned char        _IRValues[8];
@@ -519,6 +495,8 @@ bool __stdcall  IsLocalIp(char *Ip);
 bool            IsCurrentlyShown(char *menu);
 void            WOL__StartGuestINetGame();
 void            WOL__StartHostINetGame();
+void            SetgAllowPageUser(unsigned __int8 a1);
+BOOL            IsOnlineGame();
 void            WOL__OpenWebsite(char *URL);
 // AI
 void __thiscall CAI_PlaceBuiltBuilding(CAI_ *this);
@@ -548,6 +526,7 @@ void            BlitClipTImage2(TImage *lpTITo, RECT *rect, int toX, int toY, TI
 void            ClearTImage(TImage *a1, int color, int unusable);
 void            BlitFontChar_0(TImage *dest, int x, int y, TImage *src, _WORD *pal);
 // Other
+char            IsBuildingWithBehaviorBuilt(unsigned __int8 a1, BuildingBehaviorType a2);
 unsigned int    GetUnitBuildSpeedPercentage(unsigned char unit_type, unsigned char side_id);
 unsigned int    GetBuildingBuildSpeedPercentage(unsigned char side_id);
 unsigned int    w__GetUnitCost(int type, eSideType side);
@@ -555,8 +534,11 @@ unsigned int    GetBuildingCost(int building_type, int num_upgrades, eSideType s
 char            HandleSidebarButton(int idx, bool pressed_down);
 bool            w_CanUnitBeBuilt(unsigned char side_id, unsigned char unitType, char bool1);
 bool            CanSideUpgradeBuildingGroup(eSideType side_id, eBuildingGroupType building_group);
-
+char            CheckIfMCVCanBeDeployedOn(int xpos, int ypos);
+char            MoreProductionBuildingsOfSameGroupExist(int buildingtype);
+char            IsAnyStarportUnitPicked(unsigned __int8 side_id);
 int             GetRandomValue(char *, int);
+void            SetUnitGroup(char group_id);
 void            SetBuildingAsPrimary(eSideType side_id, int building_index);
 void            SetMouseCursor(int cursor);
 // Map
@@ -590,6 +572,7 @@ index           ModelAddUnit(unsigned char side, unsigned char type, unsigned ch
 void            ModelAddConcrete(eSideType side_id, char building_type, unsigned __int8 xpos, int ypos, int a5, int tilebitmask);
 signed __int16  ModelAddBuilding(eSideType side_id, char building_type, unsigned __int8 x, unsigned __int8 y, int initialsetup, bool captured, bool captured2);
 signed __int16  ModelAddBullet(unsigned __int8 side_id, unsigned __int8 bulletype, int a3, __int16 firer, unsigned __int16 source_x, unsigned __int16 source_y, unsigned __int16 target_x, unsigned __int16 target_y, __int16 homing_index, char homing_side);
+void            AddCursorPuffAnimationToQueue(int x, int y);
 signed __int16  ModelAddExplosion(int side_id, unsigned __int8 explosionType, unsigned __int16 x, unsigned __int16 y, int a5, int a6, char a7, int a8, int a9);
 
 void            GenerateUnitMoveOrder(char side_id, unsigned __int8 x, unsigned __int8 y);
@@ -602,6 +585,7 @@ void            GenerateUnitAttackTileOrder(char side_id, __int16 x, __int16 y);
 void            GenerateUnitGuardOrder(char side_id);
 void            GenerateUnitScatterOrder(char side_id);
 void            GenerateUnitRetreatOrder(char side_id, unsigned __int8 x, unsigned __int8 y);
+void            GenerateAllyOrder(unsigned __int8 side_id);
 void            GenerateStopOrder(char side_id);
 void            GenerateBuildingAttackUnitOrder(eSideType attacker_side_id, eSideType target_side_id, __int16 target_unit_index);
 void            GenerateBuildingAttackBuildingOrder(char side_id, char target_side_id, __int16 target_building_index);
@@ -622,7 +606,7 @@ void            GenerateUpgradeCancelOrder(char side_id, char building_group);
 void            GenerateUnitDeployOrder(char side_id, __int16 unit_index);
 void            GenerateSpecialWeaponOrder(char side_id, char unit_behavior, char x, char y);
 void            Model__ResetVars();
-void            Model__ExecuteGameEvent(GameEvent event);
+void            Orderdata_add(Orderdata *a1);
 char            GetFacing(int x1, int y1, int x2, int y2);
 // Setup
 void            Setup__LoadUIBBFile();
@@ -636,8 +620,13 @@ void __thiscall CSide__UpdateBuildingAndUnitIconsAndBaseBoundaries(CSide *side);
 char __thiscall CSide__MyVersionOfBuilding(CSide *this, char building_type, bool bool1);
 uint8_t __thiscall CSide__MyVersionOfUnit(CSide *this, char unit, bool bool1);
 void __thiscall CSide__AddCash(CSide *this, int a2);
+void __thiscall CSide__DeselectAllUnits(CSide *this);
+void __thiscall CSide__DeselectAllBuildings(CSide *this);
+char __thiscall CSide__SelectUnitsByGroupId(CSide *this, char group_id, char deselect_others);
+void __thiscall CSide__CenterViewportOnFirstUnitFromGroupId(CSide *this, char group_id, int *viewport_x_ptr, int *viewport_y_ptr);
 int8_t __thiscall CSide__GetQueuePos(CSide *this, Unit *unit);
 bool __thiscall CSide__AddToQueue(CSide *this, Unit *unit, __int16 unit_index, unsigned __int8 queue_pos, char a5, int state);
+int *__thiscall CSide_46CF10_HKEY_BattleFieldPos(CSide *this, int *x, int *y, char a4);
 Unit *          ChangeUnitOwner(eSideType source_side_id, eSideType target_side_id, __int16 source_unit_index, char bool1);
 char            CaptureBuilding(eSideType source_side_id, eSideType target_side_id, __int16 source_building_index);
 char __thiscall CSide__FindBestBasePosition(CSide *this, _BYTE *x, _BYTE *y);
@@ -648,12 +637,15 @@ void __thiscall CSide__ResetEnemyForSide(CSide *this, char a2);
 // Sound
 void __thiscall ISampleManager__EndSample(ISampleManager *this, int handle_id);
 void            PlaySoundAt(int id, unsigned __int8 xpos, unsigned __int8 ypos);
-void            Sound__PlaySample(int id, char state, int time, int priority);
+void            QueueAudioToPlay(int id, char state, int time, int priority);
+void            PlayMentatSound(int at_table, int or_table, int hark_table, char state, int time, int priority);
 void __thiscall Sound__LoadMusicFile(int this, char *fileName);
 void __thiscall Sound__SetMusicVolume(int soundClassObject, int volume);
 void            Sound__PlayMusic(char *fileName);
 // CUIManager
+void __thiscall CUIManager__ReplaceWithOne_470E60(CUIManager *this, char *name, TImage *image);
 void            CUIManager__JumpToMenu(char *menu);
+unsigned int __thiscall CUIManager__invoke_473840(CUIManager *this, int a2, const char *a3, const char *a4);
 void __thiscall CUIManager__LoadMission(CUIManager * cUIManagerObject, char *map);
 void            CUIManager__LoadDune2000Cfg();
 void            CUIManager__SaveDune2000Cfg();
@@ -664,8 +656,10 @@ void            CUIManager__GetCD(char *arg);
 // Data
 int             GetTextID(char *String1);
 char *          GetTextString(int stringId, bool showError);
-int             Data__GetSoundTableID(const char *key);
+int             GetSoundTableID(const char *key);
 // Other
+char            CanBuildingAttackTile(Building *building, char x, char y, char a4);
+char            IsBuildingInRange_0(Building *a1, Building *a2);
 bool            GetRandomAdjacentTile(unsigned __int8 *x_ptr, unsigned __int8 *y_ptr);
 char            UpdateUnit(Unit *arg0, eSideType side_id, __int16 myIndex);
 bool            UpdateBuilding(Building *bld, int side_id, __int16 building_index);
@@ -681,6 +675,8 @@ bool            Unit_49E140(Unit *unit);
 char            tile_driveon_49E290(eSideType side, unsigned char *x, unsigned char *y);
 void            MakeUnitsStealthInRange(unsigned char x, unsigned char y, eSideType side);
 void            PlayUnitResponse(char a1);
+void            SetUnitToFlicker(Unit *unit);
+void            SetBuildingToFlicker(Building *bld);
 int             RevealTilesSeenByBuildingsAndUnits(eSideType side);
 bool            Unit_49F5F0(Unit *unit);
 
@@ -694,7 +690,23 @@ Unit *          GetNextUnitOnTile(unsigned int x, unsigned int y, unsigned int s
 bool            BuildingOccupiesTile(Building *building, unsigned __int8 x, unsigned __int8 y);
 bool            GetBuildingOnTile_0(int x, int y, Building **building_ptr, eSideType *side_id, _WORD *index);
 bool            GetBuildingOnTile_1(int x, int y, eSideType *side_id_ptr, int a3);
-
+void            DeselectAllForAllSides();
+char            IsAnyUnitSelected();
+char            IsAnyUnitWithBehaviorSelected(UnitBehaviorType behavior);
+char            IsAnyBuildingSelected();
+Building *      GetSelectedBuildingWithBarrel();
+char            IsAnyArmedUnitSelected();
+char            IsAnyArmedUnitSelectedExceptThis(Unit *a1);
+char            IsAnyVehicleSelected();
+char            IsAnyInfantrySelected();
+char            AllSelectedUnitsHaveBehavior(UnitBehaviorType behavior);
+char            IsAnyCrusherSelected();
+void            SelectUnit(unsigned __int8 side_id, unsigned __int16 unit_index, bool toggle_selection);
+void            SelectBuilding(eSideType side_id, unsigned __int16 objIndex);
+bool            SelectAllUnitsInArea(int min_x, int min_y, int max_x, int max_y);
+bool            CenterViewportOnSelectedUnits(eSideType side, int *x, int *y);
+bool            CenterViewportOnSelectedBuildings(eSideType side, int *x, int *y);
+void            SelectNextUnit();
 int16_t         GetRefineryIndex(eSideType side_id);
 Building *      GetNearestBuildingWithBehavior(unsigned char x, unsigned char y, eSideType side_id, BuildingBehaviorType behavior, _BYTE *exit_x1, _BYTE *exit_y1);
 bool            GetNearestFreeTileForUnit(unsigned char *x, unsigned char *y, unsigned char a3);

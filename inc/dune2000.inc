@@ -5,24 +5,6 @@
 
 ; ### Constants ###
 
-%assign SD_ATREIDES 0
-%assign SD_HARKONNEN 1
-%assign SD_ORDOS 2
-%assign SD_EMPEROR 3
-%assign SD_FREMEN 4
-%assign SD_SMUGGLERS 5
-%assign SD_MERCENARIES 6
-%assign SD_SANDWORM 7
-
-%assign CL_BLUE 0
-%assign CL_RED 1
-%assign CL_TEAL 2
-%assign CL_PURPLE 3
-%assign CL_GRAY 4
-%assign CL_BROWN 5
-%assign CL_GOLD 6
-%assign CL_LIGHTBROWN 7
-
 %assign GES_ENDEDNORMALLY 0
 %assign GES_ISURRENDERED 1
 %assign GES_OPPONENTSURRENDERED 2
@@ -51,18 +33,6 @@
 %assign NT_UDP 2 
 %assign NT_SERIAL 3
 %assign NT_IPXDIRECTPLAY 4
-
-; Side (HouseClass)
-%assign HC_SIDEID 0x24252
-%assign HC_SPICE_HARVESTED 0x2477C
-%assign HC_BUILDINGS_DESTROYED 0x24C94
-%assign HC_UNITS_KILLED 0x24C90
-%assign HC_BUILDINGS_OWNED 0x24784
-;not sure about this one
-%assign HC_BUILDING_PRODUCTION_AVAILABLE 0x2652D
-;0x5A00 = 100%
-%assign HC_BUILDING_PRODUCTION_PROGRESS 0x2651E
-%assign HC_CURRENTLY_PRODUCED_BUILDING_ID 0x2651C
 
 ; ### Variables ###
 
@@ -182,7 +152,7 @@ cextern _IRValues
 
 ; ### Functions ###
 cextern BlitFontChars
-cextern Model__ExecuteGameEvent
+cextern Orderdata_add
 cextern CUIManager__LoadDune2000Cfg
 cextern CUIManager__SaveDune2000Cfg
 cextern CUIManager__JumpToMenu

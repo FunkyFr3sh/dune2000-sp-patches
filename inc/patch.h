@@ -18,6 +18,7 @@ extern char MapName[];
 extern bool UseDefaultWinLoseEvents;
 extern uint32_t SpawnerGameEndState;
 extern unsigned char gOldSideId;
+extern uint32_t MapScrollLockTicks;
 
 extern const char Cursor0Data[];
 extern const unsigned int Cursor0DataLength;
@@ -102,7 +103,8 @@ extern bool JumpToGame;
 
 extern bool DisableMaxWindowedMode;
 extern char GameLanguage[];
-extern bool MouseWheelTriggered;
+extern bool MouseWheelUp;
+extern bool MouseWheelDown;
 extern bool UseImprovedFPSLimiter;
 extern bool CutsceneChangeResolution;
 extern bool SingleProcessorAffinity;

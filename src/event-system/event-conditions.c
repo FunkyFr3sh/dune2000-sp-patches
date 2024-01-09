@@ -347,7 +347,7 @@ bool Cond_BuildingIcon(int side_id, bool status, bool any_building, int building
   CSide *side = GetSide(side_id);
   int building_group_built = (side->__BuildingBuildQueue.__type != -1)?_templates_buildattribs[side->__BuildingBuildQueue.__type].GroupType:-1;
   bool building_group_match = (building_group_built == building_group) || (any_building && building_group_built != -1);
-  bool status_match = (side->__BuildingBuildQueue.w_field_2_buildprogress == 0x5A00) || (!status);
+  bool status_match = (side->__BuildingBuildQueue.__build_progress == 0x5A00) || (!status);
   return building_group_match && status_match;
 }
 
@@ -360,7 +360,7 @@ bool Cond_UnitIcon(int side_id, bool status, bool any_unit, int queue, int unit_
     if (unit_type_built == -1)
       continue;
     int unit_group_built = _templates_unitattribs[unit_type_built].__UnitType;
-    bool status_match = (side->__UnitBuildQueue[i].w_field_2_buildprogress == 0x5A00) || (!status);
+    bool status_match = (side->__UnitBuildQueue[i].__build_progress == 0x5A00) || (!status);
     if (!any_unit)
     {
       if (unit_group_built == unit_group)

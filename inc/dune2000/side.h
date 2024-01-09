@@ -265,7 +265,7 @@ typedef struct Building
   uint8_t __Facing;
   char field_22;
   char field_23;
-  uint32_t Health;
+  int32_t Health;
   int32_t Flags;
   int16_t EnemyIndex;
   char field_2E;
@@ -474,12 +474,12 @@ typedef struct DeliveryStruct
 typedef struct BuildQueueStruct
 {
   int16_t __type;
-  int16_t w_field_2_buildprogress;
-  int16_t w_field_4_buildprogress;
+  int16_t __build_progress;
+  int16_t __build_progress_prev;
   char field_6;
   char field_7;
-  float f_field_8_credits;
-  int32_t dw_field_C_credits;
+  float __credits_spent_float;
+  int32_t __credits_spent_integer;
   char __on_hold;
   char c_field_11_cancel;
   char field_12;

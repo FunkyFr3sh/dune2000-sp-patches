@@ -267,11 +267,12 @@ LABEL_77:
 }
 
 // Redirect setting of can't move / move cursor to call of custom function SetMouseCursorForUnitMovementRestriction
-LJMP(0x004438B2, 0x004466D3); // HandleGameLoopEvents
-LJMP(0x00443896, 0x004466D3); // HandleGameLoopEvents
+// Superseded by Mod__HandleGameLoopEvents
+//LJMP(0x004438B2, 0x004466D3); // HandleGameLoopEvents
+//LJMP(0x00443896, 0x004466D3); // HandleGameLoopEvents
 // Utilize free space between functions for additional call and jump instructions
-CALL(0x004466D3, _SetMouseCursorForUnitMovementRestriction);
-LJMP(0x004466D8, 0x00443D3B); // Jump back and skip call of SetMouseCursor function
+//CALL(0x004466D3, _SetMouseCursorForUnitMovementRestriction);
+//LJMP(0x004466D8, 0x00443D3B); // Jump back and skip call of SetMouseCursor function
 
 void SetMouseCursorForUnitMovementRestriction()
 {

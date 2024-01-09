@@ -16,7 +16,7 @@ gfunction BlowUpEverything ; arg1 = sideId - All buildings/units of the chosen p
     mov dword[esp+0x0C], edx
     mov byte[esp+0x28], al
     mov word[esp+0x8], 0x3E8
-    call Model__ExecuteGameEvent
+    call Orderdata_add
     add esp, 4
     mov byte[0x797DF8], 1
     add esp, 0x0A8

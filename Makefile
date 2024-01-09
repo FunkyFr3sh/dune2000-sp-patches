@@ -48,7 +48,6 @@ OBJS            ?= callsites.o \
 	src/extended-maps/always-show-radar.o \
 	src/extended-maps/tile-damage.o \
 	src/extended-maps/pickup-crate-on-landing.o \
-	src/extended-maps/move-infantry-on-infantry-tile.o \
 	src/extended-maps/buildable-top-row-of-map.o \
 	src/extended-maps/difficulty-cost-buildspeed-rules.o \
 	src/extended-maps/sound-size-limit.o \
@@ -63,6 +62,7 @@ OBJS            ?= callsites.o \
         src/extended-maps/tooltips.o \
         src/extended-maps/event-hooks-func.o \
         src/extended-maps/delivery-tag.o \
+        src/extended-maps/handle-game-loop-events.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \
@@ -79,7 +79,6 @@ OBJS            ?= callsites.o \
 	src/fixes/high-fps-fix.o \
 	src/fixes/win8-fix.o \
 	src/fixes/Disable-Max-Windowed-Mode.o \
-	src/fixes/cannot-place-building-fix.o \
 	src/fixes/single-processor-affinity.o \
 	src/fixes/gettickcount-fix-func.o \
 	src/fixes/gettickcount-fix.o \
@@ -97,8 +96,6 @@ OBJS            ?= callsites.o \
 	src/fixes/sandworm-fixes.o \
 	src/fixes/ai-stuck-targeting-cloaked-unit-fix.o \
 	src/fixes/cancel-upgrade-when-lowered-tech.o \
-	src/fixes/armed-engineer-saboteur-cursor-fix.o \
-	src/fixes/infiltrated-flag-cursor-fix.o \
 	src/fixes/unit-build-availability-check-fix.o \
 	src/fixes/dont-target-invulnerable-carryall.o \
 	src/fixes/ai-place-built-building-fix.o \
@@ -111,9 +108,6 @@ OBJS            ?= callsites.o \
 	\
 	src/hotkeys/hotkeys.o \
 	src/hotkeys/hotkeys-func.o \
-	src/hotkeys/mouse-wheel.o \
-	src/hotkeys/slow-sidebar-scrolling.o \
-	src/hotkeys/map-scrolling.o \
 	\
 	src/hardware-cursor.o \
 	src/hardware-cursor-func.o \

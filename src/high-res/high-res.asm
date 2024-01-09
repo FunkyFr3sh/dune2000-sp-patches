@@ -18,10 +18,10 @@ gstring uibb_r8FileName, "UIBB.R8", 100
 
 
 ;map too small crash fixes
-;@CLEAR_INT 0x0044B6BC, 0x0044B6D8 ; __Do_Tooltips() - TOOLTIPS: Map item out of range ; Superseded by _Mod__HandleTooltips
-;@LJMP 0x0044B6BC, 0x0044BAD7 ; __Do_Tooltips() - TOOLTIPS: Map item out of range ; Superseded by _Mod__HandleTooltips
-@CLEAR_INT 0x004434A4, 0x004434B6 ; Model__HandleGameLoopEvents() - Invalid index to gGameMap.map (1)
-@LJMP 0x004434A4, 0x00443C7F ; Model__HandleGameLoopEvents() - Invalid index to gGameMap.map (1)
+;@CLEAR_INT 0x0044B6BC, 0x0044B6D8 ; __Do_Tooltips() - TOOLTIPS: Map item out of range ; Superseded by Mod__HandleTooltips
+;@LJMP 0x0044B6BC, 0x0044BAD7 ; __Do_Tooltips() - TOOLTIPS: Map item out of range ; Superseded by Mod__HandleTooltips
+;@CLEAR_INT 0x004434A4, 0x004434B6 ; Model__HandleGameLoopEvents() - Invalid index to gGameMap.map (1) ; Superseded by Mod__HandleGameLoopEvents
+;@LJMP 0x004434A4, 0x00443C7F ; Model__HandleGameLoopEvents() - Invalid index to gGameMap.map (1) ; Superseded by Mod__HandleGameLoopEvents
 @CLEAR_INT 0x0045946C, 0x0045947E ; Generate_Unit_Move_Order(int_int_int) - Invalid targetX
 @LJMP 0x0045946C, 0x00459531 ; Generate_Unit_Move_Order(int_int_int) - Invalid targetX
 @CLEAR_INT 0x00459496, 0x004594A8 ; Generate_Unit_Move_Order(int_int_int) - Invalid targetY
@@ -86,27 +86,27 @@ hack 0x0044C784 ; LoadMapData() - map too small crash fix, adjust BattleField si
     popad
     jmp hackend
     
+; Superseded by Mod__HandleGameLoopEvents
+;hack 0x00444678, 0x0044467E ; map too small - Do not draw selection rectangle if cursor out of battlefield
+;    mov edx, dword[_OptionsBarHeight]
+;    push ecx
+;    mov ecx, edx
+;    add ecx, dword[BattleFieldHeight]
+;    cmp eax, ecx ; eax = MousePositionY
+;    pop ecx
+;    jge 0x004446A9
+;    jmp hackend
     
-hack 0x00444678, 0x0044467E ; map too small - Do not draw selection rectangle if cursor out of battlefield
-    mov edx, dword[_OptionsBarHeight]
-    push ecx
-    mov ecx, edx
-    add ecx, dword[BattleFieldHeight]
-    cmp eax, ecx ; eax = MousePositionY
-    pop ecx
-    jge 0x004446A9
-    jmp hackend
-    
-    
-hack 0x004455BE ; map too small - Ignore order if cursor out of battlefield
-    mov eax, dword[_OptionsBarHeight]
-    push edx
-    mov edx, eax
-    add edx, dword[BattleFieldHeight]
-    cmp dword[MousePositionY], edx
-    pop edx
-    jge 0x00445D99
-    jmp hackend
+; Superseded by Mod__HandleGameLoopEvents
+;hack 0x004455BE ; map too small - Ignore order if cursor out of battlefield
+;    mov eax, dword[_OptionsBarHeight]
+;    push edx
+;    mov edx, eax
+;    add edx, dword[BattleFieldHeight]
+;    cmp dword[MousePositionY], edx
+;    pop edx
+;    jge 0x00445D99
+;    jmp hackend
 
     
 hack 0x0043D2D5, 0x0043D2DB ; align credits screen text
@@ -461,66 +461,66 @@ hack 0x00460FDF ; AdjustGUI Y - UI_LANG_r file
     jmp 0x00460FE4
 
 
-hack 0x0044423A ; patch1
-    cmp byte[HighResPatchEnabled], 1
-    jz .patch
-    push 0x004DFDD4
-    jmp 0x0044423F
-    
-.patch:
-    pop edi
-    pop esi
-    pop ebp
-    pop ebx
-    add esp,0x0CC
-    retn
+;hack 0x0044423A ; patch1 ; Superseded by Mod__HandleGameLoopEvents
+;    cmp byte[HighResPatchEnabled], 1
+;    jz .patch
+;    push 0x004DFDD4
+;    jmp 0x0044423F
+;
+;.patch:
+;    pop edi
+;    pop esi
+;    pop ebp
+;    pop ebx
+;    add esp,0x0CC
+;    retn
     
 
-hack 0x004442F7 ; patch2
-    cmp byte[HighResPatchEnabled], 1
-    jz .patch
-    push 0x004DFDD4
-    jmp 0x004442FC
-    
-.patch:
-    pop edi
-    pop esi
-    pop ebp
-    pop ebx
-    add esp,0x0CC
-    retn
+;hack 0x004442F7 ; patch2 ; Superseded by Mod__HandleGameLoopEvents
+;    cmp byte[HighResPatchEnabled], 1
+;    jz .patch
+;    push 0x004DFDD4
+;    jmp 0x004442FC
+;
+;.patch:
+;    pop edi
+;    pop esi
+;    pop ebp
+;    pop ebx
+;    add esp,0x0CC
+;    retn
 
 
-hack 0x00444D79 ; patch3
-    cmp byte[HighResPatchEnabled], 1
-    jz .patch
-    mov eax,dword[0x4E4208]
-    jmp 0x00444D7E
-    
-.patch:
-    mov eax,0x0B8
-    cmp ecx,eax
-    jle 0x00445010
-    mov ebx,0x2F
-    mov edx,ebx
-    imul edx, dword[SideBarIconCount]
-    add edx,eax
-    cmp ecx,edx
-    jge 0x0044500B
-    mov eax,dword[0x516430]
-    cmp eax,0x3
-    jnz 0x00444E16
-    xchg eax,ecx
-    mov ecx,0x0B8
-    sub eax,ecx
-    cdq
-    div ebx
-    add edi, dword[SideBarPanelLeftUIPosX]
-    lea ecx, [edi]
-    sub edi, dword[SideBarPanelLeftUIPosX]
-    cmp eax,0x3
-    jg 0x00445010
-    jmp 0x00444DBF
+;hack 0x00444D79 ; patch3 ; Superseded by Mod__HandleGameLoopEvents
+;    cmp byte[HighResPatchEnabled], 1
+;    jz .patch
+;    mov eax,dword[0x4E4208]
+;    jmp 0x00444D7E
+;
+;.patch:
+;    mov eax,0x0B8
+;    cmp ecx,eax
+;    jle 0x00445010
+;    mov ebx,0x2F
+;    mov edx,ebx
+;    imul edx, dword[SideBarIconCount]
+;    add edx,eax
+;    cmp ecx,edx
+;    jge 0x0044500B
+;    mov eax,dword[0x516430]
+;    cmp eax,0x3
+;    jnz 0x00444E16
+;    xchg eax,ecx
+;    mov ecx,0x0B8
+;    sub eax,ecx
+;    cdq
+;    div ebx
+;    add edi, dword[SideBarPanelLeftUIPosX]
+;    lea ecx, [edi]
+;    sub edi, dword[SideBarPanelLeftUIPosX]
+;    cmp eax,0x3
+;    jg 0x00445010
+;    jmp 0x00444DBF
 
 
 ;hack  0x0044BB50, 0x0044BB58 ; patch4 ; Superseded by _Mod__HandleTooltips

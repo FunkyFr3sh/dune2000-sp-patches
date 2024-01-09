@@ -43,6 +43,9 @@ void LoadGameExtraData(void *buffer, size_t size, size_t count, FILE *file)
   // Read event hooks
   _ReadFile(event_hooks, sizeof(event_hooks), 1, file);
 
+  // Reset MapScrollLockTicks
+  MapScrollLockTicks = 0;
+
   // Reset last played property of sounds in sound table
   for (int i = 0; i < _sampletablecount; i++)
     gSampleTable[i]->last_played = 0;

@@ -14,6 +14,8 @@
 #include "../extended-maps/tooltips.h"
 #include "rules.h"
 
+uint32_t MapScrollLockTicks = 0;
+
 void EvAct_AddDelivery(int xpos, int ypos, int side_id, int amount, int tag, int deploy_action, int delay, eDeliveryType delivery_type, char *unit_list)
 {
   CSide *side = GetSide(side_id);
@@ -72,7 +74,7 @@ void EvAct_PlaySound(int sample_id, bool force, bool point_sound, int xpos, int 
   {
     if (force)
       ISampleManager__EndSample(_gSampleMgr, 0);
-    Sound__PlaySample(sample_id, 1, 0, force?1:0);
+    QueueAudioToPlay(sample_id, 1, 0, force?1:0);
   }
 }
 
@@ -269,10 +271,10 @@ void EvAct_ShowMessage(int xoff, int yoff, int ref_id, int screen_pos, int color
   // Play message sound
   switch (sound_mode)
   {
-    case MSGSOUNDMODE_DEFAULT:      Sound__PlaySample(Data__GetSoundTableID("S_CHATMSG"), 1, 0, 0); break;
+    case MSGSOUNDMODE_DEFAULT:      QueueAudioToPlay(GetSoundTableID("S_CHATMSG"), 1, 0, 0); break;
     case MSGSOUNDMODE_NONE:         break;
-    case MSGSOUNDMODE_CUSTOM:       Sound__PlaySample(data->sample_id, 1, 0, 0); break;
-    case MSGSOUNDMODE_CUSTOM_FORCE: ISampleManager__EndSample(_gSampleMgr, 0); Sound__PlaySample(data->sample_id, 1, 0, 1); break;
+    case MSGSOUNDMODE_CUSTOM:       QueueAudioToPlay(data->sample_id, 1, 0, 0); break;
+    case MSGSOUNDMODE_CUSTOM_FORCE: ISampleManager__EndSample(_gSampleMgr, 0); QueueAudioToPlay(data->sample_id, 1, 0, 1); break;
   }
   // Get message text
   char buffer[512];
@@ -626,7 +628,7 @@ void EvAct_SpiceBloom(int xpos, int ypos, int range, eSpiceBloomMode mode, bool 
       // Shake screen
       _ScreenShakes = 10;
       // Play sound
-      int sample_id = Data__GetSoundTableID("S_SPICEMOUND");
+      int sample_id = GetSoundTableID("S_SPICEMOUND");
       PlaySoundAt(sample_id, xpos, ypos);
     }
     // Update spice visuals
@@ -658,6 +660,7 @@ void EvAct_ChangeViewport(int xpos, int ypos, int mode, int units)
   }
   _ViewportXPos = LIMIT(xpos, 0, gGameMapWidth * 32 - _ViewportWidth);
   _ViewportYPos = LIMIT(ypos, 0, gGameMapHeight * 32 - _ViewportHeight);
+  MapScrollLockTicks = gGameTicks;
 }
 
 void ChangeMapTile(int xpos, int ypos, int new_tile_index, eChangeTileMode mode)
@@ -2002,7 +2005,7 @@ void EvAct_GetMousePosition(eGetMousePositionType what, int first_var)
         && _gMousePos.x < radar_image_width + _RadarLocationX - radar_image_left
         && _gMousePos.y >= radar_image_top + _RadarLocationY
         && _gMousePos.y < radar_image_height + _RadarLocationY - radar_image_top
-        && !_TacticalData.__RadarState
+        && !_TacticalData.__RadarScoreView
         && _TacticalData.__RadarOnline)
       {
         SetVariableValue(first_var, _gMousePos.x - radar_image_left - _RadarLocationX);

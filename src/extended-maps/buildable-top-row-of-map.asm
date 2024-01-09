@@ -14,4 +14,5 @@
 
 @CLEAR 0x00428C47, 0x00, 0x00428C48 ; getownershipstatusofcell
 
-@CLEAR 0x0044512E, 0x00, 0x0044512F ; HandleGameLoopEvents
+; Superseded by Mod__HandleGameLoopEvents
+;@CLEAR 0x0044512E, 0x00, 0x0044512F ; HandleGameLoopEvents

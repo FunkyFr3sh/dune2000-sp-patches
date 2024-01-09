@@ -2,6 +2,7 @@
 #include "dune2000.h"
 #include "../event-system/event-core.h"
 #include "messages-func.h"
+#include "patch.h"
 
 bool StartWithMCV = true;
 
@@ -151,6 +152,9 @@ void Mod__setupmapstuff()
 
   // Store the original side ID upon starting a map
   gOldSideId = gSideId;
+
+  // Reset MapScrollLockTicks
+  MapScrollLockTicks = 0;
 
   // Reset last played property of sounds in sound table
   for (int i = 0; i < _sampletablecount; i++)

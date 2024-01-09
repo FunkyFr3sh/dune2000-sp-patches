@@ -52,6 +52,8 @@ int ScrollUp = VK_NUMPAD5;
 int ToggleLiveStats = VK_TAB;
 int PlayRandomSong = VK_OEM_PLUS;
 
+bool SlowSideBarScrolling = false;
+
 void HandleKeyEvent(int key, bool keyIsDown)
 {
     if (GameState == GS_MAINLOOP && !gUIMgr->dw_field_110_index && key != OptionsMenu)

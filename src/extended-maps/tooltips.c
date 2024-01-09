@@ -243,14 +243,14 @@ void Mod__HandleTooltips()
             && _gMousePos.x < radar_image_width + _RadarLocationX - radar_image_left
             && _gMousePos.y >= radar_image_top + _RadarLocationY
             && _gMousePos.y < radar_image_height + _RadarLocationY - radar_image_top
-            && !_TacticalData.__RadarState
+            && !_TacticalData.__RadarScoreView
             && _TacticalData.__RadarOnline)
           {
             tooltip_type = TOOLTIPTYPE_RADAR_MAP;
             tooltip_arg1 = _gMousePos.x - radar_image_left - _RadarLocationX;
             tooltip_arg2 = _gMousePos.y - radar_image_top - _RadarLocationY;
           }
-          else if (!_TacticalData.__RadarState && !_TacticalData.__RadarOnline)
+          else if (!_TacticalData.__RadarScoreView && !_TacticalData.__RadarOnline)
           {
             tooltip_type = TOOLTIPTYPE_RADAR_HOUSE_IMAGE;
           }
