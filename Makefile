@@ -63,6 +63,7 @@ OBJS            ?= callsites.o \
         src/extended-maps/event-hooks-func.o \
         src/extended-maps/delivery-tag.o \
         src/extended-maps/handle-game-loop-events.o \
+        src/extended-maps/radar.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \

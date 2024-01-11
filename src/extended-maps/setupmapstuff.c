@@ -3,6 +3,7 @@
 #include "../event-system/event-core.h"
 #include "messages-func.h"
 #include "patch.h"
+#include "radar.h"
 
 bool StartWithMCV = true;
 
@@ -392,7 +393,8 @@ void Mod__setupmapstuff()
       }
     }
 
-  radarmap();
+  Mod__SetupRadarMap();
+
   if ( _SpawnLocationCount != 8 && (gGameType == GAME_SKIRMISH || _IsMultiplayer) )
   {
     DebugFatal("Setup.cpp", "Map needs %d flags (found %d)", 8, (unsigned __int8)_SpawnLocationCount);

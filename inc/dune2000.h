@@ -347,12 +347,17 @@ extern int *                _FontPals[16];
 extern HighScoreStruct      gHighScores[6];
 extern SidebarButtonData    _SidebarButtons[15];
 extern TacticalStruct       _TacticalData;
+extern short                _radarcolor16_impassable;
 extern char                 _UnitGroupKeyState[10];
+extern short                _radarcolor16_driveon;
 extern int                  _TileTooltips[800];
+extern short                _radarcolor16_sand;
 extern unsigned int         gGameTicks;
 extern unsigned int         _NeutralUnitText;
+extern char                 _radarcolor8_drive_on;
 extern char                 _bool_missionfailed_517400;
 extern int                  _UnitGroupTextIds[60];
+extern short                _colormask3;
 extern int                  _tooltipcolor_yellow;
 extern char                 _cheatstates[8];
 extern TooltipStruct        _Tooltipdata;
@@ -362,9 +367,11 @@ extern unsigned int         _NeutralStructureText;
 extern unsigned int         _UnrevealedText;
 extern int                  _BuildingGroupTextIds[100];
 extern unsigned int         _EnemyUnitText;
-extern char                 _radarcolor_byte_517780_spicecolor;
+extern char                 _radarcolor8_spice;
 extern unsigned int         _EnemyStructureText;
-extern short                _radarcolor_word_517898_spicecolor;
+extern char                 _radarcolor8_sand;
+extern char                 _radarcolor8_impassable;
+extern short                _radarcolor16_spice;
 extern int                  _StoredMouseCursorIndex;
 extern char                 _blitflag;
 
@@ -398,7 +405,7 @@ extern OrderStruct          _OrderData[8];
 
 extern GroupIDsStruct       _templates_GroupIDs;
 extern TImage *             _SideBarPowerImages[4];
-extern void *               _RadarMap1;
+extern TImage *             _RadarMap1;
 extern POINT                _SpawnLocations[8];
 extern int                  _tiledata[1000];
 extern TImage *             _RadarHouseImages[3];
@@ -415,7 +422,7 @@ extern char                 _MapName[200];
 extern char                 _templates_BuildingNameList[100][450];
 extern int                  _cosValues[16384];
 extern UnitAtribStruct      _templates_unitattribs[60];
-extern void *               _RadarMap2;
+extern TImage *             _RadarMap2;
 extern ExploisonAtrbStruct  _templates_explosionattribs[64];
 extern BullAtrbStruct       _templates_bulletattribs[64];
 extern char                 _FreeSpawnLocations[8];
@@ -424,6 +431,7 @@ extern int                  _ViewportWidth;
 extern char                 _ArmourNames[12][50];
 extern TImage *             _image_placement_marker_buildable;
 extern char                 _SpawnLocationCount;
+extern char                 _radarcolor8_sidecolor[8];
 extern unsigned int         _TileBitflags[800];
 extern char                 _templates_BuildingGroupNameList[100][50];
 extern char                 _templates_UnitNameList[60][450];
@@ -611,9 +619,9 @@ char            GetFacing(int x1, int y1, int x2, int y2);
 // Setup
 void            Setup__LoadUIBBFile();
 
-void            SetPixelOnRadar8(unsigned __int8 x, unsigned __int8 y, char color);
-void            SetPixelOnRadar16(unsigned __int8 x, unsigned __int8 y, __int16 color);
-void            radarmap();
+// void            SetPixelOnRadar8(unsigned __int8 x, unsigned __int8 y, char color); // Replaced by mod
+// void            SetPixelOnRadar16(unsigned __int8 x, unsigned __int8 y, __int16 color); // Replaced by mod
+// void            SetupRadarMap(); // Replaced by mod
 
 // CSide
 void __thiscall CSide__UpdateBuildingAndUnitIconsAndBaseBoundaries(CSide *side);

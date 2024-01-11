@@ -12,6 +12,7 @@
 #include "../extended-maps/crates-func.h"
 #include "../extended-maps/messages-func.h"
 #include "../extended-maps/tooltips.h"
+#include "../extended-maps/radar.h"
 #include "rules.h"
 
 uint32_t MapScrollLockTicks = 0;
@@ -574,17 +575,14 @@ void EvAct_SpiceBloom(int xpos, int ypos, int range, eSpiceBloomMode mode, bool 
         // Use randomizer
         if (randomizer && !(xx == xpos && yy == ypos) && (rand() % 100) < 40)
           continue;
-        // Update pixels on radar
-        if ( gBitsPerPixel == 16 )
-          SetPixelOnRadar16(xx, yy, _radarcolor_word_517898_spicecolor);
-        else
-          SetPixelOnRadar8(xx, yy, _radarcolor_byte_517780_spicecolor);
         // Add two pieces of spice
         int spice_amount = (tile->__tile_bitflags >> 20) & 7;
         int spice_limit = (mode == SPICEBLOOM_DUNE2)?4:2;
         spice_amount = (spice_amount < spice_limit)?HLIMIT(spice_amount + 2, spice_limit):spice_amount;
         tile->__tile_bitflags &= ~(TileFlags_100000_SPICE | TileFlags_200000_SPICE | TileFlags_400000_SPICE);
         tile->__tile_bitflags |= (spice_amount << 20);
+        // Update pixels on radar
+        SetPixelOnRadar(xx, yy);
       }
     }
     // Dune 2 style spice bloom
@@ -741,6 +739,8 @@ void ChangeMapTile(int xpos, int ypos, int new_tile_index, eChangeTileMode mode)
     tile->__tile_bitflags = (tile->__tile_bitflags & ~7) | side_id;
   // Reset tile damage
   tile->__damage = 0;
+  // Set radar color
+  SetPixelOnRadar(xpos, ypos);
 };
 
 void EvAct_ChangeMapBlock(int xpos, int ypos, int width, int height, eChangeTileMode mode, uint16_t *tiles)
@@ -1326,15 +1326,12 @@ void EvAct_HideTile(int xpos, int ypos)
 {
   if ( gBitsPerPixel == 16 )
   {
-    int *img = _RadarMap1 + 16;
-    uint16_t *buffer = (uint16_t *)*img;
-    buffer[ypos * gGameMap.width + xpos] = 0;
+    _RadarMap1->buffer[2 * (ypos * gGameMap.width + xpos)] = 0;
+    _RadarMap1->buffer[2 * (ypos * gGameMap.width + xpos) + 1] = 0;
   }
   else
   {
-    int *img = _RadarMap1 + 16;
-    uint8_t *buffer = (uint8_t *)*img;
-    buffer[ypos * gGameMap.width + xpos] = 0;
+    _RadarMap1->buffer[ypos * gGameMap.width + xpos] = 0;
   }
   for (int y = LLIMIT(ypos - 1, 0); y <= HLIMIT(ypos + 1, gGameMapHeight - 1); y++)
     for (int x = LLIMIT(xpos - 1, 0); x <= HLIMIT(xpos + 1, gGameMapWidth - 1); x++)

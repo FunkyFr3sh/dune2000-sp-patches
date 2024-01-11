@@ -215,12 +215,17 @@ setcglob 0x00515B60, _FontPals
 setcglob 0x00515BB8, gHighScores
 setcglob 0x005162C8, _SidebarButtons
 setcglob 0x00516430, _TacticalData
+setcglob 0x00516530, _radarcolor16_impassable
 setcglob 0x005165B0, _UnitGroupKeyState
+setcglob 0x005165C0, _radarcolor16_driveon
 setcglob 0x00516770, _TileTooltips
+setcglob 0x005173F0, _radarcolor16_sand
 setcglob 0x005173F4, gGameTicks
 setcglob 0x005173F8, _NeutralUnitText
+setcglob 0x005173FC, _radarcolor8_drive_on
 setcglob 0x00517400, _bool_missionfailed_517400
 setcglob 0x00517408, _UnitGroupTextIds
+setcglob 0x005174F8, _colormask3
 setcglob 0x005174FC, _tooltipcolor_yellow
 setcglob 0x00517500, _cheatstates
 setcglob 0x00517508, _Tooltipdata
@@ -230,9 +235,11 @@ setcglob 0x005175D4, _NeutralStructureText
 setcglob 0x005175E0, _UnrevealedText
 setcglob 0x005175E8, _BuildingGroupTextIds
 setcglob 0x00517778, _EnemyUnitText
-setcglob 0x00517780, _radarcolor_byte_517780_spicecolor
+setcglob 0x00517780, _radarcolor8_spice
 setcglob 0x00517784, _EnemyStructureText
-setcglob 0x00517898, _radarcolor_word_517898_spicecolor
+setcglob 0x0051778C, _radarcolor8_sand
+setcglob 0x00517790, _radarcolor8_impassable
+setcglob 0x00517898, _radarcolor16_spice
 setcglob 0x0051789C, _StoredMouseCursorIndex
 setcglob 0x005178AC, _blitflag
 setcglob 0x005178B4, PointerToMainImage
@@ -292,6 +299,7 @@ setcglob 0x00786D48, _ViewportWidth
 setcglob 0x00786D90, _ArmourNames
 setcglob 0x00786FE8, _image_placement_marker_buildable
 setcglob 0x00786FEC, _SpawnLocationCount
+setcglob 0x00786FF0, _radarcolor8_sidecolor
 setcglob 0x00786FF8, _TileBitflags
 setcglob 0x00787E08, _templates_BuildingGroupNameList
 setcglob 0x007891B0, _templates_UnitNameList
@@ -496,9 +504,9 @@ setcglob 0x0045DFE0, GetFacing
 ; Setup
 setcglob 0x00460C80, Setup__LoadUIBBFile
 setcglob 0x00460EC0, Setup__LoadUI_LanguageFile
-setcglob 0x00462010, SetPixelOnRadar8
-setcglob 0x004620B0, SetPixelOnRadar16
-setcglob 0x00462140, radarmap
+;setcglob 0x00462010, SetPixelOnRadar8 ; Replaced by mod
+;setcglob 0x004620B0, SetPixelOnRadar16 ; Replaced by mod
+;setcglob 0x00462140, SetupRadarMap ; Replaced by mod
 setcglob 0x00466140, Setup__LoadGraphicsFile
 ; CSide
 setcglob 0x0046BE50, CSide__UpdateBuildingAndUnitIconsAndBaseBoundaries
