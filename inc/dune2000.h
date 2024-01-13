@@ -337,6 +337,7 @@ extern char                 gTournamentGame;
 extern CAI_                 _gAIArray[];
 // extern MessageData          _gMessageData; // Replaced by mod
 extern char                 ResourcePath[];
+extern char                 gRES_PATH[152];
 extern char                 MoviesResourcePath[];
 extern char                 MusicResourcePath[];
 extern char                 MissionsResourcePath[];
@@ -350,6 +351,7 @@ extern TacticalStruct       _TacticalData;
 extern short                _radarcolor16_impassable;
 extern char                 _UnitGroupKeyState[10];
 extern short                _radarcolor16_driveon;
+extern char                 _BloxFileName[200];
 extern int                  _TileTooltips[800];
 extern short                _radarcolor16_sand;
 extern unsigned int         gGameTicks;
@@ -471,6 +473,7 @@ extern char                 _IsMultiplayer;
 extern char                 _DebugOn_Pathfind_WinLose_DebugNewGame;
 extern bool                 BitsPerPixelChanged;
 
+extern unsigned char *      _PalettePtr;
 
 extern int                  _MouseLeftState;
 extern int                  _MouseLeftDown;
@@ -513,6 +516,8 @@ void            QueueMessage(const char *message, int type);
 void            FreeMessageSlot();
 void            GetOwnershipStatusOfCell(int x, int y, char side, _BYTE *flags);
 void            DebugFatal(char *caption, char *format, ...);
+FILE *          w__OpenFile(char * filename, char *mode, char *path);
+void            CloseFile(FILE *Stream);
 size_t          _ReadFile(void *buffer, size_t size, size_t count, FILE *file);
 size_t          _WriteFile(void *buffer, size_t size, size_t count, FILE *file);
 
@@ -532,6 +537,7 @@ uint16_t        GetColor16bit(int colormask, int color);
 void            BlitClipTImage1(TImage *lpTITo, int toX, int toY, TImage *lpTIFrom, RECT *rect, bool trans, int a7);
 void            BlitClipTImage2(TImage *lpTITo, RECT *rect, int toX, int toY, TImage *lpTIFrom, bool trans, int a7);
 void            ClearTImage(TImage *a1, int color, int unusable);
+char            GetColor8bit(unsigned __int8 red, unsigned __int8 green, unsigned __int8 blue, unsigned __int8 *palette, char bool1, char bool2, char bool3);
 void            BlitFontChar_0(TImage *dest, int x, int y, TImage *src, _WORD *pal);
 // Other
 char            IsBuildingWithBehaviorBuilt(unsigned __int8 a1, BuildingBehaviorType a2);
@@ -553,6 +559,7 @@ void            SetMouseCursor(int cursor);
 int             RevealMap();
 void            Map__PlayerDefeated(uint8_t sideId);
 
+void            LoadMapData(const CHAR *ArgList, char a2);
 char            UpdateShroudInRegion(RECT *rect, unsigned char width, unsigned char height);
 unsigned int    FindFreeSpotForInfantry(TileFlags tile_flags);
 void            GetBuildingOnConcreteCount(char side_id, unsigned char building_type, unsigned char x, unsigned char y, unsigned int *buildTileCount1, unsigned int *concreteTileCount1);

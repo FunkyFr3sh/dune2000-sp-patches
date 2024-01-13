@@ -205,6 +205,7 @@ setcglob 0x004F3D3C, gTournamentGame
 setcglob 0x004F4118, _gAIArray
 setcglob 0x00504030, _gMessageData
 setcglob 0x00513488, ResourcePath
+setcglob 0x00513488, gRES_PATH
 setcglob 0x00513520, MoviesResourcePath
 setcglob 0x005135B8, MusicResourcePath
 setcglob 0x00513650, MissionsResourcePath
@@ -218,6 +219,7 @@ setcglob 0x00516430, _TacticalData
 setcglob 0x00516530, _radarcolor16_impassable
 setcglob 0x005165B0, _UnitGroupKeyState
 setcglob 0x005165C0, _radarcolor16_driveon
+setcglob 0x005166A0, _BloxFileName
 setcglob 0x00516770, _TileTooltips
 setcglob 0x005173F0, _radarcolor16_sand
 setcglob 0x005173F4, gGameTicks
@@ -339,6 +341,7 @@ setcglob 0x007984C4, _IsMultiplayer
 setcglob 0x007984D0, _DebugOn_Pathfind_WinLose_DebugNewGame
 setcglob 0x007984D4, BitsPerPixelChanged
 setcglob 0x007984D8, MenuDraw_FromTopPixel		;       int MenuDraw::FromTopPixel
+setcglob 0x007984E0, _PalettePtr
 setcglob 0x00798510, WindowActivated
 setcglob 0x00798520, _MouseLeftState
 setcglob 0x00798524, _MouseLeftDown
@@ -398,6 +401,8 @@ setcglob 0x00425720, QueueMessage
 setcglob 0x00425830, FreeMessageSlot
 setcglob 0x00428C30, GetOwnershipStatusOfCell
 setcglob 0x0042B590, DebugFatal
+setcglob 0x0042BA50, w__OpenFile
+setcglob 0x0042BB40, CloseFile
 setcglob 0x0042BB60, _ReadFile
 setcglob 0x0042BB80, _WriteFile
 setcglob 0x0042BC60, CreateGlobe
@@ -417,6 +422,7 @@ setcglob 0x0042F3D0, GetColor16bit
 setcglob 0x004305F0, BlitClipTImage1
 setcglob 0x00430770, BlitClipTImage2
 setcglob 0x00430860, ClearTImage
+setcglob 0x00431C40, GetColor8bit
 setcglob 0x00431F50, BlitFontChar_0
 ; Other
 setcglob 0x00442910, IsBuildingWithBehaviorBuilt
@@ -438,6 +444,7 @@ setcglob 0x0044C420, SetMouseCursor
 setcglob 0x0044C480, RevealMap
 setcglob 0x0044C4F0, Map__PlayerDefeated
 setcglob 0x0044C520, Map__SetDeadOrder
+setcglob 0x0044C6D0, LoadMapData
 setcglob 0x0044CD10, UpdateShroudInRegion
 setcglob 0x0044DA90, FindFreeSpotForInfantry
 setcglob 0x0044DAC0, GetBuildingOnConcreteCount
