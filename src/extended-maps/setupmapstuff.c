@@ -469,7 +469,7 @@ void Mod__setupmapstuff()
      DebugFatal("Setup.cpp", "No worms found on this map (%s)", _MapName);
     } */
     // New logic end
-    ExecuteEventHook(HOOK_SETUPMAPSTUFF, 0, 0, 0, 0);
+    ExecuteEventHook(HOOK_SETUPMAPSTUFF, 0, 0, 0, 0, 0, 0);
     return;
   }
   v54 = 1;
@@ -734,5 +734,5 @@ LABEL_105:
     v99 = v89;
     goto LABEL_104;
   }
-  ExecuteEventHook(HOOK_SETUPMAPSTUFF, 0, 0, 0, 0);
+  ExecuteEventHook(HOOK_SETUPMAPSTUFF, 0, 0, 0, 0, 0, 0);
 }

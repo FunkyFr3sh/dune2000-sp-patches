@@ -238,6 +238,7 @@ void EvAct_SetVariable(int target_var, bool use_offset, int offset_var, eValueOp
 void EvAct_GetVariable(int target_var, int src_var_base, int src_var_offset);
 void EvAct_SetFloatVariable(int target_var, bool use_offset, int offset_var, eValueOperation operation, int value);
 void EvAct_ConvertVariable(int first_var, int number_of_vars, int operation);
+void EvAct_DebugVariables(int first_var, int number_of_vars, int ref_id);
 void EvAct_GetRandomValue(int target_var, int min_value, int max_value);
 void EvAct_GetRandomCoords(int min_x, int min_y, int max_x, int max_y, int first_var);
 void EvAct_GetValueFromList(int event_index, int amount, int target_var, int mode, int index_var, uint8_t *value_list);

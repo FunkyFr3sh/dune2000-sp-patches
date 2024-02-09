@@ -869,6 +869,7 @@ void ExecuteEventAction(EventContext *e)
   case ET_GET_VARIABLE:                   EvAct_GetVariable                   (A_ITEM, A_ENUM, A_BOOL);                                     break;
   case ET_SET_FLOAT_VARIABLE:             EvAct_SetFloatVariable              (A_AMNT, A_ITEM, A_ENUM, A_BOOL, A_VAL1);                     break;
   case ET_CONVERT_VARIABLE:               EvAct_ConvertVariable               (A_ITEM, A_ENUM, A_BOOL);                                     break;
+  case ET_DEBUG_VARIABLES:                EvAct_DebugVariables                (A_ITEM, A_ENUM, A_BOOL);                                     break;
   case ET_GET_RANDOM_VALUE:               EvAct_GetRandomValue                (A_ITEM, A_VAL1, A_VAL2);                                     break;
   case ET_GET_RANDOM_COORDS:              EvAct_GetRandomCoords               (COORD0, COORD1, A_ITEM);                                     break;
   case ET_GET_VALUE_FROM_LIST:            EvAct_GetValueFromList              (EV_IDX, A_AMNT, A_ITEM, A_ENUM, A_BOOL, (uint8_t *)e->data); break;
@@ -968,7 +969,7 @@ void ExecuteEventAction(EventContext *e)
   }
 }
 
-int ExecuteEventHook(int hook_type, int num_vars, int var0, int var1, int var2)
+int ExecuteEventHook(int hook_type, int num_vars, int var0, int var1, int var2, int var3, int var4)
 {
   if (event_hooks[hook_type] == -1)
     return var0;
@@ -979,6 +980,10 @@ int ExecuteEventHook(int hook_type, int num_vars, int var0, int var1, int var2)
     SetVariableValue(1, var1);
   if (num_vars >= 3)
     SetVariableValue(2, var2);
+  if (num_vars >= 4)
+    SetVariableValue(3, var3);
+  if (num_vars >= 5)
+    SetVariableValue(4, var4);
   // Execute hook
   ExecuteEventBlock(event_hooks[hook_type], EBT_BLOCK);
   return GetVariableValue(0);

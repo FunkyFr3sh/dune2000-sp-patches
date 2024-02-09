@@ -466,7 +466,7 @@ LABEL_87:
   {
     for (int i = 0; i < TOOLTIP_LINES; i++)
       gTooltipExtraData[i].color = _Tooltipdata.__Color;
-    ExecuteEventHook(HOOK_HANDLETOOLTIP, 3, tooltip_type, tooltip_arg1, tooltip_arg2);
+    ExecuteEventHook(HOOK_HANDLETOOLTIP, 3, tooltip_type, tooltip_arg1, tooltip_arg2, 0, 0);
   }
   if (gTooltipExtraData[0].text[0])
   {

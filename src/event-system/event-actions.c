@@ -1457,6 +1457,17 @@ void EvAct_ConvertVariable(int first_var, int number_of_vars, int operation)
   }
 }
 
+void EvAct_DebugVariables(int first_var, int number_of_vars, int ref_id)
+{
+  char buffer[512];
+  for (unsigned int i = 0; i < sizeof(buffer); i++)
+    buffer[i] = 0;
+  sprintf(buffer, "Variables from %d: ", first_var);
+  for (int i = 0; i < number_of_vars; i++)
+    sprintf(&buffer[strlen(buffer)], "%d ", GetVariableValue(first_var + i));
+  QueueMessageExt(buffer, 1, ref_id, 0, 0, 0, 0, 0);
+}
+
 void EvAct_GetRandomValue(int target_var, int min_value, int max_value)
 {
   if (min_value > max_value)
@@ -2317,8 +2328,8 @@ void EvAct_If(int event_index, eIfConditionType condition_type, int side_var, in
     case IFCONDTYPE_CHECK_CRATE:          result = CheckIfCrateMatchesFilter((ObjectFilterStruct *)cond_expr, &gCrates[object_index]); break;
     case IFCONDTYPE_CHECK_TILE:
     {
-      int x = object_index;
-      int y = GetVariableValue(object_index_var + 1);
+      int x = GetVariableValue(side_var);
+      int y = GetVariableValue(object_index_var);
       result = CheckIfTileMatchesFilter((ObjectFilterStruct *)cond_expr, &gGameMap.map[x + _CellNumbersWidthSpan[y]], x, y);
       break;
     }

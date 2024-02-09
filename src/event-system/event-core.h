@@ -192,7 +192,7 @@ enum EventTypes
   ET_GET_VARIABLE,
   ET_SET_FLOAT_VARIABLE,
   ET_CONVERT_VARIABLE,
-  ET_124,
+  ET_DEBUG_VARIABLES,
   ET_GET_RANDOM_VALUE,
   ET_GET_RANDOM_COORDS,
   ET_GET_VALUE_FROM_LIST,
@@ -330,7 +330,7 @@ enum EventTypes
   ET_END
 };
 
-#define HOOK_TYPE_COUNT 15
+#define HOOK_TYPE_COUNT 18
 
 enum HookTypes
 {
@@ -348,7 +348,10 @@ enum HookTypes
   HOOK_PREUPDATEEXPLOSION,
   HOOK_POSTUPDATEEXPLOSION,
   HOOK_GETUNITBUILDSPEEDPERCENTAGE,
-  HOOK_GETBUILDINGBUILDSPEEDPERCENTAGE
+  HOOK_GETBUILDINGBUILDSPEEDPERCENTAGE,
+  HOOK_GETUNITCOST,
+  HOOK_GETBUILDINGCOST,
+  HOOK_CANUNITUSESQUARE
 };
 
 // Condition-related structs
@@ -463,7 +466,7 @@ void ExecuteEventsInRange(int min_event_index, int max_event_index, eEventBlockT
 void ExecuteEventBlock(int event_index, eEventBlockType block_type);
 void ExecuteEvent(int event_index);
 void ExecuteEventAction(EventContext *e);
-int ExecuteEventHook(int hook_type, int num_vars, int var0, int var1, int var2);
+int ExecuteEventHook(int hook_type, int num_vars, int var0, int var1, int var2, int var3, int var4);
 int GetVariableValueOrConst(int flags, int flag_index, int var_index_or_const);
 void SetVariableValue(int var_index, int value);
 int GetVariableValue(int var_index);

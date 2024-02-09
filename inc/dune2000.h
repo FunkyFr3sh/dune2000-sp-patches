@@ -541,6 +541,7 @@ char            GetColor8bit(unsigned __int8 red, unsigned __int8 green, unsigne
 void            BlitFontChar_0(TImage *dest, int x, int y, TImage *src, _WORD *pal);
 // Other
 char            IsBuildingWithBehaviorBuilt(unsigned __int8 a1, BuildingBehaviorType a2);
+int             GetDifficultyCostPercentage(eSideType side_id);
 unsigned int    GetUnitBuildSpeedPercentage(unsigned char unit_type, unsigned char side_id);
 unsigned int    GetBuildingBuildSpeedPercentage(unsigned char side_id);
 unsigned int    w__GetUnitCost(int type, eSideType side);

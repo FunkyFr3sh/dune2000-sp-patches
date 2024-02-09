@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "macros/patch.h"
 #include "dune2000.h"
+#include "../event-system/event-core.h"
 
 bool CheckTerrainRestriction(int tile_flags, int default_flag, int restriction)
 {
@@ -18,8 +19,6 @@ bool CheckTerrainRestriction(int tile_flags, int default_flag, int restriction)
 };
 
 // Custom implementation of function CanUnitUseSquare
-LJMP(0x0045D990, _Mod__CanUnitUseSquare);
-
 BOOL Mod__CanUnitUseSquare(dwXYStruct x, Unit *unit, eSideType side_id, char route_mode)
 {
   Unit *unit_; // ecx
@@ -266,6 +265,13 @@ LABEL_77:
   return 0;
 }
 
+LJMP(0x0045D990, _Ext__CanUnitUseSquare);
+
+bool Ext__CanUnitUseSquare(dwXYStruct x, Unit *unit, eSideType side_id, char route_mode)
+{
+  return ExecuteEventHook(HOOK_CANUNITUSESQUARE, 5, Mod__CanUnitUseSquare(x, unit, side_id, route_mode), x.X, x.Y, side_id, unit->MyIndex);
+}
+
 // Redirect setting of can't move / move cursor to call of custom function SetMouseCursorForUnitMovementRestriction
 // Superseded by Mod__HandleGameLoopEvents
 //LJMP(0x004438B2, 0x004466D3); // HandleGameLoopEvents
@@ -283,7 +289,7 @@ void SetMouseCursorForUnitMovementRestriction()
   {
     if (!unit->__IsSelected)
       continue;
-    if (Mod__CanUnitUseSquare(pos, unit, gSideId, 0))
+    if (Ext__CanUnitUseSquare(pos, unit, gSideId, 0))
     {
       SetMouseCursor(CURSOR_MOVE);
       return;

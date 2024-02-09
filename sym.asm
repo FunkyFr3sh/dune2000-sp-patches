@@ -426,6 +426,7 @@ setcglob 0x00431C40, GetColor8bit
 setcglob 0x00431F50, BlitFontChar_0
 ; Other
 setcglob 0x00442910, IsBuildingWithBehaviorBuilt
+setcglob 0x004429B0, GetDifficultyCostPercentage
 setcglob 0x00442A00, GetUnitBuildSpeedPercentage
 setcglob 0x00442B10, GetBuildingBuildSpeedPercentage
 setcglob 0x00442BB0, w__GetUnitCost

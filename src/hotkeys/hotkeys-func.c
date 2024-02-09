@@ -60,12 +60,12 @@ void HandleKeyEvent(int key, bool keyIsDown)
     {
       if (keyIsDown)
       {
-        if (ExecuteEventHook(HOOK_KEYBOARD_MOUSE_DOWN, 2, 0, key, 0))
+        if (ExecuteEventHook(HOOK_KEYBOARD_MOUSE_DOWN, 2, 0, key, 0, 0, 0))
           return;
       }
       else
       {
-        if (ExecuteEventHook(HOOK_KEYBOARD_MOUSE_UP, 2, 0, key, 0))
+        if (ExecuteEventHook(HOOK_KEYBOARD_MOUSE_UP, 2, 0, key, 0, 0, 0))
           return;
       }
     }
