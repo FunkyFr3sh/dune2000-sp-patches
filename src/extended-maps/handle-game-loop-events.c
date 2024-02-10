@@ -2074,7 +2074,7 @@ LABEL_665:
     }
     _KeyboardKeyDown[VK_R] = 0;
   }
-  if ( _KeyboardKeyDown[VK_H] )
+  if ( _KeyboardKeyDown[VK_H] && gGameTicks > MapScrollLockTicks )
   {
     side = GetSide(gSideId);
     CSide_46CF10_HKEY_BattleFieldPos(side, &_ViewportXPos, &_ViewportYPos, 1);
@@ -2123,7 +2123,7 @@ LABEL_665:
         _TacticalData.__Bookmarks[v117].x = viewportx;
         _TacticalData.__Bookmarks[v117].y = viewporty;
       }
-      else
+      else if ( gGameTicks > MapScrollLockTicks )
       {
         viewportx = _TacticalData.__Bookmarks[v117].x;
         viewporty = _TacticalData.__Bookmarks[v117].y;
