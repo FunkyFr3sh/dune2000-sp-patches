@@ -5,7 +5,7 @@ Patches/bug fixes for Dune 2000 (by Westwood Studios/Intelligent Games)
 Instructions
 --------------------------------------------------------------------------------
 
- - Download the following file and extract it somewhere: http://hifi.iki.fi/win-builds-for-cnc-patch.zip
+ - Download the following file and extract it somewhere: https://github.com/FunkyFr3sh/petool/releases/download/v20231004/win-builds-for-patching.zip
  - Start win-install.bat
 
 Once completed, start build.cmd to compile a fresh dune2000.exe
