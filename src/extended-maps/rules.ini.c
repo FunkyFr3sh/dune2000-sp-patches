@@ -38,6 +38,21 @@ void LoadRulesFromMap()
     LoadVars(mapIniPath);
 }
 
+static void LoadMultiPlayerSettings(LPCTSTR fileName)
+{
+    NetCrates = IniGetBool("MultiPlayer", "Crates", NetCrates, fileName);
+    NetWorms = IniGetInt("MultiPlayer", "Worms", NetWorms, fileName);
+    NetStartingCredits = IniGetInt("MultiPlayer", "Credits", NetStartingCredits, fileName);
+    NetTechLevel = IniGetInt("MultiPlayer", "TechLevel", NetTechLevel, fileName);
+    NetUnitCount = IniGetInt("MultiPlayer", "UnitCount", NetUnitCount, fileName);
+    StartWithMCV = IniGetBool("MultiPlayer", "StartWithMCV", true, fileName);
+    UseDefaultWinLoseEvents = IniGetBool("MultiPlayer", "UseDefaultWinLoseEvents", false, fileName);
+    
+    int maxIcons = (GameHeight - 212) / SideBarIconHeight;
+    int iconCount = IniGetInt("MultiPlayer", "SidebarIconCount", maxIcons, fileName);
+    SideBarIconCount = iconCount > maxIcons ? maxIcons : iconCount < 1 ? 1 : iconCount;
+}
+
 static void LoadVars(LPCTSTR fileName)
 {
     harvestUnloadDelay = IniGetInt("Vars", "harvestUnloadDelay", harvestUnloadDelay, fileName);
