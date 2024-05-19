@@ -120,18 +120,31 @@ void HandleKeyEvent(int key, bool keyIsDown)
     
     if (SpawnerActive && destKey == WOLPageReply) return;
     
+    if (destKey == ToggleLiveStats)
+    {
+        if (!keyIsDown) LiveStatsEnabled = !LiveStatsEnabled;
+        return;
+    }
+
     if (destKey == PlayRandomSong)
     {
         if (!keyIsDown) PlayRandomMusic();
         return;
     }
+
+    if (key == VK_ESCAPE && !keyIsDown && IsCurrentlyShown("MP_TIMEOUT"))
+    {
+        ForceQuickExit = true;
+        GameState = GS_QUIT;
+        return;
+    }
     
     switch (destKey)
     {
-        //case VK_MBUTTON:
-        //case VK_XBUTTON1:
-        //case VK_XBUTTON2:
-        //    return; // those keys were not supported by the original game so we are not forwarding them if not assigned to any function
+        case VK_MBUTTON:
+        case VK_XBUTTON1:
+        case VK_XBUTTON2:
+            return; // those keys were not supported by the original game so we are not forwarding them if not assigned to any function
         case VK_F1:
         case VK_F2:
         case VK_F3:

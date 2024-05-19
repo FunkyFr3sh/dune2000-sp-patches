@@ -1,7 +1,7 @@
 %include "macros/patch.inc"
 %include "macros/datatypes.inc"
 
-sstring GameVersion, "V 1.06p rev.42 SP - FunkyFr3sh"
+sstring GameVersion, "V 1.06p rev.43 - FunkyFr3sh"
 
 hack 0x0048BE05 ;use custom version string and align x
     sub ecx, 120 ;x

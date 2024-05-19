@@ -29,13 +29,14 @@ void WriteStatsDmp(const void *buffer, int length)
         StatsDmpLength = (unsigned short)length - 2;
         memcpy(StatsDmpBuffer, buffer + 2, length - 2);
         
-        WriteString("ACCN", gNetPlayerName);
-        WriteUInt32("TICK", gGameTicks);
-        WriteUInt32("UNIT", (unsigned int)gNetUnitCount);
+        WriteString("ACCN", NetPlayerName);
+        WriteUInt32("TICK", GameTicks);
+        WriteUInt32("UNIT", (unsigned int)NetUnitCount);
         WriteUInt32("NUMP", NetPlayerCount);
-        WriteUInt32("AIPL", gNetAIPlayers);
+        WriteUInt32("AIPL", NetAIPlayers);
         WriteUInt32("ENDS", SpawnerGameEndState);
         WritePlayerCredits();
+        WriteSpectators();
         WriteUnitsOwned();
         WriteBuildingsOwned();
         
@@ -82,21 +83,31 @@ int GetAirUnitsOwned(int house)
 
 static void WritePlayerCredits()
 {
-    int playerCount = NetPlayerCount + gNetAIPlayers;
+    int playerCount = NetPlayerCount + NetAIPlayers;
     for (int i = 0; i < playerCount; i++)
     {
         char id[5];
         sprintf(id, "CRD%d", i);
-        Side side = GetSide(i);
+        Side side = Side__AsPointer(i);
         uint32_t *siloCredits = (void *)side + HC_SILO_CREDITS;
         uint32_t *credits = (void *)side + HC_CREDITS;
         WriteUInt32(id, *siloCredits + *credits);
     }
 }
 
+static void WriteSpectators()
+{
+    for (int i = 0; i < NetPlayerCount; i++)
+    {
+        char id[5];
+        sprintf(id, "SPC%d", NetPlayersExt[i].house);
+        WriteBool(id, NetPlayersExt[i].isSpectator);
+    }
+}
+
 static void WriteUnitsOwned()
 {
-    int playerCount = NetPlayerCount + gNetAIPlayers;
+    int playerCount = NetPlayerCount + NetAIPlayers;
     for (int i = 0; i < playerCount; i++)
     {
         char id[5];
@@ -107,7 +118,7 @@ static void WriteUnitsOwned()
 
 static void WriteBuildingsOwned()
 {
-    int playerCount = NetPlayerCount + gNetAIPlayers;
+    int playerCount = NetPlayerCount + NetAIPlayers;
     for (int i = 0; i < playerCount; i++)
     {
         char id[5];

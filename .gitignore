@@ -6,6 +6,7 @@
 
 # configuration
 config.mk
+.vscode
 
 # misc junk
 move.cmd
