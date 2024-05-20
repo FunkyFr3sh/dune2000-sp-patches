@@ -32,6 +32,19 @@ typedef struct dwXYStruct
 #include "dune2000/uimgr.h"
 #include "dune2000/vk.h"
 
+typedef struct NetPlayer
+{
+    char name[20];
+    int unk;
+    char color;
+    char side;
+    char handicap;
+    char unk2;
+    unsigned int ip;
+    int unk3;
+    int unk4;
+}NetPlayer;
+
 typedef struct TechPosEntry
 {
   char UnitType_Atreides;
@@ -244,6 +257,7 @@ extern unsigned int NetPlayersStartingCredits[];
 extern char NetPlayersTechLevel[];
 extern char NetPlayersColor[]; //Actually there is more than just the colors, not sure what... struct size 60byte, first byte = color
 extern char MissionMap[];
+extern struct NetPlayer NetPlayers[];
 extern char NetPlayerNamesArray[6][60];
 
 //Game settings
@@ -272,6 +286,7 @@ extern unsigned char WOLMaxPlayers;
 extern bool WOLTournamentGame;
 extern bool WOLPrivateGame;
 extern int WOLGameId;
+extern int GameStartTickCount;
 extern int GameEndTickCount;
 
 //Screen display stuff
@@ -516,6 +531,7 @@ void            QueueMessage(const char *message, int type);
 void            FreeMessageSlot();
 void            GetOwnershipStatusOfCell(int x, int y, char side, _BYTE *flags);
 void            DebugFatal(char *caption, char *format, ...);
+void            AbortGame();
 FILE *          w__OpenFile(char * filename, char *mode, char *path);
 void            CloseFile(FILE *Stream);
 size_t          _ReadFile(void *buffer, size_t size, size_t count, FILE *file);

@@ -90,6 +90,7 @@ setcglob 0x004E8BEC, WOLMaxPlayers
 setcglob 0x004F3D3C, WOLTournamentGame
 setcglob 0x004F3D40, WOLPrivateGame
 setcglob 0x004F3D38, WOLGameId
+setcglob 0x004F3D30, GameStartTickCount
 setcglob 0x004F3D34, GameEndTickCount
 
 ;Screen display stuff
@@ -362,6 +363,16 @@ setcglob 0x008CD4F0, _IRValues
 setcglob 0x008CD51C, OSMajorVersion
 setcglob 0x008CD520, OSMinorVersion
 
+;Side specifics
+setcglob 0x007BCACC, AtreidesMoney
+setcglob 0x007BCACC+(158096*1), HarkonnenMoney
+setcglob 0x007BCACC+(158096*2), OrdosMoney
+setcglob 0x007BCACC+(158096*3), EmperorMoney
+setcglob 0x007BCACC+(158096*4), FremenMoney
+setcglob 0x007BCACC+(158096*5), SmugglersMoney
+setcglob 0x007BCACC+(158096*6), MercenariesMoney
+setcglob 0x007BCACC+(158096*7), SandwormMoney
+
 ;; ### Functions ###
 
 setcglob 0x005A3BB0, WinMain
@@ -400,7 +411,8 @@ setcglob 0x0041EF30, CAI_PlaceBuiltBuilding
 setcglob 0x00425720, QueueMessage
 setcglob 0x00425830, FreeMessageSlot
 setcglob 0x00428C30, GetOwnershipStatusOfCell
-setcglob 0x0042B590, DebugFatal
+setcglob 0x0042B590, DebugFatal ; Game_ShowErrorAndExit
+setcglob 0x00492EB0, AbortGame
 setcglob 0x0042BA50, w__OpenFile
 setcglob 0x0042BB40, CloseFile
 setcglob 0x0042BB60, _ReadFile
@@ -640,7 +652,8 @@ setcglob 0x008CF6F4, _imp__timeBeginPeriod
 setcglob 0x008CF6F0, _imp__timeEndPeriod
 setcglob 0x008CF698, _imp__MessageBoxA  
 setcglob 0x008CF6C0, _imp__ShowCursor
-setcglob 0x008CF61C, _imp__GetCurrentProcess
+setcglob 0x008CF61C, 
+setcglob 0x008CF578, _imp__ExitProcess
 
 ; clib
 setcglob 0x004B15B0, vsprintf

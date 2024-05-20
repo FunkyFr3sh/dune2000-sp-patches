@@ -8,8 +8,10 @@
 bool DirectoryExists(const char *path)
 {
     struct stat info;
-    if (stat(path, &info ) != 0) return false;
-    else if (info.st_mode & S_IFDIR) return true;
+    if (stat(path, &info) != 0)
+        return false;
+    else if (info.st_mode & S_IFDIR)
+        return true;
     return false;
 }
 
@@ -31,7 +33,8 @@ bool FileWriteAllBytes(const char *fileName, const void *bytes, size_t size)
     {
         size_t dataWritten = fwrite(bytes, sizeof(char), size, file);
         fclose(file);
-        if (dataWritten == size) return true;
+        if (dataWritten == size)
+            return true;
     }
     return false;
 }
@@ -55,17 +58,34 @@ bool StringStartsWith(const char *str, const char *value)
     return lstr < lvalue ? false : strncmp(value, str, lvalue) == 0;
 }
 
+unsigned int StringToIntIp(char *ip)
+{
+    unsigned char a[4];
+    char str[20];
+    strcpy(str, ip);
+
+    char *s = strtok(str, ".");
+    for (int i = 3; i >= 0 && s != NULL; i--)
+    {
+        a[i] = atoi(s);
+        s = strtok(NULL, ".");
+    }
+    return (a[0] << 24) | (a[1] << 16) | (a[2] << 8) | a[3];
+}
+
 char *PathChangeExtension(char *fileName, char *extension)
 {
     static char result[512];
     strcpy(result, fileName);
-    
+
     char *pFile = strrchr(result, '\\');
-    pFile = pFile == NULL ? result : pFile+1;
+    pFile = pFile == NULL ? result : pFile + 1;
     // change extension
     char *pExt = strrchr(pFile, '.');
-    if (pExt != NULL) strcpy(pExt, extension);
-    else strcat(pFile, extension);
+    if (pExt != NULL)
+        strcpy(pExt, extension);
+    else
+        strcat(pFile, extension);
 
     return result;
 }
@@ -74,12 +94,13 @@ char *PathGetFileNameWithoutExtension(char *fileName)
 {
     static char result[512];
     strcpy(result, fileName);
-    
+
     char *pFile = strrchr(result, '\\');
-    pFile = pFile == NULL ? result : pFile+1;
+    pFile = pFile == NULL ? result : pFile + 1;
     // remove extension
     char *pExt = strrchr(pFile, '.');
-    if (pExt != NULL) strcpy(pExt, "");
+    if (pExt != NULL)
+        strcpy(pExt, "");
 
     return result;
 }

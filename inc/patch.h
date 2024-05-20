@@ -5,18 +5,72 @@
 // This header is used for patches
 // This header will be split up as it becomes larger
 
+// ### Imports ###
+
 typedef HCURSOR(WINAPI* LOADCURSORFROMFILEAPROC)(LPCSTR);
 typedef HCURSOR(WINAPI* SETCURSORPROC)(HCURSOR);
+typedef bool (__stdcall *ENUMDISPLAYSETTINGSAPROC)(LPCTSTR lpszDeviceName, DWORD iModeNum, DEVMODE *lpDevMode);
+
+extern ENUMDISPLAYSETTINGSAPROC EnumDisplaySettingsAImp;
+extern LOADCURSORFROMFILEAPROC LoadCursorFromFileAImp;
+extern SETCURSORPROC SetCursorImp;
+extern BOOL *GameHandlesClose;
+
+// ### Structs ###
+
+typedef struct NetPlayerExt
+{
+    char name[20];
+    char house;
+    bool isSpectator;
+    char startingLocation;
+    char team;
+}NetPlayerExt;
+
+typedef struct AIPlayer
+{
+    unsigned short startingCredits;
+    char color;
+    char side;
+}AIPlayer;
+
+typedef struct ListAddress
+{
+    unsigned int port;
+    unsigned int ip;
+}ListAddress;
+
+
+// ### Constants ###
+
+#define DEFAULT_PORT 8054
 
 // ### Variables ###
 
 extern bool SpawnerActive;
 extern bool StartWithMCV;
+extern struct ListAddress AddressList[];
+extern int TunnelIp;
+extern int TunnelPort;
+extern int TunnelId;
+extern int PortHack;
+extern bool MeIsSpectator;
 extern bool LiveStatsEnabled;
+extern bool DisableEngineer;
+extern bool DisableTurrets;
+extern bool NoCarryall;
+extern bool DisableAirStrike;
+extern AIPlayer AIPlayers[];
 extern char MapScript[];
+extern bool MapScriptExists;
+extern NetPlayerExt NetPlayersExt[];
 extern char MapName[];
 extern bool UseDefaultWinLoseEvents;
 extern uint32_t SpawnerGameEndState;
+extern bool MCVDeployed[8];
+extern bool ShortGame;
+extern uint32_t NetKey;
+extern uint32_t P2Pheader;
 extern unsigned char gOldSideId;
 extern uint32_t MapScrollLockTicks;
 
@@ -101,10 +155,17 @@ extern bool JumpToSkirmish;
 extern bool JumpToLAN;
 extern bool JumpToGame;
 
+extern bool MouseClickInjected;
+extern bool KeyboardInjected;
+extern bool FastKeyPress;
+
 extern bool DisableMaxWindowedMode;
+extern bool InfiniteSpice;
 extern char GameLanguage[];
+extern bool ForceQuickExit;
 extern bool MouseWheelUp;
 extern bool MouseWheelDown;
+extern bool MouseWheelTriggered;
 extern bool UseImprovedFPSLimiter;
 extern bool CutsceneChangeResolution;
 extern bool SingleProcessorAffinity;
@@ -117,9 +178,20 @@ extern SETCURSORPROC SetCursorImp;
 
 // ### Functions ###
 
+void SetMouseHook();
+void UnhookMouseHook();
+void UnhookKeyboardHook();
+void SetKeyboardHook();
+void WriteLog();
+
+bool IsSpectator(uint8_t sideId);
 void PlayRandomMusic();
 void HandleKeyEvent(int key, bool keyIsDown);
+void CheckMousePosition(int x, int y);
+void CheckKeySequence(int key, LPARAM lParam);
 void SaveDune2000Ini();
+void DxWndEndHook();
+void InitAIPlayers();
 void GenerateUIBB_r16(char *UIBBR16Name);
 void GenerateUIBB_r8(char *UIBBR8Name);
 void SetVQADisplayModeRes();
@@ -127,5 +199,7 @@ void BlowUpEverything(uint8_t sideId);
 void InitMissionScript();
 void StatsClear();
 void SetSingleProcessorAffinity();
+void InitHighRes();
+void InitImports();
 DWORD WINAPI fake_timeGetTime();
 DWORD WINAPI fake_GetTickCount();

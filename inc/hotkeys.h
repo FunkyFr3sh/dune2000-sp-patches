@@ -49,6 +49,7 @@ extern int ScrollLeft;
 extern int ScrollDown;
 extern int ScrollRight;
 extern int ScrollUp;
+extern int ToggleLiveStats;
 extern int PlayRandomSong;
 
 extern bool SlowSideBarScrolling;

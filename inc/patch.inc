@@ -15,8 +15,12 @@
 
 ; ### Variables ###
 
+cextern SpawnerMaxAhead
 cextern SpawnerActive
 cextern StartWithMCV
+cextern ListenPort
+cextern InitHouses
+cextern MeIsSpectator
 cextern PlayersUnitsOwned
 cextern PlayersBuildingsOwned
 
@@ -36,6 +40,7 @@ cextern VQADisplayModeWidth
 cextern VQADisplayModeHeight
 
 cextern DisableMaxWindowedMode
+cextern InfiniteSpice
 cextern GameLanguage
 cextern TextUib
 cextern RandomMusicEnabled
@@ -62,11 +67,18 @@ cextern InitSpawner
 cextern HandleKeyEvent
 cextern LoadRulesFromMap
 cextern SetDisableMaxWindowedMode
+cextern InitDxWnd
+cextern GetStartingLocation
+cextern GetFreeStartingLocation
+cextern SetupAIPlayerColors
+cextern IsSpectator
 cextern DrawLiveStats
 cextern WriteStatsDmp
 cextern PlayRandomMusic
 cextern SetBattleFieldSize
 cextern FPSLimiter
+cextern ExecuteCustomEvent
+cextern InitMissionScript
 cextern LoadSavedGame
 cextern WriteSaveGame
 cextern GamePlayStart
