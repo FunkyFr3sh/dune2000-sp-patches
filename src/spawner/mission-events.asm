@@ -9,7 +9,7 @@ gbool MapScriptExists, false
 gbool UseDefaultWinLoseEvents, false
 gstring MapScript, "", 50
 
-hack 0x00453F58, 0x00453F60 ; By default the players will lose once all units/buildings were destroyed and maps with .mis files use their own Win/Lose events. This option allows the use of the default logic in scripted maps
+hack 0x00453F58, 0x00453F60 ; By default the players will lose once all units/buildings were destroyed and maps with .mis files use their own Win/gLose events. This option allows the use of the default logic in scripted maps
     cmp byte[SpawnerActive], 1
     jnz .out
     cmp byte[UseDefaultWinLoseEvents], 1
@@ -71,13 +71,13 @@ hack 0x00453BC9, 0x00453BD1 ; EnableMissionEventsInMP
 
     
 hack 0x00454446, 0x0045444D ; game over when the mission lose event gets triggered
-    mov byte[Lose], 1
+    mov byte[gLose], 1
     
     cmp byte[SpawnerActive], 1
     jnz hackend
     cmp byte[NetworkGame], 1
     jnz hackend
-    mov byte[GameOver], 1
+    mov byte[_GameOver], 1
     jmp hackend
 
 
@@ -88,9 +88,9 @@ hack 0x004543AB ; game over when mission win event gets triggered (this is only 
     jnz .out
     cmp byte[MeIsSpectator], 1
     jnz .out
-    mov byte[GameOver], 1
+    mov byte[_GameOver], 1
 
 .out:
-    mov al, byte[Lose]
+    mov al, byte[gLose]
     jmp hackend
     

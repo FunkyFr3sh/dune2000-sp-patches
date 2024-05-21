@@ -1,7 +1,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
-#include "patch.h"
+#include <windows.h>
 
 // This header works with sym.asm which defines the Vanilla symbols
 // This header will be split up as it becomes larger
@@ -44,6 +44,39 @@ typedef struct NetPlayer
     int unk3;
     int unk4;
 }NetPlayer;
+
+typedef struct MissionEvent
+{
+    uint32_t map_pos_x;
+    uint32_t map_pos_y;
+    uint32_t value;      // Flag value, Message unknown value
+    uint8_t num_conditions;
+    uint8_t event_type;
+    uint8_t num_units;      // Also Reveal Map radius
+    uint8_t player;         // Also Set Flag flag number
+    uint8_t allegiance_target;
+    uint8_t allegiance_type;
+    uint8_t deploy_action;
+    char condition_index[14];
+    char condition_not[14];
+    char units[21];
+    uint32_t message_index;
+}MissionEvent;
+
+typedef struct GameEvent // 168 byte
+{
+    int unknown1;
+    int unknown2;
+    int ticks;
+    
+    //cellX 30
+    //ticks 8
+    //cellY 28
+    //Order 35
+    //unknown1 24
+    //type 38
+    //sideId 36
+}GameEvent;
 
 typedef struct TechPosEntry
 {
@@ -130,6 +163,18 @@ typedef enum eSideType
   SIDE_NONE = 0xFF,
 } eSideType;
 
+enum Colors
+{
+    CL_BLUE,
+    CL_RED,
+    CL_TEAL,
+    CL_PURPLE,
+    CL_GRAY,
+    CL_BROWN,
+    CL_GOLD,
+    CL_LIGHTBROWN
+};
+
 enum GameEndStates
 {
     GES_ENDEDNORMALLY,
@@ -170,6 +215,29 @@ enum GameStates
     GS_LOAD,
     GS_SAVE,
     GS_QUIT
+};
+
+enum NetworkTypes
+{
+    NT_NONE,
+    NT_UNKNOWN,
+    NT_UDP,
+    NT_SERIAL,
+    NT_IPXDIRECTPLAY
+};
+
+enum EventConditions
+{
+    EC_BUILDINGEXISTS,
+    EC_UNITEXISTS,
+    EC_INTERVAL,
+    EC_TIMER,
+    EC_CASUALTIES,
+    EC_BASEDESTROYED,
+    EC_UNITSDESTROYED,
+    EC_REVEALED,
+    EC_HARVESTED,
+    EC_FLAG
 };
 
 enum CursorTypes
@@ -230,10 +298,38 @@ enum eSidebarButton
 };
 
 // Side (HouseClass)
+#define HC_SIDEID 0x24252
 #define HC_CREDITS 0x2425C
 #define HC_SILO_CREDITS 0x24254
+#define HC_SPICE_HARVESTED 0x2477C
+#define HC_BUILDINGS_DESTROYED 0x24C94
+#define HC_UNITS_KILLED 0x24C90
+#define HC_BUILDINGS_OWNED 0x24784
+//not sure about this one
+#define HC_BUILDING_PRODUCTION_AVAILABLE 0x2652D
+//0x5A00 = 100%
+#define HC_BUILDING_PRODUCTION_PROGRESS 0x2651E
+#define HC_HARKONNEN_PALACE_EXISTS 0x260AA
+#define HC_CURRENTLY_PRODUCED_BUILDING_ID 0x2651C
+
+// Special Weapons
+#define SW_SABOTEUR 4
+#define SW_AIRSTRIKE 9
+#define SW_DEATH_HAND_ROCKET 10
+#define SW_FREMEN 12
 
 // ### Variables ###
+
+//Network settings
+extern unsigned int SendRate;
+extern unsigned int ReconnectTimeOutToPlayer;
+extern unsigned int InitialConnectTimeOut;
+extern unsigned int UnknownNetVar1;
+extern unsigned int UnknownNetVar2;
+extern unsigned int UnknownNetVar3;
+extern unsigned int UnknownNetVar4;
+extern unsigned int UnknownNetVar5;
+extern int NetworkType;
 
 //Multiplayer settings
 extern char NetworkGame;
@@ -288,6 +384,7 @@ extern bool WOLPrivateGame;
 extern int WOLGameId;
 extern int GameStartTickCount;
 extern int GameEndTickCount;
+extern int GameEndState;
 
 //Screen display stuff
 extern int ScreenWidth;

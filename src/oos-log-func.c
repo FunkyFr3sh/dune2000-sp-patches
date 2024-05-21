@@ -18,21 +18,21 @@ int WriteOOSLog()
         /*
         int dura = GetTickCount() - GameStartTickCount;
         
-        if (dura > 1000 && GameTicks > 0)
+        if (dura > 1000 && gGameTicks > 0)
         {
-            fprintf(fp, "AFPS=%u\n", GameTicks / (dura / 1000));
+            fprintf(fp, "AFPS=%u\n", gGameTicks / (dura / 1000));
         }
         */
         
-        fprintf(fp, "GameTicks=%u\n", GameTicks);
+        fprintf(fp, "gGameTicks=%u\n", gGameTicks);
         fprintf(fp, "RandSeed=%d\n", RandSeed);
         fprintf(fp, "GameSpeed=%d\n", GameSpeed);
-        fprintf(fp, "NetUnitCount=%d\n", NetUnitCount);
-        fprintf(fp, "NetTechLevel=%d\n", NetTechLevel);
-        fprintf(fp, "NetStartingCredits=%d\n", NetStartingCredits);
-        fprintf(fp, "NetAIPlayers=%d\n", NetAIPlayers);
-        fprintf(fp, "NetCrates=%s\n", NetCrates ? "Yes" : "No");
-        fprintf(fp, "NetWorms=%d\n", NetWorms);
+        fprintf(fp, "gNetUnitCount=%d\n", gNetUnitCount);
+        fprintf(fp, "gNetTechLevel=%d\n", gNetTechLevel);
+        fprintf(fp, "gNetStartingCredits=%d\n", gNetStartingCredits);
+        fprintf(fp, "gNetAIPlayers=%d\n", gNetAIPlayers);
+        fprintf(fp, "gNetCrates=%s\n", gNetCrates ? "Yes" : "No");
+        fprintf(fp, "gNetWorms=%d\n", gNetWorms);
         fprintf(fp, "DisableEngineer=%s\n", DisableEngineer ? "Yes" : "No");
         fprintf(fp, "DisableTurrets=%s\n", DisableTurrets ? "Yes" : "No");
         fprintf(fp, "NoCarryall=%s\n", NoCarryall ? "Yes" : "No");

@@ -13,14 +13,14 @@ void CheckBuildingsLeft()
 {
     if (ShortGame)
     {
-        int playerCount = NetPlayerCount + NetAIPlayers;
+        int playerCount = NetPlayerCount + gNetAIPlayers;
         for (int i = 0; i < playerCount; i++)
         {
-            if (gBuildingsExist[i]) MCVDeployed[i] = true;
-            else if (gUnitsExist[i] && MCVDeployed[i])
+            if (_gBuildingsExist[i]) MCVDeployed[i] = true;
+            else if (_gUnitsExist[i] && MCVDeployed[i])
             {
-                Side side = Side__AsPointer(i);
-                if (side) Side__BlowupAll(side);
+                Side side = GetSide(i);
+                if (side) CSide__BlowupAll_surrender(side);
                 Map__PlayerDefeated(i);
             }
         }

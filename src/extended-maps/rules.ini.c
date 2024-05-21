@@ -40,11 +40,11 @@ void LoadRulesFromMap()
 
 static void LoadMultiPlayerSettings(LPCTSTR fileName)
 {
-    NetCrates = IniGetBool("MultiPlayer", "Crates", NetCrates, fileName);
-    NetWorms = IniGetInt("MultiPlayer", "Worms", NetWorms, fileName);
-    NetStartingCredits = IniGetInt("MultiPlayer", "Credits", NetStartingCredits, fileName);
-    NetTechLevel = IniGetInt("MultiPlayer", "TechLevel", NetTechLevel, fileName);
-    NetUnitCount = IniGetInt("MultiPlayer", "UnitCount", NetUnitCount, fileName);
+    gNetCrates = IniGetBool("MultiPlayer", "Crates", gNetCrates, fileName);
+    gNetWorms = IniGetInt("MultiPlayer", "Worms", gNetWorms, fileName);
+    gNetStartingCredits = IniGetInt("MultiPlayer", "Credits", gNetStartingCredits, fileName);
+    gNetTechLevel = IniGetInt("MultiPlayer", "TechLevel", gNetTechLevel, fileName);
+    gNetUnitCount = IniGetInt("MultiPlayer", "UnitCount", gNetUnitCount, fileName);
     StartWithMCV = IniGetBool("MultiPlayer", "StartWithMCV", true, fileName);
     UseDefaultWinLoseEvents = IniGetBool("MultiPlayer", "UseDefaultWinLoseEvents", false, fileName);
     

@@ -102,7 +102,7 @@ typedef struct Orderdata
   int __ObjectsServed1;
   __int16 w_field_4;
   __int16 w_field_6;
-  int GameTicks;
+  int gGameTicks;
   _DWORD OrderNumber;
   int __ObjectsServed2;
   int __PlaceBuildingX;

@@ -10,7 +10,7 @@ hack 0x0044904F, 0x00449055 ; DrawMiniMapForSpectators
     mov cl, byte[0x00798544]
     cmp byte[SpawnerActive], 1
     jnz 0x00449055
-    cmp byte[Lose], 1
+    cmp byte[gLose], 1
     jnz 0x00449055
     jmp 0x0044906D
 
@@ -18,7 +18,7 @@ hack 0x0044904F, 0x00449055 ; DrawMiniMapForSpectators
 hack 0x00456843, 0x00456849 ; ShareBuildingsViewWithSpectators
     cmp byte[SpawnerActive], 1
     jnz .out
-    cmp byte[Lose], 1
+    cmp byte[gLose], 1
     jnz .out
     jmp 0x0045684D
     
@@ -30,7 +30,7 @@ hack 0x00456843, 0x00456849 ; ShareBuildingsViewWithSpectators
 hack 0x0044D02F, 0x0044D035 ; ShareUnitsViewWithSpectators
     cmp byte[SpawnerActive], 1
     jnz .out
-    cmp byte[Lose], 1
+    cmp byte[gLose], 1
     jnz .out
     jmp 0x0044D035
     
@@ -44,7 +44,7 @@ hack 0x004440BA, 0x004440C0 ; ClickableMiniMapForSpectators
     mov dl, byte[0x00798544]
     cmp byte[SpawnerActive], 1
     jnz 0x004440C0
-    cmp byte[Lose], 1
+    cmp byte[gLose], 1
     jnz 0x004440C0
     jmp 0x004440E0
 
@@ -55,7 +55,7 @@ hack 0x00425F20, 0x00425F2E ; ShowPlayerCreditsForSpectators
     jnz .out
     cmp dword[GameType], GT_SKIRMISH
     jz .ShowCredits
-    cmp byte[Lose], 1
+    cmp byte[gLose], 1
     jnz .out
     cmp byte[MeIsSpectator], 1
     jnz .out
@@ -140,14 +140,14 @@ hack 0x00469BB1 ;do not pre place buildings/units for spectators
     jmp hackend
 
     
-hack 0x0044FC53; set bool Lose to true on game start
+hack 0x0044FC53; set bool gLose to true on game start
     cmp byte[SpawnerActive], 1
     jnz .out
     cmp dword[GameType], GT_SKIRMISH
     jz .out
     cmp byte[MeIsSpectator], 1
     jnz .out
-    mov byte[Lose], 1
+    mov byte[gLose], 1
     
 .out:
     push 0x004E2B4C

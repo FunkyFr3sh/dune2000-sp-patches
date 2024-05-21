@@ -3,6 +3,7 @@
 #include "macros/patch.h"
 #include "dune2000.h"
 #include "../event-system/event-core.h"
+#include <patch.h>
 
 CALL(0x00441836, _SaveGameExtraData); // SaveGame
 

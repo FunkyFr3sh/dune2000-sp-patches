@@ -45,29 +45,29 @@ void InitSpawner()
     {
         MissionNumber = SpawnIniGetInt("Settings", "MissionNumber", 0);
         MySideID = mySideID;
-        DifficultyLevel = SpawnIniGetInt("Settings", "DifficultyLevel", 1);
+        gDifficultyLevel = SpawnIniGetInt("Settings", "DifficultyLevel", 1);
         // stats hack
         NetPlayerCount = 1;
-        NetAIPlayers = 7;
+        gNetAIPlayers = 7;
     }
     else // ### Multi-Player and Skirmish Settings ###
     {
-        NetUnitCount = SpawnIniGetInt("Settings", "UnitCount", 10);
-        if (NetUnitCount > 10)
-            NetUnitCount = 10;
-        NetTechLevel = SpawnIniGetInt("Settings", "TechLevel", 7);
-        NetStartingCredits = SpawnIniGetInt("Settings", "Credits", 7000);
-        if (NetStartingCredits == 0)
-            NetStartingCredits = 1;
-        if (NetStartingCredits > 40000)
-            NetStartingCredits = 40000;
-        NetAIPlayers = SpawnIniGetInt("Settings", "AIPlayers", 1);
-        NetCrates = SpawnIniGetBool("Settings", "Crates", false);
-        NetWorms = SpawnIniGetInt("Settings", "Worms", 0);
-        SpawnIniGetString("Settings", "Name", "NONAME", NetPlayerName, 20);
-        NetPlayerSide = SpawnIniGetInt("Settings", "Side", 0);
-        NetPlayerColor = SpawnIniGetInt("Settings", "Color", 0);
-        NetPlayerHandicap = SpawnIniGetInt("Settings", "Handicap", 0);
+        gNetUnitCount = SpawnIniGetInt("Settings", "UnitCount", 10);
+        if (gNetUnitCount > 10)
+            gNetUnitCount = 10;
+        gNetTechLevel = SpawnIniGetInt("Settings", "TechLevel", 7);
+        gNetStartingCredits = SpawnIniGetInt("Settings", "Credits", 7000);
+        if (gNetStartingCredits == 0)
+            gNetStartingCredits = 1;
+        if (gNetStartingCredits > 40000)
+            gNetStartingCredits = 40000;
+        gNetAIPlayers = SpawnIniGetInt("Settings", "AIPlayers", 1);
+        gNetCrates = SpawnIniGetBool("Settings", "Crates", false);
+        gNetWorms = SpawnIniGetInt("Settings", "Worms", 0);
+        SpawnIniGetString("Settings", "Name", "NONAME", gNetPlayerName, 20);
+        gNetPlayerSide = SpawnIniGetInt("Settings", "Side", 0);
+        gNetPlayerColor = SpawnIniGetInt("Settings", "Color", 0);
+        gNetPlayerHandicap = SpawnIniGetInt("Settings", "Handicap", 0);
         SpawnerMaxAhead = SpawnIniGetInt("Settings", "MaxAhead", SpawnerMaxAhead);
 
         // ### New Features ###
@@ -82,16 +82,16 @@ void InitSpawner()
         // we gotta make sure all players are stored in the same order and everyone knows the fake ip of each other
         MyIndex = SpawnIniGetInt("Settings", "MyIndex", 0);
 
-        strcpy(LoginName, NetPlayerName);
-        strcpy(NetPlayers[MyIndex].name, NetPlayerName);
+        strcpy(LoginName, gNetPlayerName);
+        strcpy(NetPlayers[MyIndex].name, gNetPlayerName);
         NetPlayers[MyIndex].unk = 0xFFFFFFFF;
-        NetPlayers[MyIndex].color = NetPlayerColor;
-        NetPlayers[MyIndex].side = NetPlayerSide;
-        NetPlayers[MyIndex].handicap = NetPlayerHandicap;
+        NetPlayers[MyIndex].color = gNetPlayerColor;
+        NetPlayers[MyIndex].side = gNetPlayerSide;
+        NetPlayers[MyIndex].handicap = gNetPlayerHandicap;
         NetPlayers[MyIndex].ip = MyIndex + 1;
         NetPlayers[MyIndex].unk4 = 0x00000101;
 
-        strcpy(NetPlayersExt[MyIndex].name, NetPlayerName);
+        strcpy(NetPlayersExt[MyIndex].name, gNetPlayerName);
         MeIsSpectator = SpawnIniGetBool("Settings", "IsSpectator", false);
         NetPlayersExt[MyIndex].isSpectator = MeIsSpectator;
         NetPlayersExt[MyIndex].startingLocation = SpawnIniGetInt("Settings", "StartingLocation", -1);
@@ -185,7 +185,7 @@ void InitSpawner()
     }
     else // Skirmish
     {
-        DifficultyLevel = NetPlayerHandicap;
+        gDifficultyLevel = gNetPlayerHandicap;
 
         NetworkType = NT_NONE;
         GameType = GT_SKIRMISH;

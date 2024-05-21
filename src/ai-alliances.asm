@@ -21,9 +21,9 @@ hack 0x00458125, 0x0045812C ; Not sure about this one, seems to check if the pla
     
     
 hack 0x004581F1, 0x004581F9 ; Force the AI players to ally you too
-    mov byte[edx*8+eax+Diplomacy], 0
+    mov byte[edx*8+eax+_gDiplomacy], 0
     cmp dword[GameType], GT_SKIRMISH
     jnz hackend
     
-    mov byte[eax*8+edx+Diplomacy], 0 ; revert it
+    mov byte[eax*8+edx+_gDiplomacy], 0 ; revert it
     jmp hackend

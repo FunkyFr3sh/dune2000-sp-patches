@@ -17,7 +17,7 @@ int GetFreeStartingLocation(int currentLocation)
     bool locationUsed[8];
     for (int i = 0; i < 8; i++)
     {
-        locationUsed[i] = SpawnLocationUsedBoolArray[i];
+        locationUsed[i] = _FreeSpawnLocations[i];
     }
     for (int i = 0; i < 6; i++)
     {

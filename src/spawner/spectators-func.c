@@ -11,9 +11,9 @@ LJMP(0x00428DA7, 0x00428DE3); //do not draw "Mission Failed" text
 bool LiveStatsEnabled = true;
 bool MeIsSpectator = false;
 
-void DrawLiveStats(int *image)
+void DrawLiveStats(TImage *image)
 {
-    if (!SpawnerActive || !MeIsSpectator || !Lose || !LiveStatsEnabled || GameType != GT_LAN) return;
+    if (!SpawnerActive || !MeIsSpectator || !gLose || !LiveStatsEnabled || GameType != GT_LAN) return;
     int y = GameHeight - 250;
     const int textColor = 0;
     const int rowHeight = 20;
@@ -36,7 +36,7 @@ void DrawLiveStats(int *image)
         if (IsSpectator(i)) continue;
         int x = 112 + (column++ * 60);
         char buffer[16];
-        Side side = Side__AsPointer(i);
+        Side side = GetSide(i);
         row = 0;
         
         Graphlib__DrawTextWithBlackShadow(image, NetPlayerNamesArray[i], x, (rowHeight * row++) + y, 1, textColor);

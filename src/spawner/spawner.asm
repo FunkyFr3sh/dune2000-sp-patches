@@ -114,7 +114,7 @@ hack 0x0044A440, 0x0044A447 ; ExitIfLoseSP2 ; works also for skirmish
     jnz .out
     cmp byte[MySideID], 2
     ja .GameExit
-    cmp byte[Lose], 1
+    cmp byte[gLose], 1
     jnz .out
     
 .GameExit:

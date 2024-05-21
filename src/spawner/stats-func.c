@@ -18,6 +18,7 @@ static void WriteUInt32(char *id, unsigned int value);
 static void WriteUInt32Array(char *id, const void *arrayPtr, unsigned short length);
 static void StatsAppend(const void *data, size_t num);
 static void WritePlayerCredits();
+static void WriteSpectators();
 static void WriteUnitsOwned();
 static void WriteBuildingsOwned();
 
@@ -29,11 +30,11 @@ void WriteStatsDmp(const void *buffer, int length)
         StatsDmpLength = (unsigned short)length - 2;
         memcpy(StatsDmpBuffer, buffer + 2, length - 2);
         
-        WriteString("ACCN", NetPlayerName);
-        WriteUInt32("TICK", GameTicks);
-        WriteUInt32("UNIT", (unsigned int)NetUnitCount);
+        WriteString("ACCN", gNetPlayerName);
+        WriteUInt32("TICK", gGameTicks);
+        WriteUInt32("UNIT", (unsigned int)gNetUnitCount);
         WriteUInt32("NUMP", NetPlayerCount);
-        WriteUInt32("AIPL", NetAIPlayers);
+        WriteUInt32("AIPL", gNetAIPlayers);
         WriteUInt32("ENDS", SpawnerGameEndState);
         WritePlayerCredits();
         WriteSpectators();
@@ -83,12 +84,12 @@ int GetAirUnitsOwned(int house)
 
 static void WritePlayerCredits()
 {
-    int playerCount = NetPlayerCount + NetAIPlayers;
+    int playerCount = NetPlayerCount + gNetAIPlayers;
     for (int i = 0; i < playerCount; i++)
     {
         char id[5];
         sprintf(id, "CRD%d", i);
-        Side side = Side__AsPointer(i);
+        Side side = GetSide(i);
         uint32_t *siloCredits = (void *)side + HC_SILO_CREDITS;
         uint32_t *credits = (void *)side + HC_CREDITS;
         WriteUInt32(id, *siloCredits + *credits);
@@ -107,7 +108,7 @@ static void WriteSpectators()
 
 static void WriteUnitsOwned()
 {
-    int playerCount = NetPlayerCount + NetAIPlayers;
+    int playerCount = NetPlayerCount + gNetAIPlayers;
     for (int i = 0; i < playerCount; i++)
     {
         char id[5];
@@ -118,7 +119,7 @@ static void WriteUnitsOwned()
 
 static void WriteBuildingsOwned()
 {
-    int playerCount = NetPlayerCount + NetAIPlayers;
+    int playerCount = NetPlayerCount + gNetAIPlayers;
     for (int i = 0; i < playerCount; i++)
     {
         char id[5];

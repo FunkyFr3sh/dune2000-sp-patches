@@ -28,7 +28,7 @@ void InitAIPlayers()
                 break;
             case 1: //Normal
             default:
-                AIPlayers[i].startingCredits = NetStartingCredits;
+                AIPlayers[i].startingCredits = gNetStartingCredits;
                 break;
         }
             
@@ -41,11 +41,11 @@ void SetupAIPlayerCredits()
 {
     for (int i = 0; i < 8; i++)
     {
-        NetPlayersTechLevel[i] = NetTechLevel;
+        NetPlayersTechLevel[i] = gNetTechLevel;
         
         if (GameType == GT_SKIRMISH && i != MySideID && !SpawnerActive) //Original Code
         {
-            switch(DifficultyLevel)
+            switch(gDifficultyLevel)
             {
                 case 0:
                     NetPlayersStartingCredits[i] = 7000;
@@ -57,13 +57,13 @@ void SetupAIPlayerCredits()
                     NetPlayersStartingCredits[i] = 14000;
                     break;
                 default:
-                    NetPlayersStartingCredits[i] = NetStartingCredits;
+                    NetPlayersStartingCredits[i] = gNetStartingCredits;
                     break;
             }
         } 
         else if (i >= NetPlayerCount && SpawnerActive) //Setup starting credits based on spawner handicap setting (Only for AI Players)
             NetPlayersStartingCredits[i] = AIPlayers[i].startingCredits;
-        else NetPlayersStartingCredits[i] = NetStartingCredits;
+        else NetPlayersStartingCredits[i] = gNetStartingCredits;
     }
 }
 
@@ -76,7 +76,7 @@ int SetupAIPlayerSides()
     if (currentAI == 0) currentAI = NetPlayerCount; //ai players are added after the humans, take the highest human house+1 to get the first ai house
     if (AIPlayers[currentAI].side != -1) side = AIPlayers[currentAI].side;
     
-    if (currentAI - (NetPlayerCount - 1) == NetAIPlayers) currentAI = 0; //set it back to 0 once we reached the last ai player
+    if (currentAI - (NetPlayerCount - 1) == gNetAIPlayers) currentAI = 0; //set it back to 0 once we reached the last ai player
     else currentAI++;
     return side;
 }

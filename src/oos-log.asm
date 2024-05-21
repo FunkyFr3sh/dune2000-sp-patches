@@ -26,7 +26,7 @@ hack 0x004B1810 ; rand()
     mov ecx, dword[esp]
     mov dword[eax*4+RandomClassLog], ecx
     
-    mov ecx, dword[GameTicks]
+    mov ecx, dword[gGameTicks]
     mov dword[eax*4+RandomGameTick], ecx
     
 .out:

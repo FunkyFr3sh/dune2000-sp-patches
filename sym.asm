@@ -652,7 +652,7 @@ setcglob 0x008CF6F4, _imp__timeBeginPeriod
 setcglob 0x008CF6F0, _imp__timeEndPeriod
 setcglob 0x008CF698, _imp__MessageBoxA  
 setcglob 0x008CF6C0, _imp__ShowCursor
-setcglob 0x008CF61C, 
+setcglob 0x008CF61C, _imp__GetCurrentProcess
 setcglob 0x008CF578, _imp__ExitProcess
 
 ; clib

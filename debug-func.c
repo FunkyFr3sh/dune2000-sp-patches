@@ -16,7 +16,7 @@ void DebugLog(char *a)
     FILE *fp = fopen("debug.log", "a");
     if (fp)
     {
-        //fprintf(fp, "t=%d, s=%x, f=%s", GameTicks, RandSeed, a);
+        //fprintf(fp, "t=%d, s=%x, f=%s", gGameTicks, RandSeed, a);
         
         fclose(fp);
     }

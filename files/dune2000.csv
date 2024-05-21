@@ -290,7 +290,7 @@ RVA,label,comment
 0002ADA0,Display::SetLensImage_42ADA0,Display::SetLensImage_42ADA0
 0002AF00,Display::DrawingInGameUNKNOWN11,Display::DrawingInGameUNKNOWN11
 0002B590,Game::ShowErrorAndExit,Game::ShowErrorAndExit
-0002B670,Game::DebugFunction GameTicks OutputDebugStringA,Game::DebugFunction GameTicks OutputDebugStringA
+0002B670,Game::DebugFunction gGameTicks OutputDebugStringA,Game::DebugFunction gGameTicks OutputDebugStringA
 0002B730,Game::ShowFailureTxtErrorAndExit,Game::ShowFailureTxtErrorAndExit
 0002B7D0,Game::Dune2000CdCheck,Game::Dune2000CdCheck
 0002B800,Game::CDStuff,Game::CDStuff
@@ -1460,10 +1460,10 @@ RVA,label,comment
 000E3AEC,SendRate,SendRate
 000E3AF0,UnknownNetVar4,UnknownNetVar4
 000E3AF4,UnknownNetVar5,UnknownNetVar5
-000E3B00,int NetUnitCount,int NetUnitCount
-000E3B04,char NetTechLevel,char NetTechLevel
-000E3B08,int NetStartingCredits,int NetStartingCredits
-000E3B0C,int NetAIPlayers,int NetAIPlayers
+000E3B00,int gNetUnitCount,int gNetUnitCount
+000E3B04,char gNetTechLevel,char gNetTechLevel
+000E3B08,int gNetStartingCredits,int gNetStartingCredits
+000E3B0C,int gNetAIPlayers,int gNetAIPlayers
 000E3B10,int NetNetworkType,int NetNetworkType
 000E3B14,int MyCurrentFrameRate,int MyCurrentFrameRate
 000E3B18,int LimitedModelPct,int LimitedModelPct
@@ -1494,7 +1494,7 @@ RVA,label,comment
 000E8BE4,ForceNoCD 2 ?,ForceNoCD 2 ?
 000E8BEC,int MaxPlayers,int MaxPlayers
 000E8BF0,int DifficultyLevel,int DifficultyLevel
-000E8BF4,int NetSerialComPort,int NetSerialComPort
+000E8BF4,int gNetSerialComPort,int gNetSerialComPort
 000E9444,Data,Data
 000EB000,bool UseBinaryMapFiles?,bool UseBinaryMapFiles?
 000EB004,bool MoviesAllowed,bool MoviesAllowed
@@ -1599,14 +1599,14 @@ RVA,label,comment
 00147DF0,gGameMap_map?,gGameMap_map?
 00148048,CrateCount,CrateCount
 002B63B0,hHeap,hHeap
-002B63C8,bool GameOver?,bool GameOver?
+002B63C8,bool _GameOver?,bool _GameOver?
 002B63CC,ActiveEventCount,ActiveEventCount
 002B7058,MissionEvents,MissionEvents
 002B8260,ActiveConditionCount,ActiveConditionCount
 002B8268,gUnitsExist bool array,gUnitsExist bool array
 002B8270,MissionTimerTicks,MissionTimerTicks
 002B8274,bool Win,bool Win
-002B8278,bool Lose,bool Lose
+002B8278,bool gLose,bool gLose
 002B8280,MissionEventConditions,MissionEventConditions
 002B8288,MissionEventFlags,MissionEventFlags
 002B87C0,gBuildingsExist bool array,gBuildingsExist bool array
@@ -1640,7 +1640,7 @@ RVA,label,comment
 002B8864,ShowWarnings,ShowWarnings
 002B8865,DeathHandAccuracy,DeathHandAccuracy
 002B93E8,UnknownNetVar1,UnknownNetVar1
-002B93F8,char NetPlayerName,char NetPlayerName
+002B93F8,char gNetPlayerName,char gNetPlayerName
 002B9460,ReconnectTimeOutToPlayer,ReconnectTimeOutToPlayer
 002B9468,char NetSessionName,char NetSessionName
 002B9518,NetMessageString,NetMessageString
@@ -1648,11 +1648,11 @@ RVA,label,comment
 002B97A8,char NetRejectPlayerName,char NetRejectPlayerName
 002B9818,,OrderDelayStuff?
 002B9830,int PulseCounter,int PulseCounter
-002B9834,bool NetCrates,bool NetCrates
-002B9838,int NetWorms,int NetWorms
-002B9840,int NetPlayerSide,int NetPlayerSide
+002B9834,bool gNetCrates,bool gNetCrates
+002B9838,int gNetWorms,int gNetWorms
+002B9840,int gNetPlayerSide,int gNetPlayerSide
 002B9844,char NetPlayerColour,char NetPlayerColour
-002B9848,char NetPlayerHandicap,char NetPlayerHandicap
+002B9848,char gNetPlayerHandicap,char gNetPlayerHandicap
 002B9864,int LimitedModelRate,LimitedModelRate
 002B98AC,bool NetworkLogEnabled,bool NetworkLogEnabled
 002B9900,File,File
@@ -1663,7 +1663,7 @@ RVA,label,comment
 002DC5C8,BuildingsOnMapArray?,BuildingsOnMapArray?
 002F9840,char MissionMap,char MissionMap
 0037E270,LightInfantryProductionSpeed,LightInfantryProductionSpeed
-00382AA0,SpawnLocationUsedBoolArray,SpawnLocationUsedBoolArray
+00382AA0,_FreeSpawnLocations,_FreeSpawnLocations
 00386C48,ColorArray,ColorArray
 00386D48,BattleFieldWidth,BattleFieldWidth
 00395518,PlayerColorArray16bit,PlayerColorArray16bit
@@ -1689,11 +1689,11 @@ RVA,label,comment
 003975BC,SampleUIBItemCount,SampleUIBItemCount
 003975C0,char *CampaignTable,char *CampaignTable
 003975C4,CampaignUIBItemCount,CampaignUIBItemCount
-003975D0,char NetIPAddress,char NetIPAddress
+003975D0,char gNetIPAddress,char gNetIPAddress
 00397638,char NetMap,char NetMap
 00397768,WigNetError,WigNetError
 003978F8,SendingToPlayer,SendingToPlayer
-00397960,char NetModemPhone,char NetModemPhone
+00397960,char gNetModemPhone,char gNetModemPhone
 003979C8,LastUIError,LastUIError
 00397A30,SendingPageToPlayer,SendingPageToPlayer
 00397A98,CurrentSoundTrack,CurrentSoundTrack
@@ -1770,7 +1770,7 @@ RVA,label,comment
 0039853C,BattleFieldPosY,BattleFieldPosY
 00398544,int MySideID,int MySideID
 00398630,NetPlayerNamesArray?,NetPlayerNamesArray?
-00398830,Diplomacy,Diplomacy
+00398830,_gDiplomacy,_gDiplomacy
 003BCAC4,SiloRefineryCash,SiloRefineryCash
 003BCACC,StartingCredtis,StartingCredtis
 003BCAD0,CrateBonusCash?,CrateBonusCash?
