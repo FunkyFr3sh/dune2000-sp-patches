@@ -28,6 +28,7 @@ uint8_t   rulesExt__maxChatMessages             = 5;
 bool      rulesExt__showNeutralBecomeHostileMsg = true;
 
 static void LoadVars(LPCTSTR fileName);
+static void LoadMultiPlayerSettings(LPCTSTR fileName);
 
 void LoadRulesFromMap()
 {
@@ -36,6 +37,7 @@ void LoadRulesFromMap()
     char mapIniPath[256];
     sprintf(mapIniPath, ".\\%s%s", GameType == GT_SINGLEPLAYER ? MissionsResourcePath : MapsResourcePath, PathChangeExtension(MissionMap, ".ini"));
     LoadVars(mapIniPath);
+    LoadMultiPlayerSettings(mapIniPath);
 }
 
 static void LoadMultiPlayerSettings(LPCTSTR fileName)
