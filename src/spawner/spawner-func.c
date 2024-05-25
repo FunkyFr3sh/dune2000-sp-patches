@@ -47,7 +47,7 @@ void InitSpawner()
         MySideID = mySideID;
         gDifficultyLevel = SpawnIniGetInt("Settings", "DifficultyLevel", 1);
         // stats hack
-        NetPlayerCount = 1;
+        gTotalPlayers = 1;
         gNetAIPlayers = 7;
     }
     else // ### Multi-Player and Skirmish Settings ###
@@ -97,7 +97,7 @@ void InitSpawner()
         NetPlayersExt[MyIndex].startingLocation = SpawnIniGetInt("Settings", "StartingLocation", -1);
         NetPlayersExt[MyIndex].team = SpawnIniGetInt("Settings", "Team", -1);
 
-        NetPlayerCount = 1;
+        gTotalPlayers = 1;
 
         for (int i = 0; i < 6; i++)
         {
@@ -105,7 +105,7 @@ void InitSpawner()
                 continue;
 
             char otherX[10];
-            sprintf(otherX, "Other%d", NetPlayerCount);
+            sprintf(otherX, "Other%d", gTotalPlayers);
 
             NetPlayers[i].unk = 0xFFFFFFFF;
             NetPlayers[i].unk4 = 0x00000101;
@@ -115,7 +115,7 @@ void InitSpawner()
             SpawnIniGetString(otherX, "Name", "", NetPlayers[i].name, 20);
             if (strlen(NetPlayers[i].name))
             {
-                NetPlayerCount++;
+                gTotalPlayers++;
                 NetPlayers[i].color = SpawnIniGetInt(otherX, "Color", 0);
                 NetPlayers[i].side = SpawnIniGetInt(otherX, "Side", 0);
                 NetPlayers[i].handicap = SpawnIniGetInt(otherX, "Handicap", 0);
@@ -147,7 +147,7 @@ void InitSpawner()
         GameState = GS_MAINLOOP;
         CUIManager__LoadMission(gUIMgr, NetMap);
     }
-    else if (NetPlayerCount > 1) // Multi-Player
+    else if (gTotalPlayers > 1) // Multi-Player
     {
         ListenPort = SpawnIniGetInt("Settings", "Port", DEFAULT_PORT);
         TunnelId = htons(ListenPort);
@@ -168,7 +168,7 @@ void InitSpawner()
         NetKey = GetCRC32(tempMap) + (uint16_t)WOLGameId;
 
         NetworkType = NT_UDP;
-        GameType = GT_LAN;
+        gGameType = GAME_NETWORK;
         CUIManager__CreateWigNet();
 
         bool IsHost = SpawnIniGetBool("Settings", "Host", true);
@@ -188,7 +188,7 @@ void InitSpawner()
         gDifficultyLevel = gNetPlayerHandicap;
 
         NetworkType = NT_NONE;
-        GameType = GT_SKIRMISH;
+        gGameType = GAME_SKIRMISH;
         CUIManager__StartGame(gUIMgr);
     }
 }

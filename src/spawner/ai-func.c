@@ -43,7 +43,7 @@ void SetupAIPlayerCredits()
     {
         NetPlayersTechLevel[i] = gNetTechLevel;
         
-        if (GameType == GT_SKIRMISH && i != MySideID && !SpawnerActive) //Original Code
+        if (gGameType == GAME_SKIRMISH && i != MySideID && !SpawnerActive) //Original Code
         {
             switch(gDifficultyLevel)
             {
@@ -61,7 +61,7 @@ void SetupAIPlayerCredits()
                     break;
             }
         } 
-        else if (i >= NetPlayerCount && SpawnerActive) //Setup starting credits based on spawner handicap setting (Only for AI Players)
+        else if (i >= gTotalPlayers && SpawnerActive) //Setup starting credits based on spawner handicap setting (Only for AI Players)
             NetPlayersStartingCredits[i] = AIPlayers[i].startingCredits;
         else NetPlayersStartingCredits[i] = gNetStartingCredits;
     }
@@ -73,10 +73,10 @@ int SetupAIPlayerSides()
     int side = rand();
     if (!SpawnerActive) return side;
     
-    if (currentAI == 0) currentAI = NetPlayerCount; //ai players are added after the humans, take the highest human house+1 to get the first ai house
+    if (currentAI == 0) currentAI = gTotalPlayers; //ai players are added after the humans, take the highest human house+1 to get the first ai house
     if (AIPlayers[currentAI].side != -1) side = AIPlayers[currentAI].side;
     
-    if (currentAI - (NetPlayerCount - 1) == gNetAIPlayers) currentAI = 0; //set it back to 0 once we reached the last ai player
+    if (currentAI - (gTotalPlayers - 1) == gNetAIPlayers) currentAI = 0; //set it back to 0 once we reached the last ai player
     else currentAI++;
     return side;
 }

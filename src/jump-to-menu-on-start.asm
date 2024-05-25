@@ -35,7 +35,7 @@ hack 0x004426D4, 0x004426F0 ; Jump To Menu On Start 2
     cmp byte[JumpToLAN], 1
     jnz .skirmish
     mov word[NetworkType], NT_IPXDIRECTPLAY
-    mov dword[GameType], GT_LAN
+    mov dword[gGameType], GAME_NETWORK
     call CUIManager__CreateWigNet
     push LANMenu
     jmp .out
@@ -44,7 +44,7 @@ hack 0x004426D4, 0x004426F0 ; Jump To Menu On Start 2
     cmp byte[JumpToSkirmish], 1
     jnz .wol
     mov word[NetworkType], NT_NONE
-    mov dword[GameType], GT_SKIRMISH
+    mov dword[gGameType], GAME_SKIRMISH
     push SkirmishMenu
     jmp .out
     

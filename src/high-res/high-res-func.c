@@ -5,7 +5,6 @@
 #include "ini.h"
 #include "utils.h"
 
-CALL(0x004B28C1, _InitHighRes);
 CALL(0x004486F6, _InitUIBB);
 
 bool HighResPatchEnabled = false;

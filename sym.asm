@@ -30,7 +30,6 @@ setcglob 0x4E3AF4, UnknownNetVar5
 
 setcglob 0x007984C4, NetworkGame ;bool
 setcglob 0x004E3B10, NetworkType ;short
-setcglob 0x007984C0, NetPlayerCount
 setcglob 0x004F2898, NetPlayers
 
 ;Multiplayer settings
@@ -328,7 +327,6 @@ setcglob 0x007978F8, gSendingToPlayer
 setcglob 0x00797A98, CurrentSoundTrack
 setcglob 0x00797E18, dword_797E18
 setcglob 0x00797E1C, gRestartGame
-setcglob 0x00797E34, GameType
 setcglob 0x00797E34, gGameType
 setcglob 0x00797E78, KeyIsDown2
 setcglob 0x00797E78, _KeyboardKeyState

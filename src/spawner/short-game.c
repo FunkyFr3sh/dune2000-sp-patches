@@ -3,8 +3,9 @@
 #include "macros/patch.h"
 #include "dune2000.h"
 #include "patch.h"
+#include "short-game.h"
 
-CALL(0x00449A8D, _CheckBuildingsLeft);
+// CALL(0x00449A8D, _CheckBuildingsLeft);
 
 bool ShortGame = false;
 bool MCVDeployed[8];
@@ -13,7 +14,7 @@ void CheckBuildingsLeft()
 {
     if (ShortGame)
     {
-        int playerCount = NetPlayerCount + gNetAIPlayers;
+        int playerCount = gTotalPlayers + gNetAIPlayers;
         for (int i = 0; i < playerCount; i++)
         {
             if (_gBuildingsExist[i]) MCVDeployed[i] = true;
@@ -25,5 +26,5 @@ void CheckBuildingsLeft()
             }
         }
     }
-    Mission__CheckEvents();
+    // Mission__CheckEvents();
 }

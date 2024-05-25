@@ -187,16 +187,6 @@ enum GameEndStates
     GES_UNKNOWNENDSTATE
 };
 
-enum GameTypes
-{
-    GT_SINGLEPLAYER,
-    GT_SKIRMISH,
-    GT_LAN,
-    GT_SERIAL,
-    GT_MODEM,
-    GT_WOL
-};
-
 typedef enum eGameType
 {
   GAME_CAMPAIGN = 0x0,
@@ -348,7 +338,7 @@ extern char gNetModemPhone[];
 extern unsigned char gNetSerialComPort;
 extern char NetMap[];
 extern char LoginName[];
-extern int NetPlayerCount;
+// extern int gTotalPlayers;
 extern unsigned int NetPlayersStartingCredits[];
 extern char NetPlayersTechLevel[];
 extern char NetPlayersColor[]; //Actually there is more than just the colors, not sure what... struct size 60byte, first byte = color
@@ -571,7 +561,6 @@ extern char                 gSendingToPlayer[104];
 
 extern _DWORD               dword_797E18;
 extern bool                 gRestartGame;
-extern int                  GameType;
 extern eGameType            gGameType;
 
 extern char                 _KeyboardKeyState[256];

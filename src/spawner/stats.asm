@@ -59,7 +59,7 @@ hack 0x0040D828, 0x0040D82F ; UseSpawnIniMapNameIfMapNotInStringTable
 hack 0x0040D4F7, 0x0040D529 ; UseEnglishStringsForSides
     push eax
     xor eax, eax
-    mov al, byte[NetPlayerCount]
+    mov al, byte[gTotalPlayers]
     cmp ebx, eax
     pop eax
     jb .IsNotAiPlayer
@@ -99,29 +99,29 @@ hack 0x0040DAFD, 0x0040DB02 ; CallSetGameEndTickCount
 hack 0x0040DAE9, 0x0040DAEF ; WriteStatsForAiPlayers1
     cmp byte[SpawnerActive], 1
     jnz .out
-    mov cl, byte[NetPlayerCount]
+    mov cl, byte[gTotalPlayers]
     add cl, byte[gNetAIPlayers]
     jmp 0x0040DAEF
     
 .out:
-    mov cl, byte[NetPlayerCount]
+    mov cl, byte[gTotalPlayers]
     jmp 0x0040DAEF
 
 
 hack 0x0040D763, 0x0040D769 ; WriteStatsForAiPlayers2
     cmp byte[SpawnerActive], 1
     jnz .out
-    mov cl, byte[NetPlayerCount]
+    mov cl, byte[gTotalPlayers]
     add cl, byte[gNetAIPlayers]
     jmp 0x0040D769
     
 .out:
-    mov cl, byte[NetPlayerCount]
+    mov cl, byte[gTotalPlayers]
     jmp 0x0040D769
 
     
 hack 0x0040D9DD, 0x0040D9E3 ; write FinishingPlace for AI players
-    mov cl, byte[NetPlayerCount]
+    mov cl, byte[gTotalPlayers]
 
     cmp byte[SpawnerActive], 1
     jnz hackend
@@ -133,11 +133,11 @@ hack 0x0040D565, 0x0040D56B ; FixPlayerNames
     cmp byte[SpawnerActive], 1
     jnz .out
     xor ecx, ecx
-    mov cl, byte[NetPlayerCount]
+    mov cl, byte[gTotalPlayers]
     
     cmp ebx, ecx
     jge .IsAiPlayer
-    cmp dword[GameType], GT_SKIRMISH
+    cmp dword[gGameType], GAME_SKIRMISH
     jnz .out
     mov ecx, gNetPlayerName
     jmp 0x0040D56B
@@ -168,7 +168,7 @@ hack 0x00492E64 ; ISurrendered
     mov dword[SpawnerGameEndState], GES_ISURRENDERED
     
 .out:
-    mov eax, dword[GameType]
+    mov eax, dword[gGameType]
     jmp 0x00492E69
 
 
@@ -178,7 +178,7 @@ hack 0x00492EF4 ; IAborted
     mov dword[SpawnerGameEndState], GES_ISURRENDERED
     
 .out:
-    mov eax, dword[GameType]
+    mov eax, dword[gGameType]
     jmp 0x00492EF9
 
 
@@ -198,7 +198,7 @@ hack 0x0045CEA9, 0x0045CEB0 ; Opponent Surrendered
     mov dword[SpawnerGameEndState], GES_OPPONENTSURRENDERED
     
 .out:
-    cmp dword[GameType], GT_WOL
+    cmp dword[gGameType], GAME_INTERNET
     jmp 0x0045CEB0
 
 
@@ -208,7 +208,7 @@ hack 0x00458D2D, 0x00458D34 ; OpponentSurrendered2
     mov dword[SpawnerGameEndState], GES_OPPONENTSURRENDERED
     
 .out:
-    cmp dword[GameType], GT_WOL
+    cmp dword[gGameType], GAME_INTERNET
     jmp 0x00458D34
 
 
@@ -218,7 +218,7 @@ hack 0x0045CD36 ; ConnectionLost
     mov dword[SpawnerGameEndState], GES_CONNECTIONLOST
     
 .out:
-    mov eax, dword[GameType]
+    mov eax, dword[gGameType]
     jmp 0x0045CD3B
 
 
@@ -283,7 +283,7 @@ hack 0x004563E5, 0x004563EF ; SaveBuildingsOwnedStats
 hack 0x004412E6, 0x004412EC ; single player stats fix
     cmp byte[SpawnerActive], 1
     jnz .out
-    cmp dword[GameType], GT_SINGLEPLAYER
+    cmp dword[gGameType], GAME_CAMPAIGN
     jnz .out
     mov dl, 1
     

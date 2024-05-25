@@ -13,7 +13,7 @@ bool MeIsSpectator = false;
 
 void DrawLiveStats(TImage *image)
 {
-    if (!SpawnerActive || !MeIsSpectator || !gLose || !LiveStatsEnabled || GameType != GT_LAN) return;
+    if (!SpawnerActive || !MeIsSpectator || !gLose || !LiveStatsEnabled || gGameType != GAME_NETWORK) return;
     int y = GameHeight - 250;
     const int textColor = 0;
     const int rowHeight = 20;
@@ -31,7 +31,7 @@ void DrawLiveStats(TImage *image)
     
     Graphlib__DrawTextWithBlackShadow(image, "Press 'Tab' to toggle live stats", 3, (rowHeight * ++row) + y, 1, textColor);
 
-    for (int i = 0, column = 0; i < NetPlayerCount; i++)
+    for (int i = 0, column = 0; i < gTotalPlayers; i++)
     {
         if (IsSpectator(i)) continue;
         int x = 112 + (column++ * 60);

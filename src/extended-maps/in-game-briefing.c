@@ -11,7 +11,7 @@ CALL(0x00480E20, _FakeData__GetTextString_Briefing);
 char *FakeData__GetTextString_Briefing(int stringId, bool showError)
 {
     static char result[65536];
-    if (SpawnerActive && GameType == GT_SINGLEPLAYER)
+    if (SpawnerActive && gGameType == GAME_CAMPAIGN)
     {
         char mapIniPath[256];
         sprintf(mapIniPath, ".\\%s%s", MissionsResourcePath, PathChangeExtension(MissionMap, ".ini"));

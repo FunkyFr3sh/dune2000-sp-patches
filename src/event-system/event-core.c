@@ -9,6 +9,7 @@
 #include "event-core.h"
 #include "event-actions.h"
 #include "event-conditions.h"
+#include "../spawner/short-game.h"
 
 // New extended arrays for event and condition data
 
@@ -31,6 +32,7 @@ CALL(0x00449A8D, _Mod__HandleConditionsAndEvents);
 
 void Mod__HandleConditionsAndEvents()
 {
+  CheckBuildingsLeft();
   char v20; // bl
   char (*v21)[8]; // ebp
   char *v22; // edx

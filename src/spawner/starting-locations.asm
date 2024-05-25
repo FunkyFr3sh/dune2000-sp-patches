@@ -6,7 +6,7 @@
 hack 0x00469FD0, 0x00469FD6 ; OverrideStartingLocation
     cmp byte[SpawnerActive], 1
     jnz .out
-    cmp dword[GameType], GT_SINGLEPLAYER
+    cmp dword[gGameType], GAME_CAMPAIGN
     jz .out
     pushad
     xor eax, eax

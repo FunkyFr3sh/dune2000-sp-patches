@@ -39,5 +39,5 @@ hack 0x0047555C, 0x00475562 ; Triggers when the game-play starts
     call GamePlayStart
     popad
     
-    cmp dword[GameType], ebx
+    cmp dword[gGameType], ebx
     jmp hackend

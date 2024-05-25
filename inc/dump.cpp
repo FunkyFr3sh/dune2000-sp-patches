@@ -800,7 +800,7 @@ extern int _ValidateExecute(int (*)(void))                                      
 //extern int bool RestartGame                                                            BLOB;
 //extern int bool CancelConnect                                                            BLOB;
 //extern int bool ForceNoCD                                                                BLOB;
-//extern int int GameType                                                                  BLOB;
+//extern int int gGameType                                                                  BLOB;
 //extern int bool CallerIDOn                                                               BLOB;
 //extern int __bNetworkGame?                                                             BLOB;
 //extern int bool BitsPerPixelChanged                                                      BLOB;

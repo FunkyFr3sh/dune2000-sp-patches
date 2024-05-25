@@ -163,7 +163,7 @@ void GetTextStringToBuffer(int string_id, char *buffer, int buffer_size)
   // Attempt to get custom text from mission ini file
   char mapIniPath[256];
   char id[12];
-  sprintf(mapIniPath, ".\\%s%s", GameType == GT_SINGLEPLAYER ? MissionsResourcePath : MapsResourcePath, PathChangeExtension(MissionMap, ".ini"));
+  sprintf(mapIniPath, ".\\%s%s", gGameType == GAME_CAMPAIGN ? MissionsResourcePath : MapsResourcePath, PathChangeExtension(MissionMap, ".ini"));
   sprintf(id, "%d", string_id);
   IniGetString("Text", id, "", buffer, buffer_size, mapIniPath);
   if (!strlen(buffer))

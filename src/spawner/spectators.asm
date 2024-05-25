@@ -53,7 +53,7 @@ hack 0x00425F20, 0x00425F2E ; ShowPlayerCreditsForSpectators
     add esp, 0x0C
     cmp byte[SpawnerActive], 1
     jnz .out
-    cmp dword[GameType], GT_SKIRMISH
+    cmp dword[gGameType], GAME_SKIRMISH
     jz .ShowCredits
     cmp byte[gLose], 1
     jnz .out
@@ -83,7 +83,7 @@ hack 0x00425F20, 0x00425F2E ; ShowPlayerCreditsForSpectators
 hack 0x00469ECD, 0x00469ED6 ; SkipSpawningStartingUnitsForSpectators
     cmp byte[SpawnerActive], 1
     jnz .out
-    cmp dword[GameType], GT_SKIRMISH
+    cmp dword[gGameType], GAME_SKIRMISH
     jz .out
     pushad
     
@@ -125,7 +125,7 @@ hack 0x004494B8 ; draw live stats
 hack 0x00469BB1 ;do not pre place buildings/units for spectators
     cmp byte[SpawnerActive], 1
     jnz .out
-    cmp dword[GameType], GT_SKIRMISH
+    cmp dword[gGameType], GAME_SKIRMISH
     jz .out
     pushad
     push edx
@@ -143,7 +143,7 @@ hack 0x00469BB1 ;do not pre place buildings/units for spectators
 hack 0x0044FC53; set bool gLose to true on game start
     cmp byte[SpawnerActive], 1
     jnz .out
-    cmp dword[GameType], GT_SKIRMISH
+    cmp dword[gGameType], GAME_SKIRMISH
     jz .out
     cmp byte[MeIsSpectator], 1
     jnz .out

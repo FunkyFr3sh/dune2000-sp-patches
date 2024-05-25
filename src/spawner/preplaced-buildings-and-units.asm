@@ -9,9 +9,9 @@
 @CLEAR 0x00469B82, 0x90, 0x00469B98
 
 hack 0x00469D2B, 0x00469D31 ; JumpOutAfterBuildingsAndUnitsWerePlaced
-    cmp dword[GameType], GT_SINGLEPLAYER
+    cmp dword[gGameType], GAME_CAMPAIGN
     jz .out
-    mov eax, dword[GameType]
+    mov eax, dword[gGameType]
     jmp 0x00469D59
     
 .out:
@@ -22,7 +22,7 @@ hack 0x00469D2B, 0x00469D31 ; JumpOutAfterBuildingsAndUnitsWerePlaced
 
 hack 0x00469CEF, 0x00469CF5 ; DoNotPrePlaceWormsInMP
     mov edi, dword[esp+0x34]
-    cmp dword[GameType], GT_SINGLEPLAYER
+    cmp dword[gGameType], GAME_CAMPAIGN
     jz .out
     push edi
     and edi, 0x000000FF

@@ -34,7 +34,7 @@ hack 0x00453EEE, 0x00453EF6 ; Check default win/lose events if ActiveEventCount 
 .NoActiveEvents:
     cmp byte[SpawnerActive], 1
     jnz 0x004540D4
-    cmp dword[GameType], GT_SINGLEPLAYER
+    cmp dword[gGameType], GAME_CAMPAIGN
     jz 0x004540D4
 
     jmp 0x00453F60 ; default win/lose events starting here

@@ -27,9 +27,9 @@ hack 0x0042BA0B, 0x0042BA13 ; force map resource path when the spawner is active
 hack 0x0045A942, 0x0045A94C ; Spawner_Settings
     cmp byte[SpawnerActive], 1
     jnz .out
-    cmp dword[GameType], GT_SKIRMISH
+    cmp dword[gGameType], GAME_SKIRMISH
     jz .out
-    cmp dword[GameType], GT_SINGLEPLAYER
+    cmp dword[gGameType], GAME_CAMPAIGN
     jz .out
     mov dword [InitialConnectTimeOut],25000
     mov dword [ReconnectTimeOutToPlayer],15
@@ -60,7 +60,7 @@ hack 0x0044A2CC, 0x0044A2D3 ; ExitAfterOnlineGame
     jmp 0x0044A42C
     
 .out:
-    cmp dword[GameType], GT_WOL
+    cmp dword[gGameType], GAME_INTERNET
     jmp 0x0044A2D3
 %endif
 
@@ -71,7 +71,7 @@ hack 0x00482850, 0x00482856 ; ExitAfterScore
     jnz .out
     cmp dword[GameState], GS_BRIEFING
     jnz .out
-    mov dword[GameType], GT_SKIRMISH
+    mov dword[gGameType], GAME_SKIRMISH
     mov dword[GameState], GS_QUIT
     
 .out:
@@ -84,7 +84,7 @@ hack 0x00473E51 ; ExitIfNoScoreShown
     jnz .out
     cmp dword[GameState], GS_BRIEFING
     jnz .out
-    mov dword[GameType], GT_SKIRMISH
+    mov dword[gGameType], GAME_SKIRMISH
     mov dword[GameState], GS_QUIT
     jmp 0x00474085
     
@@ -98,7 +98,7 @@ hack 0x00473DF7 ; ExitIfNoScoreShownSP
     jnz .out
     cmp dword[GameState], GS_BRIEFING
     jnz .out
-    cmp dword[GameType], GT_SINGLEPLAYER
+    cmp dword[gGameType], GAME_CAMPAIGN
     jnz .out
     mov dword[GameState], GS_QUIT
     jmp 0x00474085
@@ -110,7 +110,7 @@ hack 0x00473DF7 ; ExitIfNoScoreShownSP
 hack 0x0044A440, 0x0044A447 ; ExitIfLoseSP2 ; works also for skirmish
     cmp byte[SpawnerActive], 1
     jnz .out
-    cmp dword[GameType], GT_SINGLEPLAYER
+    cmp dword[gGameType], GAME_CAMPAIGN
     jnz .out
     cmp byte[MySideID], 2
     ja .GameExit
@@ -138,7 +138,7 @@ hack 0x00407F6B ; CustomListenPort
 hack 0x0047564E, 0x00475655 ; DoNotDecideSideIDbyMapNameInSinglePlayer
     cmp byte[SpawnerActive], 1
     jnz .out
-    cmp dword[GameType], GT_SINGLEPLAYER
+    cmp dword[gGameType], GAME_CAMPAIGN
     jnz .out
     cmp byte[MySideID], 0
     jz 0x00475669
@@ -160,7 +160,7 @@ hack 0x00475646, 0x0047564B ; DoNotDecideMissionNumberbyMapNameInSinglePlayer
 
     cmp byte[SpawnerActive], 1
     jnz .out
-    cmp dword[GameType], GT_SINGLEPLAYER
+    cmp dword[gGameType], GAME_CAMPAIGN
     jnz .out
     jmp 0x0047564B
     
@@ -173,7 +173,7 @@ hack 0x00439241, 0x00439246 ; RemoveDebugMenuButton
     lea ecx, [esp+0x10]
     cmp byte[SpawnerActive], 1
     jnz .out
-    cmp dword[GameType], GT_SINGLEPLAYER
+    cmp dword[gGameType], GAME_CAMPAIGN
     jz .out
     pushad
     push ButtonDebug

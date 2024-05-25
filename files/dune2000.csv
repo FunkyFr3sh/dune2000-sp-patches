@@ -1712,7 +1712,7 @@ RVA,label,comment
 00397E1C,bool RestartGame,bool RestartGame
 00397E20,bool CancelConnect,bool CancelConnect
 00397E30,bool ForceNoCD,bool ForceNoCD
-00397E34,int GameType,int GameType
+00397E34,int gGameType,int gGameType
 00397E38,PlayersDeadCounter,PlayersDeadCounter
 00397E48,bool CallerIDOn,bool CallerIDOn
 00397E78,KeyMap2,KeyMap2
@@ -1753,7 +1753,7 @@ RVA,label,comment
 0039849C,MousePositionY 2,MousePositionY 2
 003984B4,Force8BitMode,Force8BitMode
 003984B8,Force16BitMode,Force16BitMode
-003984C0,NetPlayerCount,NetPlayerCount
+003984C0,gTotalPlayers,gTotalPlayers
 003984C4,bool NetworkGame,bool NetworkGame
 003984C8,UseMemoryDebugString bool,UseMemoryDebugString bool
 003984CC,ConvertFilesToBinaryVersion,ConvertFilesToBinaryVersion

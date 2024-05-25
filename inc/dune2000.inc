@@ -14,12 +14,12 @@
 %assign GES_DRAWGAME 6
 %assign GES_UNKNOWNENDSTATE 7
 
-%assign GT_SINGLEPLAYER 0
-%assign GT_SKIRMISH 1
-%assign GT_LAN 2
-%assign GT_SERIAL 3
-%assign GT_MODEM 4
-%assign GT_WOL 5
+%assign GAME_CAMPAIGN 0
+%assign GAME_SKIRMISH 1
+%assign GAME_NETWORK 2
+%assign GAME_SERIAL 3
+%assign GAME_MODEM 4
+%assign GAME_INTERNET 5
 
 %assign GS_INTRO 0
 %assign GS_BRIEFING 1
@@ -61,7 +61,7 @@ cextern UnknownNetVar4
 cextern UnknownNetVar5
 cextern NetworkGame
 cextern NetworkType
-cextern NetPlayerCount
+cextern gTotalPlayers
 
 ;Multiplayer settings
 cextern gNetUnitCount
@@ -133,7 +133,7 @@ cextern gSideId
 cextern gWin
 cextern gLose
 cextern gDifficultyLevel
-cextern GameType
+cextern gGameType
 cextern GameState
 cextern AtreidesMoney
 cextern MissionNumber
