@@ -4,9 +4,13 @@
 # patched machine code
 *.exe
 
+# PETool on unix
+/petool
+
 # configuration
 config.mk
 .vscode
+.vs
 
 # misc junk
 move.cmd
