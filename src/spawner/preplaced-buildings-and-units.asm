@@ -4,22 +4,6 @@
 
 ;Enable PrePlaced Buildings And Units in multi-player/skirmish games
 
-;remove checks for skirmish/online/lan
-@CLEAR 0x00469B7A, 0x90, 0x00469B7F
-@CLEAR 0x00469B82, 0x90, 0x00469B98
-
-hack 0x00469D2B, 0x00469D31 ; JumpOutAfterBuildingsAndUnitsWerePlaced
-    cmp dword[gGameType], GAME_CAMPAIGN
-    jz .out
-    mov eax, dword[gGameType]
-    jmp 0x00469D59
-    
-.out:
-    mov eax, dword[esp+0x30]
-    test eax, eax
-    jmp 0x00469D31
-
-
 hack 0x00469CEF, 0x00469CF5 ; DoNotPrePlaceWormsInMP
     mov edi, dword[esp+0x34]
     cmp dword[gGameType], GAME_CAMPAIGN

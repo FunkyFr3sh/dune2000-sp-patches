@@ -405,16 +405,7 @@ void Mod__setupmapstuff()
   v123.right = gGameMap.width;
   v123.bottom = gGameMap.height;
   UpdateSpiceInRegion(&v123);
-  if ( _IsMultiplayer )
-  {
-    if ( gGameType != 1 )
-    {
-      v54 = gTotalPlayers;
-      goto LABEL_52;
-    }
-  }
-  else if ( gGameType != GAME_SKIRMISH )
-  {
+
     if ( objects_on_map > 0 )
     {
       ptr_1 = object_array;
@@ -470,11 +461,20 @@ void Mod__setupmapstuff()
     } */
     // New logic end
     ExecuteEventHook(HOOK_SETUPMAPSTUFF, 0, 0, 0, 0, 0, 0);
-    return;
-  }
-  v54 = 1;
-  gTotalPlayers = 1;
-LABEL_52:
+
+    if (gGameType == GAME_CAMPAIGN)
+        return;
+
+    if (gGameType == GAME_SKIRMISH)
+    {
+        v54 = 1;
+        gTotalPlayers = 1;
+    }
+    else
+    {
+        v54 = gTotalPlayers;
+    }
+
   v55 = &_gAIArray[0].__IsAI;
   v56 = 8;
   do
