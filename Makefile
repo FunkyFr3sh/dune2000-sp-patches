@@ -36,7 +36,6 @@ OBJS            ?= callsites.o \
 	src/spawner/starting-locations-func.o \
 	src/spawner/nethack.o \
 	src/spawner/mission-events.o \
-	src/spawner/preplaced-buildings-and-units.o \
 	src/spawner/make-chosen-units-buildings-optional.o \
 	src/spawner/auto-surrender-on-abort.o \
 	\

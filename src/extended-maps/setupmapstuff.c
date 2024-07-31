@@ -422,10 +422,14 @@ void Mod__setupmapstuff()
           v52 = object_array_xpos[i];
           a2 = v51;
           v53 = v51;
-          ModelAddUnit(a1, v51, v52, object_array_ypos[i], v52, object_array_ypos[i], 0, 0);
-          if ( _templates_unitattribs[v53].__Behavior == UnitBehavior_SANDWORM )
+
+          if (gGameType == GAME_CAMPAIGN || _templates_unitattribs[v53].__Behavior != UnitBehavior_SANDWORM)
           {
-            ++worm_count;
+              ModelAddUnit(a1, v51, v52, object_array_ypos[i], v52, object_array_ypos[i], 0, 0);
+              if (_templates_unitattribs[v53].__Behavior == UnitBehavior_SANDWORM)
+              {
+                  ++worm_count;
+              }
           }
         }
         else
