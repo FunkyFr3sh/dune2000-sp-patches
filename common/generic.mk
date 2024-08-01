@@ -68,7 +68,7 @@ DLL_LDFLAGS ?= $(LD_COMMON) -s -shared
 
 .dump-%: %
 	$(CP) $< $@
-	$(PETOOL) dump $@
+#	$(PETOOL) dump $@
 
 
 %.dat: %.bdat
