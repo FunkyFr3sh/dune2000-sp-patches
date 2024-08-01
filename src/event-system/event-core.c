@@ -163,9 +163,12 @@ DEFAULT_WIN_LOSE_EVENTS:
     break_count = 0;
     continue_count = 0;
     
-    if (!_gEventCount && SpawnerActive && gGameType != GAME_CAMPAIGN)
+    if (SpawnerActive)
     {
-        goto DEFAULT_WIN_LOSE_EVENTS;
+        if (UseDefaultWinLoseEvents || (!_gEventCount && gGameType != GAME_CAMPAIGN))
+        {
+            goto DEFAULT_WIN_LOSE_EVENTS;
+        }
     }
     
     ExecuteEventsInRange(0, _gEventCount, EBT_GLOBAL);

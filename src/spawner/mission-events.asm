@@ -9,22 +9,6 @@ gbool MapScriptExists, false
 gbool UseDefaultWinLoseEvents, false
 gstring MapScript, "", 50
 
-hack 0x00453F58, 0x00453F60 ; By default the players will lose once all units/buildings were destroyed and maps with .mis files use their own Win/gLose events. This option allows the use of the default logic in scripted maps
-    cmp byte[SpawnerActive], 1
-    jnz .out
-    cmp byte[UseDefaultWinLoseEvents], 1
-    jnz .out
-    
-    jmp hackend
-    
-.out:
-    pop edi
-    pop esi
-    pop ebp
-    pop ebx
-    add esp, 0x48
-    retn
-
 
 hack 0x004752FE ; LoadCustomOnlineMapScript
     cmp byte[SpawnerActive], 1
