@@ -25,20 +25,6 @@ hack 0x00453F58, 0x00453F60 ; By default the players will lose once all units/bu
     add esp, 0x48
     retn
 
-    
-hack 0x00453EEE, 0x00453EF6 ; Check default win/lose events if ActiveEventCount is 0
-    test al, al
-    jbe .NoActiveEvents
-    jmp hackend
-    
-.NoActiveEvents:
-    cmp byte[SpawnerActive], 1
-    jnz 0x004540D4
-    cmp dword[gGameType], GAME_CAMPAIGN
-    jz 0x004540D4
-
-    jmp 0x00453F60 ; default win/lose events starting here
- 
 
 hack 0x004752FE ; LoadCustomOnlineMapScript
     cmp byte[SpawnerActive], 1

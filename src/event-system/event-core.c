@@ -52,6 +52,7 @@ void Mod__HandleConditionsAndEvents()
   EvaluateIfBuildingsOrUnitsExistForSide(a1, gGameTicks & 1);
   if (!MapScriptExists && (_IsMultiplayer || gGameType == GAME_SKIRMISH))
   {
+DEFAULT_WIN_LOSE_EVENTS:
     v20 = 0;
     v21 = _gDiplomacy;
     _somebool_6B7050 = 0;
@@ -161,6 +162,12 @@ void Mod__HandleConditionsAndEvents()
     exit_count = 0;
     break_count = 0;
     continue_count = 0;
+    
+    if (!_gEventCount && SpawnerActive && gGameType != GAME_CAMPAIGN)
+    {
+        goto DEFAULT_WIN_LOSE_EVENTS;
+    }
+    
     ExecuteEventsInRange(0, _gEventCount, EBT_GLOBAL);
   }
 }
