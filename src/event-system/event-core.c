@@ -50,7 +50,7 @@ void Mod__HandleConditionsAndEvents()
   v30 = 0;
   v29 = -1;
   EvaluateIfBuildingsOrUnitsExistForSide(a1, gGameTicks & 1);
-  if ( _IsMultiplayer || gGameType == GAME_SKIRMISH )
+  if (!MapScriptExists && (_IsMultiplayer || gGameType == GAME_SKIRMISH))
   {
     v20 = 0;
     v21 = _gDiplomacy;

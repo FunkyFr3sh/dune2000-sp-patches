@@ -62,14 +62,6 @@ hack 0x0047533D ; LoadCustomSkirmishMapScript
     jmp 0x00475342
 
 
-hack 0x00453BC9, 0x00453BD1 ; EnableMissionEventsInMP
-    add esp, 8
-    cmp byte[MapScriptExists], 1
-    jz 0x00453BE6
-    mov al, byte[NetworkGame]
-    jmp 0x00453BD1
-
-    
 hack 0x00454446, 0x0045444D ; game over when the mission lose event gets triggered
     mov byte[gLose], 1
     
