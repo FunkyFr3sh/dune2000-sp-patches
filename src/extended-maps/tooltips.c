@@ -8,8 +8,7 @@ TooltipExtraData gTooltipExtraData[TOOLTIP_LINES];
 int tooltip_used_lines;
 
 // Custom implementation of function HandleTooltips
-CALL(0x00449462, _Mod__HandleTooltips);
-
+DETOUR(0x0044B5C0, 0x0044C416, _Mod__HandleTooltips);
 void Mod__HandleTooltips()
 {
   CSide *side_; // esi MAPDST

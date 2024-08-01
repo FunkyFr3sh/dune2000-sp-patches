@@ -265,7 +265,7 @@ LABEL_77:
   return 0;
 }
 
-LJMP(0x0045D990, _Ext__CanUnitUseSquare);
+DETOUR(0x0045D990, 0x0045DE2E, _Ext__CanUnitUseSquare);
 
 bool Ext__CanUnitUseSquare(dwXYStruct x, Unit *unit, eSideType side_id, char route_mode)
 {

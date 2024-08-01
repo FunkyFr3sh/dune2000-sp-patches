@@ -5,7 +5,7 @@
 
 // Custom implementation of function CheckIfMCVCanBeDeployedOn
 
-LJMP(0x00443250, _Mod__CheckIfMCVCanBeDeployedOn);
+DETOUR(0x00443250, 0x004432E5, _Mod__CheckIfMCVCanBeDeployedOn);
 
 char Mod__CheckIfMCVCanBeDeployedOn(int xpos, int ypos)
 {

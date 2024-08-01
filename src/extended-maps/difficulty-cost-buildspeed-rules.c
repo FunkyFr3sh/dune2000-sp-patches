@@ -35,9 +35,7 @@ int Mod__GetDifficultyCostPercentage(unsigned char side_id)
 
 
 // Custom implementation of function GetDifficultyBuildSpeedPercentage
-CALL(0x00442A52, _Mod__GetDifficultyBuildSpeedPercentage); // GetUnitBuildSpeedPercentage
-CALL(0x00442B91, _Mod__GetDifficultyBuildSpeedPercentage); // GetBuildingBuildSpeedPercentage
-
+DETOUR(0x00442960, 0x004429AB, _Mod__GetDifficultyBuildSpeedPercentage); // GetBuildingBuildSpeedPercentage
 int Mod__GetDifficultyBuildSpeedPercentage(unsigned char side_id)
 {
   char difficulty;

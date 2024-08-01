@@ -9,8 +9,7 @@
 // (This is driven by infantryReleaseLimit and infantryReleaseChance rules)
 
 // Custom implementation of function ReleaseInfantryFromBuilding
-CALL(0x0049B9E8, _Mod__ReleaseInfantryFromBuilding);
-CALL(0x0049BD1A, _Mod__ReleaseInfantryFromBuilding);
+DETOUR(0x004977A0, 0x0049799F, _Mod__ReleaseInfantryFromBuilding);
 
 void Mod__ReleaseInfantryFromBuilding(Building *building, unsigned char side_id)
 {

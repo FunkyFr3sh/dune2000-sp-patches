@@ -4,8 +4,7 @@
 #include "dune2000.h"
 
 // Custom implementation of function GetOwnershipStatusOfCell
-LJMP(0x00428C30, _Mod__GetOwnershipStatusOfCell);
-
+DETOUR(0x00428C30, 0x00428C91, _Mod__GetOwnershipStatusOfCell);
 void Mod__GetOwnershipStatusOfCell(int x, int y, unsigned char side_id, _BYTE *flags)
 {
   unsigned int tile_flags; // eax
@@ -34,8 +33,7 @@ void Mod__GetOwnershipStatusOfCell(int x, int y, unsigned char side_id, _BYTE *f
 
 bool CheckTerrainRestriction(int tile_flags, int default_flag, int restriction);
 
-CALL(0x00428D16, _Mod__HandleBuildingPlacement); // BlitGame
-
+DETOUR(0x004285C0, 0x004288C1, _Mod__HandleBuildingPlacement); // BlitGame
 bool Mod__HandleBuildingPlacement(eSideType side_id, int tile_bitfield, int tile_bitfield_solid, TImage *img)
 {
   unsigned int v5; // esi
@@ -230,8 +228,7 @@ bool Mod__HandleBuildingPlacement(eSideType side_id, int tile_bitfield, int tile
   return result;
 }
 
-CALL(0x00428CF9, _Mod__HandleConcretePlacement); // BlitGame
-
+DETOUR(0x004288D0, 0x00428C2E, _Mod__HandleConcretePlacement); // BlitGame
 bool Mod__HandleConcretePlacement(int tile_bitfield1, int tile_bitfield2, TImage *img, char bool1)
 {
   bool result; // al

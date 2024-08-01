@@ -8,7 +8,6 @@
 #include "ini.h"
 
 CALL(0x00448614, _GamePlayRestart);
-CALL(0x00470BA0, _GameExit);
 CALL(0x004B28C1, _GameStart);
 
 void LoadSavedGame(const char *saveGamePath) // Skirmish/SinglePlayer load saved game function
@@ -50,6 +49,7 @@ void GamePlayStart() // Triggers when the game-play starts
     LoadRulesFromMap();
 }
 
+DETOUR(0x00478FA0, 0x0047916B, _GameExit);
 void GameExit() // Clean game exit - GameState = GS_QUIT
 {
     SaveDune2000Ini();

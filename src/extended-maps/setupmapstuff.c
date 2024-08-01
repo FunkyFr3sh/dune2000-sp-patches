@@ -46,7 +46,7 @@ void PlaceStaticCrateExt(uint8_t x, uint8_t y, eCrateType type, eCrateImage imag
   }
 }
 
-CALL(0x004488F8, _Mod__setupmapstuff);
+DETOUR(0x00469790, 0x0046A299, _Mod__setupmapstuff);
 
 void Mod__setupmapstuff()
 {

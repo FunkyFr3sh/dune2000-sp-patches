@@ -15,7 +15,7 @@ unsigned int message_counter;
 
 // Custom implementation of function InitMessageData
 
-CALL(0x004489A8, _Mod__InitMessageData);
+DETOUR(0x004255C0, 0x004255D2, _Mod__InitMessageData);
 
 void Mod__InitMessageData()
 {
@@ -100,7 +100,7 @@ void SetFontColorGradient(int index, int color1, int color2, int stage, int num_
 }
 
 // Custom implementation of function QueueMessage
-LJMP(0x00425720, _Mod__QueueMessage);
+DETOUR(0x00425720, 0x0042582F, _Mod__QueueMessage);
 
 void Mod__QueueMessage(const char *message, int type)
 {
@@ -211,7 +211,7 @@ void QueueMessageExt(const char *message, int duration, int ref_id, int screen_p
 }
 
 // Custom implementation of function BlitMessages
-CALL(0x004490AD, _Mod__BlitMessages);
+DETOUR(0x004255E0, 0x00425715, _Mod__BlitMessages);
 
 void Mod__BlitMessages(TImage *img)
 {

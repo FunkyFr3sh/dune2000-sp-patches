@@ -7,8 +7,7 @@
 // Add tagged deliveries - delivered units are given a tag
 
 // Custom implementation of function UnitDeliver
-CALL(0x004985E0, _Mod__UnitDeliver); // UpdateUnit
-
+DETOUR(0x0049E3E0, 0x0049E6AF, _Mod__UnitDeliver); // UpdateUnit
 char Mod__UnitDeliver(Unit *unit, int side_id)
 {
   Unit *unit_; // edi

@@ -5,8 +5,7 @@
 #include "dune2000.h"
 #include "patch.h"
 
-CALL(0x004A3BF1, _ParseCommandLine);
-
+DETOUR(0x004A39E0, 0x004A3A7E, _ParseCommandLine);
 void ParseCommandLine(char *args)
 {
     char *s = strtok(args," ");

@@ -25,7 +25,7 @@ bool IsAnyArmedUnitSelectedExceptEngineerAndSaboteur()
 }
 
 // Custom implementation of function HandleGameLoopEvents
-CALL(0x00449852, _Mod__HandleGameLoopEvents);
+DETOUR(0x004433A0, 0x00446689, _Mod__HandleGameLoopEvents);
 
 void Mod__HandleGameLoopEvents()
 {

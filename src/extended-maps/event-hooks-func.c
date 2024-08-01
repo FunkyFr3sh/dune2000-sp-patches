@@ -5,8 +5,7 @@
 // Set mouse cursor hook
 
 // Custom implementation of function SetMouseCursor
-LJMP(0x0044C420, _Mod__SetMouseCursor);
-
+DETOUR(0x0044C420, 0x0044C453, _Mod__SetMouseCursor);
 void Mod__SetMouseCursor(int cursor)
 {
   if ( gUIMgr->dw_field_110_index )
@@ -92,7 +91,7 @@ unsigned int Ext_GetBuildingBuildSpeedPercentage(unsigned char side_id)
 
 // Cost hooks
 
-LJMP(0x00442BB0, _Mod__GetUnitCost);
+DETOUR(0x00442BB0, 0x00442BDA, _Mod__GetUnitCost);
 
 unsigned int Mod__GetUnitCost(int type, eSideType side)
 {
@@ -100,7 +99,7 @@ unsigned int Mod__GetUnitCost(int type, eSideType side)
   return ExecuteEventHook(HOOK_GETUNITCOST, 3, result, type, side, 0, 0);
 }
 
-LJMP(0x00442BE0, _Mod__GetBuildingCost);
+DETOUR(0x00442BE0, 0x00442C1A, _Mod__GetBuildingCost);
 
 unsigned int Mod__GetBuildingCost(int building_type, int num_upgrades, eSideType side_id)
 {

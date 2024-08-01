@@ -28,8 +28,7 @@ int break_count;
 int continue_count;
 
 // Custom implementation of function HandleConditionsAndEvents
-CALL(0x00449A8D, _Mod__HandleConditionsAndEvents);
-
+DETOUR(0x00453B90, 0x004540DC, _Mod__HandleConditionsAndEvents);
 void Mod__HandleConditionsAndEvents()
 {
   CheckBuildingsLeft();

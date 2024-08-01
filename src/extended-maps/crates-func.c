@@ -37,7 +37,7 @@ unsigned char Mod__GetCrateFromMap(int xpos, int ypos)
 }
 
 // Custom implementation of function PickupCrate
-CALL(0x00494480, _Mod__PickupCrate);
+DETOUR(0x0049EBF0, 0x0049F183, _Mod__PickupCrate);
 
 bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
 {

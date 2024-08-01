@@ -4,12 +4,8 @@
 
 //Hardcode the error messages to avoid problems with missing failure.txt file
 
-CALL(0x0042B779, _FakeFailureTxtGetLine);
-CALL(0x0042B798, _FakeFailureTxtGetLine);
-CALL(0x004A3D1F, _FakeFailureTxtGetLine);
-CALL(0x004A3D73, _FakeFailureTxtGetLine);
-CALL(0x004A3E71, _FakeFailureTxtGetLine);
 
+DETOUR(0x004A3120, 0x004A31C6, _FakeFailureTxtGetLine);
 char *FakeFailureTxtGetLine(int lineNumber)
 {
     switch(lineNumber)

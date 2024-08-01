@@ -90,7 +90,7 @@ uint16_t GetRadarColorForTile16bit(int xpos, int ypos)
 }
 
 // Custom implementation of function SetPixelOnRadar8
-LJMP(0x00462010, _Mod__SetPixelOnRadar8);
+DETOUR(0x00462010, 0x004620A1, _Mod__SetPixelOnRadar8);
 
 void Mod__SetPixelOnRadar8(unsigned char x, unsigned char y)
 {
@@ -107,7 +107,7 @@ void Mod__SetPixelOnRadar8(unsigned char x, unsigned char y)
 }
 
 // Custom implementation of function SetPixelOnRadar16
-LJMP(0x004620B0, _Mod__SetPixelOnRadar16);
+DETOUR(0x004620B0, 0x00462138, _Mod__SetPixelOnRadar16);
 
 void Mod__SetPixelOnRadar16(unsigned char x, unsigned char y)
 {
