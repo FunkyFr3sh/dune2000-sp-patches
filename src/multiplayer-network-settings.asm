@@ -27,7 +27,7 @@ hack 0x0045A9C1, 0x0045A9FA ; WOL_Settings
     jmp  0x0045AA2C ; not %$end on purpose!
 
 
-@CLEAR 0x0041A28C, 0x90, 0x0041A293
+@CLEAR 0x0041A28C+5, 0x90, 0x0041A293
 
 hack 0x00413EBE ; CustomWOLGameVersion1
     cmp  eax, WOLGameVersion

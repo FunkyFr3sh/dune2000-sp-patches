@@ -2,7 +2,7 @@
 %include "dune2000.inc"
 %include "patch.inc"
 
-hack 0x0044A814, 0x0044A819; OverrideAIPlayerColors
+hack 0x0044A814 ; OverrideAIPlayerColors
     pushad
     call SetupAIPlayerColors
     popad

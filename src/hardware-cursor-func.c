@@ -6,7 +6,7 @@
 #include "ini.h"
 #include "utils.h"
 
-CLEAR(0x004A3CA4, 0x90, 0x004A3CAA);
+CLEAR(0x004A3CA4+5, 0x90, 0x004A3CAA);
 CALL(0x004A3CA4, _InitCursor);
 CALL(0x00423AF0, _DrawCursor);
 

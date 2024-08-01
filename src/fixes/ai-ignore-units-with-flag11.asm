@@ -11,7 +11,7 @@ hack 0x0041E710, 0x0041E716 ; w_CAI::DoRepairUnits
   jmp hackend
 
 ; Do not send units with this flag to do defence
-hack 0x004233A3, 0x004233A8 ; w_CAI::SendNearestUnit
+hack 0x004233A3 ; w_CAI::SendNearestUnit
   mov al, [esi+28h] ; instruction replaced by the long jump
   cmp al, cl ; instruction replaced by the long jump
   jnz 0x4233EF

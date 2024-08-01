@@ -154,7 +154,7 @@ hack 0x0047564E, 0x00475655 ; DoNotDecideSideIDbyMapNameInSinglePlayer
     jmp 0x00475655
 
 
-hack 0x00475646, 0x0047564B ; DoNotDecideMissionNumberbyMapNameInSinglePlayer
+hack 0x00475646 ; DoNotDecideMissionNumberbyMapNameInSinglePlayer
     cmp byte[MissionNumber], 9 ; Original missions will never go above 9, can only be a custom mission
     ja 0x0047564B
 
@@ -169,7 +169,7 @@ hack 0x00475646, 0x0047564B ; DoNotDecideMissionNumberbyMapNameInSinglePlayer
     jmp 0x0047564B
 
 ;removes the debug button gruntlord added as a special feature for SP
-hack 0x00439241, 0x00439246 ; RemoveDebugMenuButton
+hack 0x00439241 ; RemoveDebugMenuButton
     lea ecx, [esp+0x10]
     cmp byte[SpawnerActive], 1
     jnz .out

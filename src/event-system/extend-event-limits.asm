@@ -12,7 +12,7 @@
 @ENDPATCH
 
 ; Loading MIS file - Load extra data from MIS file
-hack 0x0044FDC7, 0x0044FDCC ; LoadMission
+hack 0x0044FDC7 ; LoadMission
     call _ReadFile ; Instruction replaced by the long jump
     ; Read extended _gEventCount
     add esp, 10h

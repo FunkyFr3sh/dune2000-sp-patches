@@ -2,7 +2,7 @@
 %include "dune2000.inc"
 
 ; Fix AI starting building upgrade with zero credits causing upgrade stuck in HOLD state
-hack 0x00421C5A, 0x00421C5F ; CAI::UpgradeBuildings
+hack 0x00421C5A ; CAI::UpgradeBuildings
   call GetSide ; instruction replaced by the long jump
   add esp, 4 ; put the instruction here and remove it from the other place
   mov ecx, [eax+0x2425C] ; get CashReal

@@ -11,7 +11,7 @@ sstring UnknownSide, "Unknown"
 
 @CLEAR 0x0040D94B, 0x90, 0x0040D950 ;do not quit if unknown game end state
 
-hack 0x0044A0C1, 0x0044A0C6 ; CallWOL__SendGameResultsToServer
+hack 0x0044A0C1 ; CallWOL__SendGameResultsToServer
     cmp byte[SpawnerActive], 1
     jnz .out
     pushad
@@ -32,7 +32,7 @@ hack 0x0044A0C1, 0x0044A0C6 ; CallWOL__SendGameResultsToServer
     jmp hackend
 
 
-hack 0x0040DB75, 0x0040DB7A ;CallWriteStatsDmp
+hack 0x0040DB75 ;CallWriteStatsDmp
     pushad
     push ecx
     push esi
@@ -83,7 +83,7 @@ hack 0x0040D4F7, 0x0040D529 ; UseEnglishStringsForSides
     jmp 0x0040D529
 
 
-hack 0x0040DAFD, 0x0040DB02 ; CallSetGameEndTickCount
+hack 0x0040DAFD ; CallSetGameEndTickCount
     cmp byte[SpawnerActive], 1
     jnz .out
     pushad

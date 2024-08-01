@@ -2,7 +2,7 @@
 %include "inc/patch.inc"
 
 ; Always show radar map if rule alwaysShowRadar is set to true
-hack 0x0044905D, 0x00449062 ; GameLoop
+hack 0x0044905D ; GameLoop
     add esp, 8 ; Instruction replaced by long jump
     cmp byte [rulesExt__alwaysShowRadar], 0
     jne 0x44906D
@@ -35,7 +35,7 @@ hack 0x0044905D, 0x00449062 ; GameLoop
 ;    jmp hackend
 
 ; Play S_POWERUP sound instead of S_RADARONLINE sound
-hack 0x0044AB6A, 0x0044AB6F ; DoPower
+hack 0x0044AB6A ; DoPower
     add esp, 8 ; Instruction replaced by long jump
     cmp byte [rulesExt__alwaysShowRadar], 0
     je .Skip
@@ -44,7 +44,7 @@ hack 0x0044AB6A, 0x0044AB6F ; DoPower
     test al, al ; Instruction replaced by long jump
     jmp hackend
     
-hack 0x0044AB9B, 0x0044ABA0 ; DoPower
+hack 0x0044AB9B ; DoPower
     add esp, 8 ; Instruction replaced by long jump
     cmp byte [rulesExt__alwaysShowRadar], 0
     je .Skip2

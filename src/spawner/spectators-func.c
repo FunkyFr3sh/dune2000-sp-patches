@@ -5,7 +5,7 @@
 #include "macros/patch.h"
 #include "stats.h"
 
-CLEAR(0x00428DA7, 0xCC, 0x00428DAD); //do not draw "Mission Failed" text
+CLEAR(0x00428DA7+5, 0xCC, 0x00428DAD); //do not draw "Mission Failed" text
 LJMP(0x00428DA7, 0x00428DE3); //do not draw "Mission Failed" text
 
 bool LiveStatsEnabled = true;

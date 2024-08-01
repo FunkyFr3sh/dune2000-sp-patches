@@ -22,9 +22,9 @@ gstring uibb_r8FileName, "UIBB.R8", 100
 ;@LJMP 0x0044B6BC, 0x0044BAD7 ; __Do_Tooltips() - TOOLTIPS: Map item out of range ; Superseded by Mod__HandleTooltips
 ;@CLEAR_INT 0x004434A4, 0x004434B6 ; Model__HandleGameLoopEvents() - Invalid index to gGameMap.map (1) ; Superseded by Mod__HandleGameLoopEvents
 ;@LJMP 0x004434A4, 0x00443C7F ; Model__HandleGameLoopEvents() - Invalid index to gGameMap.map (1) ; Superseded by Mod__HandleGameLoopEvents
-@CLEAR_INT 0x0045946C, 0x0045947E ; Generate_Unit_Move_Order(int_int_int) - Invalid targetX
+@CLEAR_INT 0x0045946C+5, 0x0045947E ; Generate_Unit_Move_Order(int_int_int) - Invalid targetX
 @LJMP 0x0045946C, 0x00459531 ; Generate_Unit_Move_Order(int_int_int) - Invalid targetX
-@CLEAR_INT 0x00459496, 0x004594A8 ; Generate_Unit_Move_Order(int_int_int) - Invalid targetY
+@CLEAR_INT 0x00459496+5, 0x004594A8 ; Generate_Unit_Move_Order(int_int_int) - Invalid targetY
 @LJMP 0x00459496, 0x00459531 ; Generate_Unit_Move_Order(int_int_int) - Invalid targetY
 
  
@@ -350,7 +350,7 @@ hack 0x00449145, 0x0044914B ; SideBarUpgradeDrawingGlitchFix
     jmp hackend
 
 
-hack 0x00472142, 0x000472147 ; MenuToolTipFixWidth
+hack 0x00472142 ; MenuToolTipFixWidth
     cmp byte[HighResPatchEnabled], 1
     jnz .out
     cmp eax, dword[GameWidth]

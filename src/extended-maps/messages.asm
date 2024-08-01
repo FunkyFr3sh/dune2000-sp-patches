@@ -17,7 +17,7 @@
 @ENDPATCH
 
 ; Initialize more font palettes
-hack 0x00448B6C, 0x00448B71 ; GameLoop
+hack 0x00448B6C ; GameLoop
     call Graphlib_font_pal ; Instruction replaced by long jump
     push eax ; Back result of this call
     push 0x004E0760 ; Offset of string "FontCol"

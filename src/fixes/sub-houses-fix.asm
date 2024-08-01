@@ -21,7 +21,7 @@ hack 0x0043D86F, 0x0043D876 ; CreateScore
 @CLEAR 0x0043C111, 0x90, 0x0043C124 ; LoadMovie
 
 ; Fix the error "CreateGlobe()", "Do not recognise gSideId %d" - reset Side ID to 2 if it's higher than 2 before calling CreateGlobe
-hack 0x00436162, 0x00436167 ; CInterface::CInterface
+hack 0x00436162 ; CInterface::CInterface
     xor eax, eax
     mov al, [gSideId]
     cmp eax, 2
@@ -127,17 +127,17 @@ hack 0x00435F36, 0x00435F3C ; CInterface::CInterface
     add esp, 4
     jmp hackend
 
-@CLEAR 0x0048DE1E, 0x90, 0x0048DE33 ; Don't exit if sound does not exist
+@CLEAR 0x0048DE1E+7, 0x90, 0x0048DE33 ; Don't exit if sound does not exist
 @PATCH 0x0048DE1E
     pop esi
     mov eax, EmptyString
     retn
 @ENDPATCH
 
-@CLEAR_INT 0x00449CED, 0x00449CFF
+@CLEAR_INT 0x00449CED+2, 0x00449CFF
 @SJMP 0x00449CED, 0x00449D26 ; Special case for mission 9 (the final mission), do not play the video and go to the score screen instead
 
-@CLEAR_INT 0x00481722, 0x00481735 ; Every mission loads its own music track, sub houses don't have a music track saved and the game would crash without this fix
+@CLEAR_INT 0x00481722+4, 0x00481735 ; Every mission loads its own music track, sub houses don't have a music track saved and the game would crash without this fix
 @PATCH 0x00481722
     mov al, 0
     pop esi

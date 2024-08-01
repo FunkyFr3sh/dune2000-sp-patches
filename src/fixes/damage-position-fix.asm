@@ -29,7 +29,7 @@ hack 0x00499E1E, 0x00499E29 ; UpdateUnit
     jmp hackend
     
 ; Fix misplaced sardaukar death damage
-hack 0x0049D14D, 0x0049D152 ; DestroyUnit 
+hack 0x0049D14D ; DestroyUnit 
     mov  eax, [esi+38h]
     cdq
     and  edx, 0FFFFh

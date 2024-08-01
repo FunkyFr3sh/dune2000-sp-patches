@@ -4,7 +4,7 @@
 
 gbool SlowSideBarScrolling, false
 
-hack 0x0044401E, 0x00444023 ; Scroll Sidebar up one by one instead of scrolling multiple items at the same time
+hack 0x0044401E ; Scroll Sidebar up one by one instead of scrolling multiple items at the same time
     cmp byte[SlowSideBarScrolling], 1
     jnz .out
     mov byte[KeyIsDown2(VK_UP)], 0

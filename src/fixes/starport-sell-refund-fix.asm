@@ -2,7 +2,7 @@
 %include "dune2000.inc"
 
 ; Fix the bug when some units are picked before placing order and starport is sold, the credits are returned twice.
-hack 0x0046DC89, 0x0046DC8E ; CSide__FindOtherPrimaryBuilding
+hack 0x0046DC89 ; CSide__FindOtherPrimaryBuilding
     xor ecx, ecx
     mov cl, [esi+24252h] ; side_id
     push ecx
