@@ -125,7 +125,6 @@ OBJS            ?= callsites.o \
 	src/hotkeys/mouse-wheel.o \
 	src/hotkeys/force-quick-exit.o \
 	src/hotkeys/slow-sidebar-scrolling.o \
-	src/hotkeys/map-scrolling.o \
 	\
 	src/ai-alliances.o \
 	src/hardware-cursor.o \
