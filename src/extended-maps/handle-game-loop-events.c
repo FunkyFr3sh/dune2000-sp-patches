@@ -7,6 +7,7 @@
 #include "rules.h"
 #include "patch.h"
 
+bool SlowSideBarScrolling;
 void SetMouseCursorForUnitMovementRestriction();
 
 // Fix cursor over enemy building when only armed engineer/saboteur is selected
