@@ -84,7 +84,6 @@
 %endmacro
 
 %macro hack 1
-    global dest%1 ; Make it global to prevent bugs where 2 hacks were placed on the same location
     %define hackend (%1 + 5)
     @LJMP {(%1)}, dest%1
     [section .text]
@@ -93,15 +92,18 @@
 %endmacro
 
 %macro hack 2
-    global dest%1 ; Make it global to prevent bugs where 2 hacks were placed on the same location
     %define hackend %2
-    %if %2 - ((%1) + 5) < 0
-        %error "end must be at least 5 bytes (the size of a long jump) after start"
+    %if (%2) - ((%1) + 5) < 0
+        %error "end must be at least 5 bytes (the size of a long jump) after start" (%2)
     %endif
 
-    @CLEAR {(%1) + 5}, 0xCC, {(%2)}
-    @LJMP {(%1)}, dest%1
+    @PATCH (%1)
+    db 0xE9                           ; far jump
+    dd (_dest%1) - (%1) - 5           ; relative offset
+    times ((%2) - ((%1) + 5)) db 0xCC ; clear int3
+    @ENDPATCH
+    
     [section .text]
-    align 32, db 0xCC
-    dest%1:
+    align 16, db 0xCC
+    _dest%1:
 %endmacro
