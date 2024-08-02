@@ -30,18 +30,3 @@ hack 0x0047533D ; LoadCustomSkirmishMapScript
 .out:
     push 0x004E7E64
     jmp 0x00475342
-
-
-hack 0x004543AB ; game over when mission win event gets triggered (this is only needed for spectators)
-    cmp byte[SpawnerActive], 1
-    jnz .out
-    cmp byte[NetworkGame], 1
-    jnz .out
-    cmp byte[MeIsSpectator], 1
-    jnz .out
-    mov byte[_GameOver], 1
-
-.out:
-    mov al, byte[gLose]
-    jmp hackend
-    

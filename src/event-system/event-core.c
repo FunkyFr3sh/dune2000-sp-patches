@@ -771,7 +771,7 @@ void ExecuteEventAction(EventContext *e)
   case ET_SETCASH:                EvAct_SetCash             (A_SIDE, A_ENUM, A_VAL1); break;
   case ET_SETTECH:                EvAct_SetTech             (A_SIDE, A_ENUM, A_BOOL, A_VAL1); break;
   case ET_WIN:                    if ( !gLose ) gWin = 1; if (SpawnerActive && _IsMultiplayer) _GameOver = 1; break;
-  case ET_LOSE:                   if ( !gWin ) gLose = 1; break;
+  case ET_LOSE:                   if ( !gWin ) gLose = 1; if (SpawnerActive && _IsMultiplayer && MeIsSpectator) _GameOver = 1; break;
   case ET_SWITCH_MY_SIDE:         EvAct_SwitchMySide        (A_SIDE, A_ENUM, A_BOOL); break;
   case ET_HIDE_MAP:               EvAct_HideMap             (); break;
   case ET_REVEAL:                 EvAct_RevealMap           (COORD0, A_AMNT); break;
