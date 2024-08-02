@@ -46,17 +46,14 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
     }
     case WM_MOUSEWHEEL:
     {
-        MouseWheelTriggered = true;
         short zDelta = GET_WHEEL_DELTA_WPARAM(wParam);
         if (zDelta > 0) // MouseWheel Up
         {
-            KeyIsDown1[VK_UP] = true;
-            KeyIsDown2[VK_UP] = true;
+            MouseWheelUp = true;
         }
         else // MouseWheel Down
         {
-            KeyIsDown1[VK_DOWN] = true;
-            KeyIsDown2[VK_DOWN] = true;
+            MouseWheelDown = true;
         }
         break;
     }

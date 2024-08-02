@@ -122,7 +122,6 @@ OBJS            ?= callsites.o \
 	\
 	src/hotkeys/hotkeys.o \
 	src/hotkeys/hotkeys-func.o \
-	src/hotkeys/mouse-wheel.o \
 	src/hotkeys/force-quick-exit.o \
 	\
 	src/ai-alliances.o \
