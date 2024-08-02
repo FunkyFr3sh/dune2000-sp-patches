@@ -165,7 +165,6 @@ extern char GameLanguage[];
 extern bool ForceQuickExit;
 extern bool MouseWheelUp;
 extern bool MouseWheelDown;
-extern bool MouseWheelTriggered;
 extern bool UseImprovedFPSLimiter;
 extern bool CutsceneChangeResolution;
 extern bool SingleProcessorAffinity;
