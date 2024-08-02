@@ -84,7 +84,6 @@ OBJS            ?= callsites.o \
 	src/event-system/extend-event-limits.o \
 	\
 	src/fixes/rand-seed-fix.o \
-	src/fixes/map-reveal-fix.o \
 	src/fixes/message-box-fix.o \
 	src/fixes/setcash-fix.o \
 	src/fixes/spam-fix.o \
