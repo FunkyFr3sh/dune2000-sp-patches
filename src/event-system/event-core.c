@@ -376,6 +376,9 @@ void ExecuteEventBlock(int event_index, eEventBlockType block_type)
   ExecuteEventsInRange(event_index + 1, gEventExtraData[event_index].next_event_index - 1, block_type);
 }
 
+// clear original Mission::ExecuteEvent to make sure we get warnings about conflicting patches
+CLEAR_INT(0x00454120, 0x0045448B);
+
 void ExecuteEvent(int event_index)
 {
   EventData *event = &_gEventArray[event_index];
