@@ -85,7 +85,6 @@ OBJS            ?= callsites.o \
 	\
 	src/fixes/rand-seed-fix.o \
 	src/fixes/message-box-fix.o \
-	src/fixes/setcash-fix.o \
 	src/fixes/spam-fix.o \
 	src/fixes/sub-houses-fix.o \
 	src/fixes/wol-fixes.o \
