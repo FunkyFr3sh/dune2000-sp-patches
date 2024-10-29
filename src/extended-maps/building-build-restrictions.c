@@ -184,32 +184,33 @@ bool Mod__HandleBuildingPlacement(eSideType side_id, int tile_bitfield, int tile
     {
       if ( tile_bit & tile_bitfield )
       {
-        tile_flags = gGameMap.map[*v14 + step_x + mouse_tile_x].__tile_bitflags;
-
-        if ( mouse_tile_x + step_x < gGameMap.width
-          && tile_y_ < gGameMap.height
-          // Mod - Don't allow building on tiles with spice
-          && (!(tile_flags & (TileFlags_400000_SPICE|TileFlags_200000_SPICE|TileFlags_100000_SPICE|TileFlags_1000_HAS_CRATE|TileFlags_200_CSPOT_TL|TileFlags_100_CSPOT_DL|TileFlags_80_CSPOT_DR|TileFlags_40_CSPOT_TR|TileFlags_20_CSPOT_MID|TileFlags_10_OCC_BUILDING|TileFlags_8_OCC_UNIT)))
-          // New logic - Perform check for tile flags according to build restriction
-          && CheckTerrainRestriction(tile_flags, TileFlags_8000_BUILD_ON, build_restriction)
-          && v22
-          && flags & 3 )
+        if ( mouse_tile_x + step_x < gGameMap.width && tile_y_ < gGameMap.height )
         {
-          if ( tile_flags & TileFlags_800_HAS_CONCRETE )
+          tile_flags = gGameMap.map[*v14 + step_x + mouse_tile_x].__tile_bitflags;
+
+          // Mod - Don't allow building on tiles with spice
+          if ( (!(tile_flags & (TileFlags_400000_SPICE|TileFlags_200000_SPICE|TileFlags_100000_SPICE|TileFlags_1000_HAS_CRATE|TileFlags_200_CSPOT_TL|TileFlags_100_CSPOT_DL|TileFlags_80_CSPOT_DR|TileFlags_40_CSPOT_TR|TileFlags_20_CSPOT_MID|TileFlags_10_OCC_BUILDING|TileFlags_8_OCC_UNIT)))
+            // New logic - Perform check for tile flags according to build restriction
+            && CheckTerrainRestriction(tile_flags, TileFlags_8000_BUILD_ON, build_restriction)
+            && v22
+            && flags & 3 )
           {
-            image_to_draw = _image_placement_marker_buildable_concrete;
+            if ( tile_flags & TileFlags_800_HAS_CONCRETE )
+            {
+              image_to_draw = _image_placement_marker_buildable_concrete;
+            }
+            else
+            {
+              image_to_draw = _image_placement_marker_buildable;
+            }
           }
           else
           {
-            image_to_draw = _image_placement_marker_buildable;
+            image_to_draw = _image_placement_marker_nonbuildable;
+            result = 0;
           }
+          BlitClipTImage2(img, &rect, draw_at_x, draw_at_y + _OptionsBarHeight, image_to_draw, 1, 1);
         }
-        else
-        {
-          image_to_draw = _image_placement_marker_nonbuildable;
-          result = 0;
-        }
-        BlitClipTImage2(img, &rect, draw_at_x, draw_at_y + _OptionsBarHeight, image_to_draw, 1, 1);
       }
       ++step_x;
       draw_at_x += 32;
