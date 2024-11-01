@@ -4,12 +4,13 @@
 
 ;This patch enables AI Alliances via the the "a" hotkey in skirmish games
 
-hack 0x00445EB8 ; "A" Key pressed, remove check for NetworkGame
-    cmp dword[gGameType], GAME_SKIRMISH
-    jz 0x00445EC1
-
-    mov al, byte[NetworkGame]
-    jmp hackend
+; Superseded by Mod__HandleGameLoopEvents
+;hack 0x00445EB8 ; "A" Key pressed, remove check for NetworkGame
+;    cmp dword[gGameType], GAME_SKIRMISH
+;    jz 0x00445EC1
+;
+;    mov al, byte[NetworkGame]
+;    jmp hackend
 
     
 hack 0x00458125, 0x0045812C ; Not sure about this one, seems to check if the player is an AI player

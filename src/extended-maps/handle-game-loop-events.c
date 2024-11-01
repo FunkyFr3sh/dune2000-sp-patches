@@ -776,7 +776,7 @@ LABEL_241:
         {
           // New logic start
           // Always show radar map if rule alwaysShowRadar is set to true
-          if ( (IsBuildingWithBehaviorBuilt(gSideId, BuildingBehavior_OUTPOST) && my_side->__PowerPercent1 >= 100u) || rulesExt__alwaysShowRadar  )
+          if ( (IsBuildingWithBehaviorBuilt(gSideId, BuildingBehavior_OUTPOST) && my_side->__PowerPercent1 >= 100u) || rulesExt__alwaysShowRadar || (SpawnerActive && gLose && gGameType) )
           // New logic end
           {
             if ( !IsAnyUnitSelected() && gGameTicks > MapScrollLockTicks )
@@ -1265,7 +1265,7 @@ LABEL_406:
       {
         CUIManager__ReplaceWithOne_470E60(gUIMgr, "INGAME_MP", gBackBuf);
       }
-      else if ( gGameType == 1 )
+      else if ( gGameType == GAME_SKIRMISH )
       {
         CUIManager__ReplaceWithOne_470E60(gUIMgr, "INGAME_SKIRMISH", gBackBuf);
       }
@@ -2032,7 +2032,7 @@ LABEL_665:
   }
   if ( _KeyboardKeyDown[VK_A] )
   {
-    if ( _IsMultiplayer )
+    if ( gGameType )
     {
       GenerateAllyOrder(gSideId);
     }

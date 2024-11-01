@@ -12,6 +12,8 @@ hack 0x0044904F, 0x00449055 ; DrawMiniMapForSpectators
     jnz 0x00449055
     cmp byte[gLose], 1
     jnz 0x00449055
+    cmp dword[gGameType], 0
+    jz 0x00449055
     jmp 0x0044906D
 
 
@@ -20,6 +22,8 @@ hack 0x00456843, 0x00456849 ; ShareBuildingsViewWithSpectators
     jnz .out
     cmp byte[gLose], 1
     jnz .out
+    cmp dword[gGameType], 0
+    jz .out
     jmp 0x0045684D
     
 .out:
@@ -32,6 +36,8 @@ hack 0x0044D02F, 0x0044D035 ; ShareUnitsViewWithSpectators
     jnz .out
     cmp byte[gLose], 1
     jnz .out
+    cmp dword[gGameType], 0
+    jz .out
     jmp 0x0044D035
     
 .out:
@@ -39,14 +45,16 @@ hack 0x0044D02F, 0x0044D035 ; ShareUnitsViewWithSpectators
     jne 0x0044D0B3
     jmp 0x0044D035
 
-
-hack 0x004440BA, 0x004440C0 ; ClickableMiniMapForSpectators
-    mov dl, byte[0x00798544]
-    cmp byte[SpawnerActive], 1
-    jnz 0x004440C0
-    cmp byte[gLose], 1
-    jnz 0x004440C0
-    jmp 0x004440E0
+; Superseded by Mod__HandleGameLoopEvents
+;hack 0x004440BA, 0x004440C0 ; ClickableMiniMapForSpectators
+;    mov dl, byte[0x00798544]
+;    cmp byte[SpawnerActive], 1
+;    jnz 0x004440C0
+;    cmp byte[gLose], 1
+;    jnz 0x004440C0
+;    cmp dword[gGameType], 0
+;    jz 0x004440C0
+;    jmp 0x004440E0
 
 
 hack 0x00425F20, 0x00425F2E ; ShowPlayerCreditsForSpectators
