@@ -76,6 +76,7 @@ OBJS            ?= callsites.o \
         src/extended-maps/handle-game-loop-events.o \
         src/extended-maps/radar.o \
         src/extended-maps/unit-multiselection-improvements.o \
+        src/extended-maps/unlimited-unit-orders.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \
