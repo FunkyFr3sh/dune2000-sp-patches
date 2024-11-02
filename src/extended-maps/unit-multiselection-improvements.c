@@ -74,7 +74,12 @@ LABEL_16:
         && unit_pos_x < max_x
         && unit_pos_y > min_y
         && unit_pos_y < max_y
-        && !(unit->Flags & (UFLAGS_100_CARRYING|UFLAGS_40_FLYING)) )
+        && !(unit->Flags & (UFLAGS_100_CARRYING|UFLAGS_40_FLYING))
+        // New logic start
+        // Exclude non-armed units from multiselection when Alt key is held
+        && (!_KeyboardKeyState[VK_MENU] || _templates_unitattribs[unit->Type].__PrimaryWeapon != -1)
+        // New logic end
+        )
       {
         unit->__IsSelected = 1;
       }

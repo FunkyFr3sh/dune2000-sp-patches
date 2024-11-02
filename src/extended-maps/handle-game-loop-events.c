@@ -2116,7 +2116,7 @@ LABEL_665:
           || (behavior == UnitBehavior_DEVASTATOR && unit->State != UNIT_STATE_31_SELFDESTRUCT)
           || (behavior == UnitBehavior_THUMPER && gGameMap.map[unit->BlockFromX + _CellNumbersWidthSpan[unit->BlockFromY]].__tile_bitflags & TileFlags_10000_SANDY)
           || (behavior == UnitBehavior_SABOTEUR && unit->__SpecialPurpose >= 160u)
-        )
+          )
         {
           GenerateUnitDeployOrder(gSideId, unit->MyIndex);
         }
