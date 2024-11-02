@@ -2102,6 +2102,29 @@ LABEL_665:
     _TacticalData.__SidebarButtonMode = 3;
     _KeyboardKeyDown[VK_Y] = 0;
   }
+  // New logic start
+  // Order selected units to deploy with O key
+  if ( _KeyboardKeyDown[VK_O] )
+  {
+    side = GetSide(gSideId);
+    for (unit = side->__FirstUnitPtr; unit; unit = unit->Next)
+    {
+      if (unit->__IsSelected)
+      {
+        UnitBehaviorType behavior = _templates_unitattribs[unit->Type].__Behavior;
+        if ( (behavior == UnitBehavior_MCV && CheckIfMCVCanBeDeployedOn(unit->BlockFromX, unit->BlockFromY))
+          || (behavior == UnitBehavior_DEVASTATOR && unit->State != UNIT_STATE_31_SELFDESTRUCT)
+          || (behavior == UnitBehavior_THUMPER && gGameMap.map[unit->BlockFromX + _CellNumbersWidthSpan[unit->BlockFromY]].__tile_bitflags & TileFlags_10000_SANDY)
+          || (behavior == UnitBehavior_SABOTEUR && unit->__SpecialPurpose >= 160u)
+        )
+        {
+          GenerateUnitDeployOrder(gSideId, unit->MyIndex);
+        }
+      }
+    }
+    _KeyboardKeyDown[VK_O] = 0;
+  }
+  // New logic end
   if ( _KeyboardKeyDown[VK_HOME] )
   {
     if ( !CenterViewportOnSelectedUnits(gSideId, &_ViewportXPos, &_ViewportYPos) )
