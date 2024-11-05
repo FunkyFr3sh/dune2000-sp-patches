@@ -160,3 +160,12 @@ hack 0x0044FC53; set bool gLose to true on game start
 .out:
     push 0x004E2B4C
     jmp hackend
+
+; Do not draw Mission Failed text on multiplayer game
+hack 0x00428D9D, 0x00428DA3 ; BlitGame
+    cmp dword[gGameType], GAME_CAMPAIGN
+    je .out
+    jmp 0x00428DE3
+.out:
+    mov cl, [gLose] ; instruction replaced by the long jump
+    jmp hackend
