@@ -867,10 +867,10 @@ LABEL_339:
       {
         DebugFatal("HandleGameLoopEvents", "Miscalculation in UI");
       }
-      building_type = side->__BuildingIcons[_TacticalData.__Strip1ScrollPos1 + sidebar_icon_mouse_pos];
       // New logic start
       // Cannot place building fix
-      if ( building_type >= 0 && building_type == side->__BuildingBuildQueue.__type )
+      building_type = side->__BuildingBuildQueue.__type;
+      if ( building_type >= 0 )
       // New logic end
       {
         side->__BuildingBuildQueue.c_field_11_cancel = 1;
