@@ -7,9 +7,7 @@
 // Add new rules for customized cost and build speed percentage for Easy and Hard difficulty
 
 // Custom implementation of function GetDifficultyCostPercentage
-CALL(0x00442BB5, _Mod__GetDifficultyCostPercentage); // w__GetUnitCost
-CALL(0x00442BE6, _Mod__GetDifficultyCostPercentage); // GetBuildingCost
-
+DETOUR(0x004429B0, 0x004429FC, _Mod__GetDifficultyCostPercentage);
 int Mod__GetDifficultyCostPercentage(unsigned char side_id)
 {
   char difficulty;
@@ -35,7 +33,7 @@ int Mod__GetDifficultyCostPercentage(unsigned char side_id)
 
 
 // Custom implementation of function GetDifficultyBuildSpeedPercentage
-DETOUR(0x00442960, 0x004429AB, _Mod__GetDifficultyBuildSpeedPercentage); // GetBuildingBuildSpeedPercentage
+DETOUR(0x00442960, 0x004429AB, _Mod__GetDifficultyBuildSpeedPercentage);
 int Mod__GetDifficultyBuildSpeedPercentage(unsigned char side_id)
 {
   char difficulty;
