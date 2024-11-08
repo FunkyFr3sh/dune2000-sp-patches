@@ -4,7 +4,6 @@
 // Fix MCV can be deployed on unbuildable tile if all surrounding tiles are buildable
 
 // Custom implementation of function CheckIfMCVCanBeDeployedOn
-
 DETOUR(0x00443250, 0x004432E5, _Mod__CheckIfMCVCanBeDeployedOn);
 
 char Mod__CheckIfMCVCanBeDeployedOn(int xpos, int ypos)

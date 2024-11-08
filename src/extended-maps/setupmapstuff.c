@@ -15,7 +15,7 @@ double sqrt(double n){
     return n;
 }
 
-void PlaceStaticCrateExt(uint8_t x, uint8_t y, eCrateType type, eCrateImage image, uint8_t ext_data_field)
+void PlaceStaticCrate(uint8_t x, uint8_t y, eCrateType type, eCrateImage image, uint8_t ext_data_field)
 {
   int index = GetFreeCrateIndex();
   if ( index != -1 )
@@ -46,6 +46,7 @@ void PlaceStaticCrateExt(uint8_t x, uint8_t y, eCrateType type, eCrateImage imag
   }
 }
 
+// Custom implementation of function setupmapstuff
 DETOUR(0x00469790, 0x0046A299, _Mod__setupmapstuff);
 
 void Mod__setupmapstuff()
@@ -253,25 +254,25 @@ void Mod__setupmapstuff()
           DebugFatal("Setup.cpp", "SuperDense spice found on map %d,%d", xpos, ypos);
           break;
         case 6: // Cash crate
-          PlaceStaticCrateExt(xpos, ypos, CT_CASH, CI_BLUE_CRATE, 0);
+          PlaceStaticCrate(xpos, ypos, CT_CASH, CI_BLUE_CRATE, 0);
           break;
         case 7: // Explosion crate
-          PlaceStaticCrateExt(xpos, ypos, CT_EXPLODE, CI_BLUE_CRATE, 0);
+          PlaceStaticCrate(xpos, ypos, CT_EXPLODE, CI_BLUE_CRATE, 0);
           break;
         case 9: // Reveal map crate
-          PlaceStaticCrateExt(xpos, ypos, CT_REVEAL, CI_RED_CRATE, 0);
+          PlaceStaticCrate(xpos, ypos, CT_REVEAL, CI_RED_CRATE, 0);
           break;
         case 10: // Hide map crate
-          PlaceStaticCrateExt(xpos, ypos, CT_NOMAP, CI_RED_CRATE, 0);
+          PlaceStaticCrate(xpos, ypos, CT_NOMAP, CI_RED_CRATE, 0);
           break;
         case 12: // Random unit crate
-          PlaceStaticCrateExt(xpos, ypos, CT_UNIT, CI_GREEN_CRATE, 0);
+          PlaceStaticCrate(xpos, ypos, CT_UNIT, CI_GREEN_CRATE, 0);
           break;
         case 13: // Stealth crate
-          PlaceStaticCrateExt(xpos, ypos, CT_POWERUP, CI_PURPLE_CRATE, 0);
+          PlaceStaticCrate(xpos, ypos, CT_POWERUP, CI_PURPLE_CRATE, 0);
           break;
         case 16: // Invisible mine
-          PlaceStaticCrateExt(xpos, ypos, CT_EXPLODE, CI_INVISIBLE, 0);
+          PlaceStaticCrate(xpos, ypos, CT_EXPLODE, CI_INVISIBLE, 0);
           break;
         case 23: // MAPCMD_PLAYER_FLAG:
           if ( (unsigned __int8)_SpawnLocationCount >= 8u )
@@ -305,7 +306,7 @@ void Mod__setupmapstuff()
           tile->__tile_bitflags = (tile->__tile_bitflags & ~0x700000) | TileFlags_200000_SPICE;
           break;
         case 46: // Static one-time spice bloom
-          PlaceStaticCrateExt(xpos, ypos, CT_SPICE_BLOOM_LARGE, CI_LARGE_BLOOM, 0);
+          PlaceStaticCrate(xpos, ypos, CT_SPICE_BLOOM_LARGE, CI_LARGE_BLOOM, 0);
           break;
         default:
           // Generic crate:    1TTTTIIIEEEEEEEE
@@ -317,7 +318,7 @@ void Mod__setupmapstuff()
             int crate_type = (special_value >> 11) & 15;
             int crate_image = (special_value >> 8) & 7;
             int ext_data = special_value & 255;
-            PlaceStaticCrateExt(xpos, ypos, crate_type, crate_image, ext_data);
+            PlaceStaticCrate(xpos, ypos, crate_type, crate_image, ext_data);
             break;
           }
           // Generic unit:     01TCDDDSSSUUUUUU

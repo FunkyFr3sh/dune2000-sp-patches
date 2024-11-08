@@ -7,6 +7,7 @@
 
 // Custom implementation of function CAI__DoSetGoBerserk
 DETOUR(0x00423850, 0x00423984, _Mod__CAI__DoSetGoBerserk);
+
 void __thiscall Mod__CAI__DoSetGoBerserk(CAI_ *this)
 {
   CAI_ *ai; // esi

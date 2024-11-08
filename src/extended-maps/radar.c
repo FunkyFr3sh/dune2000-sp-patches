@@ -6,8 +6,9 @@ RadarColorRule radar_color_rules[32];
 int radar_color_rules_used;
 uint32_t extra_tileflags[800];
 
-CALL(0x00441D7B, _Ext__LoadMapData);
-CALL(0x004488B9, _Ext__LoadMapData);
+// Extension wrapper for function LoadMapData
+CALL(0x00441D7B, _Ext__LoadMapData); // LoadGame
+CALL(0x004488B9, _Ext__LoadMapData); // GameLoop
 
 void Ext__LoadMapData(const CHAR *ArgList, char a2)
 {
@@ -135,6 +136,8 @@ void SetPixelOnRadar(unsigned char x, unsigned char y)
 }
 
 // Custom implementation of function SetupRadarMap
+DETOUR(0x00462140, 0x00462281, _Mod__SetupRadarMap);
+
 void Mod__SetupRadarMap()
 {
   ClearTImage(_RadarMap1, 0, 0);

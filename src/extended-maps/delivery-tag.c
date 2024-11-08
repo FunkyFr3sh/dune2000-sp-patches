@@ -8,6 +8,7 @@
 
 // Custom implementation of function UnitDeliver
 DETOUR(0x0049E3E0, 0x0049E6AF, _Mod__UnitDeliver); // UpdateUnit
+
 char Mod__UnitDeliver(Unit *unit, int side_id)
 {
   Unit *unit_; // edi

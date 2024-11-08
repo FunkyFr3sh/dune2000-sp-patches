@@ -265,6 +265,7 @@ LABEL_77:
   return 0;
 }
 
+// Extension wrapper for function CanUnitUseSquare
 DETOUR(0x0045D990, 0x0045DE2E, _Ext__CanUnitUseSquare);
 
 bool Ext__CanUnitUseSquare(dwXYStruct x, Unit *unit, eSideType side_id, char route_mode)

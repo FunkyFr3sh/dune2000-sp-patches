@@ -14,7 +14,6 @@ MessageData gMessageData[MAX_MESSAGES];
 unsigned int message_counter;
 
 // Custom implementation of function InitMessageData
-
 DETOUR(0x004255C0, 0x004255D2, _Mod__InitMessageData);
 
 void Mod__InitMessageData()

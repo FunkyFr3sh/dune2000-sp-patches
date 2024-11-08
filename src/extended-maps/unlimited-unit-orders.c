@@ -3,6 +3,7 @@
 
 // Custom implementation of function GenerateUnitMoveOrder
 DETOUR(0x00459450, 0x0045953B, _Mod__GenerateUnitMoveOrder);
+
 void Mod__GenerateUnitMoveOrder(char side_id, unsigned char x, unsigned char y)
 {
   Unit *unit; // eax
@@ -48,6 +49,7 @@ void Mod__GenerateUnitMoveOrder(char side_id, unsigned char x, unsigned char y)
 
 // Custom implementation of function GenerateDockWithRefineryOrder
 DETOUR(0x00459540, 0x004595D4, _Mod__GenerateDockWithRefineryOrder);
+
 void Mod__GenerateDockWithRefineryOrder(char side_id, short refinery_index)
 {
   Unit *unit; // eax
@@ -85,6 +87,7 @@ void Mod__GenerateDockWithRefineryOrder(char side_id, short refinery_index)
 
 // Custom implementation of function GenerateRepairSelectedUnitsOrder
 DETOUR(0x004595E0, 0x00459686, _Mod__GenerateRepairSelectedUnitsOrder);
+
 void Mod__GenerateRepairSelectedUnitsOrder(char side_id, short repair_pad_index)
 {
   Unit *unit; // eax
@@ -122,6 +125,7 @@ void Mod__GenerateRepairSelectedUnitsOrder(char side_id, short repair_pad_index)
 
 // Custom implementation of function GenerateUnitAttackUnitOrder
 DETOUR(0x004596F0, 0x004597F2, _Mod__GenerateUnitAttackUnitOrder);
+
 void Mod__GenerateUnitAttackUnitOrder(eSideType side_id, eSideType target_side_id, unsigned short target_unit_index)
 {
   CSide *target_side; // eax
@@ -170,6 +174,7 @@ void Mod__GenerateUnitAttackUnitOrder(eSideType side_id, eSideType target_side_i
 
 // Custom implementation of function GenerateUnitAttackBuildingOrder
 DETOUR(0x00459800, 0x004598C6, _Mod__GenerateUnitAttackBuildingOrder);
+
 void Mod__GenerateUnitAttackBuildingOrder(char side_id, char target_side_id, short target_building_index)
 {
   Unit *unit; // esi
@@ -215,6 +220,7 @@ void Mod__GenerateUnitAttackBuildingOrder(char side_id, char target_side_id, sho
 
 // Custom implementation of function GenerateUnitAttackTileOrder
 DETOUR(0x004598D0, 0x00459980, _Mod__GenerateUnitAttackTileOrder);
+
 void Mod__GenerateUnitAttackTileOrder(char side_id, short x, short y)
 {
   Unit *unit; // eax
@@ -252,6 +258,7 @@ void Mod__GenerateUnitAttackTileOrder(char side_id, short x, short y)
 
 // Custom implementation of function GenerateUnitGuardOrder
 DETOUR(0x00459980, 0x00459A16, _Mod__GenerateUnitGuardOrder);
+
 void Mod__GenerateUnitGuardOrder(char side_id)
 {
   Unit *unit; // eax
@@ -287,6 +294,7 @@ void Mod__GenerateUnitGuardOrder(char side_id)
 
 // Custom implementation of function GenerateUnitScatterOrder
 DETOUR(0x00459A20, 0x00459AA3, _Mod__GenerateUnitScatterOrder);
+
 void Mod__GenerateUnitScatterOrder(unsigned char side_id)
 {
   Unit *unit; // eax
@@ -322,6 +330,7 @@ void Mod__GenerateUnitScatterOrder(unsigned char side_id)
 
 // Custom implementation of function GenerateUnitRetreatOrder
 DETOUR(0x00459AB0, 0x00459B4F, _Mod__GenerateUnitRetreatOrder);
+
 void Mod__GenerateUnitRetreatOrder(char side_id, unsigned char x, unsigned char y)
 {
   Unit *unit; // eax
@@ -359,6 +368,7 @@ void Mod__GenerateUnitRetreatOrder(char side_id, unsigned char x, unsigned char 
 
 // Custom implementation of function GenerateStopOrder
 DETOUR(0x00459C40, 0x00459D11, _Mod__GenerateStopOrder);
+
 void Mod__GenerateStopOrder(char side_id)
 {
   CSide *side; // eax MAPDST

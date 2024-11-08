@@ -8,6 +8,7 @@
 
 // Custom implementation of function GetDifficultyCostPercentage
 DETOUR(0x004429B0, 0x004429FC, _Mod__GetDifficultyCostPercentage);
+
 int Mod__GetDifficultyCostPercentage(unsigned char side_id)
 {
   char difficulty;
@@ -34,6 +35,7 @@ int Mod__GetDifficultyCostPercentage(unsigned char side_id)
 
 // Custom implementation of function GetDifficultyBuildSpeedPercentage
 DETOUR(0x00442960, 0x004429AB, _Mod__GetDifficultyBuildSpeedPercentage);
+
 int Mod__GetDifficultyBuildSpeedPercentage(unsigned char side_id)
 {
   char difficulty;

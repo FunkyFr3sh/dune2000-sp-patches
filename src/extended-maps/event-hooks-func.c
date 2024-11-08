@@ -6,6 +6,7 @@
 
 // Custom implementation of function SetMouseCursor
 DETOUR(0x0044C420, 0x0044C453, _Mod__SetMouseCursor);
+
 void Mod__SetMouseCursor(int cursor)
 {
   if ( gUIMgr->dw_field_110_index )
@@ -22,7 +23,7 @@ void Mod__SetMouseCursor(int cursor)
 }
 
 // Update unit hooks
-
+// Extension wrapper for function UpdateUnit
 CALL(0x00458F15, _Ext_UpdateUnit); // ModelUpdates
 
 char Ext_UpdateUnit(Unit *unit, eSideType side_id, __int16 myIndex)
@@ -35,7 +36,7 @@ char Ext_UpdateUnit(Unit *unit, eSideType side_id, __int16 myIndex)
 }
 
 // Update building hooks
-
+// Extension wrapper for function UpdateBuilding
 CALL(0x00458FEC, _Ext_UpdateBuilding); // ModelUpdates
 
 bool Ext_UpdateBuilding(Building *bld, int side_id, __int16 building_index)
@@ -48,7 +49,7 @@ bool Ext_UpdateBuilding(Building *bld, int side_id, __int16 building_index)
 }
 
 // Update bullet hooks
-
+// Extension wrapper for function UpdateBullet
 CALL(0x004590A9, _Ext_UpdateBullet); // ModelUpdates
 
 char Ext_UpdateBullet(Bullet *bul, int side_id)
@@ -61,7 +62,7 @@ char Ext_UpdateBullet(Bullet *bul, int side_id)
 }
 
 // Update explosion hooks
-
+// Extension wrapper for function UpdateExplosion
 CALL(0x004590EC, _Ext_UpdateExplosion); // ModelUpdates
 
 bool Ext_UpdateExplosion(Explosion *exp, int side_id)
@@ -74,7 +75,7 @@ bool Ext_UpdateExplosion(Explosion *exp, int side_id)
 }
 
 // Build speed hooks
-
+// Extension wrapper for function GetUnitBuildSpeedPercentage
 CALL(0x004469DE, _Ext_GetUnitBuildSpeedPercentage); // DoIconBuild
 
 unsigned int Ext_GetUnitBuildSpeedPercentage(unsigned char unit_type, unsigned char side_id)
@@ -82,6 +83,7 @@ unsigned int Ext_GetUnitBuildSpeedPercentage(unsigned char unit_type, unsigned c
   return ExecuteEventHook(HOOK_GETUNITBUILDSPEEDPERCENTAGE, 3, GetUnitBuildSpeedPercentage(unit_type, side_id), side_id, unit_type, 0, 0);
 }
 
+// Extension wrapper for function GetBuildingBuildSpeedPercentage
 CALL(0x0044683D, _Ext_GetBuildingBuildSpeedPercentage); // DoIconBuild
 
 unsigned int Ext_GetBuildingBuildSpeedPercentage(unsigned char side_id)
@@ -90,7 +92,7 @@ unsigned int Ext_GetBuildingBuildSpeedPercentage(unsigned char side_id)
 }
 
 // Cost hooks
-
+// Custom implementation of function GetUnitCost
 DETOUR(0x00442BB0, 0x00442BDA, _Mod__GetUnitCost);
 
 unsigned int Mod__GetUnitCost(int type, eSideType side)
@@ -99,6 +101,7 @@ unsigned int Mod__GetUnitCost(int type, eSideType side)
   return ExecuteEventHook(HOOK_GETUNITCOST, 3, result, type, side, 0, 0);
 }
 
+// Custom implementation of function GetBuildingCost
 DETOUR(0x00442BE0, 0x00442C1A, _Mod__GetBuildingCost);
 
 unsigned int Mod__GetBuildingCost(int building_type, int num_upgrades, eSideType side_id)

@@ -9,6 +9,7 @@ int tooltip_used_lines;
 
 // Custom implementation of function HandleTooltips
 DETOUR(0x0044B5C0, 0x0044C416, _Mod__HandleTooltips);
+
 void Mod__HandleTooltips()
 {
   CSide *side_; // esi MAPDST
@@ -517,8 +518,8 @@ LABEL_87:
   _Tooltipdata.__LastPosition.y = _gMousePos.y + _ViewportYPos;
 }
 
-// Custom implementation of function HandleTooltips
-CALL(0x00449476, _Mod__BlitTooltip);
+// Custom implementation of function BlitTooltip
+DETOUR(0x00423B40, 0x00423C4B, _Mod__BlitTooltip);
 
 void Mod__BlitTooltip(TImage *img)
 {

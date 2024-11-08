@@ -15,7 +15,7 @@ void HandleSpiceBloomCrate(CrateStruct *crate, int crate_type, Unit *unit, unsig
 
 // Custom implementation of function GetCrateFromMap
 // This fixes bug with disappearing crates when AI-controlled unit is nearby
-CALL(0x0041FB65, _Mod__GetCrateFromMap);
+DETOUR(0x0044E9D0, 0x0044EA6C, _Mod__GetCrateFromMap);
 
 unsigned char Mod__GetCrateFromMap(int xpos, int ypos)
 {
