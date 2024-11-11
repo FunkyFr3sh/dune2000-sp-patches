@@ -2,7 +2,7 @@
 #include "dune2000.h"
 #include "utils.h"
 #include "event-utils.h"
-#include "../extended-maps/messages-func.h"
+#include "../mods/messages-func.h"
 
 int ValueOperation(int val1, int val2, eValueOperation operation)
 {

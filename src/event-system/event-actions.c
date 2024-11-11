@@ -9,10 +9,10 @@
 #include "event-utils.h"
 #include "event-actions.h"
 #include "event-core.h"
-#include "../extended-maps/crates-func.h"
-#include "../extended-maps/messages-func.h"
-#include "../extended-maps/tooltips.h"
-#include "../extended-maps/radar.h"
+#include "../mods/crates-func.h"
+#include "../mods/messages-func.h"
+#include "../mods/tooltips.h"
+#include "../mods/radar.h"
 #include "rules.h"
 
 uint32_t MapScrollLockTicks = 0;
