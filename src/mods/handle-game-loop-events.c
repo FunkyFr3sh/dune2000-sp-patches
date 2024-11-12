@@ -2125,6 +2125,49 @@ LABEL_665:
     _KeyboardKeyDown[VK_O] = 0;
   }
   // New logic end
+  // New logic start
+  // Select all units on screen of same type with W key
+  if ( _KeyboardKeyDown[VK_W] )
+  {
+    bool unit_group_used[60];
+    memset(unit_group_used, 0, sizeof(unit_group_used));
+    side = GetSide(gSideId);
+    for (unit = side->__FirstUnitPtr; unit; unit = unit->Next)
+    {
+      if (unit->__IsSelected)
+        unit_group_used[(int)_templates_unitattribs[unit->Type].__UnitType] = true;
+    }
+    bool any_unit_found = false;
+    for (unit = side->__FirstUnitPtr; unit; unit = unit->Next)
+    {
+      int unit_pos_x = unit->__PosX / 0x10000;
+      int unit_pos_y = unit->__PosY / 0x10000;
+      if ( !unit->__IsSelected
+        && unit_pos_x > _ViewportXPos
+        && unit_pos_x < _ViewportXPos + _ViewportWidth
+        && unit_pos_y > _ViewportYPos
+        && unit_pos_y < _ViewportYPos + _ViewportHeight
+        && !(unit->Flags & (UFLAGS_100_CARRYING|UFLAGS_40_FLYING))
+        && unit_group_used[(int)_templates_unitattribs[unit->Type].__UnitType]
+        )
+      {
+        any_unit_found = true;
+        unit->__IsSelected = 1;
+      }
+    }
+    if (!any_unit_found)
+    {
+      for (unit = side->__FirstUnitPtr; unit; unit = unit->Next)
+      {
+        if ( !(unit->Flags & (UFLAGS_100_CARRYING|UFLAGS_40_FLYING))
+          && unit_group_used[(int)_templates_unitattribs[unit->Type].__UnitType]
+          )
+          unit->__IsSelected = 1;
+      }
+    }
+    _KeyboardKeyDown[VK_W] = 0;
+  }
+  // New logic end
   if ( _KeyboardKeyDown[VK_HOME] )
   {
     if ( !CenterViewportOnSelectedUnits(gSideId, &_ViewportXPos, &_ViewportYPos) )
