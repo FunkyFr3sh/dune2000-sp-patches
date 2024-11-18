@@ -301,7 +301,8 @@ void SetMouseCursorForUnitMovementRestriction()
 
 // Prevent units with special terrain restriction from getting airlifted
 CALL(0x0041C153, _Mod__CSide__GetQueuePos); // CAI__DoProtection
-CALL(0x0049A78D, _Mod__CSide__GetQueuePos); // UpdateUnit
+// Superseded by Mod__UpdateUnit
+// CALL(0x0049A78D, _Mod__CSide__GetQueuePos); // UpdateUnit
 
 char __thiscall Mod__CSide__GetQueuePos(CSide *this, Unit *unit)
 {

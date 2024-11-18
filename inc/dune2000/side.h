@@ -1,9 +1,18 @@
 // ### Side class structs ###
 
+typedef enum eObjectType
+{
+  OBJECT_0 = 0x0,
+  OBJECT_UNIT = 0x1,
+  OBJECT_BUILDING = 0x2,
+  OBJECT_BULLET = 0x3,
+  OBJECT_EXPLOSION = 0x4,
+}eObjectType;
+
 typedef enum UnitFlags
 {
-  UFLAGS_1 = 0x1,
-  UFLAGS_2 = 0x2,
+  UFLAGS_1_WAS_ATTACKED = 0x1,
+  UFLAGS_2_FIRED = 0x2,
   UFLAGS_4_CLOAKED = 0x4,
   UFLAGS_8 = 0x8,
   UFLAGS_10_STEALTH = 0x10,
@@ -70,7 +79,7 @@ typedef enum eUnitState
   UNIT_STATE_7_MOVING = 0x7,
   UNIT_STATE_8_LEAVING_BUILDING = 0x8,
   UNIT_STATE_9_MOVING_AWAY = 0x9,
-  UNIT_STATE_10 = 0xA,
+  UNIT_STATE_10_ATTACKIG_TILE_ON_ROUTE = 0xA,
   UNIT_STATE_11_MOVING_TO_HARVEST = 0xB,
   UNIT_STATE_12_HARVESTING = 0xC,
   UNIT_STATE_13_MOVING_TO_REFINERY = 0xD,
@@ -132,8 +141,8 @@ typedef struct Unit
   char __AttackerSide;
   uint8_t __StealthUnCloakDelayCounter;
   int16_t __AttackerIndex;
-  uint32_t __PosX;
-  uint32_t __PosY;
+  int32_t __PosX;
+  int32_t __PosY;
   int32_t __PosZHeight;
   uint32_t __posx2;
   uint32_t __posy2;
@@ -232,6 +241,44 @@ typedef enum BuildingBehaviorType
   BuildingBehavior_A_PALACE = 0x13,
   BuildingBehaviorType_14 = 0x14,
 }BuildingBehaviorType;
+
+typedef enum eBuildingState
+{
+  BLD_STATE_0 = 0x0,
+  BLD_STATE_1 = 0x1,
+  BLD_STATE_2_IDLE = 0x2,
+  BLD_STATE_3 = 0x3,
+  BLD_STATE_4_ATTACKING_UNIT = 0x4,
+  BLD_STATE_5_ATTACKING_BUILDING = 0x5,
+  BLD_STATE_6_ATTACKING_TILE = 0x6,
+  BLD_STATE_7 = 0x7,
+  BLD_STATE_8 = 0x8,
+  BLD_STATE_9 = 0x9,
+  BLD_STATE_10 = 0xA,
+  BLD_STATE_11 = 0xB,
+  BLD_STATE_12 = 0xC,
+  BLD_STATE_13 = 0xD,
+  BLD_STATE_14 = 0xE,
+  BLD_STATE_15 = 0xF,
+  BLD_STATE_16 = 0x10,
+  BLD_STATE_17_DEAD = 0x11,
+  BLD_STATE_18 = 0x12,
+  BLD_STATE_19 = 0x13,
+  BLD_STATE_20 = 0x14,
+  BLD_STATE_21 = 0x15,
+  BLD_STATE_22 = 0x16,
+  BLD_STATE_23 = 0x17,
+  BLD_STATE_24 = 0x18,
+  BLD_STATE_25 = 0x19,
+  BLD_STATE_26 = 0x1A,
+  BLD_STATE_27 = 0x1B,
+  BLD_STATE_28 = 0x1C,
+  BLD_STATE_29 = 0x1D,
+  BLD_STATE_30 = 0x1E,
+  BLD_STATE_31 = 0x1F,
+  BLD_STATE_32 = 0x20,
+  BLD_STATE_33 = 0x21,
+}eBuildingState;
 
 typedef struct Building
 {

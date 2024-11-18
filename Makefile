@@ -43,7 +43,6 @@ OBJS            ?= callsites.o \
         src/mods/rules.ini.o \
         src/mods/music-func.o \
         src/mods/music.o \
-        src/mods/infinite-spice.o \
         src/mods/crates.o \
         src/mods/crates-func.o \
         src/mods/release-infantry.o \
@@ -55,10 +54,8 @@ OBJS            ?= callsites.o \
         src/mods/return-credits-to-spice-storage.o \
         src/mods/setupmapstuff.o \
         src/mods/ai-do-unit-facings.o \
-        src/mods/guard-mode-radius.o \
         src/mods/always-show-radar.o \
         src/mods/tile-damage.o \
-        src/mods/pickup-crate-on-landing.o \
         src/mods/buildable-top-row-of-map.o \
         src/mods/difficulty-cost-buildspeed-rules.o \
         src/mods/sound-size-limit.o \
@@ -77,6 +74,7 @@ OBJS            ?= callsites.o \
         src/mods/radar.o \
         src/mods/unit-multiselection-improvements.o \
         src/mods/unlimited-unit-orders.o \
+        src/mods/update-unit.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \
@@ -98,7 +96,6 @@ OBJS            ?= callsites.o \
 	src/fixes/gettickcount-fix.o \
 	src/fixes/resolution-fix.o \
 	src/fixes/damage-position-fix.o \
-	src/fixes/selfdestruct-sound-fix.o \
 	src/fixes/damaged-unit-speed-fix.o \
 	src/fixes/invulnerable-infantry-fix.o \
 	src/fixes/ai-build-concrete-fix.o \

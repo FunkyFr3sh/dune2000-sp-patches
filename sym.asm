@@ -187,6 +187,8 @@ setcglob 0x004E420C, _PowerBarUIPosX
 setcglob 0x004E4210, _PowerBarUIPosY
 setcglob 0x004E4214, _CreditsTextXPos
 setcglob 0x004E8BF0, gDifficultyLevel
+setcglob 0x004E9520, _SandTileIDs
+setcglob 0x004E9530, _UnitAnimTypeFrames
 setcglob 0x004EB008, _gFullscreen_DebugModes_pathfinddebug
 setcglob 0x004EB018, gBitsPerPixel
 setcglob 0x004EB028, _ScreenClipWidth
@@ -273,6 +275,7 @@ setcglob 0x006B8868, _TechPosdata
 setcglob 0x006B91F8, _OrderData
 setcglob 0x006B9518, NetMessageString
 setcglob 0x006B9864, LimitedModelRate
+setcglob 0x006D5FD0, _templates_AnimationArtFrames
 setcglob 0x006D60D8, _templates_GroupIDs
 setcglob 0x006D6130, _SideBarPowerImages
 setcglob 0x006D7BA0, _RadarMap1
@@ -405,6 +408,7 @@ setcglob 0x00418480, IsOnlineGame
 setcglob 0x004184A0, WOL__OpenWebsite				; (char *URL)
 ;AI
 setcglob 0x0041EF30, CAI_PlaceBuiltBuilding
+setcglob 0x00420480, w_CAI__FindGroupForDelivery
 ;Others
 setcglob 0x00425720, QueueMessage
 setcglob 0x00425830, FreeMessageSlot
@@ -457,6 +461,10 @@ setcglob 0x0044C4F0, Map__PlayerDefeated
 setcglob 0x0044C520, Map__SetDeadOrder
 setcglob 0x0044C6D0, LoadMapData
 setcglob 0x0044CD10, UpdateShroudInRegion
+setcglob 0x0044D500, FindSandwormsTarget
+setcglob 0x0044D630, ValidateSandwormsTarget
+setcglob 0x0044D760, GetSpiceTileToHarvest
+setcglob 0x0044D970, spice_44D970
 setcglob 0x0044DA90, FindFreeSpotForInfantry
 setcglob 0x0044DAC0, GetBuildingOnConcreteCount
 setcglob 0x0044E3B0, RevealCircle
@@ -518,35 +526,62 @@ setcglob 0x0045A3F0, GenerateUnitDeployOrder
 setcglob 0x0045A440, GenerateSpecialWeaponOrder
 setcglob 0x0045B7E0, Model__ResetVars
 setcglob 0x0045BF00, Orderdata_add
+setcglob 0x0045D730, UpdateParticles
+setcglob 0x0045D990, CanUnitUseSquare
+setcglob 0x0045DE30, GetNextSquareInDirection
+setcglob 0x0045DEE0, GetFreeAdjacentTile
 setcglob 0x0045DFE0, GetFacing
 ; Setup
 setcglob 0x00460C80, Setup__LoadUIBBFile
 setcglob 0x00460EC0, Setup__LoadUI_LanguageFile
-;setcglob 0x00462010, SetPixelOnRadar8 ; Replaced by mod
-;setcglob 0x004620B0, SetPixelOnRadar16 ; Replaced by mod
-;setcglob 0x00462140, SetupRadarMap ; Replaced by mod
+setcglob 0x00462010, SetPixelOnRadar8
+setcglob 0x004620B0, SetPixelOnRadar16
+setcglob 0x00462140, SetupRadarMap
 setcglob 0x00466140, Setup__LoadGraphicsFile
 ; CSide
+setcglob 0x0046B990, CSide__Init
+setcglob 0x0046BD20, CSide__InitCash
+setcglob 0x0046BD40, CSide__GetNextFreeObject
+setcglob 0x0046BD60, CSide__SetupObject
+setcglob 0x0046BDB0, CSide__RemoveObject
 setcglob 0x0046BE50, CSide__UpdateBuildingAndUnitIconsAndBaseBoundaries
 setcglob 0x0046C450, CSide__MyVersionOfBuilding
 setcglob 0x0046C570, CSide__MyVersionOfUnit
+setcglob 0x0046C640, CSide__ResetBuildingAndUnitIcons
+setcglob 0x0046C680, CSide__AddBuildingIcon
+setcglob 0x0046C6D0, CSide__AddUnitIcon
+setcglob 0x0046C720, CSide__SpendMoneyIfSufficient
+setcglob 0x0046C790, CSide__AddSpice
 setcglob 0x0046C7B0, CSide__AddCash
+setcglob 0x0046C7D0, CSide__UpdateCashDrip
+setcglob 0x0046CA00, CSide__CalculatePower
 setcglob 0x0046CB00, CSide__DeselectAllUnits
 setcglob 0x0046CB20, CSide__DeselectAllBuildings
 setcglob 0x0046CB40, CSide__SelectUnitsByGroupId
 setcglob 0x0046CBD0, CSide__CenterViewportOnFirstUnitFromGroupId
 setcglob 0x0046CCA0, CSide__GetQueuePos
 setcglob 0x0046CD00, CSide__AddToQueue
+setcglob 0x0046CE00, CSide_46CE00
+setcglob 0x0046CE70, CSide_46CE70
 setcglob 0x0046CF10, CSide_46CF10_HKEY_BattleFieldPos
+setcglob 0x0046D180, CSide__ProcessPickupQueue
 setcglob 0x0046D2E0, ChangeUnitOwner
 setcglob 0x0046D6D0, CaptureBuilding
+setcglob 0x0046D9A0, CSide__FindOtherPrimaryBuilding
+setcglob 0x0046DDC0, CSide__UpdateStarportStockAndCosts
+setcglob 0x0046DEF0, CSide__ProcessDeliveries
 setcglob 0x0046E3F0, CSide__FindBestBasePosition
 setcglob 0x0046E6B0, CSide__BlowupAll_surrender
+setcglob 0x0046E740, FindFirstBuildingByGroup
+setcglob 0x0046E7A0, CSide__InitStarportAndUpgradeIcons
+setcglob 0x0046E9C0, CSide__LetAITakeOver
 setcglob 0x0046EA50, GenerateSurrenderOrder
 setcglob 0x0046EAC0, CSide__ReturnMoneyFromStarportOrder
+setcglob 0x0046EAF0, CSide__ResetStarportOrderCost
 setcglob 0x0046EB00, CSide__ResetEnemyForSide
 ; Sound
 setcglob 0x0046F420, ISampleManager__EndSample
+setcglob 0x0046F4F0, IsSoundPlaying
 setcglob 0x0046F540, PlaySoundAt
 setcglob 0x0046F820, QueueAudioToPlay
 setcglob 0x0046F900, PlayMentatSound
@@ -569,9 +604,39 @@ setcglob 0x0048DC10, GetTextID			; (char *key, int unk)
 setcglob 0x0048DCC0, GetTextString			; (int id, int unk)
 setcglob 0x0048DD90, GetSoundTableID
 ; Other
+setcglob 0x004936A0, GetNextSquare
+setcglob 0x00493EB0, TurnUnitInDirection
+setcglob 0x00493F40, Unit_movement_493F40
+setcglob 0x00493FD0, TurnBuildingTurret
+setcglob 0x00494050, SetUnitAnimationType
+setcglob 0x004940D0, AnimateInfantryUnit
+setcglob 0x00494210, Unit_movement_494210
+setcglob 0x00494260, MoveUnit
+setcglob 0x00494CD0, HandleDeathHand
+setcglob 0x00494FD0, Unit_movement_bullet_494FD0
+setcglob 0x004954A0, UnitSetSpeed
+setcglob 0x004954B0, TurnUnit
+setcglob 0x00495560, MoveUnitSimple
+setcglob 0x00495B90, UnitShootTarget
+setcglob 0x00496030, BuildingShootTarget
+setcglob 0x00496480, UnitAttack
+setcglob 0x00496790, BuildingAttack
+setcglob 0x00496B00, UnitAttackUnit
+setcglob 0x00496D10, UnitAttackBuilding
+setcglob 0x00496FF0, UnitAttackTile
+setcglob 0x00497090, BuildingAttackTile
+setcglob 0x004970F0, CheckDistance
 setcglob 0x00497140, CanBuildingAttackTile
+setcglob 0x00497270, CanUnitAttackTile
+setcglob 0x00497390, GetBuildingInRange
+setcglob 0x00497490, IsBuildingInRange
 setcglob 0x00497530, IsBuildingInRange_0
+setcglob 0x00497550, CanUnitAttackBuilding
+setcglob 0x004975D0, BuildingAttackUnit
+setcglob 0x004976B0, BuildingAttackBuilding
+setcglob 0x004977A0, ReleaseInfantryFromBuilding
 setcglob 0x004979A0, GetRandomAdjacentTile
+setcglob 0x00497AF0, KickUnitsOutOfTile
 setcglob 0x00497B90, UpdateUnit
 setcglob 0x0049B7F0, UpdateBuilding
 setcglob 0x0049BE60, UpdateBullet
@@ -582,19 +647,41 @@ setcglob 0x0049D280, UnitTileOccupiedByBuilding
 setcglob 0x0049D2E0, DamageTiles
 setcglob 0x0049DD80, UpdateExplosion
 setcglob 0x0049DEB0, UnitAdjustState
+setcglob 0x0049E120, SetBuildingState
 setcglob 0x0049E140, Unit_49E140
+setcglob 0x0049E160, facing_49E160
 setcglob 0x0049E290, tile_driveon_49E290
+setcglob 0x0049E3E0, UnitDeliver
+setcglob 0x0049E6B0, GetFlyingUnitSpawnPositionAndFacing
+setcglob 0x0049E770, LaunchOrnithopters
+setcglob 0x0049E860, LaunchDeathHand
+setcglob 0x0049E9D0, NewBestBullet
+setcglob 0x0049EBF0, PickupCrate
 setcglob 0x0049F1B0, MakeUnitsStealthInRange
 setcglob 0x0049F240, PlayUnitResponse
 setcglob 0x0049F310, SetUnitToFlicker
 setcglob 0x0049F320, SetBuildingToFlicker
+setcglob 0x0049F330, UnmarkTileWithFlyingUnit
+setcglob 0x0049F370, MarkTileWithFlyingUnit
+setcglob 0x0049F3B0, GetSpeed
+setcglob 0x0049F4A0, CanUnitAcceptOrders
 setcglob 0x0049F4D0, RevealTilesSeenByBuildingsAndUnits
-setcglob 0x0049F5F0, Unit_49F5F0
+setcglob 0x0049F580, UnitCloakStart
+setcglob 0x0049F5C0, UnitUncloakStart
+setcglob 0x0049F5F0, UnitIsCloaked
+setcglob 0x0049F610, UnitHandleCloaking
+setcglob 0x0049F750, ObjectsAbleToRevealStealthUnitsAreNearby
+setcglob 0x0049F870, NeutralBecomeHostile
+setcglob 0x0049F8F0, CrushUnit
+setcglob 0x0049FA50, TryCrushUnit
+setcglob 0x0049FB40, CanDeviatedUnitRevert
 setcglob 0x004A31D0, GameWindowProcedure
 setcglob 0x004A39E0, Parse_Command_Line
-setcglob 0x004A4660, GetSide ; (int house)
+setcglob 0x004A4660, GetSide
 setcglob 0x004A46B0, GetUnit
 setcglob 0x004A4740, GetBuilding
+setcglob 0x004A4900, EnemyUnitInRange
+setcglob 0x004A4FD0, EnemyBuildingInRange
 setcglob 0x004A5200, UnitOccupiesTile
 setcglob 0x004A5270, GetUnitOnTile
 setcglob 0x004A54A0, GetNextUnitOnTile

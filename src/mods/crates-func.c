@@ -288,7 +288,7 @@ bool DoPickupCrate(int crate_index, Unit *unit, unsigned char side_id)
                 u->__SpecialPurpose = -96;
                 crate_used = true;
               }
-              else if ( !Unit_49F5F0(u) )
+              else if ( !UnitIsCloaked(u) )
               {
                 u->Flags |= UFLAGS_10_STEALTH;
                 u->__StealthUnCloakDelayCounter = 0;

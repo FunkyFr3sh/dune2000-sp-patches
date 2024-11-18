@@ -23,7 +23,8 @@ hack 0x0044C83A, 0x0044C842 ; LoadMapData
 @ENDPATCH
 
 ; Restore back-up tile index when all spice on tile is harvested
-@PATCH 0x004994D6 ; UpdateUnit
-    mov ax, [edx*4+0x517DF2]
-    mov [edx*4+0x517DF0], ax
-@ENDPATCH
+; Superseded by Mod__HandleGameLoopEvents
+;@PATCH 0x004994D6 ; UpdateUnit
+;    mov ax, [edx*4+0x517DF2]
+;    mov [edx*4+0x517DF0], ax
+;@ENDPATCH
