@@ -288,6 +288,7 @@ setcglob 0x006DB390, _templates_BulletNameList
 setcglob 0x006DC470, MissionMapData
 setcglob 0x006DC538, _ViewportHeight
 setcglob 0x006DC540, _templates_buildattribs
+setcglob 0x006E5750, _templates_Explosiondata_AnimationArtFlags
 setcglob 0x006E5850, _templates_BuildingGroupCount
 setcglob 0x006E5854, _image_placement_marker_buildable_concrete
 setcglob 0x006E9840, _sinValues
@@ -467,6 +468,7 @@ setcglob 0x0044D760, GetSpiceTileToHarvest
 setcglob 0x0044D970, spice_44D970
 setcglob 0x0044DA90, FindFreeSpotForInfantry
 setcglob 0x0044DAC0, GetBuildingOnConcreteCount
+setcglob 0x0044E120, RemoveUnitTileData
 setcglob 0x0044E3B0, RevealCircle
 setcglob 0x0044E790, GetFreeCrateIndex
 setcglob 0x0044E8E0, PlaceCrate
@@ -606,7 +608,7 @@ setcglob 0x0048DD90, GetSoundTableID
 ; Other
 setcglob 0x004936A0, GetNextSquare
 setcglob 0x00493EB0, TurnUnitInDirection
-setcglob 0x00493F40, Unit_movement_493F40
+setcglob 0x00493F40, TurnUnitBarrelInDirection
 setcglob 0x00493FD0, TurnBuildingTurret
 setcglob 0x00494050, SetUnitAnimationType
 setcglob 0x004940D0, AnimateInfantryUnit
@@ -680,6 +682,7 @@ setcglob 0x004A39E0, Parse_Command_Line
 setcglob 0x004A4660, GetSide
 setcglob 0x004A46B0, GetUnit
 setcglob 0x004A4740, GetBuilding
+setcglob 0x004A47F0, map_4A47F0
 setcglob 0x004A4900, EnemyUnitInRange
 setcglob 0x004A4FD0, EnemyBuildingInRange
 setcglob 0x004A5200, UnitOccupiesTile

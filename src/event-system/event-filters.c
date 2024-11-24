@@ -299,7 +299,7 @@ bool CheckIfUnitMatchesCriteria(Unit *unit, eSideType side_id, eUnitFilterCriter
   case UNITCRITERIATYPE_SIGHT:          result = CompareValue(unit_template->__ViewDistance, value, comparison); break;
   case UNITCRITERIATYPE_RANGE:          result = CompareValue((unit_template->__PrimaryWeapon != -1)?_templates_bulletattribs[(int)unit_template->__PrimaryWeapon].__Range:0, value, comparison); break;
   case UNITCRITERIATYPE_SPEED:          result = CompareValue(unit_template->__Speed >> 12, value, comparison); break;
-  case UNITCRITERIATYPE_RATE_OF_FIRE:   result = CompareValue(unit_template->__RateOfFire, value, comparison); break;
+  case UNITCRITERIATYPE_RATE_OF_FIRE:   result = CompareValue(unit_template->PrimaryWeaponLongDelay, value, comparison); break;
   case UNITCRITERIATYPE_HP100_MAX:      result = CompareValue(unit_template->__Strength / 100, value, comparison); break;
   case UNITCRITERIATYPE_HP100_CUR:      result = CompareValue(unit->Health / 100, value, comparison); break;
   case UNITCRITERIATYPE_HEALTH_PERCENT: result = CompareValue((unit->Health * 100) / unit_template->__Strength, value, comparison); break;
@@ -684,7 +684,7 @@ bool CheckIfUnitTypeMatchesCriteria(int unit_type, eUnitTypeFilterCriteriaType c
   case UNITTYPECRITERIATYPE_SIGHT:          result = CompareValue(unit_template->__ViewDistance, value, comparison); break;
   case UNITTYPECRITERIATYPE_RANGE:          result = CompareValue((unit_template->__PrimaryWeapon != -1)?_templates_bulletattribs[(int)unit_template->__PrimaryWeapon].__Range:0, value, comparison); break;
   case UNITTYPECRITERIATYPE_SPEED:          result = CompareValue(unit_template->__Speed >> 12, value, comparison); break;
-  case UNITTYPECRITERIATYPE_RATE_OF_FIRE:   result = CompareValue(unit_template->__RateOfFire, value, comparison); break;
+  case UNITTYPECRITERIATYPE_RATE_OF_FIRE:   result = CompareValue(unit_template->PrimaryWeaponLongDelay, value, comparison); break;
   case UNITTYPECRITERIATYPE_HP100_MAX:      result = CompareValue(unit_template->__Strength / 100, value, comparison); break;
   case UNITTYPECRITERIATYPE_FLAG:           result = unit_template->Flags & (1 << value); break;
   }

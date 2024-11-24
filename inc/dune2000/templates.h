@@ -10,7 +10,7 @@ typedef struct UnitAtribStruct
   int __Speed;
   char __PrimaryWeapon;
   char __SecondaryWeapon;
-  char __RateOfFire;
+  uint8_t PrimaryWeaponLongDelay;
   char __BarrelTurnSpeed;
   char __ViewDistance;
   char __IsInfantry;
@@ -33,7 +33,7 @@ typedef struct UnitAtribStruct
   char c_field_34;
   char __CanCrush;
   char __HealthbarSize;
-  char __ProjectileShootOffset;
+  char PrimaryWeaponShootOffset;
   int Flags;
   char __DirectionFrames[32];
   int __ReportingSounds[3][3];
@@ -46,7 +46,19 @@ typedef struct UnitAtribStruct
   char UnitUpgradeAllowed;
   unsigned char UnitUpgradeTargetType;
   char MovementRestriction;
-  char field_AD[82];
+  uint8_t PrimaryWeaponBulkShots;
+  uint8_t PrimaryWeaponShortDelay;
+  uint8_t PrimaryWeaponDoubleShot;
+  bool PrimaryWeaponNoAutoAttack;
+  uint8_t PrimaryWeaponShootAngle;
+  uint8_t SecondaryWeaponBulkShots;
+  uint8_t SecondaryWeaponShortDelay;
+  uint8_t SecondaryWeaponLongDelay;
+  uint8_t SecondaryWeaponDoubleShot;
+  bool SecondaryWeaponNoAutoAttack;
+  uint8_t SecondaryWeaponShootOffset;
+  uint8_t SecondaryWeaponShootAngle;
+  char ZeroBytes[70];
 }UnitAtribStruct;
 
 typedef struct BuildingAtrbStruct
@@ -123,7 +135,7 @@ typedef struct BullAtrbStruct
   char c_field_13;
   char AntiAircraft;
   char Warhead;
-  char field_16;
+  char Inaccuracy;
   char field_17;
   int __Range;
 }BullAtrbStruct;

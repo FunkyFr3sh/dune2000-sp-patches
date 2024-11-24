@@ -177,7 +177,8 @@ typedef struct Unit
   int32_t __dw_field_84_ptr;
   struct Unit **__dw_field_88_ptr;
   int16_t MyIndex;
-  int16_t field_8E;
+  char ShotsRemaining; // Additional field for extended functionality (mod)
+  char LastUsedWeapon; // Additional field for extended functionality (mod)
   int32_t ObjectType;
 }Unit;
 
@@ -374,6 +375,42 @@ typedef struct Building
   int32_t ObjectType;
 }Building;
 
+typedef enum BulletFlags
+{
+  BULFLAGS_1_ARC_TRAJECTORY = 0x1,
+  BULFLAGS_2 = 0x2,
+  BULFLAGS_4 = 0x4,
+  BULFLAGS_8 = 0x8,
+  BULFLAGS_10_MAKE_TRAIL = 0x10,
+  BULFLAGS_20_HOMING = 0x20,
+  BULFLAGS_40_DEVIATOR = 0x40,
+  BULFLAGS_80_ANIMATED = 0x80,
+  BULFLAGS_100_FALLING = 0x100,
+  BULFLAGS_200 = 0x200,
+  BULFLAGS_400 = 0x400,
+  BULFLAGS_800_SONIC = 0x800,
+  BULFLAGS_1000_BLOCKED_BY_WALL = 0x1000,
+  BULFLAGS_2000 = 0x2000,
+  BULFLAGS_4000 = 0x4000,
+  BULFLAGS_8000 = 0x8000,
+  BULFLAGS_10000 = 0x10000,
+  BULFLAGS_20000 = 0x20000,
+  BULFLAGS_40000 = 0x40000,
+  BULFLAGS_80000 = 0x80000,
+  BULFLAGS_100000 = 0x100000,
+  BULFLAGS_200000 = 0x200000,
+  BULFLAGS_400000 = 0x400000,
+  BULFLAGS_800000 = 0x800000,
+  BULFLAGS_1000000 = 0x1000000,
+  BULFLAGS_2000000 = 0x2000000,
+  BULFLAGS_4000000 = 0x4000000,
+  BULFLAGS_8000000 = 0x8000000,
+  BULFLAGS_10000000 = 0x10000000,
+  BULFLAGS_20000000 = 0x20000000,
+  BULFLAGS_40000000 = 0x40000000,
+  BULFLAGS_80000000 = 0x80000000,
+}BulletFlags;
+
 typedef struct Bullet
 {
   int32_t __MoveSteps;
@@ -460,6 +497,26 @@ typedef struct Bullet
   int16_t w_field_8E;
   int32_t ObjectType;
 }Bullet;
+
+typedef enum ExplosionFlags
+{
+  EXPFLAGS_1_RISE_UP = 0x1,
+  EXPFLAGS_2 = 0x2,
+  EXPFLAGS_4 = 0x4,
+  EXPFLAGS_8_HOUSE_COLORED = 0x8,
+  EXPFLAGS_10 = 0x10,
+  EXPFLAGS_20 = 0x20,
+  EXPFLAGS_40_RED = 0x40,
+  EXPFLAGS_80_GREEN = 0x80,
+  EXPFLAGS_100 = 0x100,
+  EXPFLAGS_200 = 0x200,
+  EXPFLAGS_400_MUZZLE_FLASH = 0x400,
+  EXPFLAGS_800_INVISIBLE = 0x800,
+  EXPFLAGS_1000 = 0x1000,
+  EXPFLAGS_2000 = 0x2000,
+  EXPFLAGS_4000 = 0x4000,
+  EXPFLAGS_8000 = 0x8000,
+}ExplosionFlags;
 
 typedef struct Explosion
 {

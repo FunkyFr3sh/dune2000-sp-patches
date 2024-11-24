@@ -2,6 +2,8 @@
 #include "dune2000.h"
 #include "rules.h"
 
+bool CanUnitShoot(Unit *unit);
+
 // Custom implementation of function UpdateUnit
 DETOUR(0x00497B90, 0x0049B76E, _Mod__UpdateUnit);
 
@@ -14,7 +16,6 @@ char Mod__UpdateUnit(Unit *unit, eSideType side_id, __int16 myIndex)
   int my_index; // ST30_4
   int health; // eax MAPDST
   unsigned __int8 cloaking_points; // al MAPDST
-  char reload_delay_counter; // al
   int attacker_object_type; // eax
   CSide *attacker_side; // eax
   int enemy_object_type; // eax MAPDST
@@ -285,11 +286,18 @@ LABEL_26:
   }
 LABEL_27:
   // Decrease reload delay
-  reload_delay_counter = unit->__ReloadDelayCounter;
-  if ( reload_delay_counter )
+  // New logic start
+  // Add support for bulk shots
+  if ( unit->__ReloadDelayCounter )
   {
-    unit->__ReloadDelayCounter = reload_delay_counter - 1;
+    unit->__ReloadDelayCounter--;
   }
+  if ( unit->__ReloadDelayCounter == 0 )
+  {
+    unit->ShotsRemaining = 0;
+    unit->LastUsedWeapon = 0;
+  }
+  // New logic end
   // Handle cloaking
   UnitHandleCloaking(unit, (eSideType)side_id_);
   // Reset attacker
@@ -682,7 +690,10 @@ LABEL_89:
           }
           else if ( enemy_unit->Flags & (UFLAGS_100_CARRYING|UFLAGS_40_FLYING) )
           {
-            if ( !unit->__ReloadDelayCounter )
+            // New logic start
+            // Add support for bulk shots
+            if ( CanUnitShoot(unit) )
+            // New logic end
             {
               UnitShootTarget(
                 unit,
