@@ -76,6 +76,8 @@ OBJS            ?= callsites.o \
         src/mods/unlimited-unit-orders.o \
         src/mods/update-unit.o \
         src/mods/unit-attack.o \
+        src/mods/building-update.o \
+        src/mods/building-attack.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \
@@ -102,7 +104,6 @@ OBJS            ?= callsites.o \
 	src/fixes/ai-build-concrete-fix.o \
 	src/fixes/ai-upgrade-buildings-fix.o \
 	src/fixes/ai-starport-bug-fix.o \
-	src/fixes/no-building-damage-when-sold.o \
 	src/fixes/starport-sell-refund-fix.o \
 	src/fixes/upgrade-cancel-refund-fix.o \
 	src/fixes/sandworm-fixes.o \

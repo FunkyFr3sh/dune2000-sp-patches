@@ -538,6 +538,7 @@ void Mod__UnitShootTarget(Unit *unit, char side, unsigned short index, int targe
   int homing_index;
   int homing_side;
   bool is_muzzle_flash_explosion;
+  int bullet_index;
 
   unit_ = unit;
   unit_is_in_right_direction = 0;
@@ -645,11 +646,14 @@ LABEL_12:
             dest_xpos += rand() % (2 * inaccuracy) - inaccuracy;
             dest_ypos += rand() % (2 * inaccuracy) - inaccuracy;
           }
-          ModelAddBullet(side, bullet_type, 0, index, source_xpos, source_ypos, dest_xpos, dest_ypos, homing_index, homing_side);
-          if ((muzzle_flash_explosion_type != -1) && ((explosion_index = ModelAddExplosion(side, muzzle_flash_explosion_type, is_muzzle_flash_explosion?unit_xpos:source_xpos, is_muzzle_flash_explosion?unit_ypos:source_ypos, 0, 0, 0, 0, 0)) != -1) && is_muzzle_flash_explosion)
+          if ((bullet_index = ModelAddBullet(side, bullet_type, 0, index, source_xpos, source_ypos, dest_xpos, dest_ypos, homing_index, homing_side)) != -1)
           {
-            Explosion *e = (Explosion *)&GetSide(side)->__ObjectArray[explosion_index];
-            e->__AnimationFrame = direction;
+            Bullet *b = (Bullet *)&GetSide(side)->__ObjectArray[bullet_index];
+            if ((muzzle_flash_explosion_type != -1) && ((explosion_index = ModelAddExplosion(side, muzzle_flash_explosion_type, is_muzzle_flash_explosion?unit_xpos:source_xpos, is_muzzle_flash_explosion?unit_ypos:source_ypos, is_muzzle_flash_explosion?0:b->__PosZHeight, 0, 0, 0, 0)) != -1) && is_muzzle_flash_explosion)
+            {
+              Explosion *e = (Explosion *)&GetSide(side)->__ObjectArray[explosion_index];
+              e->__AnimationFrame = direction;
+            }
           }
         }
         // Double shot
@@ -665,14 +669,14 @@ LABEL_12:
             dest_xpos += rand() % (2 * inaccuracy) - inaccuracy;
             dest_ypos += rand() % (2 * inaccuracy) - inaccuracy;
           }
-          ModelAddBullet(side, bullet_type, 0, index, source_xpos, source_ypos, dest_xpos, dest_ypos, homing_index, homing_side);
-          if ((muzzle_flash_explosion_type != -1) && ((explosion_index = ModelAddExplosion(side, muzzle_flash_explosion_type, is_muzzle_flash_explosion?unit_xpos:source_xpos, is_muzzle_flash_explosion?unit_ypos:source_ypos, 0, 0, 0, 0, 0)) != -1) && is_muzzle_flash_explosion)
+          if ((bullet_index = ModelAddBullet(side, bullet_type, 0, index, source_xpos, source_ypos, dest_xpos, dest_ypos, homing_index, homing_side)) != -1)
           {
-            Explosion *e = (Explosion *)&GetSide(side)->__ObjectArray[explosion_index];
-            e->__AnimationFrame = (direction + shoot_angle) & 31;
-            char s[100];
-            sprintf(s, "explosion_index = %d __AnimationFrame = %d", explosion_index, e->__AnimationFrame);
-            QueueMessage(s, 0);
+            Bullet *b = (Bullet *)&GetSide(side)->__ObjectArray[bullet_index];
+            if ((muzzle_flash_explosion_type != -1) && ((explosion_index = ModelAddExplosion(side, muzzle_flash_explosion_type, is_muzzle_flash_explosion?unit_xpos:source_xpos, is_muzzle_flash_explosion?unit_ypos:source_ypos, is_muzzle_flash_explosion?0:b->__PosZHeight, 0, 0, 0, 0)) != -1) && is_muzzle_flash_explosion)
+            {
+              Explosion *e = (Explosion *)&GetSide(side)->__ObjectArray[explosion_index];
+              e->__AnimationFrame = (direction + shoot_angle) & 31;
+            }
           }
           // Second shot
           source_xpos = (_sinValues[shoot_offset + ((16 - direction - shoot_angle) & 31) * 512] / 2048) + unit_xpos;
@@ -684,14 +688,14 @@ LABEL_12:
             dest_xpos += rand() % (2 * inaccuracy) - inaccuracy;
             dest_ypos += rand() % (2 * inaccuracy) - inaccuracy;
           }
-          ModelAddBullet(side, bullet_type, 0, index, source_xpos, source_ypos, dest_xpos, dest_ypos, homing_index, homing_side);
-          if ((muzzle_flash_explosion_type != -1) && ((explosion_index = ModelAddExplosion(side, muzzle_flash_explosion_type, is_muzzle_flash_explosion?unit_xpos:source_xpos, is_muzzle_flash_explosion?unit_ypos:source_ypos, 0, 0, 0, 0, 0)) != -1) && is_muzzle_flash_explosion)
+          if ((bullet_index = ModelAddBullet(side, bullet_type, 0, index, source_xpos, source_ypos, dest_xpos, dest_ypos, homing_index, homing_side)) != -1)
           {
-            Explosion *e = (Explosion *)&GetSide(side)->__ObjectArray[explosion_index];
-            e->__AnimationFrame = (direction - shoot_angle) & 31;
-            char s[100];
-            sprintf(s, "explosion_index = %d __AnimationFrame = %d", explosion_index, e->__AnimationFrame);
-            QueueMessage(s, 0);
+            Bullet *b = (Bullet *)&GetSide(side)->__ObjectArray[bullet_index];
+            if ((muzzle_flash_explosion_type != -1) && ((explosion_index = ModelAddExplosion(side, muzzle_flash_explosion_type, is_muzzle_flash_explosion?unit_xpos:source_xpos, is_muzzle_flash_explosion?unit_ypos:source_ypos, is_muzzle_flash_explosion?0:b->__PosZHeight, 0, 0, 0, 0)) != -1) && is_muzzle_flash_explosion)
+            {
+              Explosion *e = (Explosion *)&GetSide(side)->__ObjectArray[explosion_index];
+              e->__AnimationFrame = (direction - shoot_angle) & 31;
+            }
           }
         }
         // Set unit properties

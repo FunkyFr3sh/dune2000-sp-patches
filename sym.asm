@@ -291,10 +291,14 @@ setcglob 0x006DC540, _templates_buildattribs
 setcglob 0x006E5750, _templates_Explosiondata_AnimationArtFlags
 setcglob 0x006E5850, _templates_BuildingGroupCount
 setcglob 0x006E5854, _image_placement_marker_buildable_concrete
+setcglob 0x006E5880, dataimage
+setcglob 0x006E5C40, gBuildingElements
 setcglob 0x006E9840, _sinValues
 setcglob 0x006F9840, _MapName
 setcglob 0x006F9908, _templates_BuildingNameList
 setcglob 0x00704A98, _cosValues
+setcglob 0x00714A98, _templates_BuildupArtFrames
+setcglob 0x0077D3A0, _SmokeDataStructs
 setcglob 0x0077E250, _templates_unitattribs
 setcglob 0x00781E54, _RadarMap2
 setcglob 0x00781E58, _templates_explosionattribs
@@ -314,6 +318,7 @@ setcglob 0x00790550, _WarheadData
 setcglob 0x007943A8, _templates_ExplosionNameList
 setcglob 0x00795128, _speed_values
 setcglob 0x00795440, _image_placement_marker_nonbuildable
+setcglob 0x007954B0, _templates_BuildingAnimationFrames
 setcglob 0x00795518, _radarcolor16_sidecolor
 setcglob 0x00795538, gUnitTypeNum
 setcglob 0x0079553C, gBuildingTypeNum
@@ -454,6 +459,7 @@ setcglob 0x004432F0, MoreProductionBuildingsOfSameGroupExist
 setcglob 0x00443370, IsAnyStarportUnitPicked
 setcglob 0x00448460, GetRandomValue
 setcglob 0x0044B170, SetUnitGroup
+setcglob 0x0044B1D0, SetBuildingState17andFlags20000
 setcglob 0x0044B1F0, SetBuildingAsPrimary
 setcglob 0x0044C420, SetMouseCursor
 ; Map
@@ -468,6 +474,7 @@ setcglob 0x0044D760, GetSpiceTileToHarvest
 setcglob 0x0044D970, spice_44D970
 setcglob 0x0044DA90, FindFreeSpotForInfantry
 setcglob 0x0044DAC0, GetBuildingOnConcreteCount
+setcglob 0x0044DEE0, RemoveBuildingStuff
 setcglob 0x0044E120, RemoveUnitTileData
 setcglob 0x0044E3B0, RevealCircle
 setcglob 0x0044E790, GetFreeCrateIndex

@@ -1,16 +1,17 @@
 %include "macros/patch.inc"
 
-; Fix misplaced exploding barrel damage 
-hack 0x0049BD6F, 0x0049BD7E ; UpdateBuilding
-    sub eax, 16 ; decrease y-position by 16 (move to center of tile)
-    push eax
-    mov eax, [esi]
-    cdq
-    and edx, 0FFFFh
-    add eax, edx
-    sar eax, 10h
-    add eax, 16 ; increase x-position by 16 (move to center of tile)
-    jmp hackend
+; Fix misplaced exploding barrel damage
+; Superseded by Mod__UpdateBuilding
+;hack 0x0049BD6F, 0x0049BD7E ; UpdateBuilding
+;    sub eax, 16 ; decrease y-position by 16 (move to center of tile)
+;    push eax
+;    mov eax, [esi]
+;    cdq
+;    and edx, 0FFFFh
+;    add eax, edx
+;    sar eax, 10h
+;    add eax, 16 ; increase x-position by 16 (move to center of tile)
+;    jmp hackend
 
 ; Fix misplaced grenadier death damage
 ; Superseded by Mod__UpdateUnit

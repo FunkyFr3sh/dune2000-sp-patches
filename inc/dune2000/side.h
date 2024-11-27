@@ -371,7 +371,8 @@ typedef struct Building
   int32_t dw_field_84_ptr;
   int32_t dw_field_88_ptr;
   int16_t MyIndex;
-  int16_t w_field_8E;
+  char ShotsRemaining; // Additional field for extended functionality (mod)
+  char LastUsedWeapon; // Additional field for extended functionality (mod)
   int32_t ObjectType;
 }Building;
 
@@ -639,8 +640,8 @@ typedef struct CSide
   uint8_t __BuildingGroupUpgradeCount[100];
   uint32_t __PowerOutput;
   uint32_t __PowerDrained;
-  uint32_t __PowerPercent1;
-  int32_t __PowerPercent2;
+  uint32_t __PowerPercent;
+  int32_t __PowerPercentPrev;
   char __HarvesterCount;
   char field_245B9;
   char field_245BA;

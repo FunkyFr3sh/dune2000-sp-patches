@@ -67,7 +67,7 @@ typedef struct BuildingAtrbStruct
   char _____OwnerSide;
   char Armour;
   char _____BarrelRotationSpeed;
-  char _____RateOfFire;
+  char PrimaryWeaponLongDelay;
   int _____ScreenShake;
   char _____PrimaryWeapon;
   char _____SecondaryWeapon;
@@ -116,12 +116,32 @@ typedef struct BuildingAtrbStruct
   char _____BuildupFramesToShow;
   char _____BuildupArt;
   char _____BuildingAnimation;
-  char _____explosionindex2;
+  char _____MuzzleFlashExplosion;
   // Additional fields for extended functionality (mod)
   char BuildRestriction;
   char BuildMaxDistance;
-  char field_8D[125];
+  uint8_t PrimaryWeaponBulkShots;
+  uint8_t PrimaryWeaponShortDelay;
+  uint8_t PrimaryWeaponDoubleShot;
+  uint8_t PrimaryWeaponShootOffset;
+  uint8_t PrimaryWeaponShootAngle;
+  uint8_t SecondaryWeaponBulkShots;
+  uint8_t SecondaryWeaponShortDelay;
+  uint8_t SecondaryWeaponLongDelay;
+  uint8_t SecondaryWeaponDoubleShot;
+  uint8_t SecondaryWeaponShootOffset;
+  uint8_t SecondaryWeaponShootAngle;
+  char field_8D[114];
 }BuildingAtrbStruct;
+
+typedef struct SmokeDataStruct
+{
+  char __AnimCount;
+  char __AnimOffsetX[8];
+  char __AnimOffsetY[8];
+  char __Explosion[8];
+  char Frames[8];
+}SmokeDataStruct;
 
 typedef struct BullAtrbStruct
 {
