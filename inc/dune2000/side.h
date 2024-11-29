@@ -379,7 +379,7 @@ typedef struct Building
 typedef enum BulletFlags
 {
   BULFLAGS_1_ARC_TRAJECTORY = 0x1,
-  BULFLAGS_2 = 0x2,
+  BULFLAGS_2_DRAW_SHADOW = 0x2,
   BULFLAGS_4 = 0x4,
   BULFLAGS_8 = 0x8,
   BULFLAGS_10_MAKE_TRAIL = 0x10,
@@ -387,7 +387,7 @@ typedef enum BulletFlags
   BULFLAGS_40_DEVIATOR = 0x40,
   BULFLAGS_80_ANIMATED = 0x80,
   BULFLAGS_100_FALLING = 0x100,
-  BULFLAGS_200 = 0x200,
+  BULFLAGS_200_DRAW_ALPHA = 0x200,
   BULFLAGS_400 = 0x400,
   BULFLAGS_800_SONIC = 0x800,
   BULFLAGS_1000_BLOCKED_BY_WALL = 0x1000,
@@ -412,6 +412,12 @@ typedef enum BulletFlags
   BULFLAGS_80000000 = 0x80000000,
 }BulletFlags;
 
+typedef enum BulletBehaviorType
+{
+  BulletBehaviorType_0 = 0,
+  BulletBehavior_LIGHTNING = 1
+}BulletBehaviorType;
+
 typedef struct Bullet
 {
   int32_t __MoveSteps;
@@ -424,10 +430,10 @@ typedef struct Bullet
   uint8_t Type;
   uint8_t __HomingSideId;
   uint8_t __MySideId;
-  char c_field_1B;
-  int16_t __TargetX;
-  int16_t __TargetY;
-  uint32_t dw_field_20;
+  char c_field_1B_template_c_field_13;
+  int16_t __TargetXpos;
+  int16_t __TargetYpos;
+  uint32_t __Delay;
   uint32_t __PosX;
   uint32_t __PosY;
   uint32_t __PosZHeight;
@@ -435,7 +441,7 @@ typedef struct Bullet
   char field_31;
   char field_32;
   char field_33;
-  int32_t dw_field_34_arc_trajectory;
+  int32_t __FallingSpeed;
   char field_38;
   char field_39;
   char field_3A;
@@ -491,9 +497,9 @@ typedef struct Bullet
   char field_7A;
   char field_7B;
   struct Bullet *Next;
-  int32_t dw_field_80_ptr;
-  int32_t dw_field_84_ptr;
-  int32_t dw_field_88_ptr;
+  struct Bullet *Prev;
+  struct Bullet **__FirstBulletPtrPtr;
+  struct Bullet **__LastBulletPtrPtr;
   int16_t MyIndex;
   int16_t w_field_8E;
   int32_t ObjectType;

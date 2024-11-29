@@ -313,7 +313,7 @@ void Mod__HandleTooltips()
               && _gMousePos.x <= _SideBarPowerImages[0]->width + _PowerBarUIPosX
               && _gMousePos.y <= _ScreenClipHeight )
             {
-              power_percent = GetSide(gSideId)->__PowerPercent1;
+              power_percent = GetSide(gSideId)->__PowerPercent;
               string_id = GetTextID("POWER");
               string_text = GetTextString(string_id, 0);
               sprintf(&tmp_string, "%s %d%%", string_text, power_percent);

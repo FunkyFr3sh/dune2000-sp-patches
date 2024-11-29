@@ -551,6 +551,7 @@ extern char                 _WarheadNames[30][50];
 extern WarheadStruct        _WarheadData[30];
 extern char                 _templates_ExplosionNameList[64][50];
 extern float                _speed_values[8][4];
+extern int                  _templates_ProjectileArtDirections[64];
 extern TImage *             _image_placement_marker_nonbuildable;
 extern char                 _templates_BuildingAnimationFrames[100];
 extern uint16_t             _radarcolor16_sidecolor[8];
@@ -708,7 +709,7 @@ void            ModelAddConcrete(eSideType side_id, char building_type, unsigned
 signed __int16  ModelAddBuilding(eSideType side_id, char building_type, unsigned __int8 x, unsigned __int8 y, int initialsetup, bool captured, bool captured2);
 signed __int16  ModelAddBullet(unsigned __int8 side_id, unsigned __int8 bulletype, int a3, __int16 firer, unsigned __int16 source_x, unsigned __int16 source_y, unsigned __int16 target_x, unsigned __int16 target_y, __int16 homing_index, char homing_side);
 void            AddCursorPuffAnimationToQueue(int x, int y);
-signed __int16  ModelAddExplosion(int side_id, unsigned __int8 explosionType, unsigned __int16 x, unsigned __int16 y, int a5, int a6, char a7, int a8, int a9);
+signed __int16  ModelAddExplosion(unsigned char side_id, unsigned char explosionType, unsigned short x, unsigned short y, int z, int extraFlags, char a7, int a8, int a9);
 
 void            GenerateUnitMoveOrder(char side_id, unsigned __int8 x, unsigned __int8 y);
 void            GenerateDockWithRefineryOrder(char side_id, __int16 refinery_index);
@@ -798,7 +799,7 @@ void __thiscall CSide__ResetEnemyForSide(CSide *this, char a2);
 // Sound
 void __thiscall ISampleManager__EndSample(ISampleManager *this, int handle_id);
 char            IsSoundPlaying(int sound_id);
-void            PlaySoundAt(int id, unsigned __int8 xpos, unsigned __int8 ypos);
+void            PlaySoundAt(int id, unsigned char xpos, unsigned char ypos);
 void            QueueAudioToPlay(int id, char state, int time, int priority);
 void            PlayMentatSound(int at_table, int or_table, int hark_table, char state, int time, int priority);
 void __thiscall Sound__LoadMusicFile(int this, char *fileName);
@@ -860,7 +861,7 @@ void            DestroyBuilding(int side, int objIndex, char a3);
 void            DestroyUnit(eSideType side, __int16 index);
 void            ClosestBuildingTile(Building *building, int xpos, int ypos, int *result_x, int *result_y);
 char            UnitTileOccupiedByBuilding(Unit *unit);
-char            DamageTiles(unsigned int xpos, unsigned int ypos, unsigned int a3, unsigned __int8 bulletType, int ai_side, __int16 ai_index, char a7);
+char            DamageTiles(unsigned int xpos, unsigned int ypos, unsigned int zpos, unsigned char bulletType, unsigned char firer_side_id, short firer_index, char deviator);
 bool            UpdateExplosion(Explosion *arg0, eSideType a1);
 bool            UnitAdjustState(Unit *unit, eUnitState state);
 bool            SetBuildingState(Building *bld, eBuildingState state);

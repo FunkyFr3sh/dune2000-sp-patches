@@ -409,7 +409,7 @@ bool CheckIfBuildingMatchesCriteria(Building *building, eSideType side_id, eBuil
   case BUILDINGCRITERIATYPE_POWER_CONS:     result = CompareValue((building_template->__PowerDrain > 0)?building_template->__PowerDrain:0, value, comparison); break;
   case BUILDINGCRITERIATYPE_POWER_PROD:     result = CompareValue((building_template->__PowerDrain < 0)?building_template->__PowerDrain * -1:0, value, comparison); break;
   case BUILDINGCRITERIATYPE_RANGE:          result = CompareValue((building_template->_____PrimaryWeapon != -1)?_templates_bulletattribs[(int)building_template->_____PrimaryWeapon].__Range:0, value, comparison); break;
-  case BUILDINGCRITERIATYPE_RATE_OF_FIRE:   result = CompareValue(building_template->_____RateOfFire, value, comparison); break;
+  case BUILDINGCRITERIATYPE_RATE_OF_FIRE:   result = CompareValue(building_template->PrimaryWeaponLongDelay, value, comparison); break;
   case BUILDINGCRITERIATYPE_HP100_MAX:      result = CompareValue(building_template->_____HitPoints / 100, value, comparison); break;
   case BUILDINGCRITERIATYPE_HP100_CUR:      result = CompareValue(building->Health / 100, value, comparison); break;
   case BUILDINGCRITERIATYPE_HEALTH_PERCENT: result = CompareValue((building->Health * 100) / building_template->_____HitPoints, value, comparison); break;
@@ -491,8 +491,8 @@ bool CheckIfBulletMatchesCriteria(Bullet *bullet, eBulletFilterCriteriaType crit
   case BULLETCRITERIATYPE_FIRER_INDEX:      result = CompareValue(bullet->__FirerIndex, value, comparison); break;
   case BULLETCRITERIATYPE_HOMING_INDEX:     result = CompareValue(bullet->__HomingIndex, value, comparison); break;
   case BULLETCRITERIATYPE_HOMING_SIDE:      result = CompareValue(bullet->__HomingSideId, value, comparison); break;
-  case BULLETCRITERIATYPE_TARGET_X:         result = CompareValue(bullet->__TargetX, value, comparison); break;
-  case BULLETCRITERIATYPE_TARGET_Y:         result = CompareValue(bullet->__TargetY, value, comparison); break;
+  case BULLETCRITERIATYPE_TARGET_X:         result = CompareValue(bullet->__TargetXpos, value, comparison); break;
+  case BULLETCRITERIATYPE_TARGET_Y:         result = CompareValue(bullet->__TargetYpos, value, comparison); break;
   case BULLETCRITERIATYPE_POS_Z:            result = CompareValue(bullet->__PosZHeight, value, comparison); break;
   case BULLETCRITERIATYPE_ANIM_FRAME:       result = CompareValue(bullet->__AnimationFrame, value, comparison); break;
   case BULLETCRITERIATYPE_CUST_BYTE_1:      result = CompareValue(bullet->custom_byte_1, value, comparison); break;
@@ -625,7 +625,7 @@ bool CheckIfSideMatchesCriteria(eSideType side_id, eSideFilterCriteriaType crite
     case SIDECRITERIATYPE_SPICE:            result = CompareValue(side->SpiceReal, value, comparison); break;
     case SIDECRITERIATYPE_CASH:             result = CompareValue(side->CashReal, value, comparison); break;
     case SIDECRITERIATYPE_STORAGE:          result = CompareValue(side->__MaxStorage, value, comparison); break;
-    case SIDECRITERIATYPE_POWER_PERCENT:    result = CompareValue(side->__PowerPercent1, value, comparison); break;
+    case SIDECRITERIATYPE_POWER_PERCENT:    result = CompareValue(side->__PowerPercent, value, comparison); break;
     case SIDECRITERIATYPE_POWER_OUTPUT:     result = CompareValue(side->__PowerOutput, value, comparison); break;
     case SIDECRITERIATYPE_POWER_DRAIN:      result = CompareValue(side->__PowerDrained, value, comparison); break;
     case SIDECRITERIATYPE_1_UPGRADE:        result = side->__BuildingGroupUpgradeCount[value] >= 1; break;
@@ -724,7 +724,7 @@ bool CheckIfBuildingTypeMatchesCriteria(int building_type, eBuildingTypeFilterCr
   case BUILDINGTYPECRITERIATYPE_POWER_CONS:     result = CompareValue((building_template->__PowerDrain > 0)?building_template->__PowerDrain:0, value, comparison); break;
   case BUILDINGTYPECRITERIATYPE_POWER_PROD:     result = CompareValue((building_template->__PowerDrain < 0)?building_template->__PowerDrain * -1:0, value, comparison); break;
   case BUILDINGTYPECRITERIATYPE_RANGE:          result = CompareValue((building_template->_____PrimaryWeapon != -1)?_templates_bulletattribs[(int)building_template->_____PrimaryWeapon].__Range:0, value, comparison); break;
-  case BUILDINGTYPECRITERIATYPE_RATE_OF_FIRE:   result = CompareValue(building_template->_____RateOfFire, value, comparison); break;
+  case BUILDINGTYPECRITERIATYPE_RATE_OF_FIRE:   result = CompareValue(building_template->PrimaryWeaponLongDelay, value, comparison); break;
   case BUILDINGTYPECRITERIATYPE_HP100_MAX:      result = CompareValue(building_template->_____HitPoints / 100, value, comparison); break;
   case BUILDINGTYPECRITERIATYPE_FLAG:           result = building_template->_____Flags & (1 << value); break;
   }

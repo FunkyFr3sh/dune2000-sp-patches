@@ -74,10 +74,11 @@ OBJS            ?= callsites.o \
         src/mods/radar.o \
         src/mods/unit-multiselection-improvements.o \
         src/mods/unlimited-unit-orders.o \
-        src/mods/update-unit.o \
+        src/mods/unit-update.o \
         src/mods/unit-attack.o \
         src/mods/building-update.o \
         src/mods/building-attack.o \
+        src/mods/bullet.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \

@@ -155,7 +155,7 @@ LABEL_146:
       {
         // New logic start
         // Always show radar map if rule alwaysShowRadar is set to true
-        if ( (IsBuildingWithBehaviorBuilt(gSideId, BuildingBehavior_OUTPOST) && my_side->__PowerPercent1 >= 100u) || rulesExt__alwaysShowRadar  )
+        if ( (IsBuildingWithBehaviorBuilt(gSideId, BuildingBehavior_OUTPOST) && my_side->__PowerPercent >= 100u) || rulesExt__alwaysShowRadar  )
         // New logic end
         {
           if ( IsAnyUnitSelected() )
@@ -776,7 +776,7 @@ LABEL_241:
         {
           // New logic start
           // Always show radar map if rule alwaysShowRadar is set to true
-          if ( (IsBuildingWithBehaviorBuilt(gSideId, BuildingBehavior_OUTPOST) && my_side->__PowerPercent1 >= 100u) || rulesExt__alwaysShowRadar || (SpawnerActive && gLose && gGameType) )
+          if ( (IsBuildingWithBehaviorBuilt(gSideId, BuildingBehavior_OUTPOST) && my_side->__PowerPercent >= 100u) || rulesExt__alwaysShowRadar || (SpawnerActive && gLose && gGameType) )
           // New logic end
           {
             if ( !IsAnyUnitSelected() && gGameTicks > MapScrollLockTicks )
@@ -1450,7 +1450,7 @@ LABEL_485:
     {
       // New logic start
       // Always show radar map if rule alwaysShowRadar is set to true
-      if ( !((IsBuildingWithBehaviorBuilt(gSideId, BuildingBehavior_OUTPOST) && my_side->__PowerPercent1 >= 100u) || rulesExt__alwaysShowRadar) )
+      if ( !((IsBuildingWithBehaviorBuilt(gSideId, BuildingBehavior_OUTPOST) && my_side->__PowerPercent >= 100u) || rulesExt__alwaysShowRadar) )
       // New logic end
       {
         goto LABEL_649;

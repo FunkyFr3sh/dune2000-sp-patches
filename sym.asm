@@ -317,6 +317,7 @@ setcglob 0x0078FB30, _WarheadNames
 setcglob 0x00790550, _WarheadData
 setcglob 0x007943A8, _templates_ExplosionNameList
 setcglob 0x00795128, _speed_values
+setcglob 0x00795340, _templates_ProjectileArtDirections
 setcglob 0x00795440, _image_placement_marker_nonbuildable
 setcglob 0x007954B0, _templates_BuildingAnimationFrames
 setcglob 0x00795518, _radarcolor16_sidecolor

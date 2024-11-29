@@ -300,7 +300,7 @@ bool Cond_Power(int side_id, eGetPowerType check_for, bool equal, int value)
   CSide *side = GetSide(side_id);
   switch (check_for)
   {
-    case GETPOWERTYPE_PERCENT:      return CompareValue(side->__PowerPercent1, value, !equal);
+    case GETPOWERTYPE_PERCENT:      return CompareValue(side->__PowerPercent, value, !equal);
     case GETPOWERTYPE_TOTAL_OUTPUT: return CompareValue(side->__PowerOutput, value, !equal);
     case GETPOWERTYPE_TOTAL_DRAIN:  return CompareValue(side->__PowerDrained, value, !equal);
     case GETPOWERTYPE_EXTRA_OUTPUT: return CompareValue(side->__PowerOutput - side->__PowerDrained, value, !equal);
