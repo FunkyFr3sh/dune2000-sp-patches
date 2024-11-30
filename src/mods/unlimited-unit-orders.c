@@ -7,7 +7,7 @@ DETOUR(0x00459450, 0x0045953B, _Mod__GenerateUnitMoveOrder);
 void Mod__GenerateUnitMoveOrder(char side_id, unsigned char x, unsigned char y)
 {
   Unit *unit; // eax
-  __int16 i; // cx
+  short i; // cx
   Orderdata order; // [esp+Ch] [ebp-A8h]
 
   if ( x >= gGameMap.width )
@@ -53,7 +53,7 @@ DETOUR(0x00459540, 0x004595D4, _Mod__GenerateDockWithRefineryOrder);
 void Mod__GenerateDockWithRefineryOrder(char side_id, short refinery_index)
 {
   Unit *unit; // eax
-  __int16 i; // cx
+  short i; // cx
   Orderdata order; // [esp+Ch] [ebp-A8h]
 
   order.__ObjectsServed1 = gGameTicks;
@@ -91,7 +91,7 @@ DETOUR(0x004595E0, 0x00459686, _Mod__GenerateRepairSelectedUnitsOrder);
 void Mod__GenerateRepairSelectedUnitsOrder(char side_id, short repair_pad_index)
 {
   Unit *unit; // eax
-  __int16 i; // cx
+  short i; // cx
   Orderdata order; // [esp+Ch] [ebp-A8h]
 
   order.__ObjectsServed1 = gGameTicks;
@@ -130,7 +130,7 @@ void Mod__GenerateUnitAttackUnitOrder(eSideType side_id, eSideType target_side_i
 {
   CSide *target_side; // eax
   Unit *unit; // eax MAPDST
-  __int16 i; // cx
+  short i; // cx
   Orderdata order; // [esp+Ch] [ebp-A8h]
 
   target_side = GetSide(target_side_id);
@@ -178,7 +178,7 @@ DETOUR(0x00459800, 0x004598C6, _Mod__GenerateUnitAttackBuildingOrder);
 void Mod__GenerateUnitAttackBuildingOrder(char side_id, char target_side_id, short target_building_index)
 {
   Unit *unit; // esi
-  __int16 i; // di
+  short i; // di
   char behavior; // al
   Orderdata order; // [esp+Ch] [ebp-A8h]
 
@@ -224,7 +224,7 @@ DETOUR(0x004598D0, 0x00459980, _Mod__GenerateUnitAttackTileOrder);
 void Mod__GenerateUnitAttackTileOrder(char side_id, short x, short y)
 {
   Unit *unit; // eax
-  __int16 i; // cx
+  short i; // cx
   Orderdata order; // [esp+Ch] [ebp-A8h]
 
   order.__ObjectsServed1 = gGameTicks;
@@ -262,7 +262,7 @@ DETOUR(0x00459980, 0x00459A16, _Mod__GenerateUnitGuardOrder);
 void Mod__GenerateUnitGuardOrder(char side_id)
 {
   Unit *unit; // eax
-  __int16 i; // cx
+  short i; // cx
   Orderdata order; // [esp+Ch] [ebp-A8h]
 
   order.__ObjectsServed1 = gGameTicks;
@@ -298,7 +298,7 @@ DETOUR(0x00459A20, 0x00459AA3, _Mod__GenerateUnitScatterOrder);
 void Mod__GenerateUnitScatterOrder(unsigned char side_id)
 {
   Unit *unit; // eax
-  __int16 i; // cx
+  short i; // cx
   Orderdata order; // [esp+Ch] [ebp-A8h]
 
   order.__ObjectsServed1 = gGameTicks;
@@ -334,7 +334,7 @@ DETOUR(0x00459AB0, 0x00459B4F, _Mod__GenerateUnitRetreatOrder);
 void Mod__GenerateUnitRetreatOrder(char side_id, unsigned char x, unsigned char y)
 {
   Unit *unit; // eax
-  __int16 i; // cx
+  short i; // cx
   Orderdata order; // [esp+Ch] [ebp-A8h]
 
   order.__ObjectsServed1 = gGameTicks;
@@ -372,7 +372,7 @@ DETOUR(0x00459C40, 0x00459D11, _Mod__GenerateStopOrder);
 void Mod__GenerateStopOrder(char side_id)
 {
   CSide *side; // eax MAPDST
-  __int16 i; // si
+  short i; // si
   Unit *unit; // eax
   Building *building; // eax
   Orderdata order; // [esp+Ch] [ebp-A8h]

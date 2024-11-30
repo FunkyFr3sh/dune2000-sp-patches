@@ -45,7 +45,7 @@ void __thiscall Mod__CAI__DoSetGoBerserk(CAI_ *this)
         }
         // New logic end
         
-        if ( !side->__BuildingsExistPerGroup[(unsigned __int8)_templates_GroupIDs.Refinery] )
+        if ( !side->__BuildingsExistPerGroup[(unsigned char)_templates_GroupIDs.Refinery] )
         {
           no_refineries = 1;
         }
@@ -53,7 +53,7 @@ void __thiscall Mod__CAI__DoSetGoBerserk(CAI_ *this)
         {
           no_harvesters = 1;
         }
-        if ( side->__PrimaryConyard == -1 && !side->__UnitsExistPerType[(unsigned __int8)_templates_GroupIDs.MCV] )
+        if ( side->__PrimaryConyard == -1 && !side->__UnitsExistPerType[(unsigned char)_templates_GroupIDs.MCV] )
         {
           no_conyard = 1;
         }
@@ -102,7 +102,7 @@ void __thiscall Mod__CAI__DoSetGoBerserk(CAI_ *this)
       {
         // New logic start
         // If side receives a MCV, berserk mode will turn off
-        if (side->__UnitsExistPerType[(unsigned __int8)_templates_GroupIDs.MCV])
+        if (side->__UnitsExistPerType[(unsigned char)_templates_GroupIDs.MCV])
         {
           ai->__GoBeserk_OtherStates = 0;
         }

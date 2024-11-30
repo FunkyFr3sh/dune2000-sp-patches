@@ -43,10 +43,10 @@ void Mod__HandleConditionsAndEvents()
   char v28; // dl
   char v29; // [esp+12h] [ebp-46h]
   char v30; // [esp+13h] [ebp-45h]
-  unsigned __int8 a1; // [esp+14h] [ebp-44h]
+  unsigned char a1; // [esp+14h] [ebp-44h]
   signed int v34; // [esp+18h] [ebp-40h]
 
-  a1 = (unsigned __int8)(gGameTicks & 0xF) >> 1;
+  a1 = (unsigned char)(gGameTicks & 0xF) >> 1;
   v30 = 0;
   v29 = -1;
   EvaluateIfBuildingsOrUnitsExistForSide(a1, gGameTicks & 1);
@@ -106,7 +106,7 @@ DEFAULT_WIN_LOSE_EVENTS:
       v28 = 1;
       _GameOver = 1;
     }
-    if ( _gUnitsExist[(unsigned __int8)gSideId] || _gBuildingsExist[(unsigned __int8)gSideId] )
+    if ( _gUnitsExist[(unsigned char)gSideId] || _gBuildingsExist[(unsigned char)gSideId] )
     {
       if ( v28 )
       {

@@ -38,7 +38,7 @@ void Mod__HandleTooltips()
   int string_id; // eax MAPDST
   char *string_text; // eax MAPDST
   int power_percent; // ST18_4
-  unsigned __int8 font_height; // al MAPDST
+  unsigned char font_height; // al MAPDST
   int sidebar_icons_row; // [esp+10h] [ebp-E4h]
   int show_at_x; // [esp+14h] [ebp-E0h]
   int show_at_y; // [esp+18h] [ebp-DCh]
@@ -92,13 +92,13 @@ void Mod__HandleTooltips()
                      _gMousePos.x + _ViewportXPos,
                      _gMousePos.y + _ViewportYPos - _OptionsBarHeight,
                      (eSideType *)&side_id,
-                     (__int16 *)&index,
+                     (short *)&index,
                      0);
             if ( unit )
             {
               if ( _gFullscreen_DebugModes_pathfinddebug )
               {
-                diplomacy = _gDiplomacy[(unsigned __int8)gSideId][(unsigned __int8)side_id];
+                diplomacy = _gDiplomacy[(unsigned char)gSideId][(unsigned char)side_id];
                 if ( diplomacy )
                 {
                   if ( !(unit->Flags & UFLAGS_4_CLOAKED) )
@@ -127,11 +127,11 @@ void Mod__HandleTooltips()
               }
               else
               {
-                route_mode = (unsigned __int8)unit->RouteMode;
+                route_mode = (unsigned char)unit->RouteMode;
                 state = unit->State;
-                index_ = (unsigned __int16)index;
+                index_ = (unsigned short)index;
                 clip_right = _ViewportWidth;
-                side_id_ = (unsigned __int8)side_id;
+                side_id_ = (unsigned char)side_id;
 
                 unit_group = _templates_unitattribs[unit->Type].__UnitType;
                 string_id = _UnitGroupTextIds[unit_group];
@@ -159,7 +159,7 @@ void Mod__HandleTooltips()
               if ( !_IsMultiplayer || _gFullscreen_DebugModes_pathfinddebug )
               {
                 clip_right = _ViewportWidth;
-                diplomacy = _gDiplomacy[(unsigned __int8)gSideId][(unsigned __int8)side_id];
+                diplomacy = _gDiplomacy[(unsigned char)gSideId][(unsigned char)side_id];
                 if ( diplomacy )
                 {
                   if ( diplomacy == 2 )
@@ -176,7 +176,7 @@ void Mod__HandleTooltips()
                 else
                 {
                   side_ = GetSide((eSideType)side_id);
-                  building_group = _templates_buildattribs[LOBYTE(side_->__ObjectArray[(unsigned __int16)index].__PosX)].GroupType;
+                  building_group = _templates_buildattribs[LOBYTE(side_->__ObjectArray[(unsigned short)index].__PosX)].GroupType;
                   string_id = _BuildingGroupTextIds[building_group];
                   tooltip_string = (string_id != -1)?GetTextString(string_id, 0):_templates_BuildingGroupNameList[building_group];
                   tooltip_type = TOOLTIPTYPE_BUILDING;
@@ -185,7 +185,7 @@ void Mod__HandleTooltips()
               else
               {
                 clip_right = _ViewportWidth;
-                sprintf(&tmp_string, "Unit Index %d: side %d", (unsigned __int16)index, (unsigned __int8)side_id);
+                sprintf(&tmp_string, "Unit Index %d: side %d", (unsigned short)index, (unsigned char)side_id);
                 tooltip_string = &tmp_string;
                 tooltip_type = TOOLTIPTYPE_BUILDING;
               }
@@ -201,7 +201,7 @@ void Mod__HandleTooltips()
                 DebugFatal("MAIN.CPP", "TT: INVALID TILE");
               }
               tooltip_string = GetTextString(
-                                 _TileTooltips[(unsigned __int16)gGameMap.map[_CellNumbersWidthSpan[tile_y] + tile_x].__tile_index],
+                                 _TileTooltips[(unsigned short)gGameMap.map[_CellNumbersWidthSpan[tile_y] + tile_x].__tile_index],
                                  0);
               tooltip_type = TOOLTIPTYPE_EMPTY_TILE;
               tooltip_arg1 = tile_x;
@@ -440,7 +440,7 @@ LABEL_64:
     building_type = side_->__UpgradeIcons[upgrade_icon_index];
     if ( building_type != -1 )
     {
-      building_group = (unsigned __int8)_templates_buildattribs[building_type].GroupType;
+      building_group = (unsigned char)_templates_buildattribs[building_type].GroupType;
       if ( side_->__BuildingsExistPerGroup[building_group] )
       {
         string_id = _BuildingGroupTextIds[building_group];

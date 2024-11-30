@@ -59,23 +59,23 @@ void Mod__setupmapstuff()
   bool v26; // zf
   int v27; // eax
   int v28; // eax
-  unsigned __int8 v29; // ST14_1
-  unsigned __int8 v30; // ST10_1
+  unsigned char v29; // ST14_1
+  unsigned char v30; // ST10_1
   int v31; // ST08_1
   CSide *v32; // eax
   char v33; // al
   char v49; // ST1C_1
   CSide *v50; // eax
   char v51; // al
-  unsigned __int8 v52; // cl
-  unsigned __int8 v53; // di
-  unsigned __int8 v54; // dl
+  unsigned char v52; // cl
+  unsigned char v53; // di
+  unsigned char v54; // dl
   char *v55; // eax
   signed int v56; // ecx
   char v57; // al
   int v58; // ebx
   CAI_ *v59; // edi
-  unsigned __int8 total_players; // al
+  unsigned char total_players; // al
   char v61; // bl
   eSideType v62; // di
   int v63; // esi
@@ -84,25 +84,25 @@ void Mod__setupmapstuff()
   signed int v66; // ecx
   char *v67; // esi
   signed int v68; // edi
-  unsigned __int8 player_count; // cl
-  unsigned __int8 total_players_2; // bl
+  unsigned char player_count; // cl
+  unsigned char total_players_2; // bl
   char initial_spawn_fetch; // al
   LONG *v72; // ebp
   unsigned int v73; // edi
-  unsigned __int8 v74; // bl
+  unsigned char v74; // bl
   LONG *v75; // esi
   int v76; // eax
   signed __int64 v77; // rax
   bool v78; // cf
   int v79; // ecx
   eSideType v80; // si
-  unsigned __int8 v81; // ST18_1
-  unsigned __int8 v82; // ST14_1
-  unsigned __int8 v83; // ST10_1
-  unsigned __int8 v84; // ST0C_1
+  unsigned char v81; // ST18_1
+  unsigned char v82; // ST14_1
+  unsigned char v83; // ST10_1
+  unsigned char v84; // ST0C_1
   char v85; // ST04_1
   CSide *v86; // eax
-  unsigned __int8 v87; // al
+  unsigned char v87; // al
   int v88; // eax
   char v89; // dl
   int v90; // ebx
@@ -113,28 +113,28 @@ void Mod__setupmapstuff()
   eSideType v95; // di
   char v96; // ST1C_1
   CSide *v97; // eax
-  unsigned __int8 v98; // cl
+  unsigned char v98; // cl
   char v99; // [esp-8h] [ebp-17E0h]
   char *yposa; // [esp+10h] [ebp-17C8h]
   int yposb; // [esp+10h] [ebp-17C8h]
-  unsigned __int8 obja; // [esp+14h] [ebp-17C4h]
-  unsigned __int8 objb; // [esp+14h] [ebp-17C4h]
+  unsigned char obja; // [esp+14h] [ebp-17C4h]
+  unsigned char objb; // [esp+14h] [ebp-17C4h]
   unsigned int objects_on_map; // [esp+18h] [ebp-17C0h]
   char *v107; // [esp+1Ch] [ebp-17BCh]
-  unsigned __int8 v108; // [esp+1Ch] [ebp-17BCh]
-  unsigned __int8 x; // [esp+20h] [ebp-17B8h]
-  unsigned __int8 side; // [esp+24h] [ebp-17B4h]
-  unsigned __int8 y; // [esp+28h] [ebp-17B0h]
-  unsigned __int8 total_players_22; // [esp+2Fh] [ebp-17A9h]
+  unsigned char v108; // [esp+1Ch] [ebp-17BCh]
+  unsigned char x; // [esp+20h] [ebp-17B8h]
+  unsigned char side; // [esp+24h] [ebp-17B4h]
+  unsigned char y; // [esp+28h] [ebp-17B0h]
+  unsigned char total_players_22; // [esp+2Fh] [ebp-17A9h]
   unsigned int worm_count; // [esp+30h] [ebp-17A8h]
   int a2; // [esp+34h] [ebp-17A4h]
   eSideType a1; // [esp+38h] [ebp-17A0h]
   char type; // [esp+3Ch] [ebp-179Ch]
-  unsigned __int8 v117; // [esp+40h] [ebp-1798h]
-  unsigned __int8 spawn_location; // [esp+44h] [ebp-1794h]
+  unsigned char v117; // [esp+40h] [ebp-1798h]
+  unsigned char spawn_location; // [esp+44h] [ebp-1794h]
   int v119; // [esp+48h] [ebp-1790h]
   unsigned int v120; // [esp+4Ch] [ebp-178Ch]
-  unsigned __int8 v121; // [esp+50h] [ebp-1788h]
+  unsigned char v121; // [esp+50h] [ebp-1788h]
   char v122; // [esp+54h] [ebp-1784h]
   RECT v123; // [esp+58h] [ebp-1780h]
   // Increase limit of total pre-placed structures on map from 1000 to 4000
@@ -275,11 +275,11 @@ void Mod__setupmapstuff()
           PlaceStaticCrate(xpos, ypos, CT_EXPLODE, CI_INVISIBLE, 0);
           break;
         case 23: // MAPCMD_PLAYER_FLAG:
-          if ( (unsigned __int8)_SpawnLocationCount >= 8u )
+          if ( (unsigned char)_SpawnLocationCount >= 8u )
           {
             DebugFatal("Setup.CPP", "Too many flags on map");
           }
-          v8 = (unsigned __int8)_SpawnLocationCount;
+          v8 = (unsigned char)_SpawnLocationCount;
           _SpawnLocations[v8].x = xpos;
           _SpawnLocations[v8].y = ypos;
           _FreeSpawnLocations[v8] = 0;
@@ -398,7 +398,7 @@ void Mod__setupmapstuff()
 
   if ( _SpawnLocationCount != 8 && (gGameType == GAME_SKIRMISH || _IsMultiplayer) )
   {
-    DebugFatal("Setup.cpp", "Map needs %d flags (found %d)", 8, (unsigned __int8)_SpawnLocationCount);
+    DebugFatal("Setup.cpp", "Map needs %d flags (found %d)", 8, (unsigned char)_SpawnLocationCount);
   }
   i = 0;
   v123.left = 0;
@@ -414,7 +414,7 @@ void Mod__setupmapstuff()
       {
         v25 = *ptr_1;
         v26 = *ptr_1 >= 0;
-        a1 = (unsigned __int8)((unsigned int)*ptr_1 >> 16);
+        a1 = (unsigned char)((unsigned int)*ptr_1 >> 16);
         if ( v26 )
         {
           v49 = *(_BYTE *)ptr_1;
@@ -435,7 +435,7 @@ void Mod__setupmapstuff()
         }
         else
         {
-          v27 = (unsigned __int16)v25 - 200;
+          v27 = (unsigned short)v25 - 200;
           if ( v27 )
           {
             v28 = v27 - 1;
@@ -503,11 +503,11 @@ void Mod__setupmapstuff()
     memcpy(v59, _gAIArray, sizeof(CAI_));
     *(_BYTE *)(v58 - 7608) = v57++;
   }
-  while ( (unsigned __int8)v57 < 8u );
+  while ( (unsigned char)v57 < 8u );
   total_players = gNetAIPlayers;
   v61 = v54;
   side = v54;
-  if ( v54 < v54 + (unsigned __int8)gNetAIPlayers )
+  if ( v54 < v54 + (unsigned char)gNetAIPlayers )
   {
     v62 = side;
     v63 = v54;
@@ -523,7 +523,7 @@ void Mod__setupmapstuff()
       total_players = gNetAIPlayers;
       v63 = side;
     }
-    while ( side < obja + (unsigned __int8)gNetAIPlayers );
+    while ( side < obja + (unsigned char)gNetAIPlayers );
   }
   mob_const_vehicle = -1;
   v66 = 0;
@@ -599,7 +599,7 @@ void Mod__setupmapstuff()
                 v75 += 2;
                 ++yposa;
               }
-              while ( v74 < (unsigned __int8)_SpawnLocationCount );
+              while ( v74 < (unsigned char)_SpawnLocationCount );
               if ( v73 > v120 )
               {
                 v120 = v73;
@@ -607,7 +607,7 @@ void Mod__setupmapstuff()
               }
             }
             v72 += 2;
-            v78 = (unsigned __int8)(objb++ + 1) < (unsigned __int8)_SpawnLocationCount;
+            v78 = (unsigned char)(objb++ + 1) < (unsigned char)_SpawnLocationCount;
             ++v107;
           }
           while ( v78 );
@@ -617,7 +617,7 @@ void Mod__setupmapstuff()
       else
       {
         spawn_location = GetRandomValue("C:\\MsDev\\Projects\\July2000\\code\\Setup.cpp", 5672)
-                       % (unsigned int)(unsigned __int8)_SpawnLocationCount;
+                       % (unsigned int)(unsigned char)_SpawnLocationCount;
       }
       v79 = LOBYTE(_SpawnLocations[spawn_location].x);
       yposb = LOBYTE(_SpawnLocations[spawn_location].y);
@@ -649,7 +649,7 @@ LABEL_107:
         do
         {
           v26 = *v94 >= 0;
-          a1 = (unsigned __int8)((unsigned int)*v94 >> 16);
+          a1 = (unsigned char)((unsigned int)*v94 >> 16);
           if ( v26 )
           {
             v95 = a1;
@@ -688,7 +688,7 @@ LABEL_107:
         break;
       }
 LABEL_106:
-      if ( ++v117 >= (unsigned __int8)gNetUnitCount )
+      if ( ++v117 >= (unsigned char)gNetUnitCount )
       {
         goto LABEL_107;
       }
@@ -713,7 +713,7 @@ LABEL_106:
     {
       v108 = LOBYTE(gGameMap.height) - 1;
     }
-    v122 = _IRValues[(unsigned __int8)v80];
+    v122 = _IRValues[(unsigned char)v80];
     if ( v122 )
     {
       if ( v122 == 1 )

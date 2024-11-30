@@ -14,7 +14,7 @@ DETOUR(0x004977A0, 0x0049799F, _Mod__ReleaseInfantryFromBuilding);
 void Mod__ReleaseInfantryFromBuilding(Building *building, unsigned char side_id)
 {
   char random; // al
-  unsigned __int8 random16; // bl
+  unsigned char random16; // bl
   char randomxoff; // al
   bool v13; // al
   unsigned int yy; // [esp+14h] [ebp-18h]
@@ -78,12 +78,12 @@ void Mod__ReleaseInfantryFromBuilding(Building *building, unsigned char side_id)
         xx = randomxoff;
         y = ypos + (random16 >> 2);
         yy = ypos + (random16 >> 2);
-        v13 = GetRandomAdjacentTile((unsigned __int8 *)&xx, (unsigned __int8 *)&yy);
+        v13 = GetRandomAdjacentTile((unsigned char *)&xx, (unsigned char *)&yy);
         ++retries;
       }
       while ( (!((1 << random16) & tiles_occupied_solid_bitmask)
             || !v13
-            || gGameMap.map[(unsigned __int8)x + _CellNumbersWidthSpan[(unsigned __int8)y]].__tile_bitflags & (TileFlags_200_CSPOT_TL|TileFlags_100_CSPOT_DL|TileFlags_80_CSPOT_DR|TileFlags_40_CSPOT_TR|TileFlags_20_CSPOT_MID|TileFlags_8_OCC_UNIT))
+            || gGameMap.map[(unsigned char)x + _CellNumbersWidthSpan[(unsigned char)y]].__tile_bitflags & (TileFlags_200_CSPOT_TL|TileFlags_100_CSPOT_DL|TileFlags_80_CSPOT_DR|TileFlags_40_CSPOT_TR|TileFlags_20_CSPOT_MID|TileFlags_8_OCC_UNIT))
            && retries < max_retries );
       if ( retries < max_retries )
       {

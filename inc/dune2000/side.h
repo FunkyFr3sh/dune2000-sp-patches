@@ -105,7 +105,7 @@ typedef enum eUnitState
   UNIT_STATE_33 = 0x21,
 }eUnitState;
 
-typedef __int16 index;
+typedef short index;
 
 typedef struct Unit
 {

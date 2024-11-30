@@ -7,6 +7,7 @@
 // This header will be split up as it becomes larger
 
 typedef char eBuildingGroupType;
+typedef unsigned char eSideType;
 typedef int32_t _DWORD;
 typedef int16_t _WORD;
 typedef uint8_t _BYTE;
@@ -116,7 +117,7 @@ typedef struct HighScoreStruct
 
 // ### Constants ###
 
-typedef enum eSideType
+enum eSideType
 {
   SIDE_ATREIDES = 0x0,
   SIDE_HARKONNEN = 0x1,
@@ -128,7 +129,7 @@ typedef enum eSideType
   SIDE_OTHER = 0x7,
   SIDE_COUNT = 0x8,
   SIDE_NONE = 0xFF,
-} eSideType;
+};
 
 enum GameEndStates
 {
@@ -545,7 +546,7 @@ bool __stdcall  IsLocalIp(char *Ip);
 bool            IsCurrentlyShown(char *menu);
 void            WOL__StartGuestINetGame();
 void            WOL__StartHostINetGame();
-void            SetgAllowPageUser(unsigned __int8 a1);
+void            SetgAllowPageUser(unsigned char a1);
 BOOL            IsOnlineGame();
 void            WOL__OpenWebsite(char *URL);
 // AI
@@ -566,11 +567,11 @@ size_t          _WriteFile(void *buffer, size_t size, size_t count, FILE *file);
 // Graphlib
 void            BlitHorizontalLineRGB(TImage *img, int x, int y, int length, int color);
 void            BlitBeveledRectRGB(TImage *img, RECT *rect, int fill, int hightlight, int shadow);
-void            BlitFontChars(TImage *img, char *string, int x, int y, unsigned __int8 font, int color1, int color2);
+void            BlitFontChars(TImage *img, char *string, int x, int y, unsigned char font, int color1, int color2);
 void            Graphlib__DrawRightAlignedText(int *image, char *text, int x, int y, bool bold_unk, int color_unk, int unk2);
 void            Graphlib__DrawTextWithBlackShadow(TImage *image, char *text, int x, int y, int unk, int color_unk);
 int             GetStringPixelWidth(const char *string, unsigned char font);
-char            GetFontHeight(unsigned __int8 font);
+char            GetFontHeight(unsigned char font);
 
 void *          GetFontPaletteHandle(unsigned char a1);
 void            Graphlib__LoadFontFile();
@@ -579,10 +580,10 @@ uint16_t        GetColor16bit(int colormask, int color);
 void            BlitClipTImage1(TImage *lpTITo, int toX, int toY, TImage *lpTIFrom, RECT *rect, bool trans, int a7);
 void            BlitClipTImage2(TImage *lpTITo, RECT *rect, int toX, int toY, TImage *lpTIFrom, bool trans, int a7);
 void            ClearTImage(TImage *a1, int color, int unusable);
-char            GetColor8bit(unsigned __int8 red, unsigned __int8 green, unsigned __int8 blue, unsigned __int8 *palette, char bool1, char bool2, char bool3);
+char            GetColor8bit(unsigned char red, unsigned char green, unsigned char blue, unsigned char *palette, char bool1, char bool2, char bool3);
 void            BlitFontChar_0(TImage *dest, int x, int y, TImage *src, _WORD *pal);
 // Other
-char            IsBuildingWithBehaviorBuilt(unsigned __int8 a1, BuildingBehaviorType a2);
+char            IsBuildingWithBehaviorBuilt(unsigned char a1, BuildingBehaviorType a2);
 int             GetDifficultyCostPercentage(eSideType side_id);
 unsigned int    GetUnitBuildSpeedPercentage(unsigned char unit_type, unsigned char side_id);
 unsigned int    GetBuildingBuildSpeedPercentage(unsigned char side_id);
@@ -593,7 +594,7 @@ bool            CanUnitBeBuilt(unsigned char side_id, unsigned char unitType, ch
 bool            CanSideUpgradeBuildingGroup(eSideType side_id, eBuildingGroupType building_group);
 char            CheckIfMCVCanBeDeployedOn(int xpos, int ypos);
 char            MoreProductionBuildingsOfSameGroupExist(int buildingtype);
-char            IsAnyStarportUnitPicked(unsigned __int8 side_id);
+char            IsAnyStarportUnitPicked(unsigned char side_id);
 int             GetRandomValue(char *, int);
 void            SetUnitGroup(char group_id);
 void            SetBuildingState17andFlags20000(Building *a1);
@@ -605,10 +606,10 @@ void            Map__PlayerDefeated(uint8_t sideId);
 
 void            LoadMapData(const CHAR *ArgList, char a2);
 char            UpdateShroudInRegion(RECT *rect, unsigned char width, unsigned char height);
-bool            FindSandwormsTarget(unsigned __int8 blockfromx, unsigned __int8 blockfromy, _BYTE *targetx, _BYTE *targety);
-bool            ValidateSandwormsTarget(unsigned __int8 a1, unsigned __int8 a2, unsigned __int8 *a3, unsigned __int8 *a4);
+bool            FindSandwormsTarget(unsigned char blockfromx, unsigned char blockfromy, _BYTE *targetx, _BYTE *targety);
+bool            ValidateSandwormsTarget(unsigned char a1, unsigned char a2, unsigned char *a3, unsigned char *a4);
 char            GetSpiceTileToHarvest(Unit *unit, eSideType side, _BYTE *x, _BYTE *y);
-bool            spice_44D970(unsigned __int8 *x, unsigned __int8 *y);
+bool            spice_44D970(unsigned char *x, unsigned char *y);
 unsigned int    FindFreeSpotForInfantry(TileFlags tile_flags);
 void            GetBuildingOnConcreteCount(char side_id, unsigned char building_type, unsigned char x, unsigned char y, unsigned int *buildTileCount1, unsigned int *concreteTileCount1);
 void            RemoveBuildingStuff(int building_type, int x, int y, eSideType side_id);
@@ -618,8 +619,8 @@ char            GetFreeCrateIndex();
 void            PlaceCrate(int x, int y, int timing, eCrateType type, eCrateImage image, int respawn_count);
 eCrateType      GetCrateFromMap(int x, int y);
 void            UpdateSpiceInRegion(RECT *a1);
-void            SpiceMound(unsigned __int8 xpos, unsigned __int8 ypos, int range);
-void            RecycleCrate(unsigned __int8 index);
+void            SpiceMound(unsigned char xpos, unsigned char ypos, int range);
+void            RecycleCrate(unsigned char index);
 int             GetMapVisState();
 // Memory
 void *          Memory__HeapAllocWrapper(size_t size, char *debugString);
@@ -634,45 +635,45 @@ bool            EvaluateIfBuildingsOrUnitsExistForSide(eSideType side_id, char b
 
 index           ModelAddUnit(unsigned char side, unsigned char type, unsigned char add_at_x, unsigned char add_at_y, unsigned char move_to_x, unsigned char move_to_y, int pixel_offset_x, int pixel_offset_y);
 
-void            ModelAddConcrete(eSideType side_id, char building_type, unsigned __int8 xpos, int ypos, int a5, int tilebitmask);
-signed __int16  ModelAddBuilding(eSideType side_id, char building_type, unsigned __int8 x, unsigned __int8 y, int initialsetup, bool captured, bool captured2);
-signed __int16  ModelAddBullet(unsigned __int8 side_id, unsigned __int8 bulletype, int a3, __int16 firer, unsigned __int16 source_x, unsigned __int16 source_y, unsigned __int16 target_x, unsigned __int16 target_y, __int16 homing_index, char homing_side);
+void            ModelAddConcrete(eSideType side_id, char building_type, unsigned char xpos, int ypos, int a5, int tilebitmask);
+signed short    ModelAddBuilding(eSideType side_id, char building_type, unsigned char x, unsigned char y, int initialsetup, bool captured, bool captured2);
+signed short    ModelAddBullet(unsigned char side_id, unsigned char bulletype, int a3, short firer, unsigned short source_x, unsigned short source_y, unsigned short target_x, unsigned short target_y, short homing_index, char homing_side);
 void            AddCursorPuffAnimationToQueue(int x, int y);
-signed __int16  ModelAddExplosion(unsigned char side_id, unsigned char explosionType, unsigned short x, unsigned short y, int z, int extraFlags, char a7, int a8, int a9);
+signed short    ModelAddExplosion(unsigned char side_id, unsigned char explosionType, unsigned short x, unsigned short y, int z, int extraFlags, char a7, int a8, int a9);
 
-void            GenerateUnitMoveOrder(char side_id, unsigned __int8 x, unsigned __int8 y);
-void            GenerateDockWithRefineryOrder(char side_id, __int16 refinery_index);
-void            GenerateRepairSelectedUnitsOrder(char side_id, __int16 repair_pad_index);
-void            GenerateRepairSingleUnitOrder(char side_id, __int16 unit_index);
-void            GenerateUnitAttackUnitOrder(eSideType side_id, eSideType target_side_id, __int16 target_unit_index);
-void            GenerateUnitAttackBuildingOrder(char side_id, char target_side_id, __int16 target_building_index);
-void            GenerateUnitAttackTileOrder(char side_id, __int16 x, __int16 y);
+void            GenerateUnitMoveOrder(char side_id, unsigned char x, unsigned char y);
+void            GenerateDockWithRefineryOrder(char side_id, short refinery_index);
+void            GenerateRepairSelectedUnitsOrder(char side_id, short repair_pad_index);
+void            GenerateRepairSingleUnitOrder(char side_id, short unit_index);
+void            GenerateUnitAttackUnitOrder(eSideType side_id, eSideType target_side_id, short target_unit_index);
+void            GenerateUnitAttackBuildingOrder(char side_id, char target_side_id, short target_building_index);
+void            GenerateUnitAttackTileOrder(char side_id, short x, short y);
 void            GenerateUnitGuardOrder(char side_id);
 void            GenerateUnitScatterOrder(char side_id);
-void            GenerateUnitRetreatOrder(char side_id, unsigned __int8 x, unsigned __int8 y);
-void            GenerateAllyOrder(unsigned __int8 side_id);
+void            GenerateUnitRetreatOrder(char side_id, unsigned char x, unsigned char y);
+void            GenerateAllyOrder(unsigned char side_id);
 void            GenerateStopOrder(char side_id);
-void            GenerateBuildingAttackUnitOrder(eSideType attacker_side_id, eSideType target_side_id, __int16 target_unit_index);
-void            GenerateBuildingAttackBuildingOrder(char side_id, char target_side_id, __int16 target_building_index);
+void            GenerateBuildingAttackUnitOrder(eSideType attacker_side_id, eSideType target_side_id, short target_unit_index);
+void            GenerateBuildingAttackBuildingOrder(char side_id, char target_side_id, short target_building_index);
 void            GenerateBuildingSetPrimaryOrder(char side_id);
 void            GenerateBuildBuildingPickOrder(char side_id, char building_type);
 void            GenerateBuildBuildingCancelOrder(char side_id, char building_type);
 void            GenerateBuildPlaceBuildingOrder(char side_id, char building_type, char x, char y);
 void            GenerateBuildUnitPickOrder(char side_id, char unit_type);
 void            GenerateBuildUnitCancelOrder(char side_id, char unit_type);
-void            GenerateBuildingRepairOrder(char side_id, __int16 building_index);
-void            GenerateBuildingSellOrder(char side_id, __int16 building_index);
+void            GenerateBuildingRepairOrder(char side_id, short building_index);
+void            GenerateBuildingSellOrder(char side_id, short building_index);
 void            GenerateStarportPickOrder(eSideType side_id, char unit_type);
 void            GenerateStarportUnpickOrder(char side_id, char unit_type);
 void            GenerateStarportPurchaseOrder(char side_id);
 void            GenerateStarportCancelOrder(char side_id);
 void            GenerateUpgradePickOrder(char side_id, eBuildingGroupType building_group);
 void            GenerateUpgradeCancelOrder(char side_id, char building_group);
-void            GenerateUnitDeployOrder(char side_id, __int16 unit_index);
+void            GenerateUnitDeployOrder(char side_id, short unit_index);
 void            GenerateSpecialWeaponOrder(char side_id, char unit_behavior, char x, char y);
 void            Model__ResetVars();
 void            Orderdata_add(Orderdata *a1);
-void            UpdateParticles(unsigned __int16 x, unsigned __int16 y);
+void            UpdateParticles(unsigned short x, unsigned short y);
 bool            CanUnitUseSquare(dwXYStruct x, Unit *unit, eSideType side_id, char route_mode);
 dwXYStruct      GetNextSquareInDirection(int x, int y, char facing);
 char            GetFreeAdjacentTile(int x, int y, Unit *unit, int side_id, dwXYStruct *result_point, char ArgList);
@@ -680,12 +681,12 @@ char            GetFacing(int x1, int y1, int x2, int y2);
 // Setup
 void            Setup__LoadUIBBFile();
 
-void            SetPixelOnRadar8(unsigned __int8 x, unsigned __int8 y, char color);
-void            SetPixelOnRadar16(unsigned __int8 x, unsigned __int8 y, __int16 color);
+void            SetPixelOnRadar8(unsigned char x, unsigned char y, char color);
+void            SetPixelOnRadar16(unsigned char x, unsigned char y, short color);
 void            SetupRadarMap();
 
 // CSide
-void __thiscall CSide__Init(CSide *this, unsigned __int8 side_id, char house_id);
+void __thiscall CSide__Init(CSide *this, unsigned char side_id, char house_id);
 void __thiscall CSide__InitCash(CSide *this);
 void *__thiscall CSide__GetNextFreeObject(CSide *this);
 void __thiscall CSide__SetupObject(CSide *this, Unit *a1, eObjectType a2);
@@ -694,8 +695,8 @@ void __thiscall CSide__UpdateBuildingAndUnitIconsAndBaseBoundaries(CSide *side);
 char __thiscall CSide__MyVersionOfBuilding(CSide *this, char building_type, bool bool1);
 uint8_t __thiscall CSide__MyVersionOfUnit(CSide *this, char unit, bool bool1);
 int __thiscall CSide__ResetBuildingAndUnitIcons(CSide *this);
-int __thiscall CSide__AddBuildingIcon(CSide *this, unsigned __int8 icon);
-int __thiscall CSide__AddUnitIcon(CSide *this, unsigned __int8 a2);
+int __thiscall CSide__AddBuildingIcon(CSide *this, unsigned char icon);
+int __thiscall CSide__AddUnitIcon(CSide *this, unsigned char a2);
 char __thiscall CSide__SpendMoneyIfSufficient(CSide *this, int cost, char *source);
 char __thiscall CSide__AddSpice(CSide *this, int spice);
 void __thiscall CSide__AddCash(CSide *this, int a2);
@@ -706,19 +707,19 @@ void __thiscall CSide__DeselectAllBuildings(CSide *this);
 char __thiscall CSide__SelectUnitsByGroupId(CSide *this, char group_id, char deselect_others);
 void __thiscall CSide__CenterViewportOnFirstUnitFromGroupId(CSide *this, char group_id, int *viewport_x_ptr, int *viewport_y_ptr);
 int8_t __thiscall CSide__GetQueuePos(CSide *this, Unit *unit);
-bool __thiscall CSide__AddToQueue(CSide *this, Unit *unit, __int16 unit_index, unsigned __int8 queue_pos, char a5, int state);
-int8_t __thiscall CSide_46CE00(CSide *this, int a2);
-int8_t __thiscall CSide_46CE70(CSide *this, int a1, unsigned __int8 a3);
-int *__thiscall CSide_46CF10_HKEY_BattleFieldPos(CSide *this, int *x, int *y, char a4);
+bool __thiscall CSide__AddToQueue(CSide *this, Unit *unit, short unit_index, unsigned char queue_pos, char a5, int state);
+int8_t __thiscall CSide__46CE00(CSide *this, int a2);
+int8_t __thiscall CSide__46CE70(CSide *this, int a1, unsigned char a3);
+int *__thiscall CSide__46CF10_HKEY_BattleFieldPos(CSide *this, int *x, int *y, char a4);
 void __thiscall CSide__ProcessPickupQueue(CSide *this);
-Unit *          ChangeUnitOwner(eSideType source_side_id, eSideType target_side_id, __int16 source_unit_index, char bool1);
-char            CaptureBuilding(eSideType source_side_id, eSideType target_side_id, __int16 source_building_index);
-void __thiscall CSide__FindOtherPrimaryBuilding(CSide *this, __int16 building_type, __int16 removed_building_index);
+Unit *          ChangeUnitOwner(eSideType source_side_id, eSideType target_side_id, short source_unit_index, char bool1);
+char            CaptureBuilding(eSideType source_side_id, eSideType target_side_id, short source_building_index);
+void __thiscall CSide__FindOtherPrimaryBuilding(CSide *this, short building_type, short removed_building_index);
 void __thiscall CSide__UpdateStarportStockAndCosts(CSide *this);
 void __thiscall CSide__ProcessDeliveries(CSide *a1);
 char __thiscall CSide__FindBestBasePosition(CSide *this, _BYTE *x, _BYTE *y);
 void __thiscall CSide__BlowupAll_surrender(CSide *side);
-int16_t         FindFirstBuildingByGroup(eBuildingGroupType building_group, unsigned __int8 side_id, __int16 skip_building_index);
+int16_t         FindFirstBuildingByGroup(eBuildingGroupType building_group, unsigned char side_id, short skip_building_index);
 void __thiscall CSide__InitStarportAndUpgradeIcons(CSide *this);
 void __thiscall CSide__LetAITakeOver(CSide *this);
 void            GenerateSurrenderOrder(bool unknown);
@@ -751,43 +752,43 @@ char *          GetTextString(int stringId, bool showError);
 int             GetSoundTableID(const char *key);
 // Other
 void            GetNextSquare(Unit *unit, eSideType side, char flags);
-bool            TurnUnitInDirection(Unit *unit, unsigned __int8 target_facing);
+bool            TurnUnitInDirection(Unit *unit, unsigned char target_facing);
 void            TurnUnitBarrelInDirection(Unit *unit, char facing);
-void            TurnBuildingTurret(Building *building, unsigned __int8 taget_facing);
+void            TurnBuildingTurret(Building *building, unsigned char taget_facing);
 void            SetUnitAnimationType(Unit *unit, signed int anim_type);
 void            AnimateInfantryUnit(Unit *unit);
 void            Unit_movement_494210(Unit *unit);
-char            MoveUnit(Unit *unit, eSideType side, __int16 index);
-char            HandleDeathHand(Unit *unit, eSideType side_id, __int16 myIndex);
-char            Unit_movement_bullet_494FD0(Unit *unit, unsigned __int8 side_id, unsigned __int16 myIndex, bool speed_bool);
+char            MoveUnit(Unit *unit, eSideType side, short index);
+char            HandleDeathHand(Unit *unit, eSideType side_id, short myIndex);
+char            Unit_movement_bullet_494FD0(Unit *unit, unsigned char side_id, unsigned short myIndex, bool speed_bool);
 bool            UnitSetSpeed(Unit *a1, int a2);
-char            TurnUnit(unsigned __int8 face_what, Unit *unit);
+char            TurnUnit(unsigned char face_what, Unit *unit);
 char            MoveUnitSimple(Unit *a3, int a4, char arg8, char argC);
-void            UnitShootTarget(Unit *unit, eSideType side, unsigned __int16 index, int x, int y, eSideType enemySideId, __int16 enemyIndex, char a8);
-void            BuildingShootTarget(Building *building, eSideType side, unsigned __int16 index, int x, int y, eSideType e_side, unsigned __int16 e_index, int arg1C);
-char            UnitAttack(Unit *unit, eSideType side, unsigned __int16 index, eSideType *e_side, unsigned __int16 *e_index);
-char            BuildingAttack(Building *bld, eSideType side_id, int a3, unsigned __int8 *a4, _WORD *a5);
-char            UnitAttackUnit(Unit *unit, eSideType side, __int16 target);
-char            UnitAttackBuilding(Unit *unit, eSideType side, __int16 index);
-char            UnitAttackTile(Unit *unit, eSideType side, __int16 index);
-char            BuildingAttackTile(Building *building, eSideType side_id, unsigned __int16 building_index);
-bool            CheckDistance(unsigned __int16 x1, unsigned __int16 y1, unsigned __int16 x2, unsigned __int16 y2, unsigned __int16 distance);
+void            UnitShootTarget(Unit *unit, eSideType side, unsigned short index, int x, int y, eSideType enemySideId, short enemyIndex, char a8);
+void            BuildingShootTarget(Building *building, eSideType side, unsigned short index, int x, int y, eSideType e_side, unsigned short e_index, int arg1C);
+char            UnitAttack(Unit *unit, eSideType side, unsigned short index, eSideType *e_side, unsigned short *e_index);
+char            BuildingAttack(Building *bld, eSideType side_id, int a3, unsigned char *a4, _WORD *a5);
+char            UnitAttackUnit(Unit *unit, eSideType side, short target);
+char            UnitAttackBuilding(Unit *unit, eSideType side, short index);
+char            UnitAttackTile(Unit *unit, eSideType side, short index);
+char            BuildingAttackTile(Building *building, eSideType side_id, unsigned short building_index);
+bool            CheckDistance(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2, unsigned short distance);
 char            CanBuildingAttackTile(Building *building, char x, char y, char a4);
 bool            CanUnitAttackTile(Unit *unit, int a2, int a3, int a4);
 int             GetBuildingInRange(int a1, int a2, Building *building, char *a4, char *a5);
 char            IsBuildingInRange(Building *a5, Building *a3, int *a4, int *argC);
 char            IsBuildingInRange_0(Building *a1, Building *a2);
 bool            CanUnitAttackBuilding(Unit *unit, Building *building, int *tile_x, int *tile_y);
-char            BuildingAttackUnit(Building *building, unsigned __int8 side_id, unsigned __int16 building_index);
-char            BuildingAttackBuilding(Building *building, unsigned __int8 side_id, unsigned __int16 building_index);
+char            BuildingAttackUnit(Building *building, unsigned char side_id, unsigned short building_index);
+char            BuildingAttackBuilding(Building *building, unsigned char side_id, unsigned short building_index);
 void            ReleaseInfantryFromBuilding(Building *building, eSideType side_id);
-bool            GetRandomAdjacentTile(unsigned __int8 *x_ptr, unsigned __int8 *y_ptr);
+bool            GetRandomAdjacentTile(unsigned char *x_ptr, unsigned char *y_ptr);
 bool            KickUnitsOutOfTile(Unit *unit, eSideType a2, int x, int y);
-char            UpdateUnit(Unit *arg0, eSideType side_id, __int16 myIndex);
-bool            UpdateBuilding(Building *bld, int side_id, __int16 building_index);
+char            UpdateUnit(Unit *arg0, eSideType side_id, short myIndex);
+bool            UpdateBuilding(Building *bld, int side_id, short building_index);
 char            UpdateBullet(Bullet *bul, eSideType side_id);
 void            DestroyBuilding(int side, int objIndex, char a3);
-void            DestroyUnit(eSideType side, __int16 index);
+void            DestroyUnit(eSideType side, short index);
 void            ClosestBuildingTile(Building *building, int xpos, int ypos, int *result_x, int *result_y);
 char            UnitTileOccupiedByBuilding(Unit *unit);
 char            DamageTiles(unsigned int xpos, unsigned int ypos, unsigned int zpos, unsigned char bulletType, unsigned char firer_side_id, short firer_index, char deviator);
@@ -799,16 +800,16 @@ int             facing_49E160(int x, int y);
 char            tile_driveon_49E290(eSideType side, unsigned char *x, unsigned char *y);
 char            UnitDeliver(Unit *unit, int side_id);
 char            GetFlyingUnitSpawnPositionAndFacing(_WORD *x, _WORD *y, char offset);
-void            LaunchOrnithopters(unsigned __int8 side_id, int xoff, int yoff, char target_x, char target_y);
+void            LaunchOrnithopters(unsigned char side_id, int xoff, int yoff, char target_x, char target_y);
 void            LaunchDeathHand(eSideType side, char target_x, char target_y);
-char            NewBestBullet(char primary_weapon, char type, unsigned int check, eSideType side, unsigned __int16 enemyIndex, char armormode);
-bool            PickupCrate(Unit *unit, unsigned __int8 side_id);
+char            NewBestBullet(char primary_weapon, char type, unsigned int check, eSideType side, unsigned short enemyIndex, char armormode);
+bool            PickupCrate(Unit *unit, unsigned char side_id);
 void            MakeUnitsStealthInRange(unsigned char x, unsigned char y, eSideType side);
 void            PlayUnitResponse(char a1);
 void            SetUnitToFlicker(Unit *unit);
 void            SetBuildingToFlicker(Building *bld);
-char            UnmarkTileWithFlyingUnit(unsigned __int8 x, unsigned __int8 y);
-char            MarkTileWithFlyingUnit(unsigned __int8 x, unsigned __int8 y);
+char            UnmarkTileWithFlyingUnit(unsigned char x, unsigned char y);
+char            MarkTileWithFlyingUnit(unsigned char x, unsigned char y);
 int             GetSpeed(Unit *a1);
 bool            CanUnitAcceptOrders(Unit *unit, int allow_awaiting_pickup_state);
 int             RevealTilesSeenByBuildingsAndUnits(eSideType side);
@@ -816,9 +817,9 @@ char            UnitCloakStart(Unit *unit);
 char            UnitUncloakStart(Unit *unit);
 bool            UnitIsCloaked(Unit *unit);
 void            UnitHandleCloaking(Unit *unit, eSideType side);
-bool            ObjectsAbleToRevealStealthUnitsAreNearby(unsigned __int8 x, unsigned __int8 y, eSideType side, unsigned __int8 radius);
+bool            ObjectsAbleToRevealStealthUnitsAreNearby(unsigned char x, unsigned char y, eSideType side, unsigned char radius);
 void            NeutralBecomeHostile(eSideType side1, eSideType side2);
-void            CrushUnit(Unit *unit, int side_id, int myIndex, int crusher_side, __int16 crusher_index);
+void            CrushUnit(Unit *unit, int side_id, int myIndex, int crusher_side, short crusher_index);
 char            TryCrushUnit(Unit *unit, int side_id, int myIndex);
 char            CanDeviatedUnitRevert(Unit *unit);
 
@@ -827,12 +828,12 @@ CSide *         GetSide(int sideId);
 Unit *          GetUnit(eSideType side, index objIndex);
 Building *      GetBuilding(eSideType side, index objIndex);
 char            map_4A47F0(unsigned int x, unsigned int y, Building *bld, int *tile_x_ptr, int *tile_y_ptr);
-char            EnemyUnitInRange(int x, int y, eSideType side_id, int a4, int *targ_x_ptr, int *targ_y_ptr, _BYTE *targ_side_id_ptr, __int16 *targ_index_ptr, char prim_bullet, signed __int8 sec_bullet, char a11, char a12, char a13);
-char            EnemyBuildingInRange(int x, int y, eSideType side_id, _DWORD *targ_x_ptr, _DWORD *targ_y_ptr, char *targ_side_id_ptr, __int16 *targ_index_ptr, char bullet1, char bullet2, bool isai);
+char            EnemyUnitInRange(int x, int y, eSideType side_id, int a4, int *targ_x_ptr, int *targ_y_ptr, _BYTE *targ_side_id_ptr, short *targ_index_ptr, char prim_bullet, signed char sec_bullet, char a11, char a12, char a13);
+char            EnemyBuildingInRange(int x, int y, eSideType side_id, _DWORD *targ_x_ptr, _DWORD *targ_y_ptr, char *targ_side_id_ptr, short *targ_index_ptr, char bullet1, char bullet2, bool isai);
 bool            UnitOccupiesTile(Unit *unit, char x, char y);
 Unit *          GetUnitOnTile(unsigned int x, unsigned int y, eSideType *side_id, _WORD *index, bool exclude_cloaked);
 Unit *          GetNextUnitOnTile(unsigned int x, unsigned int y, unsigned int side, _WORD *unit_index);
-bool            BuildingOccupiesTile(Building *building, unsigned __int8 x, unsigned __int8 y);
+bool            BuildingOccupiesTile(Building *building, unsigned char x, unsigned char y);
 bool            GetBuildingOnTile_0(int x, int y, Building **building_ptr, eSideType *side_id, _WORD *index);
 bool            GetBuildingOnTile_1(int x, int y, eSideType *side_id_ptr, int a3);
 void            DeselectAllForAllSides();
@@ -846,8 +847,8 @@ char            IsAnyVehicleSelected();
 char            IsAnyInfantrySelected();
 char            AllSelectedUnitsHaveBehavior(UnitBehaviorType behavior);
 char            IsAnyCrusherSelected();
-void            SelectUnit(unsigned __int8 side_id, unsigned __int16 unit_index, bool toggle_selection);
-void            SelectBuilding(eSideType side_id, unsigned __int16 objIndex);
+void            SelectUnit(unsigned char side_id, unsigned short unit_index, bool toggle_selection);
+void            SelectBuilding(eSideType side_id, unsigned short objIndex);
 bool            SelectAllUnitsInArea(int min_x, int min_y, int max_x, int max_y);
 bool            CenterViewportOnSelectedUnits(eSideType side, int *x, int *y);
 bool            CenterViewportOnSelectedBuildings(eSideType side, int *x, int *y);

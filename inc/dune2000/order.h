@@ -100,20 +100,20 @@ typedef enum eOrderType
 typedef struct Orderdata
 {
   int __ObjectsServed1;
-  __int16 w_field_4;
-  __int16 w_field_6;
+  short w_field_4;
+  short w_field_6;
   int gGameTicks;
   _DWORD OrderNumber;
   int __ObjectsServed2;
   int __PlaceBuildingX;
-  __int16 NumObjects;
-  __int16 __PlaceBuildingY;
-  __int16 BlockToX;
-  __int16 BlockToY;
-  __int16 TargetObjectIndex;
+  short NumObjects;
+  short __PlaceBuildingY;
+  short BlockToX;
+  short BlockToY;
+  short TargetObjectIndex;
   char TargetSideId;
   _BYTE OrderType;
-  unsigned __int8 SideId;
+  unsigned char SideId;
   char field_25;
-  __int16 ObjectArray[64];
+  short ObjectArray[64];
 } Orderdata;

@@ -7,7 +7,7 @@ bool CanUnitShoot(Unit *unit);
 // Custom implementation of function UpdateUnit
 DETOUR(0x00497B90, 0x0049B76E, _Mod__UpdateUnit);
 
-char Mod__UpdateUnit(Unit *unit, eSideType side_id, __int16 myIndex)
+char Mod__UpdateUnit(Unit *unit, eSideType side_id, short myIndex)
 {
   unsigned char v3;
   int side_id_; // ebx MAPDST
@@ -15,7 +15,7 @@ char Mod__UpdateUnit(Unit *unit, eSideType side_id, __int16 myIndex)
   char is_infantry; // cl MAPDST
   int my_index; // ST30_4
   int health; // eax MAPDST
-  unsigned __int8 cloaking_points; // al MAPDST
+  unsigned char cloaking_points; // al MAPDST
   int attacker_object_type; // eax
   CSide *attacker_side; // eax
   int enemy_object_type; // eax MAPDST
@@ -25,26 +25,26 @@ char Mod__UpdateUnit(Unit *unit, eSideType side_id, __int16 myIndex)
   int enemy_index; // edi
   int myindex_and_7; // ebp
   int last_moved; // eax
-  unsigned __int8 deviated_time_counter; // al MAPDST
+  unsigned char deviated_time_counter; // al MAPDST
   int last_attacked; // ecx
   char v31; // al
   eSideType old_side; // al
   int last_fired; // eax
   int v36; // eax
   char behavior; // al
-  unsigned __int8 v40; // cl
-  unsigned __int8 v41; // cl
+  unsigned char v40; // cl
+  unsigned char v41; // cl
   CSide *v42; // edi
-  signed __int8 v43; // al
+  signed char v43; // al
   __int64 v44; // rax
   CSide *v45; // ecx
   UnitFlags v47; // eax
   signed int posz; // eax MAPDST
-  unsigned __int8 v55; // dl
-  unsigned __int8 v56; // al
+  unsigned char v55; // dl
+  unsigned char v56; // al
   int v57; // eax
   int side_id__; // edi
-  unsigned __int8 ai_group; // al MAPDST
+  unsigned char ai_group; // al MAPDST
   char v63; // cl
   int v65; // eax
   int v66; // ebx
@@ -52,29 +52,29 @@ char Mod__UpdateUnit(Unit *unit, eSideType side_id, __int16 myIndex)
   dwXYStruct v71; // ST20_8
   int v75; // eax
   UnitFlags v76; // eax
-  unsigned __int16 v78; // ax
+  unsigned short v78; // ax
   int v79; // edx
   Unit *v81; // edi
   int v82; // eax
-  unsigned __int16 v84; // ax
+  unsigned short v84; // ax
   Unit *v86; // edi
   int v87; // edx
-  unsigned __int32 v89; // eax
-  unsigned __int32 v90; // ebp
-  unsigned __int8 enemy_side_id; // al
+  unsigned int v89; // eax
+  unsigned int v90; // ebp
+  unsigned char enemy_side_id; // al
   CSide *enemy_side; // eax MAPDST
   int v96; // ebp
   int v97; // kr00_4
   int v98; // eax
-  unsigned __int8 remember_pos_x; // al
-  unsigned __int8 remember_pos_y; // dl MAPDST
+  unsigned char remember_pos_x; // al
+  unsigned char remember_pos_y; // dl MAPDST
   int v101; // edi
   int v102; // ebp
-  __int16 v103; // ST30_2
+  short v103; // ST30_2
   bool v104; // cf
-  __int16 v105; // ST30_2
-  unsigned __int8 v106; // dl
-  __int16 v107; // ST30_2
+  short v105; // ST30_2
+  unsigned char v106; // dl
+  short v107; // ST30_2
   char can_attack; // al MAPDST
   char v109; // al
   char special_purpose; // al MAPDST
@@ -93,16 +93,16 @@ char Mod__UpdateUnit(Unit *unit, eSideType side_id, __int16 myIndex)
   unsigned int v127; // ebp
   int v130; // eax
   TileFlags v131; // eax
-  unsigned __int8 v132; // dl
+  unsigned char v132; // dl
   eUnitState v133; // ST30_4
   char v135; // al
-  unsigned __int8 v136; // al
+  unsigned char v136; // al
   dwXYStruct v137; // ST20_8
-  unsigned __int8 v138; // al
-  unsigned __int8 v139; // cl
-  unsigned __int8 v141; // al
-  unsigned __int8 v142; // cl
-  unsigned __int8 v143; // al
+  unsigned char v138; // al
+  unsigned char v139; // cl
+  unsigned char v141; // al
+  unsigned char v142; // cl
+  unsigned char v143; // al
   int v144; // ecx
   int v145; // edx
   int v146; // ecx
@@ -110,28 +110,28 @@ char Mod__UpdateUnit(Unit *unit, eSideType side_id, __int16 myIndex)
   int v148; // edx
   int v149; // ecx
   int cell_index; // eax
-  unsigned __int32 v151; // edi
+  unsigned int v151; // edi
   int v152; // eax
   int v153; // ecx
   int v154; // eax
   int v155; // ecx
-  unsigned __int8 v156; // dl
+  unsigned char v156; // dl
   char v157; // al
   int v158; // eax
   int v159; // kr04_4
-  unsigned __int8 v160; // al
+  unsigned char v160; // al
   int v164; // eax
-  __int16 v170; // ST30_2
+  short v170; // ST30_2
   int v173; // eax
   char v174; // dl
-  unsigned __int8 v175; // cl
-  unsigned __int8 v176; // al
+  unsigned char v175; // cl
+  unsigned char v176; // al
   char v177; // al
-  unsigned __int8 v178; // al
+  unsigned char v178; // al
   char v179; // al
   int v181; // eax
-  unsigned __int8 v182; // al
-  unsigned __int8 v183; // dl
+  unsigned char v182; // al
+  unsigned char v183; // dl
   int v184; // ST30_4
   char v188; // al
   char v189; // al
@@ -167,24 +167,24 @@ char Mod__UpdateUnit(Unit *unit, eSideType side_id, __int16 myIndex)
   int max_health; // eax
   unsigned int credits; // eax
   char v259; // al
-  unsigned __int8 v260; // cl
+  unsigned char v260; // cl
   Unit *unit_on_tile; // eax MAPDST
   UnitFlags v267; // edi
   int v272; // ST20_4
   int v273; // ST1C_4
-  unsigned __int8 v274; // cl
+  unsigned char v274; // cl
   int explosion_type; // edi
   unsigned int random_value; // eax
   char sleep_time_counter; // al MAPDST
-  unsigned __int8 sleep_time_subcounter; // dl
+  unsigned char sleep_time_subcounter; // dl
   unsigned int conyard_type; // edi
-  __int8 *behavior_ptr; // ebp
+  char *behavior_ptr; // ebp
   int posy; // ecx MAPDST
   int posx; // edx MAPDST
   double health_; // st7
-  __int16 conyard_index; // bp
-  unsigned __int8 posy_; // ST30_1
-  unsigned __int8 posx_; // ST2C_1 MAPDST
+  short conyard_index; // bp
+  unsigned char posy_; // ST30_1
+  unsigned char posx_; // ST2C_1 MAPDST
   int sound_id; // eax
   int new_health; // edi
   int ypos; // ST1C_4 MAPDST
@@ -193,21 +193,21 @@ char Mod__UpdateUnit(Unit *unit, eSideType side_id, __int16 myIndex)
   int *units_lost_per_type_ptr; // eax
   int current_anim_type; // eax
   int current_anim_frame; // ecx
-  unsigned __int8 special_purpose_; // dl
+  unsigned char special_purpose_; // dl
   UnitFlags carried_unit_flags; // edx
   int *posz_ptr; // eax
   eUnitState new_state; // [esp-4h] [ebp-5Ch]
-  __int16 index; // [esp+14h] [ebp-44h]
-  __int16 a8; // [esp+16h] [ebp-42h]
-  unsigned __int8 x; // [esp+18h] [ebp-40h] MAPDST
-  unsigned __int8 y; // [esp+1Ch] [ebp-3Ch] MAPDST
+  short index; // [esp+14h] [ebp-44h]
+  short a8; // [esp+16h] [ebp-42h]
+  unsigned char x; // [esp+18h] [ebp-40h] MAPDST
+  unsigned char y; // [esp+1Ch] [ebp-3Ch] MAPDST
   CSide *side; // [esp+20h] [ebp-38h] MAPDST
-  unsigned __int8 a1; // [esp+24h] [ebp-34h]
+  unsigned char a1; // [esp+24h] [ebp-34h]
   Building *building; // [esp+28h] [ebp-30h] MAPDST
   int arg18; // [esp+2Ch] [ebp-2Ch]
   RECT rect; // [esp+30h] [ebp-28h]
-  unsigned __int8 xx; // [esp+40h] [ebp-18h]
-  unsigned __int8 yy; // [esp+44h] [ebp-14h] MAPDST
+  unsigned char xx; // [esp+40h] [ebp-18h]
+  unsigned char yy; // [esp+44h] [ebp-14h] MAPDST
   int a6; // [esp+48h] [ebp-10h]
   int a5; // [esp+4Ch] [ebp-Ch]
   dwXYStruct point; // [esp+50h] [ebp-8h]
@@ -303,7 +303,7 @@ LABEL_27:
   // Reset attacker
   if ( unit->__AttackerIndex != -1 )
   {
-    attacker_object_type = GetSide((eSideType)unit->__AttackerSide)->__ObjectArray[(unsigned __int16)unit->__AttackerIndex].ObjectType
+    attacker_object_type = GetSide((eSideType)unit->__AttackerSide)->__ObjectArray[(unsigned short)unit->__AttackerIndex].ObjectType
                          - 1;
     if ( attacker_object_type )
     {
@@ -313,16 +313,16 @@ LABEL_27:
         DebugFatal(
           "Unit.cpp",
           "Attacked by strange type (%d)",
-          attacker_side->__ObjectArray[(unsigned __int16)unit->__AttackerIndex].ObjectType);
+          attacker_side->__ObjectArray[(unsigned short)unit->__AttackerIndex].ObjectType);
         goto LABEL_37;
       }
-      Building *b = (Building *)&GetSide((eSideType)unit->__AttackerSide)->__ObjectArray[(unsigned __int16)unit->__AttackerIndex];
+      Building *b = (Building *)&GetSide((eSideType)unit->__AttackerSide)->__ObjectArray[(unsigned short)unit->__AttackerIndex];
       if ( b->__State != UNIT_STATE_17_DEAD )
       {
         goto LABEL_37;
       }
     }
-    else if ( GetSide((eSideType)unit->__AttackerSide)->__ObjectArray[(unsigned __int16)unit->__AttackerIndex].State != UNIT_STATE_17_DEAD )
+    else if ( GetSide((eSideType)unit->__AttackerSide)->__ObjectArray[(unsigned short)unit->__AttackerIndex].State != UNIT_STATE_17_DEAD )
     {
       goto LABEL_37;
     }
@@ -332,11 +332,11 @@ LABEL_37:
   // Reset enemy
   if ( _templates_unitattribs[unit->Type].__Behavior != UnitBehavior_CARRYALL && unit->EnemyIndex != -1 )
   {
-    enemy_object_type = GetSide((eSideType)unit->EnemySide)->__ObjectArray[(unsigned __int16)unit->EnemyIndex].ObjectType
+    enemy_object_type = GetSide((eSideType)unit->EnemySide)->__ObjectArray[(unsigned short)unit->EnemyIndex].ObjectType
                       - 1;
     if ( enemy_object_type )
     {
-      Building *b = (Building *)&GetSide((eSideType)unit->EnemySide)->__ObjectArray[(unsigned __int16)unit->EnemyIndex];
+      Building *b = (Building *)&GetSide((eSideType)unit->EnemySide)->__ObjectArray[(unsigned short)unit->EnemyIndex];
       if ( enemy_object_type != 1
         || b->__State == UNIT_STATE_17_DEAD )
       {
@@ -347,7 +347,7 @@ LABEL_48:
     }
     else
     {
-      enemy_unit = &GetSide((eSideType)unit->EnemySide)->__ObjectArray[(unsigned __int16)unit->EnemyIndex];
+      enemy_unit = &GetSide((eSideType)unit->EnemySide)->__ObjectArray[(unsigned short)unit->EnemyIndex];
       if ( enemy_unit->State == UNIT_STATE_17_DEAD )
       {
         goto LABEL_48;
@@ -362,7 +362,7 @@ LABEL_48:
       enemy_unit_flags = enemy_unit->Flags;
       if ( enemy_unit_flags & (UFLAGS_400000|UFLAGS_100_CARRYING|UFLAGS_4_CLOAKED) )
       {
-        if ( _gDiplomacy[(unsigned __int8)side_id_][(unsigned __int8)unit->EnemySide] )
+        if ( _gDiplomacy[(unsigned char)side_id_][(unsigned char)unit->EnemySide] )
         {
           goto LABEL_48;
         }
@@ -378,7 +378,7 @@ LABEL_49:
   {
     side = GetSide((eSideType)side_id_);
   }
-  if ( (unsigned __int16)myIndex >= 1000u )
+  if ( (unsigned short)myIndex >= 1000u )
   {
     DebugFatal("UpdateUnit", "myIndex >= kMaxUnitsPerSide");
   }
@@ -419,7 +419,7 @@ LABEL_49:
       }
     }
   }
-  enemy_index = (unsigned __int16)myIndex;
+  enemy_index = (unsigned short)myIndex;
   side_id = myIndex & 0xFFFF;
   // Increase last moved
   myindex_and_7 = myIndex & 7;
@@ -431,7 +431,7 @@ LABEL_49:
     }
     else
     {
-      last_moved = (unsigned __int8)unit->LastMoved + 1;
+      last_moved = (unsigned char)unit->LastMoved + 1;
       if ( last_moved >= 255 )
       {
         last_moved = 255;
@@ -468,13 +468,13 @@ LABEL_49:
     {
       goto LABEL_89;
     }
-    last_attacked = (unsigned __int8)unit->LastAttacked + 1;
+    last_attacked = (unsigned char)unit->LastAttacked + 1;
     if ( last_attacked > 255 )
     {
       last_attacked = 255;
     }
     unit->LastAttacked = last_attacked;
-    if ( (unsigned __int8)last_attacked > 100u )
+    if ( (unsigned char)last_attacked > 100u )
     {
       unit_flags = unit_flags & ~UFLAGS_8;
       unit->Flags = unit_flags;
@@ -518,7 +518,7 @@ LABEL_89:
   }
   else if ( myindex_and_7 == (int)(gGameTicks & 7) )
   {
-    last_fired = (unsigned __int8)unit->LastFired + 1;
+    last_fired = (unsigned char)unit->LastFired + 1;
     if ( last_fired > 255 )
     {
       last_fired = 255;
@@ -538,7 +538,7 @@ LABEL_89:
             "Unit.CPP",
             "Unit %d Side %d is waiting with 'To' and 'From' blocks different",
             side_id,
-            (unsigned __int8)side_id_);
+            (unsigned char)side_id_);
         }
       }
       unit_type_offset = unit->Type << 8;
@@ -579,8 +579,8 @@ LABEL_89:
             v40 = unit->BlockToY;
             unit_type_offset = unit->BlockToX;
             unit->TargetX = unit_type_offset;
-            unit_type_offset = (unsigned __int8)unit_type_offset;
-            unit_flags = (unsigned __int8)unit_type_offset;
+            unit_type_offset = (unsigned char)unit_type_offset;
+            unit_flags = (unsigned char)unit_type_offset;
             unit->TargetY = v40;
             unit_flags = v40;
             arg18 = unit_type_offset;
@@ -614,12 +614,12 @@ LABEL_89:
         }
         else
         {
-          v43 = CSide_46CE00(side, (int)unit);
+          v43 = CSide__46CE00(side, (int)unit);
           if ( v43 == -1 )
           {
             if ( myindex_and_7 == (int)(gGameTicks & 7) )
             {
-              v44 = (unsigned __int8)unit->__FacingTurret + 1;
+              v44 = (unsigned char)unit->__FacingTurret + 1;
               unit->__FacingTurret = ((v44 >> 32) ^ (abs(unit->__FacingTurret + 1) & 0x1F)) - (v44 >> 32);
             }
             Unit_movement_bullet_494FD0(unit, side_id_, myIndex, 1);
@@ -660,7 +660,7 @@ LABEL_89:
                          (eSideType)side_id_,
                          myIndex,
                          (eSideType *)&unit->EnemySide,
-                         (unsigned __int16 *)&unit->EnemyIndex);
+                         (unsigned short *)&unit->EnemyIndex);
           goto LABEL_220;
         }
       }
@@ -674,8 +674,8 @@ LABEL_89:
         enemy_index = unit->EnemyIndex;
         arg18 = enemy_index;
         enemy_side = GetSide((eSideType)enemy_side_id);
-        enemy_unit = &enemy_side->__ObjectArray[(unsigned __int16)enemy_index];
-        enemy_object_type = enemy_side->__ObjectArray[(unsigned __int16)enemy_index].ObjectType;
+        enemy_unit = &enemy_side->__ObjectArray[(unsigned short)enemy_index];
+        enemy_object_type = enemy_side->__ObjectArray[(unsigned short)enemy_index].ObjectType;
         if ( enemy_object_type == 1 )
         {
           v96 = enemy_unit->__PosX;
@@ -742,13 +742,13 @@ LABEL_89:
              (eSideType)side_id_,
              myIndex,
              (eSideType *)&unit->EnemySide,
-             (unsigned __int16 *)&unit->EnemyIndex) )
+             (unsigned short *)&unit->EnemyIndex) )
       {
         goto LABEL_594;
       }
       if ( EnemyUnitInRange(
-             (unsigned __int16)v101,
-             (unsigned __int16)v102,
+             (unsigned short)v101,
+             (unsigned short)v102,
              (eSideType)side_id_,
              // New logic start
              // Guard mode radius can be customized by map rule guardModeRadius
@@ -764,7 +764,7 @@ LABEL_89:
              0,
              1) )
       {
-        v104 = (unsigned __int8)v3 < 8u;
+        v104 = (unsigned char)v3 < 8u;
         is_low_money = (_BYTE)v3 == 8;
         unit->EnemySide = (char)v3;
         if ( !v104 && !is_low_money )
@@ -795,7 +795,7 @@ LABEL_89:
                            (eSideType)side_id_,
                            myIndex,
                            (eSideType *)&unit->EnemySide,
-                           (unsigned __int16 *)&unit->EnemyIndex);
+                           (unsigned short *)&unit->EnemyIndex);
 LABEL_220:
             if ( !can_attack )
             {
@@ -851,7 +851,7 @@ LABEL_228:
           {
             if ( side->__PrimaryStarport != -1 )
             {
-              building_flags = (unsigned int *)&side->__ObjectArray[(unsigned __int16)side->__PrimaryStarport].__GroupID;
+              building_flags = (unsigned int *)&side->__ObjectArray[(unsigned short)side->__PrimaryStarport].__GroupID;
               *building_flags |= BFLAGS_20_ANIM_ONCE;
             }
           }
@@ -922,7 +922,7 @@ LABEL_265:
           }
         }
       }
-      else if ( _gDiplomacy[(unsigned __int8)side_id_][a1] && CanUnitUseSquare(point, unit, (eSideType)side_id_, 0) )
+      else if ( _gDiplomacy[(unsigned char)side_id_][a1] && CanUnitUseSquare(point, unit, (eSideType)side_id_, 0) )
       {
         goto LABEL_265;
       }
@@ -930,7 +930,7 @@ LABEL_266:
       if ( unit_on_target_tile && unit_on_target_tile != unit )
       {
         v122 = a1;
-        if ( !_gDiplomacy[(unsigned __int8)side_id_][a1] )
+        if ( !_gDiplomacy[(unsigned char)side_id_][a1] )
         {
           unit_type_offset = unit->TargetY;
           v122 = unit->TargetX;
@@ -1003,7 +1003,7 @@ LABEL_285:
           unit_on_tile = GetUnitOnTile(32 * point.X, 32 * point.Y, (eSideType *)&a1, &index, 0);
           if ( unit_on_tile )
           {
-            if ( !_gDiplomacy[(unsigned __int8)side_id_][a1] && CanUnitAcceptOrders(unit_on_tile, 0) )
+            if ( !_gDiplomacy[(unsigned char)side_id_][a1] && CanUnitAcceptOrders(unit_on_tile, 0) )
             {
               unit_state = unit_on_tile->State;
               if ( unit_state != UNIT_STATE_7_MOVING
@@ -1254,7 +1254,7 @@ LABEL_345:
           {
             unit_state = unit_on_tile->State;
             if ( (unit_state == UNIT_STATE_2_IDLE || unit_state == UNIT_STATE_3_GUARDING)
-              && !_gDiplomacy[(unsigned __int8)side_id_][a1] )
+              && !_gDiplomacy[(unsigned char)side_id_][a1] )
             {
               UnitAdjustState(unit_on_tile, UNIT_STATE_9_MOVING_AWAY);
             }
@@ -1349,7 +1349,7 @@ LABEL_368:
           v178 = unit->__CurrentAnimFrame;
           unit->__CurrentAnimDelayCounter_SandwormSleepTimeCounter = 5;
           unit->__CurrentAnimFrame = ++v178;
-          if ( v178 >= _templates_AnimationArtFrames[(unsigned __int8)_templates_GroupIDs.EX_HARV] - 1 )
+          if ( v178 >= _templates_AnimationArtFrames[(unsigned char)_templates_GroupIDs.EX_HARV] - 1 )
           {
             UnitAdjustState(unit, UNIT_STATE_15_UNLOADING_SPICE);
             unit->__CurrentAnimDelayCounter_SandwormSleepTimeCounter = _gVariables.harvestUnloadDelay;
@@ -1406,9 +1406,9 @@ LABEL_368:
               (eSideType)side_id_,
               _templates_GroupIDs.EX_REF,
               LOWORD(_gVariables.refineryExplosionOffsetX)
-            + side_->__ObjectArray[(unsigned __int16)unit->RefineryIndex].Speed / 0x10000,
+            + side_->__ObjectArray[(unsigned short)unit->RefineryIndex].Speed / 0x10000,
               LOWORD(_gVariables.refineryExplosionOffsetY)
-            + side_->__ObjectArray[(unsigned __int16)unit->RefineryIndex].Health / 0x10000,
+            + side_->__ObjectArray[(unsigned short)unit->RefineryIndex].Health / 0x10000,
               0,
               0,
               0,
@@ -1547,7 +1547,7 @@ LABEL_396:
       return 0;
     case UNIT_STATE_18_AWAITING_AIRLIFT:
       side_ = GetSide((eSideType)side_id_);
-      v201 = (unsigned __int8)side_->__PickupQueueCount;
+      v201 = (unsigned char)side_->__PickupQueueCount;
       v202 = 0;
       if ( side_->__PickupQueueCount )
       {
@@ -1588,7 +1588,7 @@ LABEL_396:
           (eSideType)side_id_,
           myIndex,
           (eSideType *)&unit->EnemySide,
-          (unsigned __int16 *)&unit->EnemyIndex);
+          (unsigned short *)&unit->EnemyIndex);
       }
       goto LABEL_612;
     case UNIT_STATE_19_AIRLIFTED:
@@ -1619,12 +1619,12 @@ LABEL_396:
         if ( GetSide((eSideType)side_id_)->__PrimaryStarport == -1
           || (unit_flags = unit->Flags, unit_flags & UFLAGS_4000)
           || ((side_ = GetSide((eSideType)side_id_),
-              myIndex = side_->__ObjectArray[(unsigned __int16)GetSide((eSideType)side_id_)->__PrimaryStarport].Speed
+              myIndex = side_->__ObjectArray[(unsigned short)GetSide((eSideType)side_id_)->__PrimaryStarport].Speed
                               / 0x10000
                               / 32
                               + 1,
               side_ = GetSide((eSideType)side_id_),
-              side_id = side_->__ObjectArray[(unsigned __int16)GetSide((eSideType)side_id_)->__PrimaryStarport].Health
+              side_id = side_->__ObjectArray[(unsigned short)GetSide((eSideType)side_id_)->__PrimaryStarport].Health
                       / 0x10000
                       / 32
                       - 2,
@@ -1653,7 +1653,7 @@ LABEL_622:
                 unit_flags = unit->Flags;
                 unit_flags = (unit_flags & ~(UFLAGS_100_CARRYING | UFLAGS_200)) | UFLAGS_4000;
                 unit->Flags = unit_flags;
-                side_id__ = (unsigned __int8)side_id_;
+                side_id__ = (unsigned char)side_id_;
                 if ( _gAIArray[side_id__].__IsAI == 1 )
                 {
                   ai_group = CAI__FindGroupForDelivery(&_gAIArray[side_id__], unit->LastMoved);
@@ -1661,7 +1661,7 @@ LABEL_622:
                   myIndex = unit->LastMoved;
                   side_ = GetSide((eSideType)side_id_);
                   v63 = myIndex;
-                  v65 = (unsigned __int8)myIndex;
+                  v65 = (unsigned char)myIndex;
                   int i = (int)side_;
                   v66 = 7 * v65;
                   ai_group = CAI__FindGroupForDelivery(&_gAIArray[side_id__], v63);
@@ -1709,7 +1709,7 @@ LABEL_622:
           {
             if ( unit->__PosZHeight != 0x3C0000
               || (unit_flags = unit->Flags, unit_flags & UFLAGS_100_CARRYING)
-              || TurnUnit(side->__ObjectArray[(unsigned __int16)unit->EnemyIndex].__Facing, unit) )
+              || TurnUnit(side->__ObjectArray[(unsigned short)unit->EnemyIndex].__Facing, unit) )
             {
               v75 = unit->__PosZHeight;
               if ( v75 <= 655360 )
@@ -1731,11 +1731,11 @@ LABEL_622:
                     v81->Flags = unit_flags;
                     v81->__PosZHeight = 0;
                     UnitAdjustState(
-                      &side->__ObjectArray[(unsigned __int16)unit->EnemyIndex],
-                      (eUnitState)(unsigned __int8)unit->EnemySide);
-                    side_id_ = (unsigned __int8)side_id_;
+                      &side->__ObjectArray[(unsigned short)unit->EnemyIndex],
+                      (eUnitState)(unsigned char)unit->EnemySide);
+                    side_id_ = (unsigned char)side_id_;
                     gGameMap.map[v81->BlockFromX + _CellNumbersWidthSpan[v81->BlockFromY]].__tile_bitflags &= ~(TileFlags_4_OWNER|TileFlags_2_OWNER|TileFlags_1_OWNER);
-                    gGameMap.map[v81->BlockFromX + _CellNumbersWidthSpan[v81->BlockFromY]].__tile_bitflags |= (unsigned __int8)side_id_ | (unsigned int)TileFlags_8_OCC_UNIT;
+                    gGameMap.map[v81->BlockFromX + _CellNumbersWidthSpan[v81->BlockFromY]].__tile_bitflags |= (unsigned char)side_id_ | (unsigned int)TileFlags_8_OCC_UNIT;
                     if ( _templates_unitattribs[v81->Type].__IsInfantry )
                     {
                       gGameMap.map[unit->BlockFromX + _CellNumbersWidthSpan[unit->BlockFromY]].__tile_bitflags &= ~(TileFlags_8000000_OWNER2|TileFlags_4000000_OWNER2|TileFlags_2000000_OWNER2);
@@ -1744,9 +1744,9 @@ LABEL_622:
                     }
                     // New logic start
                     // Crates can be picked up by a carryall dropping a unit on them
-                    PickupCrate(&side->__ObjectArray[(unsigned __int16)unit->EnemyIndex], side_id_);
+                    PickupCrate(&side->__ObjectArray[(unsigned short)unit->EnemyIndex], side_id_);
                     // New logic end
-                    side->__PickupQueue[(unsigned __int8)unit->__SpecialPurpose].__state = 0;
+                    side->__PickupQueue[(unsigned char)unit->__SpecialPurpose].__state = 0;
                     unit->Flags &= ~UFLAGS_100_CARRYING;
                     UnitAdjustState(unit, UNIT_STATE_22_FLYING_UP);
                   }
@@ -1803,7 +1803,7 @@ LABEL_622:
                       v86->__IsSelected = 0;
                       v86->Flags = v90;
                       UnitAdjustState(v86, UNIT_STATE_19_AIRLIFTED);
-                      side->__PickupQueue[(unsigned __int8)unit->__SpecialPurpose].__state = 4;
+                      side->__PickupQueue[(unsigned char)unit->__SpecialPurpose].__state = 4;
                       UnitAdjustState(unit, UNIT_STATE_22_FLYING_UP);
                     }
                   }
@@ -1864,13 +1864,13 @@ LABEL_622:
         ++enemy_side->__BuildingsLost;
         GetSide((eSideType)unit->EnemySide);
         side_ = GetSide((eSideType)side_id_);
-        ++side_->__BuildingsKilledPerTypeAndSide[0].__kills_per_side[(unsigned __int8)unit->EnemySide
+        ++side_->__BuildingsKilledPerTypeAndSide[0].__kills_per_side[(unsigned char)unit->EnemySide
                                                                    + 8 * building->Type];
         side_ = GetSide((eSideType)side_id_);
         ++side_->__BuildingsKilled;
         side_ = GetSide((eSideType)side_id_);
         ++side_->__BuildingsBuilt;
-        if ( _gDiplomacy[(unsigned __int8)unit->EnemySide][(unsigned __int8)side_id_] == 2 )
+        if ( _gDiplomacy[(unsigned char)unit->EnemySide][(unsigned char)side_id_] == 2 )
         {
           NeutralBecomeHostile((eSideType)unit->EnemySide, (eSideType)side_id_);
         }
@@ -1900,11 +1900,11 @@ LABEL_464:
         ++enemy_side->__BuildingsLost;
         GetSide((eSideType)unit->EnemySide);
         side_ = GetSide((eSideType)side_id_);
-        ++side_->__BuildingsKilledPerTypeAndSide[0].__kills_per_side[(unsigned __int8)unit->EnemySide
+        ++side_->__BuildingsKilledPerTypeAndSide[0].__kills_per_side[(unsigned char)unit->EnemySide
                                                                    + 8 * building->Type];
         side_ = GetSide((eSideType)side_id_);
         ++side_->__BuildingsKilled;
-        if ( _gDiplomacy[(unsigned __int8)unit->EnemySide][(unsigned __int8)side_id_] == 2 )
+        if ( _gDiplomacy[(unsigned char)unit->EnemySide][(unsigned char)side_id_] == 2 )
         {
           NeutralBecomeHostile((eSideType)unit->EnemySide, (eSideType)side_id_);
         }
@@ -2135,20 +2135,20 @@ LABEL_612:
             {
               DebugFatal("Unit.cpp", "enemyIndex out of raneg (5)");
             }
-            carried_unit_flags = side->__ObjectArray[(unsigned __int16)unit->EnemyIndex].Flags;
+            carried_unit_flags = side->__ObjectArray[(unsigned short)unit->EnemyIndex].Flags;
             if ( carried_unit_flags & UFLAGS_100_CARRYING )
             {
-              side->__ObjectArray[(unsigned __int16)unit->EnemyIndex].BlockToX = unit->BlockToX;
-              side->__ObjectArray[(unsigned __int16)unit->EnemyIndex].BlockToY = unit->BlockToY;
-              side->__ObjectArray[(unsigned __int16)unit->EnemyIndex].BlockFromX = unit->BlockFromX;
-              side->__ObjectArray[(unsigned __int16)unit->EnemyIndex].BlockFromY = unit->BlockFromY;
-              side->__ObjectArray[(unsigned __int16)unit->EnemyIndex].__PosX = unit->__PosX;
-              side->__ObjectArray[(unsigned __int16)unit->EnemyIndex].pos_steps = 0;
-              side->__ObjectArray[(unsigned __int16)unit->EnemyIndex].__PosY = unit->__PosY;
-              side->__ObjectArray[(unsigned __int16)unit->EnemyIndex].__PosZHeight = unit->__PosZHeight;
-              side->__ObjectArray[(unsigned __int16)unit->EnemyIndex].__Facing = unit->__Facing;
-              side->__ObjectArray[(unsigned __int16)unit->EnemyIndex].__FacingTurret = unit->__FacingTurret;
-              posz_ptr = &side->__ObjectArray[(unsigned __int16)unit->EnemyIndex].__PosZHeight;
+              side->__ObjectArray[(unsigned short)unit->EnemyIndex].BlockToX = unit->BlockToX;
+              side->__ObjectArray[(unsigned short)unit->EnemyIndex].BlockToY = unit->BlockToY;
+              side->__ObjectArray[(unsigned short)unit->EnemyIndex].BlockFromX = unit->BlockFromX;
+              side->__ObjectArray[(unsigned short)unit->EnemyIndex].BlockFromY = unit->BlockFromY;
+              side->__ObjectArray[(unsigned short)unit->EnemyIndex].__PosX = unit->__PosX;
+              side->__ObjectArray[(unsigned short)unit->EnemyIndex].pos_steps = 0;
+              side->__ObjectArray[(unsigned short)unit->EnemyIndex].__PosY = unit->__PosY;
+              side->__ObjectArray[(unsigned short)unit->EnemyIndex].__PosZHeight = unit->__PosZHeight;
+              side->__ObjectArray[(unsigned short)unit->EnemyIndex].__Facing = unit->__Facing;
+              side->__ObjectArray[(unsigned short)unit->EnemyIndex].__FacingTurret = unit->__FacingTurret;
+              posz_ptr = &side->__ObjectArray[(unsigned short)unit->EnemyIndex].__PosZHeight;
               *posz_ptr -= 0xA0000;
             }
           }
@@ -2176,7 +2176,7 @@ LABEL_612:
         if ( unit_on_tile )
         {
           if ( unit_on_tile != unit
-            && !_gDiplomacy[(unsigned __int8)side_id_][a1]
+            && !_gDiplomacy[(unsigned char)side_id_][a1]
             && CanUnitAcceptOrders(unit_on_tile, 0) )
           {
             UnitAdjustState(unit_on_tile, UNIT_STATE_9_MOVING_AWAY);
@@ -2213,12 +2213,12 @@ LABEL_612:
           }
           else if ( !(unit->Flags & UFLAGS_4_CLOAKED)
                  && (!unit->__pos_stepsmax
-                  || (unsigned __int8)unit->pos_steps < 2 * (unsigned __int8)unit->__pos_stepsmax) )
+                  || (unsigned char)unit->pos_steps < 2 * (unsigned char)unit->__pos_stepsmax) )
           {
             UpdateParticles(unit->__PosX / 0x10000, unit->__PosY / 0x10000);
             if ( !(GetRandomValue("C:\\MsDev\\Projects\\July2000\\code\\unit.cpp", 5959) % 0x50u) )
             {
-              explosion_type = *((unsigned __int8 *)&_templates_GroupIDs.EX_WORMSN1
+              explosion_type = *((unsigned char *)&_templates_GroupIDs.EX_WORMSN1
                                + GetRandomValue("C:\\MsDev\\Projects\\July2000\\code\\unit.cpp", 5961) % 6u);
               ModelAddExplosion(
                 (eSideType)side_id_,
@@ -2356,7 +2356,7 @@ LABEL_612:
           random_value = GetRandomValue("C:\\MsDev\\Projects\\July2000\\code\\unit.cpp", 6052);
           goto LABEL_569;
         }
-        if ( unit->__SpecialPurpose < (unsigned __int8)_gVariables.SandWormAppetite )
+        if ( unit->__SpecialPurpose < (unsigned char)_gVariables.SandWormAppetite )
         {
           unit->TargetX = x;
           unit->TargetY = y;
@@ -2405,7 +2405,7 @@ LABEL_569:
       {
         conyard_type = 0;
         behavior_ptr = &_templates_buildattribs[0].__Behavior;
-        while ( !(behavior_ptr[-0x58u] & (unsigned __int8)(1 << _IRValues[(unsigned __int8)side_id_]))
+        while ( !(behavior_ptr[-0x58u] & (unsigned char)(1 << _IRValues[(unsigned char)side_id_]))
              || *behavior_ptr != BuildingBehavior_CONSTRUCTION )
         {
           ++conyard_type;
@@ -2531,7 +2531,7 @@ LABEL_594:
         }
         SetUnitAnimationType(unit, 8);
         current_anim_type = unit->__CurrentAnimType;
-        current_anim_frame = (unsigned __int8)unit->__CurrentAnimFrame;
+        current_anim_frame = (unsigned char)unit->__CurrentAnimFrame;
         if ( current_anim_frame == _UnitAnimTypeFrames[current_anim_type].x + 1 )
         {
           special_purpose_ = unit->__SpecialPurpose + 1;
@@ -2566,10 +2566,10 @@ LABEL_594:
               && ypos <= _ViewportHeight + _ViewportYPos
               && (!_bool_shroud_4DFB04
                || !gGameMap.map[unit->BlockFromX + _CellNumbersWidthSpan[unit->BlockFromY]].__shroud)
-              && !IsSoundPlaying(_templates_explosionattribs[(unsigned __int8)_templates_GroupIDs.EX_THPUFF].__Sound) )
+              && !IsSoundPlaying(_templates_explosionattribs[(unsigned char)_templates_GroupIDs.EX_THPUFF].__Sound) )
             {
               PlaySoundAt(
-                _templates_explosionattribs[(unsigned __int8)_templates_GroupIDs.EX_THPUFF].__Sound,
+                _templates_explosionattribs[(unsigned char)_templates_GroupIDs.EX_THPUFF].__Sound,
                 unit->__PosX / 0x10000 / 32,
                 unit->__PosY / 0x10000 / 32);
             }

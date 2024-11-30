@@ -572,9 +572,9 @@ setcglob 0x0046CB40, CSide__SelectUnitsByGroupId
 setcglob 0x0046CBD0, CSide__CenterViewportOnFirstUnitFromGroupId
 setcglob 0x0046CCA0, CSide__GetQueuePos
 setcglob 0x0046CD00, CSide__AddToQueue
-setcglob 0x0046CE00, CSide_46CE00
-setcglob 0x0046CE70, CSide_46CE70
-setcglob 0x0046CF10, CSide_46CF10_HKEY_BattleFieldPos
+setcglob 0x0046CE00, CSide__46CE00
+setcglob 0x0046CE70, CSide__46CE70
+setcglob 0x0046CF10, CSide__46CF10_HKEY_BattleFieldPos
 setcglob 0x0046D180, CSide__ProcessPickupQueue
 setcglob 0x0046D2E0, ChangeUnitOwner
 setcglob 0x0046D6D0, CaptureBuilding

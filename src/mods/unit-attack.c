@@ -193,7 +193,7 @@ char Mod__UnitAttack(Unit *unit, char side_id, short index, char *enemy_side_id_
           &enemy_unit_xpos,
           &enemy_unit_ypos,
           (unsigned char *)&unit,
-          (__int16 *)&enemy_index,
+          (short *)&enemy_index,
           primary_weapon,
           secondary_weapon,
           0,
@@ -207,7 +207,7 @@ char Mod__UnitAttack(Unit *unit, char side_id, short index, char *enemy_side_id_
            &enemy_unit_xpos,
            &enemy_unit_ypos,
            (char *)&unit,
-           (__int16 *)&enemy_index,
+           (short *)&enemy_index,
            primary_weapon,
            secondary_weapon,
            1) )
@@ -242,10 +242,10 @@ char Mod__UnitAttack(Unit *unit, char side_id, short index, char *enemy_side_id_
 // Custom implementation of function UnitAttackUnit
 DETOUR(0x00496B00, 0x00496D10, _Mod__UnitAttackUnit);
 
-char Mod__UnitAttackUnit(Unit *unit, char side_id, __int16 index)
+char Mod__UnitAttackUnit(Unit *unit, char side_id, short index)
 {
   CSide *enemy_side; // edi
-  __int16 enemy_index; // ax MAPDST
+  short enemy_index; // ax MAPDST
   Unit *enemy_unit; // edi
   unsigned char v9; // dl
 
@@ -358,12 +358,12 @@ bool Mod__CanUnitAttackBuilding(Unit *unit, Building *building, int *tile_x_ptr,
 // Custom implementation of function UnitAttackBuilding
 DETOUR(0x00496D10, 0x00496FEA, _Mod__UnitAttackBuilding);
 
-char Mod__UnitAttackBuilding(Unit *unit, char side_id, __int16 index)
+char Mod__UnitAttackBuilding(Unit *unit, char side_id, short index)
 {
   Unit *unit_; // esi
   char result; // al
   CSide *enemy_side; // edi
-  __int16 enemy_index; // ax MAPDST
+  short enemy_index; // ax MAPDST
   Building *targetBuilding; // ebp
   unsigned int xpos; // edi
   char behavior; // al MAPDST
@@ -486,7 +486,7 @@ LABEL_29:
 // Custom implementation of function UnitAttackTile
 DETOUR(0x00496FF0, 0x00497086, _Mod__UnitAttackTile);
 
-char Mod__UnitAttackTile(Unit *unit, char side, __int16 index)
+char Mod__UnitAttackTile(Unit *unit, char side, short index)
 {
   if ( unit->pos_steps || !CanUnitAttackTarget(unit, unit->TargetX * 32 + 16, unit->TargetY * 32 + 16, 0) )
   {

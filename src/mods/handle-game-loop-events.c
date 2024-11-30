@@ -67,11 +67,11 @@ void Mod__HandleGameLoopEvents()
   int building_icon_index; // esi
   int v56; // eax
   char v57; // dl
-  unsigned __int8 v60; // di
+  unsigned char v60; // di
   LONG mouse_x; // ebx
   char v62; // bl
   LONG mouse_y; // edx
-  unsigned __int8 place_y; // al
+  unsigned char place_y; // al
   int atreides_sound_id; // eax MAPDST
   int unit_type_; // eax
   char is_ornithopter; // bl
@@ -93,17 +93,17 @@ void Mod__HandleGameLoopEvents()
   char unit_group_id; // bl
   CSide *side; // eax MAPDST
   char *v122; // esi
-  unsigned __int8 v125; // al
-  unsigned __int8 v129; // al
+  unsigned char v125; // al
+  unsigned char v129; // al
   CUIManager *uimgr; // ebp
   char v135; // dl
   _BYTE *v136; // eax
   int v137; // ecx
-  unsigned __int8 v138; // si
+  unsigned char v138; // si
   char v139; // cl
   int v140; // eax
   char v141; // bl
-  unsigned __int8 v142; // dl
+  unsigned char v142; // dl
   int v143; // edx
   char *string; // eax MAPDST
   int string_id; // eax MAPDST
@@ -111,18 +111,18 @@ void Mod__HandleGameLoopEvents()
   int harkonnen_sound_id; // [esp-10h] [ebp-ECh] MAPDST
   char v155; // [esp-Ch] [ebp-E8h]
   char side_id; // [esp+10h] [ebp-CCh]
-  __int16 object_index; // [esp+14h] [ebp-C8h] MAPDST
+  short object_index; // [esp+14h] [ebp-C8h] MAPDST
   Building *building; // [esp+18h] [ebp-C4h]
-  unsigned __int8 a1[4]; // [esp+1Ch] [ebp-C0h]
+  unsigned char a1[4]; // [esp+1Ch] [ebp-C0h]
   int a1_1;
   Unit *a1_2;
   int tile_flags; // [esp+20h] [ebp-BCh]
   CSide *my_side; // [esp+24h] [ebp-B8h]
-  unsigned __int8 my_side_1;
-  unsigned __int8 y[4]; // [esp+28h] [ebp-B4h]
-  unsigned __int8 x[4]; // [esp+2Ch] [ebp-B0h]
+  unsigned char my_side_1;
+  unsigned char y[4]; // [esp+28h] [ebp-B4h]
+  unsigned char x[4]; // [esp+2Ch] [ebp-B0h]
   int v166; // [esp+30h] [ebp-ACh]
-  unsigned __int8 v166_1;
+  unsigned char v166_1;
   Orderdata order; // [esp+34h] [ebp-A8h]
 
   my_side = GetSide(gSideId);
@@ -269,7 +269,7 @@ LABEL_146:
             goto LABEL_163;
           }
           side_id = tile_flags & 7;
-          if ( _gDiplomacy[(unsigned __int8)gSideId][tile_flags & 7] || _KeyboardKeyState[VK_CONTROL] )
+          if ( _gDiplomacy[(unsigned char)gSideId][tile_flags & 7] || _KeyboardKeyState[VK_CONTROL] )
           {
             if ( GetBuildingOnTile_0(tile_x, pixel_y >> 5, &building, (eSideType *)&side_id, &object_index) )
             {
@@ -366,7 +366,7 @@ LABEL_146:
         target = GetUnitOnTile(pixel_x, pixel_y, (eSideType *)&side_id, &object_index, 0);
       }
       if ( target
-        && (!(target->Flags & UFLAGS_4_CLOAKED) || !_gDiplomacy[(unsigned __int8)gSideId][(unsigned __int8)side_id]) )
+        && (!(target->Flags & UFLAGS_4_CLOAKED) || !_gDiplomacy[(unsigned char)gSideId][(unsigned char)side_id]) )
       {
         if ( target->__IsSelected && side_id == gSideId && !_KeyboardKeyState[VK_CONTROL] )
         {
@@ -419,7 +419,7 @@ LABEL_163:
           goto LABEL_164;
         }
         // New logic end
-        if ( !_gDiplomacy[(unsigned __int8)gSideId][(unsigned __int8)side_id] && !_KeyboardKeyState[VK_CONTROL] )
+        if ( !_gDiplomacy[(unsigned char)gSideId][(unsigned char)side_id] && !_KeyboardKeyState[VK_CONTROL] )
         {
           SetMouseCursor(CURSOR_OVER_UNIT);
           goto LABEL_164;
@@ -449,7 +449,7 @@ LABEL_163:
       {
         if ( side_id != gSideId || _KeyboardKeyState[VK_CONTROL] )
         {
-          if ( _gDiplomacy[(unsigned __int8)gSideId][(unsigned __int8)side_id] || _KeyboardKeyState[VK_CONTROL] )
+          if ( _gDiplomacy[(unsigned char)gSideId][(unsigned char)side_id] || _KeyboardKeyState[VK_CONTROL] )
           {
             // New logic start
             // Fix cursor over enemy building when only armed engineer/saboteur is selected
@@ -1373,7 +1373,7 @@ LABEL_544:
           counter = 10;
           do
           {
-            if ( *(signed __int16 *)(v56 - 0x11) == unit_type && *(_WORD *)(v56 - 0xF) == 23040 && !*(_BYTE *)v56 )
+            if ( *(signed short *)(v56 - 0x11) == unit_type && *(_WORD *)(v56 - 0xF) == 23040 && !*(_BYTE *)v56 )
             {
               v57 = 1;
               if ( _templates_unitattribs[unit_type].__Behavior == UnitBehavior_SABOTEUR
@@ -1568,7 +1568,7 @@ LABEL_486:
       if ( side_id == gSideId )
       {
         side = GetSide((eSideType)side_id);
-        if ( !(side->__ObjectArray[(unsigned __int16)object_index].__GroupID & 6) )
+        if ( !(side->__ObjectArray[(unsigned short)object_index].__GroupID & 6) )
         {
           GenerateBuildingSellOrder(side_id, object_index);
           goto LABEL_649;
@@ -1785,7 +1785,7 @@ LABEL_580:
         SelectUnit(side_id, object_index, 0);
         goto LABEL_582;
       }
-      if ( !_gDiplomacy[(unsigned __int8)my_side_id][(unsigned __int8)side_id] && !_KeyboardKeyState[VK_CONTROL] )
+      if ( !_gDiplomacy[(unsigned char)my_side_id][(unsigned char)side_id] && !_KeyboardKeyState[VK_CONTROL] )
       {
         SelectUnit(side_id, object_index, 0);
         goto LABEL_649;
@@ -1833,7 +1833,7 @@ LABEL_648:
       goto LABEL_649;
     }
     my_side_id = gSideId;
-    if ( !_gDiplomacy[(unsigned __int8)gSideId][(unsigned __int8)side_id] )
+    if ( !_gDiplomacy[(unsigned char)gSideId][(unsigned char)side_id] )
     {
       unit = a1_2;
       goto LABEL_559;
@@ -1908,7 +1908,7 @@ LABEL_627:
     SelectBuilding((eSideType)side_id, object_index);
     goto LABEL_649;
   }
-  if ( !_gDiplomacy[(unsigned __int8)gSideId][(unsigned __int8)side_id] && !_KeyboardKeyState[VK_CONTROL] )
+  if ( !_gDiplomacy[(unsigned char)gSideId][(unsigned char)side_id] && !_KeyboardKeyState[VK_CONTROL] )
   {
     building_flags = _templates_buildattribs[building->Type]._____Flags;
     if ( building_flags & BFLAGS_200_SELECTABLE_REPAIRABLE )
@@ -2078,7 +2078,7 @@ LABEL_665:
   if ( _KeyboardKeyDown[VK_H] && gGameTicks > MapScrollLockTicks )
   {
     side = GetSide(gSideId);
-    CSide_46CF10_HKEY_BattleFieldPos(side, &_ViewportXPos, &_ViewportYPos, 1);
+    CSide__46CF10_HKEY_BattleFieldPos(side, &_ViewportXPos, &_ViewportYPos, 1);
     _KeyboardKeyDown[VK_H] = 0;
   }
   if ( _KeyboardKeyDown[VK_E] )
@@ -2255,7 +2255,7 @@ LABEL_665:
                 }
                 side_id = ++v125;
               }
-              while ( v125 < (unsigned __int8)_SidesToProcess );
+              while ( v125 < (unsigned char)_SidesToProcess );
             }
           }
         }
@@ -2285,7 +2285,7 @@ LABEL_665:
                 }
                 side_id = ++v129;
               }
-              while ( v129 < (unsigned __int8)_SidesToProcess );
+              while ( v129 < (unsigned char)_SidesToProcess );
             }
           }
         }
@@ -2352,7 +2352,7 @@ LABEL_665:
         {
           do
           {
-            if ( _OrderData[(unsigned __int8)v166_1].c_field_37 && gSideId != v142 )
+            if ( _OrderData[(unsigned char)v166_1].c_field_37 && gSideId != v142 )
             {
               if ( !v139 )
               {
@@ -2368,7 +2368,7 @@ LABEL_665:
         }
         if ( v141 )
         {
-          v143 = (unsigned __int8)my_side_1;
+          v143 = (unsigned char)my_side_1;
           strcpy(gSendingToPlayer, _NetPlayerNamesArray[v143]);
           strcat(gSendingToPlayer, " : ");
           dword_797E18 = _OrderData[v143].dw_field_10;
@@ -2383,7 +2383,7 @@ LABEL_665:
     {
       if ( gGameType == GAME_INTERNET && !gUIMgr->dw_field_110_index )
       {
-        if ( (unsigned __int8)IsOnlineGame() )
+        if ( (unsigned char)IsOnlineGame() )
         {
           if ( strlen(gPageUser) == 0 )
           {

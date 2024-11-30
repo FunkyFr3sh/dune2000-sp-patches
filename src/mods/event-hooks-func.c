@@ -26,7 +26,7 @@ void Mod__SetMouseCursor(int cursor)
 // Extension wrapper for function UpdateUnit
 CALL(0x00458F15, _Ext_UpdateUnit); // ModelUpdates
 
-char Ext_UpdateUnit(Unit *unit, eSideType side_id, __int16 myIndex)
+char Ext_UpdateUnit(Unit *unit, eSideType side_id, short myIndex)
 {
   side_id &= 255;
   if (ExecuteEventHook(HOOK_PREUPDATEUNIT, 3, 0, side_id, myIndex, 0, 0))
@@ -39,7 +39,7 @@ char Ext_UpdateUnit(Unit *unit, eSideType side_id, __int16 myIndex)
 // Extension wrapper for function UpdateBuilding
 CALL(0x00458FEC, _Ext_UpdateBuilding); // ModelUpdates
 
-bool Ext_UpdateBuilding(Building *bld, int side_id, __int16 building_index)
+bool Ext_UpdateBuilding(Building *bld, int side_id, short building_index)
 {
   side_id &= 255;
   if (ExecuteEventHook(HOOK_PREUPDATEBUILDING, 3, 0, side_id, building_index, 0, 0))
