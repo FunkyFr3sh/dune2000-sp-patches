@@ -13,7 +13,7 @@ bool CanUnitBeBuiltExt(unsigned __int8 side_id, unsigned __int8 unitType, char b
   for (int i = 0; i < (int)side->__UnitIconCount; i++)
   {
     if (side->__UnitIcons[i] == unitType)
-      return w_CanUnitBeBuilt(side_id, unitType, bool1);
+      return CanUnitBeBuilt(side_id, unitType, bool1);
   }
   return false;
 }

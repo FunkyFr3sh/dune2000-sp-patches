@@ -414,15 +414,16 @@ setcglob 0x00418140, SetgAllowPageUser
 setcglob 0x00418480, IsOnlineGame
 setcglob 0x004184A0, WOL__OpenWebsite				; (char *URL)
 ;AI
+setcglob 0x0041CE50, CAI__RecalculateSideToAttack
 setcglob 0x0041EF30, CAI_PlaceBuiltBuilding
-setcglob 0x00420480, w_CAI__FindGroupForDelivery
+setcglob 0x00420480, CAI__FindGroupForDelivery
 ;Others
 setcglob 0x00425720, QueueMessage
 setcglob 0x00425830, FreeMessageSlot
 setcglob 0x00428C30, GetOwnershipStatusOfCell
 setcglob 0x0042B590, DebugFatal ; Game_ShowErrorAndExit
 setcglob 0x00492EB0, AbortGame
-setcglob 0x0042BA50, w__OpenFile
+setcglob 0x0042BA50, _OpenFile
 setcglob 0x0042BB40, CloseFile
 setcglob 0x0042BB60, _ReadFile
 setcglob 0x0042BB80, _WriteFile
@@ -450,10 +451,10 @@ setcglob 0x00442910, IsBuildingWithBehaviorBuilt
 setcglob 0x004429B0, GetDifficultyCostPercentage
 setcglob 0x00442A00, GetUnitBuildSpeedPercentage
 setcglob 0x00442B10, GetBuildingBuildSpeedPercentage
-setcglob 0x00442BB0, w__GetUnitCost
+setcglob 0x00442BB0, GetUnitCost
 setcglob 0x00442BE0, GetBuildingCost
 setcglob 0x00443040, HandleSidebarButton
-setcglob 0x004430D0, w_CanUnitBeBuilt
+setcglob 0x004430D0, CanUnitBeBuilt
 setcglob 0x004431D0, CanSideUpgradeBuildingGroup
 setcglob 0x00443250, CheckIfMCVCanBeDeployedOn
 setcglob 0x004432F0, MoreProductionBuildingsOfSameGroupExist

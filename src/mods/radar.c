@@ -32,7 +32,7 @@ void InitDefaultRadarColorRules()
 
 void LoadRadarColorRulesFromFile(char *filename)
 {
-  FILE *file = w__OpenFile(filename, "rb", NULL);
+  FILE *file = _OpenFile(filename, "rb", NULL);
   if (!file)
   {
     InitDefaultRadarColorRules();

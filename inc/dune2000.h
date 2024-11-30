@@ -45,39 +45,6 @@ typedef struct NetPlayer
     int unk4;
 }NetPlayer;
 
-typedef struct MissionEvent
-{
-    uint32_t map_pos_x;
-    uint32_t map_pos_y;
-    uint32_t value;      // Flag value, Message unknown value
-    uint8_t num_conditions;
-    uint8_t event_type;
-    uint8_t num_units;      // Also Reveal Map radius
-    uint8_t player;         // Also Set Flag flag number
-    uint8_t allegiance_target;
-    uint8_t allegiance_type;
-    uint8_t deploy_action;
-    char condition_index[14];
-    char condition_not[14];
-    char units[21];
-    uint32_t message_index;
-}MissionEvent;
-
-typedef struct GameEvent // 168 byte
-{
-    int unknown1;
-    int unknown2;
-    int ticks;
-    
-    //cellX 30
-    //ticks 8
-    //cellY 28
-    //Order 35
-    //unknown1 24
-    //type 38
-    //sideId 36
-}GameEvent;
-
 typedef struct TechPosEntry
 {
   char UnitType_Atreides;
@@ -163,18 +130,6 @@ typedef enum eSideType
   SIDE_NONE = 0xFF,
 } eSideType;
 
-enum Colors
-{
-    CL_BLUE,
-    CL_RED,
-    CL_TEAL,
-    CL_PURPLE,
-    CL_GRAY,
-    CL_BROWN,
-    CL_GOLD,
-    CL_LIGHTBROWN
-};
-
 enum GameEndStates
 {
     GES_ENDEDNORMALLY,
@@ -214,20 +169,6 @@ enum NetworkTypes
     NT_UDP,
     NT_SERIAL,
     NT_IPXDIRECTPLAY
-};
-
-enum EventConditions
-{
-    EC_BUILDINGEXISTS,
-    EC_UNITEXISTS,
-    EC_INTERVAL,
-    EC_TIMER,
-    EC_CASUALTIES,
-    EC_BASEDESTROYED,
-    EC_UNITSDESTROYED,
-    EC_REVEALED,
-    EC_HARVESTED,
-    EC_FLAG
 };
 
 enum CursorTypes
@@ -288,25 +229,12 @@ enum eSidebarButton
 };
 
 // Side (HouseClass)
-#define HC_SIDEID 0x24252
 #define HC_CREDITS 0x2425C
 #define HC_SILO_CREDITS 0x24254
 #define HC_SPICE_HARVESTED 0x2477C
 #define HC_BUILDINGS_DESTROYED 0x24C94
 #define HC_UNITS_KILLED 0x24C90
 #define HC_BUILDINGS_OWNED 0x24784
-//not sure about this one
-#define HC_BUILDING_PRODUCTION_AVAILABLE 0x2652D
-//0x5A00 = 100%
-#define HC_BUILDING_PRODUCTION_PROGRESS 0x2651E
-#define HC_HARKONNEN_PALACE_EXISTS 0x260AA
-#define HC_CURRENTLY_PRODUCED_BUILDING_ID 0x2651C
-
-// Special Weapons
-#define SW_SABOTEUR 4
-#define SW_AIRSTRIKE 9
-#define SW_DEATH_HAND_ROCKET 10
-#define SW_FREMEN 12
 
 // ### Variables ###
 
@@ -621,15 +549,16 @@ void            SetgAllowPageUser(unsigned __int8 a1);
 BOOL            IsOnlineGame();
 void            WOL__OpenWebsite(char *URL);
 // AI
+eSideType __thiscall CAI__RecalculateSideToAttack(CAI_ *this);
 void __thiscall CAI_PlaceBuiltBuilding(CAI_ *this);
-char __thiscall w_CAI__FindGroupForDelivery(CAI_ *this, char a2);
+char __thiscall CAI__FindGroupForDelivery(CAI_ *this, char a2);
 // Others
 void            QueueMessage(const char *message, int type);
 void            FreeMessageSlot();
 void            GetOwnershipStatusOfCell(int x, int y, char side, _BYTE *flags);
 void            DebugFatal(char *caption, char *format, ...);
 void            AbortGame();
-FILE *          w__OpenFile(char * filename, char *mode, char *path);
+FILE *          _OpenFile(char * filename, char *mode, char *path);
 void            CloseFile(FILE *Stream);
 size_t          _ReadFile(void *buffer, size_t size, size_t count, FILE *file);
 size_t          _WriteFile(void *buffer, size_t size, size_t count, FILE *file);
@@ -657,10 +586,10 @@ char            IsBuildingWithBehaviorBuilt(unsigned __int8 a1, BuildingBehavior
 int             GetDifficultyCostPercentage(eSideType side_id);
 unsigned int    GetUnitBuildSpeedPercentage(unsigned char unit_type, unsigned char side_id);
 unsigned int    GetBuildingBuildSpeedPercentage(unsigned char side_id);
-unsigned int    w__GetUnitCost(int type, eSideType side);
+unsigned int    GetUnitCost(int type, eSideType side);
 unsigned int    GetBuildingCost(int building_type, int num_upgrades, eSideType side_id);
 char            HandleSidebarButton(int idx, bool pressed_down);
-bool            w_CanUnitBeBuilt(unsigned char side_id, unsigned char unitType, char bool1);
+bool            CanUnitBeBuilt(unsigned char side_id, unsigned char unitType, char bool1);
 bool            CanSideUpgradeBuildingGroup(eSideType side_id, eBuildingGroupType building_group);
 char            CheckIfMCVCanBeDeployedOn(int xpos, int ypos);
 char            MoreProductionBuildingsOfSameGroupExist(int buildingtype);

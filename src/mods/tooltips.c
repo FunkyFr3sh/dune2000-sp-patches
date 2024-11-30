@@ -398,7 +398,7 @@ LABEL_64:
             unit_group = _templates_unitattribs[unit_type].__UnitType;
             string_id = _UnitGroupTextIds[unit_group];
             tooltip_string = (string_id != -1)?GetTextString(string_id, 0):_templates_UnitGroupNameList[unit_group];
-            unit_cost = w__GetUnitCost(side_->__UnitIcons[unit_icon_index], gSideId);
+            unit_cost = GetUnitCost(side_->__UnitIcons[unit_icon_index], gSideId);
             clip_right = _SidebarStrip2XPos;
             strcpy(gTooltipExtraData[0].text, tooltip_string);
             if (unit_cost)

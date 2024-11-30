@@ -56,7 +56,7 @@ void Mod__ReleaseInfantryFromBuilding(Building *building, unsigned char side_id)
   int ypos = (building->__PosY / 0x10000 - _templates_buildattribs[building->Type]._____ArtHeight) / 32;
   int tiles_occupied_solid_bitmask = _templates_buildattribs[building->Type]._____TilesOccupiedSolid;
   int building_cost = GetBuildingCost(building->Type, 0, side_id);
-  int unit_cost = w__GetUnitCost(unit_type, side_id);
+  int unit_cost = GetUnitCost(unit_type, side_id);
   int infantry_limit = rulesExt__infantryReleaseLimit; // Rule
   int spawn_chance = rulesExt__infantryReleaseChance; // Rule
   int num_infantry_to_release = building_cost / 3 / (unit_cost?unit_cost:1);
