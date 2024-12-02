@@ -79,6 +79,7 @@ OBJS            ?= callsites.o \
         src/mods/building-update.o \
         src/mods/building-attack.o \
         src/mods/bullet.o \
+        src/mods/ai-calculate-side-to-attack.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \

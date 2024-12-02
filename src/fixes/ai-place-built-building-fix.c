@@ -7,9 +7,9 @@
 // Used solution is to cancel the built building and start building correct building again
 
 // Replace call to CAI_PlaceBuiltBuilding with custom function with additional logic
-CALL(0x0041ECEE, _CAI_PlaceBuiltBuildingExt); // w_CAI::RebuildBuildings
+CALL(0x0041ECEE, _CAI__PlaceBuiltBuildingExt); // w_CAI::RebuildBuildings
 
-void __thiscall CAI_PlaceBuiltBuildingExt(CAI_ *this)
+void __thiscall CAI__PlaceBuiltBuildingExt(CAI_ *this)
 {
   CSide *side = GetSide(this->AISide);
   if (
@@ -30,5 +30,5 @@ void __thiscall CAI_PlaceBuiltBuildingExt(CAI_ *this)
     GenerateBuildBuildingPickOrder(this->AISide, this->__BuildingToBuildType);
     return;
   }
-  CAI_PlaceBuiltBuilding(this);
+  CAI__PlaceBuiltBuilding(this);
 }

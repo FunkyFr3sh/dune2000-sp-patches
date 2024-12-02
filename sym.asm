@@ -415,8 +415,9 @@ setcglob 0x00418480, IsOnlineGame
 setcglob 0x004184A0, WOL__OpenWebsite				; (char *URL)
 ;AI
 setcglob 0x0041CE50, CAI__RecalculateSideToAttack
-setcglob 0x0041EF30, CAI_PlaceBuiltBuilding
+setcglob 0x0041EF30, CAI__PlaceBuiltBuilding
 setcglob 0x00420480, CAI__FindGroupForDelivery
+setcglob 0x00423830, AIDebugPrint
 ;Others
 setcglob 0x00425720, QueueMessage
 setcglob 0x00425830, FreeMessageSlot

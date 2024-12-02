@@ -172,7 +172,7 @@ typedef struct CAI_
   char c_field_19EC;
   char AttackSidePriority[8];
   char AutoBerserkMode; // Newly added parameter (mod)
-  char field_19F6;
+  char DontPreferTargetingHumanPlayers; // Newly added parameter (mod)
   char field_19F7;
   float UnitBuildPriority[60];
   float UnitRepairValue[60];

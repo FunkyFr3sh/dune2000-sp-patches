@@ -551,8 +551,9 @@ BOOL            IsOnlineGame();
 void            WOL__OpenWebsite(char *URL);
 // AI
 eSideType __thiscall CAI__RecalculateSideToAttack(CAI_ *this);
-void __thiscall CAI_PlaceBuiltBuilding(CAI_ *this);
+void __thiscall CAI__PlaceBuiltBuilding(CAI_ *this);
 char __thiscall CAI__FindGroupForDelivery(CAI_ *this, char a2);
+void            AIDebugPrint(char *str);
 // Others
 void            QueueMessage(const char *message, int type);
 void            FreeMessageSlot();
