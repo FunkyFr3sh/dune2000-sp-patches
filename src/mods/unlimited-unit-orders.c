@@ -159,7 +159,11 @@ void Mod__GenerateUnitAttackUnitOrder(eSideType side_id, eSideType target_side_i
     }
     if ( unit->__IsSelected )
     {
-      if ( unit->State != UNIT_STATE_17_DEAD && _templates_unitattribs[unit->Type].__PrimaryWeapon != -1 )
+      if ( unit->State != UNIT_STATE_17_DEAD && _templates_unitattribs[unit->Type].__PrimaryWeapon != -1
+        // New logic start
+        // Do not allow ordering AI unit to attack the same unit it's already ordered to attack
+        && !(_gAIArray[side_id].__IsAI && unit->State == UNIT_STATE_4_ATTACKING_UNIT && unit->EnemySide == target_side_id && unit->EnemyIndex == target_unit_index) )
+        // New logic end
       {
         order.ObjectArray[i++] = unit->MyIndex;
       }
@@ -175,7 +179,7 @@ void Mod__GenerateUnitAttackUnitOrder(eSideType side_id, eSideType target_side_i
 // Custom implementation of function GenerateUnitAttackBuildingOrder
 DETOUR(0x00459800, 0x004598C6, _Mod__GenerateUnitAttackBuildingOrder);
 
-void Mod__GenerateUnitAttackBuildingOrder(char side_id, char target_side_id, short target_building_index)
+void Mod__GenerateUnitAttackBuildingOrder(eSideType side_id, char target_side_id, short target_building_index)
 {
   Unit *unit; // esi
   short i; // di
@@ -204,7 +208,11 @@ void Mod__GenerateUnitAttackBuildingOrder(char side_id, char target_side_id, sho
         if ( behavior != UnitBehavior_HARVESTER
           && behavior != UnitBehavior_MCV
           && behavior != UnitBehavior_THUMPER
-          && (side_id != target_side_id || (behavior != UnitBehavior_ENGINEER && behavior != UnitBehavior_SABOTEUR)) )
+          && (side_id != target_side_id || (behavior != UnitBehavior_ENGINEER && behavior != UnitBehavior_SABOTEUR))
+          // New logic start
+          // Do not allow ordering AI unit to attack the same building it's already ordered to attack
+          && !(_gAIArray[side_id].__IsAI && unit->State == UNIT_STATE_5_ATTACKING_BUILDING && unit->EnemySide == target_side_id && unit->EnemyIndex == target_building_index) )
+          // New logic end
         {
           order.ObjectArray[i++] = unit->MyIndex;
         }
