@@ -158,6 +158,18 @@ void Mod__setupmapstuff()
   // Reset MapScrollLockTicks
   MapScrollLockTicks = 0;
 
+  // Reset Radar Markers
+  for (int i = 0; i < MAX_RADAR_MARKERS; i++)
+  {
+    gRadarMarkers[i].x = 0;
+    gRadarMarkers[i].y = 0;
+    gRadarMarkers[i].thickness = 0;
+    gRadarMarkers[i].color_8bit = 0;
+    gRadarMarkers[i].color_16bit = 0;
+    gRadarMarkers[i].counter = 0;
+    gRadarMarkers[i].max_game_ticks = -1;
+  }
+
   // Reset last played property of sounds in sound table
   for (int i = 0; i < _sampletablecount; i++)
     gSampleTable[i]->last_played = 0;

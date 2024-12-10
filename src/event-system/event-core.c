@@ -878,6 +878,8 @@ void ExecuteEventAction(EventContext *e)
   case ET_ORDER_UPGRADE_PICK:             GenerateUpgradePickOrder            (A_SIDE, A_ITEM);                         break;
   case ET_ORDER_UPGRADE_CANCEL:           EvAct_OrderUpgradeCancel            (A_SIDE, A_BOOL);                         break;
   case ET_ORDER_SPECIAL_WEAPON:           GenerateSpecialWeaponOrder          (A_SIDE, A_ITEM, COORD0);                 break;
+  // Miscellaneous
+  case ET_ADD_RADAR_MARKER:               EvAct_AddRadarMarker                (COORD0, A_SIDE, A_AMNT, A_ENUM, A_BOOL, A_VAL1, A_VAL2);     break;
   // Variable operations
   case ET_SET_VARIABLE:                   EvAct_SetVariable                   (A_AMNT, A_ITEM, A_ENUM, A_BOOL, A_VAL1);                     break;
   case ET_GET_VARIABLE:                   EvAct_GetVariable                   (A_ITEM, A_ENUM, A_BOOL);                                     break;

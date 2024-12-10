@@ -1411,6 +1411,44 @@ void EvAct_OrderUpgradeCancel(int side_id, bool force)
   GenerateUpgradeCancelOrder(side_id, side->__BuildingUpgradeQueue.__type);
 }
 
+void EvAct_AddRadarMarker(int xpos, int ypos, int slot, int ref_id, int color, int thickness, int duration, int custom_color)
+{
+  int id = -1;
+  if (slot)
+    id = ref_id;
+  else
+  {
+    for (int i = MAX_RADAR_MARKERS - 1; i >=0; i--)
+      if ((int)gGameTicks > gRadarMarkers[i].max_game_ticks)
+      {
+        id = i;
+        break;
+      }
+  }
+  if (id == -1)
+    return;
+  RadarMarker *rm = &gRadarMarkers[id];
+  rm->x = xpos;
+  rm->y = ypos;
+  rm->thickness = thickness;
+  if ((int)gGameTicks > rm->max_game_ticks)
+    rm->counter = 0;
+  rm->max_game_ticks = gGameTicks + duration;
+  switch (color)
+  {
+    case 0: rm->color_8bit = _RedColor8; rm->color_16bit = _RedColor16; break;
+    case 1: rm->color_8bit = _YellowColor8; rm->color_16bit = _YellowColor16; break;
+    case 2: rm->color_8bit = _GreenColor8; rm->color_16bit = _GreenColor16; break;
+    case 3: rm->color_8bit = _GreyColor8; rm->color_16bit = _GreyColor16; break;
+    case 4:
+      if (gBitsPerPixel == 8)
+        rm->color_8bit = GetColor8bit(custom_color >> 2 & 63, custom_color >> 10 & 63, custom_color >> 18 & 63, _PalettePtr, 0, 0, 1);
+      if (gBitsPerPixel == 16)
+        rm->color_16bit = GetColor16bit(_colormask1, custom_color);
+      break;
+  }
+}
+
 void EvAct_SetVariable(int target_var, bool use_offset, int offset_var, eValueOperation operation, int value)
 {
   if (use_offset)

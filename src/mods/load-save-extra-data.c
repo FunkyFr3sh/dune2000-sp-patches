@@ -3,6 +3,7 @@
 #include "macros/patch.h"
 #include "dune2000.h"
 #include "../event-system/event-core.h"
+#include "../mods/radar.h"
 #include <patch.h>
 
 CALL(0x00441836, _SaveGameExtraData); // SaveGame
@@ -23,6 +24,8 @@ void SaveGameExtraData(void *buffer, size_t size, size_t count, FILE *file)
   _WriteFile(gEventExtraData, sizeof(gEventExtraData), 1, file);
   // Write event hooks
   _WriteFile(event_hooks, sizeof(event_hooks), 1, file);
+  // Write radar markers
+  _WriteFile(gRadarMarkers, sizeof(gRadarMarkers), 1, file);
 }
 
 CALL(0x00441C79, _LoadGameExtraData); // LoadGame
@@ -43,6 +46,8 @@ void LoadGameExtraData(void *buffer, size_t size, size_t count, FILE *file)
   _ReadFile(gEventExtraData, sizeof(gEventExtraData), 1, file);
   // Read event hooks
   _ReadFile(event_hooks, sizeof(event_hooks), 1, file);
+  // Read radar markers
+  _ReadFile(gRadarMarkers, sizeof(gRadarMarkers), 1, file);
 
   // Reset MapScrollLockTicks
   MapScrollLockTicks = 0;

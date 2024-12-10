@@ -216,11 +216,19 @@ setcglob 0x00513A20, _FontBinData
 setcglob 0x00513B20, _FontData
 setcglob 0x00515B60, _FontPals
 setcglob 0x00515BB8, gHighScores
+setcglob 0x005162B4, _GreenColor8
+setcglob 0x005162B8, _GreyColor16
+setcglob 0x005162BC, _RedColor8
+setcglob 0x005162C0, _YellowColor8
 setcglob 0x005162C8, _SidebarButtons
 setcglob 0x00516430, _TacticalData
 setcglob 0x00516530, _radarcolor16_impassable
+setcglob 0x00516538, _YellowColor16
+setcglob 0x0051653C, _RedColor16
 setcglob 0x005165B0, _UnitGroupKeyState
+setcglob 0x005165BC, _GreyColor8
 setcglob 0x005165C0, _radarcolor16_driveon
+setcglob 0x00516690, _GreenColor16
 setcglob 0x005166A0, _BloxFileName
 setcglob 0x00516770, _TileTooltips
 setcglob 0x005173F0, _radarcolor16_sand
@@ -303,6 +311,7 @@ setcglob 0x0077E250, _templates_unitattribs
 setcglob 0x00781E54, _RadarMap2
 setcglob 0x00781E58, _templates_explosionattribs
 setcglob 0x00782068, _templates_bulletattribs
+setcglob 0x00782768, _BlankRadarImage
 setcglob 0x00782AA0, _FreeSpawnLocations
 setcglob 0x00786C48, _ColoursBinData
 setcglob 0x00786D48, _ViewportWidth
@@ -441,10 +450,12 @@ setcglob 0x0042E1C0, Graphlib_font_pal
 setcglob 0x0042E420, GetFontPaletteHandle
 setcglob 0x0042E450, Graphlib__LoadFontFile
 setcglob 0x0042F3D0, GetColor16bit
+setcglob 0x0042FAC0, BlitTImage
 ; Image
 setcglob 0x004305F0, BlitClipTImage1
 setcglob 0x00430770, BlitClipTImage2
 setcglob 0x00430860, ClearTImage
+setcglob 0x00430D10, DrawRectClipTImage
 setcglob 0x00431C40, GetColor8bit
 setcglob 0x00431F50, BlitFontChar_0
 ; Other

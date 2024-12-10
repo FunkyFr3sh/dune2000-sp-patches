@@ -233,6 +233,8 @@ void EvAct_OrderBuildPlaceBuilding(int side_id, int xpos, int ypos);
 void EvAct_OrderBuildUnitCancel(int side_id, bool any_unit, int unit_type, int queue, bool force);
 void EvAct_OrderStarportPick(int side_id, int unit_type);
 void EvAct_OrderUpgradeCancel(int side_id, bool force);
+// Miscellaneous
+void EvAct_AddRadarMarker(int xpos, int ypos, int slot, int ref_id, int color, int thickness, int duration, int custom_color);
 // Variable operations
 void EvAct_SetVariable(int target_var, bool use_offset, int offset_var, eValueOperation operation, int value);
 void EvAct_GetVariable(int target_var, int src_var_base, int src_var_offset);

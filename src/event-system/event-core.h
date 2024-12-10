@@ -186,7 +186,8 @@ enum EventTypes
   ET_116,
   ET_117,
   ET_118,
-  ET_119,
+  // Miscellaneous
+  ET_ADD_RADAR_MARKER,
   // Variable operations
   ET_SET_VARIABLE,
   ET_GET_VARIABLE,
