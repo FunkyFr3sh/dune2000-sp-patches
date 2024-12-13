@@ -25,6 +25,22 @@ bool IsAnyArmedUnitSelectedExceptEngineerAndSaboteur()
   return 0;
 }
 
+// Custom implementation of function IsAnyCrusherSelected
+DETOUR(0x004A5A10, 0x004A5A4E, _Mod__IsAnyCrusherSelected);
+
+// Implement uncrushable infantry
+char Mod__IsAnyCrusherSelected()
+{
+  Unit *unit; // eax
+
+  for (unit = GetSide(gSideId)->__FirstUnitPtr; unit; unit = unit->Next)
+  {
+    if (unit->__IsSelected && _templates_unitattribs[unit->Type].__CanCrush && !_templates_unitattribs[unit->Type].__IsInfantry)
+      return 1;
+  }
+  return 0;
+}
+
 // Custom implementation of function HandleGameLoopEvents
 DETOUR(0x004433A0, 0x00446689, _Mod__HandleGameLoopEvents);
 
@@ -426,7 +442,10 @@ LABEL_163:
         }
         if ( _KeyboardKeyState[VK_MENU] && _templates_unitattribs[target->Type].__IsInfantry && side_id != gSideId )
         {
-          if ( IsAnyCrusherSelected() && tile_flags & TileFlags_2000_DRIVE_ON )
+          // New logic start
+          // Implement uncrushable infantry
+          if ( IsAnyCrusherSelected() && tile_flags & TileFlags_2000_DRIVE_ON && !gGameMap.map[cell_index].num_uncrushable_infantry )
+          // New logic end
           {
             SetMouseCursor(CURSOR_MOVE);
             goto LABEL_164;
@@ -1815,7 +1834,10 @@ LABEL_580:
       SetUnitToFlicker(a1_2);
       if ( _KeyboardKeyState[VK_MENU] && _templates_unitattribs[unit->Type].__IsInfantry && side_id != gSideId )
       {
-        if ( IsAnyCrusherSelected() && tile_flags & TileFlags_2000_DRIVE_ON )
+        // New logic start
+        // Implement uncrushable infantry
+        if ( IsAnyCrusherSelected() && tile_flags & TileFlags_2000_DRIVE_ON && !gGameMap.map[cell_index].num_uncrushable_infantry )
+        // New logic end
         {
           GenerateUnitMoveOrder(gSideId, x[0], y[0]);
         }

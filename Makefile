@@ -81,6 +81,8 @@ OBJS            ?= callsites.o \
         src/mods/bullet.o \
         src/mods/ai-calculate-side-to-attack.o \
         src/mods/ai-unstuck-units-attacking-unreachable-target.o \
+        src/mods/unit-move.o \
+        src/mods/unit-add.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \
@@ -102,7 +104,6 @@ OBJS            ?= callsites.o \
 	src/fixes/gettickcount-fix.o \
 	src/fixes/resolution-fix.o \
 	src/fixes/damage-position-fix.o \
-	src/fixes/damaged-unit-speed-fix.o \
 	src/fixes/invulnerable-infantry-fix.o \
 	src/fixes/ai-build-concrete-fix.o \
 	src/fixes/ai-upgrade-buildings-fix.o \
@@ -115,8 +116,6 @@ OBJS            ?= callsites.o \
 	src/fixes/unit-build-availability-check-fix.o \
 	src/fixes/dont-target-invulnerable-carryall.o \
 	src/fixes/ai-place-built-building-fix.o \
-	src/fixes/debug-unit-crash.o \
-	src/fixes/debug-unit-crash-func.o \
 	src/fixes/score-screen-volume-fix.o \
 	src/fixes/deactivate-ai-broken-orders-fix.o \
 	src/fixes/ai-ignore-units-with-flag11.o \

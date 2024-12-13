@@ -326,7 +326,8 @@ extern int _OptionsBarHeight;
 extern int CurrentCursorId;
 
 //Others
-
+extern int                  _InfantryCellspotPosOffsets2[10];
+extern int                  _InfantryCellspotPosOffsets[10];
 extern bool                 gAllowPageUser;
 
 extern unsigned char        MissionNumber;
@@ -690,6 +691,7 @@ bool            CanUnitUseSquare(dwXYStruct x, Unit *unit, eSideType side_id, ch
 dwXYStruct      GetNextSquareInDirection(int x, int y, char facing);
 char            GetFreeAdjacentTile(int x, int y, Unit *unit, int side_id, dwXYStruct *result_point, char ArgList);
 char            GetFacing(int x1, int y1, int x2, int y2);
+char            GetFacing_and_252(int x1, int y1, int x2, int y2);
 // Setup
 void            Setup__LoadUIBBFile();
 

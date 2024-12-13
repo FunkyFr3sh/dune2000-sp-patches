@@ -1490,10 +1490,14 @@ LABEL_396:
           // the attribute will be kept and repulsion field won't get broken.
           int and_flags = ~(32 << unit->__CellspotFrom) | _TileBitflags[gGameMap.map[unit->BlockFromX + _CellNumbersWidthSpan[unit->BlockFromY]].back_up_tile_index];
           gGameMap.map[unit->BlockFromX + _CellNumbersWidthSpan[unit->BlockFromY]].__tile_bitflags &= and_flags;
+          if ( _templates_unitattribs[unit->Type].__CanCrush )
+            gGameMap.map[unit->BlockFromX + _CellNumbersWidthSpan[unit->BlockFromY]].num_uncrushable_infantry--;
           if ( unit->Flags & UFLAGS_BLOCKTOMARKED )
           {
             and_flags = ~(32 << unit->__CellspotTo) | _TileBitflags[gGameMap.map[unit->BlockToX + _CellNumbersWidthSpan[unit->BlockToY]].back_up_tile_index];
             gGameMap.map[unit->BlockToX + _CellNumbersWidthSpan[unit->BlockToY]].__tile_bitflags &= and_flags;
+            if ( _templates_unitattribs[unit->Type].__CanCrush )
+              gGameMap.map[unit->BlockToX + _CellNumbersWidthSpan[unit->BlockToY]].num_uncrushable_infantry--;
             // New logic end
             return 0;
           }

@@ -36,6 +36,7 @@ BOOL Mod__CanUnitUseSquare(dwXYStruct x, Unit *unit, eSideType side_id, char rou
   Unit *v17; // eax
   char can_crush; // [esp+13h] [ebp-5h]
   unsigned int v20; // [esp+14h] [ebp-4h]
+  bool uncrushable_infantry;
 
   int movement_restriction = _templates_unitattribs[unit->Type].MovementRestriction;
 
@@ -48,6 +49,7 @@ BOOL Mod__CanUnitUseSquare(dwXYStruct x, Unit *unit, eSideType side_id, char rou
     return 0;
   }
   tile_flags = gGameMap.map[x.X + _CellNumbersWidthSpan[x.Y]].__tile_bitflags;
+  uncrushable_infantry = gGameMap.map[x.X + _CellNumbersWidthSpan[x.Y]].num_uncrushable_infantry > 0;
   tile_owner = gGameMap.map[x.X + _CellNumbersWidthSpan[x.Y]].__tile_bitflags & 7;
   v20 = gGameMap.map[x.X + _CellNumbersWidthSpan[x.Y]].__tile_bitflags & (TileFlags_200_CSPOT_TL|TileFlags_100_CSPOT_DL|TileFlags_80_CSPOT_DR|TileFlags_40_CSPOT_TR|TileFlags_20_CSPOT_MID|TileFlags_10_OCC_BUILDING|TileFlags_8_OCC_UNIT);
   if ( *(&_templates_unitattribs[0].__Behavior + v5) == UnitBehavior_SANDWORM )
@@ -147,7 +149,7 @@ LABEL_34:
           return 1;
         }
       }
-      else if ( CheckTerrainRestriction(tile_flags, TileFlags_2000_DRIVE_ON, movement_restriction) && !(tile_flags & (TileFlags_10_OCC_BUILDING|TileFlags_8_OCC_UNIT)) )
+      else if ( CheckTerrainRestriction(tile_flags, TileFlags_2000_DRIVE_ON, movement_restriction) && !uncrushable_infantry && !(tile_flags & (TileFlags_10_OCC_BUILDING|TileFlags_8_OCC_UNIT)) )
       {
         if ( tile_flags & (TileFlags_200_CSPOT_TL|TileFlags_100_CSPOT_DL|TileFlags_80_CSPOT_DR|TileFlags_40_CSPOT_TR|TileFlags_20_CSPOT_MID) )
         {
@@ -186,7 +188,7 @@ LABEL_34:
         }
         return 0;
       }
-      if ( !CheckTerrainRestriction(tile_flags, TileFlags_2000_DRIVE_ON, movement_restriction) || tile_flags & TileFlags_10_OCC_BUILDING )
+      if ( !CheckTerrainRestriction(tile_flags, TileFlags_2000_DRIVE_ON, movement_restriction) || uncrushable_infantry || tile_flags & TileFlags_10_OCC_BUILDING )
       {
         return 0;
       }
@@ -225,7 +227,7 @@ LABEL_34:
         }
         return 0;
       }
-      if ( !CheckTerrainRestriction(tile_flags, TileFlags_2000_DRIVE_ON, movement_restriction) || tile_flags & TileFlags_10_OCC_BUILDING )
+      if ( !CheckTerrainRestriction(tile_flags, TileFlags_2000_DRIVE_ON, movement_restriction) || uncrushable_infantry || tile_flags & TileFlags_10_OCC_BUILDING )
       {
         return 0;
       }
@@ -242,7 +244,7 @@ LABEL_77:
       }
       return 0;
     case 3:
-      if ( CheckTerrainRestriction(tile_flags, is_infantry?TileFlags_4000_WALK_ON:TileFlags_2000_DRIVE_ON, movement_restriction) )
+      if ( CheckTerrainRestriction(tile_flags, is_infantry?TileFlags_4000_WALK_ON:TileFlags_2000_DRIVE_ON, movement_restriction) && !(!is_infantry && uncrushable_infantry) )
       {
         if ( tile_flags & TileFlags_400_HAS_WALL )
         {

@@ -164,6 +164,8 @@ setcglob 0x006B8864, ShowWarnings
 setcglob 0x006B8865, DeathHandAccuracy
 
 ;others
+setcglob 0x004C93E8, _InfantryCellspotPosOffsets2
+setcglob 0x004D7028, _InfantryCellspotPosOffsets
 setcglob 0x004DB9D8, gAllowPageUser
 setcglob 0x004DB9E0, GameEndState
 setcglob 0x004DE610, MissionNumber
@@ -554,6 +556,7 @@ setcglob 0x0045D990, CanUnitUseSquare
 setcglob 0x0045DE30, GetNextSquareInDirection
 setcglob 0x0045DEE0, GetFreeAdjacentTile
 setcglob 0x0045DFE0, GetFacing
+setcglob 0x0045E020, GetFacing_and_252
 ; Setup
 setcglob 0x00460C80, Setup__LoadUIBBFile
 setcglob 0x00460EC0, Setup__LoadUI_LanguageFile

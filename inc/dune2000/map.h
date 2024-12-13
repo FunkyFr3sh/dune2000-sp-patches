@@ -43,7 +43,8 @@ typedef struct GameMapTileStruct
   TileFlags __tile_bitflags;
   uint8_t   __shroud;
   uint8_t   __damage;
-  uint16_t  back_up_special_value; // Field for preservation of special value during setting up the map (mod)
+  uint8_t   num_uncrushable_infantry; // Number of uncrushable infantry on tile (mod)
+  uint8_t   custom_byte; // Additional field for extended functionality (mod)
 }GameMapTileStruct;
 
 typedef struct GameMapStruct

@@ -227,7 +227,8 @@ void Mod__setupmapstuff()
       GameMapTileStruct *tile = &gGameMap.map[_CellNumbersWidthSpan[ypos] + xpos];
       // Back up tile and special value
       tile->back_up_tile_index = tile->__tile_index & 0x0FFF;
-      tile->back_up_special_value = tile->__tile_bitflags;
+      tile->num_uncrushable_infantry = tile->__tile_bitflags & 0xFF;
+      tile->custom_byte = (tile->__tile_bitflags >> 8) & 0xFF;
       // Set up tile flags
       tile->__tile_bitflags = _TileBitflags[tile->__tile_index & 0x0FFF];
       // Setup preplaced concrete
@@ -250,7 +251,9 @@ void Mod__setupmapstuff()
     {
       GameMapTileStruct *tile = &gGameMap.map[_CellNumbersWidthSpan[ypos] + xpos];
       // Process special value
-      int special_value = tile->back_up_special_value;
+      int special_value = tile->num_uncrushable_infantry + (tile->custom_byte << 8);
+      tile->num_uncrushable_infantry = 0;
+      tile->custom_byte = 0;
       switch ( special_value )
       {
         case 0: // MAPCMD_0:
