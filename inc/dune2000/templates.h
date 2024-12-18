@@ -58,7 +58,10 @@ typedef struct UnitAtribStruct
   bool SecondaryWeaponNoAutoAttack;
   uint8_t SecondaryWeaponShootOffset;
   uint8_t SecondaryWeaponShootAngle;
-  char ZeroBytes[70];
+  uint8_t zero_padding;
+  uint8_t CustomDeathSoundNumber;
+  int CustomDeathSound;
+  char ZeroBytes[64];
 }UnitAtribStruct;
 
 typedef struct BuildingAtrbStruct

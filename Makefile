@@ -83,6 +83,7 @@ OBJS            ?= callsites.o \
         src/mods/ai-unstuck-units-attacking-unreachable-target.o \
         src/mods/unit-move.o \
         src/mods/unit-add.o \
+        src/mods/unit-destroy.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \
@@ -103,7 +104,6 @@ OBJS            ?= callsites.o \
 	src/fixes/gettickcount-fix-func.o \
 	src/fixes/gettickcount-fix.o \
 	src/fixes/resolution-fix.o \
-	src/fixes/damage-position-fix.o \
 	src/fixes/invulnerable-infantry-fix.o \
 	src/fixes/ai-build-concrete-fix.o \
 	src/fixes/ai-upgrade-buildings-fix.o \
