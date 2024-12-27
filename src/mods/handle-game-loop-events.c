@@ -862,7 +862,7 @@ LABEL_241:
           // New logic end
         }
         starport_unit_type = side->__StarportIcons[starport_icon_index];
-        if ( starport_unit_type >= 60 )
+        if ( starport_unit_type >= MAX_UNIT_TYPES )
         {
           DebugFatal("HandleGameLoopEvents", "Invalid unitType");
         }
@@ -1022,7 +1022,7 @@ LABEL_332:
     // New logic end
   }
   upgrade_building_type = side->__UpgradeIcons[upgrade_icon_index];
-  if ( upgrade_building_type >= 100 )
+  if ( upgrade_building_type >= MAX_BUILDING_TYPES )
   {
     DebugFatal("HandleGameLoopEvents", "Invalid unitType");
   }
@@ -2151,7 +2151,7 @@ LABEL_665:
   // Select all units on screen of same type with W key
   if ( _KeyboardKeyDown[VK_W] )
   {
-    bool unit_group_used[60];
+    bool unit_group_used[MAX_UNIT_TYPES];
     memset(unit_group_used, 0, sizeof(unit_group_used));
     side = GetSide(gSideId);
     for (unit = side->__FirstUnitPtr; unit; unit = unit->Next)

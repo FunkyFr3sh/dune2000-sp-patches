@@ -174,7 +174,7 @@ typedef struct ExploisonAtrbStruct
 
 typedef struct WarheadStruct
 {
-  char Verses[12];
+  char Verses[MAX_ARMOUR_TYPES];
   int Radius;
   char InfDeath;
 }WarheadStruct;

@@ -156,9 +156,9 @@ bool Cond_CheckUnits(ConditionData *condition)
   bool strict_equal = condition->arg1 & CONDITIONFILTERFLAG_STRICT_EQUAL;
   int amount = LLIMIT(condition->arg2, 1);
   int matched = 0;
-  for (int side_id = 0; side_id < 8; side_id++)
+  for (int side_id = 0; side_id < MAX_SIDES; side_id++)
   {
-    if ((condition->side_id != 8) && (condition->side_id != side_id))
+    if ((condition->side_id != MAX_SIDES) && (condition->side_id != side_id))
       continue;
     CSide *side = GetSide(side_id);
     for (Unit *unit = side->__FirstUnitPtr; unit; unit = unit->Next)
@@ -183,9 +183,9 @@ bool Cond_CheckBuildings(ConditionData *condition)
   bool strict_equal = condition->arg1 & CONDITIONFILTERFLAG_STRICT_EQUAL;
   int amount = LLIMIT(condition->arg2, 1);
   int matched = 0;
-  for (int side_id = 0; side_id < 8; side_id++)
+  for (int side_id = 0; side_id < MAX_SIDES; side_id++)
   {
-    if ((condition->side_id != 8) && (condition->side_id != side_id))
+    if ((condition->side_id != MAX_SIDES) && (condition->side_id != side_id))
       continue;
     CSide *side = GetSide(side_id);
     for (Building *bld = side->__FirstBuildingPtr; bld; bld = bld->Next)
@@ -354,7 +354,7 @@ bool Cond_BuildingIcon(int side_id, bool status, bool any_building, int building
 bool Cond_UnitIcon(int side_id, bool status, bool any_unit, int queue, int unit_group)
 {
   CSide *side = GetSide(side_id);
-  for (int i = 0; i < 10; i++)
+  for (int i = 0; i < MAX_UNIT_BUILD_QUEUES; i++)
   {
     int unit_type_built = side->__UnitBuildQueue[i].__type;
     if (unit_type_built == -1)

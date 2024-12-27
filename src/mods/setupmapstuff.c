@@ -5,6 +5,8 @@
 #include "patch.h"
 #include "radar.h"
 
+#define SETUP_MAP_ERROR "Setup map error"
+
 bool StartWithMCV = true;
 
 double sqrt(double n){
@@ -212,11 +214,11 @@ void Mod__setupmapstuff()
     if (_gEventArray[i].event_type == ET_HOOK_BLOCK_START)
     {
       if (_gEventArray[i].args[0] >= HOOK_TYPE_COUNT)
-        DebugFatal("setupmapstuff.c", "Invalid hook type %d (event %d)", _gEventArray[i].args[0], i);
+        DebugFatal(SETUP_MAP_ERROR, "Invalid hook type %d (event %d)", _gEventArray[i].args[0], i);
       if (event_hooks[_gEventArray[i].args[0]] == -1)
         event_hooks[_gEventArray[i].args[0]] = i;
       else
-        DebugFatal("setupmapstuff.c", "Hook of the same type is defined more than once (event %d)", i);
+        DebugFatal(SETUP_MAP_ERROR, "Hook of the same type is defined more than once (event %d)", i);
     }
   }
 
@@ -348,7 +350,7 @@ void Mod__setupmapstuff()
             int side_id = (special_value >> 6) & 7;
             int direction = ((special_value >> 9) & 7) << 2;
             if (unit_type >= gUnitTypeNum)
-              DebugFatal("setupmapstuff.c", "Invalid unit type %d at %d,%d (maximum is %d)", unit_type, xpos, ypos, gUnitTypeNum - 1);
+              DebugFatal(SETUP_MAP_ERROR, "Invalid unit type %d at %d,%d (maximum is %d)", unit_type, xpos, ypos, gUnitTypeNum - 1);
             int unit_index = ModelAddUnit(side_id, unit_type, xpos, ypos, xpos, ypos, 0, 0);
             Unit *unit = GetUnit(side_id, unit_index);
             if (unit)
@@ -380,7 +382,7 @@ void Mod__setupmapstuff()
             int direction = ((special_value >> 10) & 3) << 3;
             bool tagged = (special_value & 4096) != 0;
             if (building_type >= gBuildingTypeNum)
-              DebugFatal("setupmapstuff.c", "Invalid building type %d at %d,%d (maximum is %d)", building_type, xpos, ypos, gBuildingTypeNum - 1);
+              DebugFatal(SETUP_MAP_ERROR, "Invalid building type %d at %d,%d (maximum is %d)", building_type, xpos, ypos, gBuildingTypeNum - 1);
             int building_index = ModelAddBuilding(side_id, building_type, xpos, ypos, true, no_new_harv, false);
             Building *bld = GetBuilding(side_id, building_index);
             // Turret barrel direction

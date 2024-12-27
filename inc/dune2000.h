@@ -19,6 +19,20 @@ typedef struct dwXYStruct
   int Y;
 } dwXYStruct;
 
+#define MAX_SIDES 8
+#define MAX_OBJECTS 1000
+#define MAX_UNIT_BUILD_QUEUES 10
+#define MAX_UNIT_TYPES 60
+#define MAX_BUILDING_TYPES 100
+#define MAX_WEAPON_TYPES 64
+#define MAX_EXPLOSION_TYPES 64
+#define MAX_WARHEAD_TYPES 30
+#define MAX_ARMOUR_TYPES 12
+#define MAX_TERRAIN_TYPES 8
+#define MAX_VEHICLE_TYPES 4
+#define MAX_CRATES 30
+#define MAX_TILES 800
+
 #include "dune2000/side.h"
 #include "dune2000/ai.h"
 #include "dune2000/templates.h"
@@ -394,22 +408,22 @@ extern char                 _GreyColor8;
 extern short                _radarcolor16_driveon;
 extern short                _GreenColor16;
 extern char                 _BloxFileName[200];
-extern int                  _TileTooltips[800];
+extern int                  _TileTooltips[MAX_TILES];
 extern short                _radarcolor16_sand;
 extern unsigned int         gGameTicks;
 extern unsigned int         _NeutralUnitText;
 extern char                 _radarcolor8_drive_on;
 extern char                 _bool_missionfailed_517400;
-extern int                  _UnitGroupTextIds[60];
+extern int                  _UnitGroupTextIds[MAX_UNIT_TYPES];
 extern short                _colormask3;
 extern int                  _tooltipcolor_yellow;
-extern char                 _cheatstates[8];
+extern char                 _cheatstates[MAX_SIDES];
 extern TooltipStruct        _Tooltipdata;
 extern TImage *             _TooltipBackupImage;
 extern int                  _tooltipcolor_gray;
 extern unsigned int         _NeutralStructureText;
 extern unsigned int         _UnrevealedText;
-extern int                  _BuildingGroupTextIds[100];
+extern int                  _BuildingGroupTextIds[MAX_BUILDING_TYPES];
 extern unsigned int         _EnemyUnitText;
 extern char                 _radarcolor8_spice;
 extern unsigned int         _EnemyStructureText;
@@ -421,7 +435,7 @@ extern char                 _blitflag;
 
 extern TImage               *gBackBuf;
 extern short                _ScreenShakes;
-extern CrateStruct          gCrates[30];
+extern CrateStruct          gCrates[MAX_CRATES];
 extern GameMapStruct        gGameMap;
 extern int                  gGameMapWidth;
 extern int                  gGameMapHeight;
@@ -433,67 +447,67 @@ extern char                 _GameOver;
 extern int                  _gEventCount; // Extended from char to int (mod)
 extern char                 _somebool_6B7050;
 // extern EventData            _gEventArray[64]; // Replaced by mod
-extern char                 _persideflags_6B8258[8];
+extern char                 _persideflags_6B8258[MAX_SIDES];
 extern int                  _gConditionCount; // Extended from char to int (mod)
-extern bool                 _gUnitsExist[8];
+extern bool                 _gUnitsExist[MAX_SIDES];
 extern int                  _gTimerValue;
 extern bool                 gWin;
 extern bool                 gLose;
 // extern ConditionData        _gConditionArray[48]; // Replaced by mod
-extern bool                 _gBuildingsExist[8];
+extern bool                 _gBuildingsExist[MAX_SIDES];
 extern MiscData             _gMiscData;
 extern VariableStruct       _gVariables;
 extern TechPosEntry         _TechPosdata[10][10];
 extern OrderStruct          _OrderData[8];
 
 
-extern int                  _templates_AnimationArtFrames[64];
+extern int                  _templates_AnimationArtFrames[MAX_EXPLOSION_TYPES];
 extern GroupIDsStruct       _templates_GroupIDs;
 extern TImage *             _SideBarPowerImages[4];
 extern TImage *             _RadarMap1;
-extern POINT                _SpawnLocations[8];
+extern POINT                _SpawnLocations[MAX_SIDES];
 extern int                  _tiledata[1000];
 extern TImage *             _RadarHouseImages[3];
 extern char                 _templates_UnitGroupCount;
-extern char                 _templates_UnitGroupNameList[60][50];
-extern char                 _templates_BulletNameList[64][50];
+extern char                 _templates_UnitGroupNameList[MAX_UNIT_TYPES][50];
+extern char                 _templates_BulletNameList[MAX_WEAPON_TYPES][50];
 
 extern int                  _ViewportHeight;
-extern BuildingAtrbStruct   _templates_buildattribs[100];
-extern int                  _templates_Explosiondata_AnimationArtFlags[64];
+extern BuildingAtrbStruct   _templates_buildattribs[MAX_BUILDING_TYPES];
+extern int                  _templates_Explosiondata_AnimationArtFlags[MAX_EXPLOSION_TYPES];
 extern char                 _templates_BuildingGroupCount;
 extern TImage *             _image_placement_marker_buildable_concrete;
 extern TImage *             dataimage[480];
 extern TImage *             gBuildingElements[120][32];
 extern int                  _sinValues[16384];
 extern char                 _MapName[200];
-extern char                 _templates_BuildingNameList[100][450];
+extern char                 _templates_BuildingNameList[MAX_BUILDING_TYPES][450];
 extern int                  _cosValues[16384];
-extern char                 _templates_BuildupArtFrames[100];
-extern SmokeDataStruct      _SmokeDataStructs[100];
-extern UnitAtribStruct      _templates_unitattribs[60];
+extern char                 _templates_BuildupArtFrames[MAX_BUILDING_TYPES];
+extern SmokeDataStruct      _SmokeDataStructs[MAX_BUILDING_TYPES];
+extern UnitAtribStruct      _templates_unitattribs[MAX_UNIT_TYPES];
 extern TImage *             _RadarMap2;
-extern ExploisonAtrbStruct  _templates_explosionattribs[64];
-extern BullAtrbStruct       _templates_bulletattribs[64];
+extern ExploisonAtrbStruct  _templates_explosionattribs[MAX_EXPLOSION_TYPES];
+extern BullAtrbStruct       _templates_bulletattribs[MAX_WEAPON_TYPES];
 extern TImage *             _BlankRadarImage;
-extern char                 _FreeSpawnLocations[8];
+extern char                 _FreeSpawnLocations[MAX_SIDES];
 extern uint16_t             _ColoursBinData[128];
 extern int                  _ViewportWidth;
-extern char                 _ArmourNames[12][50];
+extern char                 _ArmourNames[MAX_ARMOUR_TYPES][50];
 extern TImage *             _image_placement_marker_buildable;
 extern char                 _SpawnLocationCount;
-extern char                 _radarcolor8_sidecolor[8];
-extern unsigned int         _TileBitflags[800];
-extern char                 _templates_BuildingGroupNameList[100][50];
-extern char                 _templates_UnitNameList[60][450];
-extern char                 _WarheadNames[30][50];
-extern WarheadStruct        _WarheadData[30];
-extern char                 _templates_ExplosionNameList[64][50];
-extern float                _speed_values[8][4];
-extern int                  _templates_ProjectileArtDirections[64];
+extern char                 _radarcolor8_sidecolor[MAX_SIDES];
+extern unsigned int         _TileBitflags[MAX_TILES];
+extern char                 _templates_BuildingGroupNameList[MAX_BUILDING_TYPES][50];
+extern char                 _templates_UnitNameList[MAX_UNIT_TYPES][450];
+extern char                 _WarheadNames[MAX_WARHEAD_TYPES][50];
+extern WarheadStruct        _WarheadData[MAX_WARHEAD_TYPES];
+extern char                 _templates_ExplosionNameList[MAX_EXPLOSION_TYPES][50];
+extern float                _speed_values[MAX_TERRAIN_TYPES][MAX_VEHICLE_TYPES];
+extern int                  _templates_ProjectileArtDirections[MAX_WEAPON_TYPES];
 extern TImage *             _image_placement_marker_nonbuildable;
-extern char                 _templates_BuildingAnimationFrames[100];
-extern uint16_t             _radarcolor16_sidecolor[8];
+extern char                 _templates_BuildingAnimationFrames[MAX_BUILDING_TYPES];
+extern uint16_t             _radarcolor16_sidecolor[MAX_SIDES];
 extern unsigned char        gUnitTypeNum;
 extern unsigned char        gBuildingTypeNum;
 extern unsigned char        gBulletTypeNum;
@@ -537,10 +551,10 @@ extern int                  _MouseCursorID;
 extern unsigned char        MySideID;
 extern unsigned char        gSideId;
 extern char                 _SidesToProcess;
-extern char                 _NetPlayerNamesArray[8][60];
-extern char                 _gDiplomacy[8][8];
-extern CSide                gSideArray[8];
-extern unsigned char        _IRValues[8];
+extern char                 _NetPlayerNamesArray[MAX_SIDES][60];
+extern char                 _gDiplomacy[MAX_SIDES][MAX_SIDES];
+extern CSide                gSideArray[MAX_SIDES];
+extern unsigned char        _IRValues[MAX_SIDES];
 extern int                  OSMajorVersion;
 extern int                  OSMinorVersion;
 

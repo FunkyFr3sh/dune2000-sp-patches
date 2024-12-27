@@ -1,5 +1,3 @@
-#include <windows.h>
-#include <stdio.h>
 #include "macros/patch.h"
 #include "dune2000.h"
 #include "patch.h"
@@ -175,16 +173,16 @@ DEFAULT_WIN_LOSE_EVENTS:
   }
 }
 
-#define COORD0  coord_x[0], coord_y[0]
-#define COORD1  coord_x[1], coord_y[1]
-#define A_SIDE  args[0]
-#define A_ARG1  args[1]
-#define A_ARG2  args[2]
-#define A_VAL1  args[3]
-#define A_VAL2  args[4]
-#define A_VAL3  args[5]
-#define A_VAL4  args[6]
-#define A_FLOAT condition->float_val
+#define C0  coord_x[0], coord_y[0]
+#define C1  coord_x[1], coord_y[1]
+#define A0  args[0]
+#define A1  args[1]
+#define A2  args[2]
+#define A3  args[3]
+#define A4  args[4]
+#define A5  args[5]
+#define A6  args[6]
+#define FL condition->float_val
 
 bool EvaluateCondition(int condition_index)
 {
@@ -212,68 +210,68 @@ bool EvaluateCondition(int condition_index)
   switch ( condition->condition_type )
   {
     // Vanilla / General
-    case CT_BUILDINGEXISTS:     return Cond_BuildingExists  (A_SIDE, A_ARG1);
-    case CT_UNITEXISTS:         return Cond_UnitExists      (A_SIDE, A_ARG2);
-    case CT_INTERVAL:           return Cond_Interval        (A_ARG1, A_VAL1, A_VAL2, A_VAL3, condition);
-    case CT_TIMER:              return Cond_Timer           (A_ARG1, A_ARG2, A_VAL2, A_VAL3, condition);
-    case CT_CASUALTIES:         return Cond_Casualties      (A_SIDE, A_VAL3, A_FLOAT);
-    case CT_BASEDESTROYED:      return !_gBuildingsExist[A_SIDE];
-    case CT_UNITSDESTROYED:     return !_gUnitsExist[A_SIDE];
-    case CT_REVEALED:           return Cond_Revealed        (COORD0, A_VAL3, condition);
-    case CT_CREDITS:            return Cond_Credits         (A_SIDE, A_ARG1, A_ARG2, A_VAL3);
-    case CT_FLAG:               return A_VAL3 != 0;
-    case CT_RANDOMCHANCE:       return Cond_RandomChance    (A_VAL1, A_VAL2, A_VAL3, A_VAL4, condition);
-    case CT_RANDOMINTERVAL:     return Cond_RandomInterval  (A_ARG1, A_ARG2, A_VAL1, A_VAL2, A_VAL3, condition);
-    case CT_DIPLOMACY:          return _gDiplomacy[A_SIDE][A_ARG1] == A_ARG2;
-    case CT_DIFFICULTY:         return gDifficultyLevel == A_VAL3;
+    case CT_BUILDINGEXISTS:     return Cond_BuildingExists  (A0, A1);
+    case CT_UNITEXISTS:         return Cond_UnitExists      (A0, A2);
+    case CT_INTERVAL:           return Cond_Interval        (A1, A3, A4, A5, condition);
+    case CT_TIMER:              return Cond_Timer           (A1, A2, A4, A5, condition);
+    case CT_CASUALTIES:         return Cond_Casualties      (A0, A5, FL);
+    case CT_BASEDESTROYED:      return !_gBuildingsExist[A0];
+    case CT_UNITSDESTROYED:     return !_gUnitsExist[A0];
+    case CT_REVEALED:           return Cond_Revealed        (C0, A5, condition);
+    case CT_CREDITS:            return Cond_Credits         (A0, A1, A2, A5);
+    case CT_FLAG:               return A5 != 0;
+    case CT_RANDOMCHANCE:       return Cond_RandomChance    (A3, A4, A5, A6, condition);
+    case CT_RANDOMINTERVAL:     return Cond_RandomInterval  (A1, A2, A3, A4, A5, condition);
+    case CT_DIPLOMACY:          return _gDiplomacy[A0][A1] == A2;
+    case CT_DIFFICULTY:         return gDifficultyLevel == A5;
     // Environment checking
     case CT_CHECKUNITS:         return Cond_CheckUnits      (condition);
     case CT_CHECKBUILDINGS:     return Cond_CheckBuildings  (condition);
     case CT_CHECKCRATES:        return Cond_CheckCrates     (condition);
     case CT_CHECKTILES:         return Cond_CheckTiles      (condition);
-    case CT_SPICE_IN_AREA:      return Cond_SpiceInArea     (COORD0, COORD1, A_VAL3);
-    case CT_DAMAGE_IN_AREA:     return Cond_DamageInArea    (COORD0, COORD1, A_ARG1, A_ARG2, A_VAL3);
+    case CT_SPICE_IN_AREA:      return Cond_SpiceInArea     (C0, C1, A5);
+    case CT_DAMAGE_IN_AREA:     return Cond_DamageInArea    (C0, C1, A1, A2, A5);
     // Side related
-    case CT_POWER:              return Cond_Power           (A_SIDE, A_ARG1, A_VAL1, A_VAL3);
-    case CT_BUILDING_UPGRADES:  return CompareValue(GetSide(A_SIDE)->__BuildingGroupUpgradeCount[A_ARG1], A_VAL3, !A_VAL1);
-    case CT_STARPORT_STOCK:     return Cond_StarportStock   (A_SIDE, A_ARG1, A_ARG2, A_VAL1, A_VAL3);
-    case CT_STARPORT_COST:      return Cond_StarportCost    (A_SIDE, A_ARG1, A_VAL1, A_VAL3);
-    case CT_STARPORT_PICK:      return Cond_StarportPick    (A_SIDE, A_ARG1, A_ARG2, A_VAL1, A_VAL3);
-    case CT_STARPORT_DELIVERY:  return GetSide(A_SIDE)->__StarportDeliveryInProgress;
-    case CT_BUILDING_ICON:      return Cond_BuildingIcon    (A_SIDE, A_ARG1, A_ARG2, A_VAL2);
-    case CT_UNIT_ICON:          return Cond_UnitIcon        (A_SIDE, A_ARG1, A_ARG2, A_VAL1, A_VAL2);
-    case CT_UPGRADE_ICON:       return Cond_UpgradeIcon     (A_SIDE, A_ARG2, A_VAL2);
-    case CT_SPICE_HARVESTED:    return CompareValue(GetSide(A_SIDE)->__SpiceHarvested, A_VAL3, !A_VAL1);
-    case CT_UNITS_BUILT:        return Cond_UnitsBuilt      (A_SIDE, A_ARG1, A_ARG2, A_VAL1, A_VAL3);
-    case CT_BUILDINGS_BUILT:    return Cond_BuildingsBuilt  (A_SIDE, A_ARG1, A_ARG2, A_VAL1, A_VAL3);
-    case CT_UNITS_LOST:         return Cond_UnitsLost       (A_SIDE, A_ARG1, A_ARG2, A_VAL1, A_VAL3);
-    case CT_BUILDINGS_LOST:     return Cond_BuildingsLost   (A_SIDE, A_VAL1, A_VAL3);
-    case CT_UNITS_KILLED:       return Cond_UnitsKilled     (A_SIDE, A_ARG1, A_ARG2, A_VAL1, A_VAL2, A_VAL3);
-    case CT_BUILDINGS_KILLED:   return Cond_BuildingsKilled (A_SIDE, A_ARG1, A_ARG2, A_VAL1, A_VAL2, A_VAL3);
-    case CT_SIDE_PROPERTY:      return CompareDataValue     ((char *)GetSide(A_SIDE),    A_ARG1, A_VAL1, A_VAL3, !A_VAL2);
+    case CT_POWER:              return Cond_Power           (A0, A1, A3, A5);
+    case CT_BUILDING_UPGRADES:  return CompareValue         (GetSide(A0)->__BuildingGroupUpgradeCount[A1], A5, !A3);
+    case CT_STARPORT_STOCK:     return Cond_StarportStock   (A0, A1, A2, A3, A5);
+    case CT_STARPORT_COST:      return Cond_StarportCost    (A0, A1, A3, A5);
+    case CT_STARPORT_PICK:      return Cond_StarportPick    (A0, A1, A2, A3, A5);
+    case CT_STARPORT_DELIVERY:  return GetSide(A0)->__StarportDeliveryInProgress;
+    case CT_BUILDING_ICON:      return Cond_BuildingIcon    (A0, A1, A2, A4);
+    case CT_UNIT_ICON:          return Cond_UnitIcon        (A0, A1, A2, A3, A4);
+    case CT_UPGRADE_ICON:       return Cond_UpgradeIcon     (A0, A2, A4);
+    case CT_SPICE_HARVESTED:    return CompareValue         (GetSide(A0)->__SpiceHarvested, A5, !A3);
+    case CT_UNITS_BUILT:        return Cond_UnitsBuilt      (A0, A1, A2, A3, A5);
+    case CT_BUILDINGS_BUILT:    return Cond_BuildingsBuilt  (A0, A1, A2, A3, A5);
+    case CT_UNITS_LOST:         return Cond_UnitsLost       (A0, A1, A2, A3, A5);
+    case CT_BUILDINGS_LOST:     return Cond_BuildingsLost   (A0, A3, A5);
+    case CT_UNITS_KILLED:       return Cond_UnitsKilled     (A0, A1, A2, A3, A4, A5);
+    case CT_BUILDINGS_KILLED:   return Cond_BuildingsKilled (A0, A1, A2, A3, A4, A5);
+    case CT_SIDE_PROPERTY:      return CompareDataValue     ((char *)GetSide(A0),    A1, A3, A5, !A4);
     // AI related
-    case CT_AI_PROPERTY:        return CompareDataValue     ((char *)&_gAIArray[A_SIDE], A_ARG1, A_VAL1, A_VAL3, !A_VAL2);
+    case CT_AI_PROPERTY:        return CompareDataValue     ((char *)&_gAIArray[A0], A1, A3, A5, !A4);
     // Memory related
-    case CT_MEMORY_VALUE:       return CompareDataValue     (NULL,                       A_ARG1, A_VAL1, A_VAL3, !A_VAL2);
+    case CT_MEMORY_VALUE:       return CompareDataValue     (NULL,                   A1, A3, A5, !A4);
     // Variable related
-    case CT_VARIABLE_VALUE:     return Cond_VariableValue   (A_ARG1, A_VAL2, A_VAL3);
-    case CT_VARIABLE_CHANGED:   return Cond_VariableChanged (A_ARG1);
+    case CT_VARIABLE_VALUE:     return Cond_VariableValue   (A1, A4, A5);
+    case CT_VARIABLE_CHANGED:   return Cond_VariableChanged (A1);
     default:
-      DebugFatal("event-core.c", "Unknown condition type %d", condition->condition_type);
+      DebugFatal(EVENT_ERROR, "Unknown condition type %d (condition %d)", condition->condition_type, condition_index);
   }
   return false;  
 }
 
-#undef COORD0
-#undef COORD1
-#undef A_SIDE
-#undef A_ARG1
-#undef A_ARG2
-#undef A_VAL1
-#undef A_VAL2
-#undef A_VAL3
-#undef A_VAL4
-#undef A_FLOAT
+#undef C0
+#undef C1
+#undef A0
+#undef A1
+#undef A2
+#undef A3
+#undef A4
+#undef A5
+#undef A6
+#undef FL
 
 bool IsStartBlockEvent(int event_index)
 {
@@ -296,7 +294,7 @@ int FindEndMarkerForBlockEvent(int event_index)
       i = FindEndMarkerForBlockEvent(i);
     i++;
   }
-  DebugFatal("event-core.c", "Missing END event for block-start event %d", event_index);
+  DebugFatal(EVENT_ERROR, "Missing END event for block-start event %d", event_index);
   return 0;
 }
 
@@ -340,7 +338,7 @@ void ExecuteEventsInRange(int min_event_index, int max_event_index, eEventBlockT
       if (exit_count)
       {
         if (block_type == EBT_GLOBAL)
-          DebugFatal("event-core.c", "Exit event cannot be used outside of a Block (event %d)", event_index);
+          DebugFatal(EVENT_ERROR, "Exit event cannot be used outside of a Block (event %d)", event_index);
         else
         {
           if (block_type == EBT_BLOCK)
@@ -351,14 +349,14 @@ void ExecuteEventsInRange(int min_event_index, int max_event_index, eEventBlockT
       if (break_count)
       {
         if (block_type == EBT_GLOBAL || block_type == EBT_BLOCK)
-          DebugFatal("event-core.c", "Break event cannot be used outside of a Loop (event %d)", event_index);
+          DebugFatal(EVENT_ERROR, "Break event cannot be used outside of a Loop (event %d)", event_index);
         else
           break;
       }
       if (continue_count)
       {
         if (block_type == EBT_GLOBAL || block_type == EBT_BLOCK)
-          DebugFatal("event-core.c", "Continue event cannot be used outside of a Loop (event %d)", event_index);
+          DebugFatal(EVENT_ERROR, "Continue event cannot be used outside of a Loop (event %d)", event_index);
         else
         {
           if (block_type == EBT_LOOP)
@@ -455,9 +453,9 @@ void ExecuteEvent(int event_index)
       SetVariableValue(e.args[0], 0);
     int affected = 0;
     int arg_side_id = e.args[1];
-    for (int side_id = 0; side_id < 8; side_id++)
+    for (int side_id = 0; side_id < MAX_SIDES; side_id++)
     {
-      if ((arg_side_id != 8) && (arg_side_id != side_id))
+      if ((arg_side_id != MAX_SIDES) && (arg_side_id != side_id))
         continue;
       e.args[1] = side_id;
       CSide *side = GetSide(side_id);
@@ -514,9 +512,9 @@ void ExecuteEvent(int event_index)
       SetVariableValue(e.args[0], 0);
     int affected = 0;
     int arg_side_id = e.args[1];
-    for (int side_id = 0; side_id < 8; side_id++)
+    for (int side_id = 0; side_id < MAX_SIDES; side_id++)
     {
-      if ((arg_side_id != 8) && (arg_side_id != side_id))
+      if ((arg_side_id != MAX_SIDES) && (arg_side_id != side_id))
         continue;
       e.args[1] = side_id;
       CSide *side = GetSide(side_id);
@@ -560,9 +558,9 @@ void ExecuteEvent(int event_index)
       SetVariableValue(e.args[0], 0);
     int affected = 0;
     int arg_side_id = e.args[1];
-    for (int side_id = 0; side_id < 8; side_id++)
+    for (int side_id = 0; side_id < MAX_SIDES; side_id++)
     {
-      if ((arg_side_id != 8) && (arg_side_id != side_id))
+      if ((arg_side_id != MAX_SIDES) && (arg_side_id != side_id))
         continue;
       e.args[1] = side_id;
       CSide *side = GetSide(side_id);
@@ -599,9 +597,9 @@ void ExecuteEvent(int event_index)
       SetVariableValue(e.args[0], 0);
     int affected = 0;
     int arg_side_id = e.args[1];
-    for (int side_id = 0; side_id < 8; side_id++)
+    for (int side_id = 0; side_id < MAX_SIDES; side_id++)
     {
-      if ((arg_side_id != 8) && (arg_side_id != side_id))
+      if ((arg_side_id != MAX_SIDES) && (arg_side_id != side_id))
         continue;
       e.args[1] = side_id;
       CSide *side = GetSide(side_id);
@@ -712,7 +710,7 @@ void ExecuteEvent(int event_index)
       SetVariableValue(e.args[0], 0);
     int affected = 0;
     // Process all sides
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < MAX_SIDES; i++)
     {
       if (CheckIfSideMatchesFilter((ObjectFilterStruct *)&e.data[1], i))
       {
@@ -739,249 +737,248 @@ void ExecuteEvent(int event_index)
   ExecuteEventAction(&e);
 }
 
-#define EV_IDX  e->event_index
-#define COORD0  e->coord_x[0], e->coord_y[0]
-#define COORD1  e->coord_x[1], e->coord_y[1]
-#define COORD2  e->coord_x[2], e->coord_y[2]
-#define COORD3  e->coord_x[3], e->coord_y[3]
-#define A_SIDE  e->args[1]
-#define A_AMNT  e->args[0]
-#define A_ITEM  e->args[2]
-#define A_ENUM  e->args[3]
-#define A_BOOL  e->args[4]
-#define A_VAL1  e->args[5]
-#define A_VAL2  *(int *)&e->data[1]
-#define OBJ_ID e->object_index
+#define ID  e->event_index
+#define C0  e->coord_x[0], e->coord_y[0]
+#define C1  e->coord_x[1], e->coord_y[1]
+#define C2  e->coord_x[2], e->coord_y[2]
+#define C3  e->coord_x[3], e->coord_y[3]
+#define A0  e->args[1]
+#define A1  e->args[0]
+#define A2  e->args[2]
+#define A3  e->args[3]
+#define A4  e->args[4]
+#define A5  e->args[5]
+#define A6  *(int *)&e->data[1]
+#define OBJ e->object_index
 
-#define VALUEOPERATION(data) data = ValueOperation(data, A_VAL1, A_ENUM)
+#define VALUEOPERATION(data) data = ValueOperation(ID, data, A5, A3)
 
 void ExecuteEventAction(EventContext *e)
 {
   switch ( e->event_type )
   {
   // Vanilla / General
-  case ET_REINFORCEMENT:          EvAct_AddDelivery         (COORD0, A_SIDE, A_AMNT, A_ITEM, A_BOOL, A_VAL1, DELIVERYTYPE_REINFORCE, e->data); break;
-  case ET_STARPORT_DELIVERY:      EvAct_AddDelivery         (COORD0, A_SIDE, A_AMNT, A_ITEM, A_BOOL, A_VAL1, DELIVERYTYPE_STARPORT,  e->data); break;
-  case ET_ALLEGIANCE:             EvAct_SetDiplomacy        (A_SIDE, A_ITEM, A_ENUM, A_BOOL); break;
-  case ET_LEAVE:                  CSide__BlowupAll_surrender(GetSide(A_SIDE)); break;
-  case ET_BESERK:                 _gAIArray[A_SIDE].__GoBeserk_OtherStates = 1; break;
-  case ET_PLAYSOUND:              EvAct_PlaySound           (A_VAL1, A_ENUM, A_BOOL, COORD0); break;
-  case ET_SETBUILDRATE:           VALUEOPERATION(_gAIArray[A_SIDE].UnitBuildRate); break;
-  case ET_SETATTACKBUILDINGRATE:  VALUEOPERATION(_gAIArray[A_SIDE].TimeBetweenBuildingAttacks); break;
-  case ET_SETCASH:                EvAct_SetCash             (A_SIDE, A_ENUM, A_VAL1); break;
-  case ET_SETTECH:                EvAct_SetTech             (A_SIDE, A_ENUM, A_BOOL, A_VAL1); break;
-  case ET_WIN:                    if (SpawnerActive && _IsMultiplayer && MeIsSpectator) _GameOver = 1; if ( !gLose ) gWin = 1; break;
-  case ET_LOSE:                   if ( !gWin ) { gLose = 1; if (SpawnerActive && _IsMultiplayer) _GameOver = 1; } break;
-  case ET_SWITCH_MY_SIDE:         EvAct_SwitchMySide        (A_SIDE, A_ENUM, A_BOOL); break;
-  case ET_HIDE_MAP:               EvAct_HideMap             (); break;
-  case ET_REVEAL:                 EvAct_RevealMap           (COORD0, A_AMNT); break;
-  case ET_SETTIMER:               VALUEOPERATION(_gTimerValue); break;
-  case ET_HIDETIMER:              _gTimerValue = -1; break;
-  case ET_SHOWMESSAGE:            EvAct_ShowMessage         (COORD0, A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL, A_VAL1, (ShowMessageEventData *)&e->data[1]); break;
-  case ET_UNIT_SPAWN:             EvAct_UnitSpawn           (COORD0, A_SIDE, A_AMNT, A_ENUM, A_VAL1, e->data); break;
-  case ET_SET_FLAG:               _gConditionArray[A_SIDE].val3 = A_VAL1; break;
-  case ET_UN_BLOCK_EVENT:         EvAct_UnBlockEvent        (A_BOOL, A_VAL1); break;
-  case ET_PLAY_MUSIC:             EvAct_PlayMusic           (e->data); break;
-  case ET_DAMAGE_TILES:           EvAct_DamageTiles         (COORD0, COORD2, COORD3, A_SIDE, A_ITEM, A_ENUM, A_BOOL); break;
-  case ET_ADD_UNIT:               EvAct_AddUnit             (COORD0, A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL, A_VAL1, A_VAL2); break;
-  case ET_ADD_BUILDING:           EvAct_AddBuilding         (COORD0, A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL, A_VAL1, A_VAL2); break;
-  case ET_ADD_BULLET:             EvAct_AddBullet           (COORD0, COORD1, COORD2, COORD3, A_SIDE, A_ITEM, A_ENUM, A_BOOL, A_VAL1, A_VAL2); break;
-  case ET_ADD_EXPLOSION:          EvAct_AddExplosion        (COORD0, COORD2, COORD3, A_SIDE, A_ITEM, A_ENUM, A_BOOL, A_VAL1, A_VAL2); break;
-  case ET_ADD_CRATE:              EvAct_AddCrate            (COORD0, A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_VAL1); break;
-  case ET_ADD_CONCRETE:           EvAct_AddConcrete         (COORD0, COORD1, A_SIDE, A_VAL1); break;
-  case ET_SPICE_BLOOM:            EvAct_SpiceBloom          (COORD0, A_AMNT, A_ENUM, A_BOOL); break;
-  case ET_SHAKE_SCREEN:           _ScreenShakes = A_VAL1; break;
-  case ET_CHANGE_VIEWPORT:        EvAct_ChangeViewport      (COORD0, A_ENUM, A_BOOL); break;
-  case ET_CHANGE_MAP_BLOCK:       EvAct_ChangeMapBlock      (COORD0, COORD1, A_ENUM, (uint16_t *)&e->data[1]); break;
-  case ET_TRANSFORM_TILES:        EvAct_TransformTiles      (A_AMNT, A_ENUM, (uint16_t *)&e->data[1]); break;
-  case ET_ADD_BUILDING_DESTRUCT:  EvAct_AddBuildingDestruct (COORD0, A_SIDE, A_ITEM); break;
-  case ET_ADD_HOMING_BULLET:      EvAct_AddHomingBullet     (COORD0, COORD1, A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL, A_VAL1, A_VAL2); break;
-  case ET_ACTIVATE_TIMER:         EvAct_ActivateTimer       (A_VAL1); break;
-  case ET_REMOVE_MESSAGE:         EvAct_RemoveMessage       (A_SIDE, A_AMNT, A_ITEM); break;
-  case ET_SET_MESSAGE_COLOR:      EvAct_SetMessageColor     (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_VAL1, A_VAL2); break;
-  case ET_SET_TOOLTIP:            EvAct_SetTooltip          (A_ITEM, A_ENUM, A_VAL1, (ShowMessageEventData *)&e->data[1]);
+  case ET_REINFORCEMENT:                  EvAct_AddDelivery                   (ID, C0, A0, A1, A2, A4, A5, DELIVERYTYPE_REINFORCE, e->data); break;
+  case ET_STARPORT_DELIVERY:              EvAct_AddDelivery                   (ID, C0, A0, A1, A2, A4, A5, DELIVERYTYPE_STARPORT,  e->data); break;
+  case ET_ALLEGIANCE:                     EvAct_SetDiplomacy                  (ID, A0, A2, A3, A4);                         break;
+  case ET_LEAVE:                          CSide__BlowupAll_surrender(GetSide(A0));                                          break;
+  case ET_BESERK:                         _gAIArray[A0].__GoBeserk_OtherStates = 1;                                         break;
+  case ET_PLAYSOUND:                      EvAct_PlaySound                     (ID, C0, A5, A3, A4);                         break;
+  case ET_SETBUILDRATE:                   VALUEOPERATION(_gAIArray[A0].UnitBuildRate);                                      break;
+  case ET_SETATTACKBUILDINGRATE:          VALUEOPERATION(_gAIArray[A0].TimeBetweenBuildingAttacks);                         break;
+  case ET_SETCASH:                        EvAct_SetCash                       (ID, A0, A3, A5);                             break;
+  case ET_SETTECH:                        EvAct_SetTech                       (ID, A0, A3, A4, A5);                         break;
+  case ET_WIN:                            if (SpawnerActive && _IsMultiplayer && MeIsSpectator) _GameOver = 1; if ( !gLose ) gWin = 1; break;
+  case ET_LOSE:                           if ( !gWin ) { gLose = 1; if (SpawnerActive && _IsMultiplayer) _GameOver = 1; }   break;
+  case ET_SWITCH_MY_SIDE:                 EvAct_SwitchMySide                  (ID, A0, A3, A4);                             break;
+  case ET_HIDE_MAP:                       EvAct_HideMap                       ();                                           break;
+  case ET_REVEAL:                         EvAct_RevealMap                     (ID, C0, A1);                                 break;
+  case ET_SETTIMER:                       VALUEOPERATION(_gTimerValue);                                                     break;
+  case ET_HIDETIMER:                      _gTimerValue = -1;                                                                break;
+  case ET_SHOWMESSAGE:                    EvAct_ShowMessage                   (C0, A0, A1, A2, A3, A4, A5, (ShowMessageEventData *)&e->data[1]); break;
+  case ET_UNIT_SPAWN:                     EvAct_UnitSpawn                     (ID, C0, A0, A1, A3, A5, e->data);            break;
+  case ET_SET_FLAG:                       _gConditionArray[A0].val3 = A5;                                                   break;
+  case ET_UN_BLOCK_EVENT:                 EvAct_UnBlockEvent                  (ID, A4, A5);                                 break;
+  case ET_PLAY_MUSIC:                     EvAct_PlayMusic                     (e->data);                                    break;
+  case ET_DAMAGE_TILES:                   EvAct_DamageTiles                   (ID, C0, C2, C3, A0, A2, A3, A4);             break;
+  case ET_ADD_UNIT:                       EvAct_AddUnit                       (ID, C0, A0, A1, A2, A3, A4, A5, A6);         break;
+  case ET_ADD_BUILDING:                   EvAct_AddBuilding                   (ID, C0, A0, A1, A2, A3, A4, A5, A6);         break;
+  case ET_ADD_BULLET:                     EvAct_AddBullet                     (ID, C0, C1, C2, C3, A0, A2, A3, A4, A5, A6); break;
+  case ET_ADD_EXPLOSION:                  EvAct_AddExplosion                  (ID, C0, C2, C3, A0, A2, A3, A4, A5, A6);     break;
+  case ET_ADD_CRATE:                      EvAct_AddCrate                      (ID, C0, A0, A1, A2, A3, A5);                 break;
+  case ET_ADD_CONCRETE:                   EvAct_AddConcrete                   (ID, C0, C1, A0, A5);                         break;
+  case ET_SPICE_BLOOM:                    EvAct_SpiceBloom                    (ID, C0, A1, A3, A4);                         break;
+  case ET_SHAKE_SCREEN:                   _ScreenShakes = A5;                                                               break;
+  case ET_CHANGE_VIEWPORT:                EvAct_ChangeViewport                (C0, A3, A4);                                 break;
+  case ET_CHANGE_MAP_BLOCK:               EvAct_ChangeMapBlock                (ID, C0, C1, A3, (uint16_t *)&e->data[1]);    break;
+  case ET_TRANSFORM_TILES:                EvAct_TransformTiles                (ID, A1, A3, (uint16_t *)&e->data[1]);        break;
+  case ET_ADD_BUILDING_DESTRUCT:          EvAct_AddBuildingDestruct           (ID, C0, A0, A2);                             break;
+  case ET_ADD_HOMING_BULLET:              EvAct_AddHomingBullet               (ID, C0, C1, A0, A1, A2, A3, A4, A5, A6);     break;
+  case ET_ACTIVATE_TIMER:                 EvAct_ActivateTimer                 (ID, A5);                                     break;
+  case ET_REMOVE_MESSAGE:                 EvAct_RemoveMessage                 (A0, A1, A2);                                 break;
+  case ET_SET_MESSAGE_COLOR:              EvAct_SetMessageColor               (ID, A0, A1, A2, A3, A5, A6);                 break;
+  case ET_SET_TOOLTIP:                    EvAct_SetTooltip                    (ID, A2, A3, A5, (ShowMessageEventData *)&e->data[1]); break;
   // Side manipulation
-  case ET_TRANSFER_CREDITS:       EvAct_TransferCredits     (A_SIDE, A_ENUM, A_VAL1); break;
-  case ET_SET_BUILDING_UPGRADES:  EvAct_SetBuildingUpgrades (A_SIDE, A_ITEM, A_ENUM, A_VAL1); break;
-  case ET_SET_STARPORT_STOCK:     VALUEOPERATION(GetSide(A_SIDE)->__StarportUnitTypeStock[A_ITEM]); break;
-  case ET_SET_STARPORT_COST:      EvAct_SetStarportCost     (A_SIDE, A_ITEM, A_ENUM, A_BOOL, A_VAL1); break;
-  case ET_CHANGE_STARPORT_UNIT:   GetSide(A_SIDE)->__StarportIcons[A_AMNT] = A_ITEM; break;
-  case ET_SHOW_SIDE_DATA:         EvAct_ShowSideData        (A_SIDE, A_VAL1); break;
+  case ET_TRANSFER_CREDITS:               EvAct_TransferCredits               (ID, A0, A3, A5);                             break;
+  case ET_SET_BUILDING_UPGRADES:          EvAct_SetBuildingUpgrades           (ID, A0, A2, A3, A5);                         break;
+  case ET_SET_STARPORT_STOCK:             VALUEOPERATION(GetSide(A0)->__StarportUnitTypeStock[A2]);                         break;
+  case ET_SET_STARPORT_COST:              EvAct_SetStarportCost               (ID, A0, A2, A3, A4, A5);                     break;
+  case ET_CHANGE_STARPORT_UNIT:           GetSide(A0)->__StarportIcons[A1] = A2;                                            break;
+  case ET_SHOW_SIDE_DATA:                 EvAct_ShowSideData                  (ID, A0, A5);                                 break;
   // AI manipulation
-  case ET_SET_AI_PROPERTY:        EvAct_SetAIProperty       (A_SIDE, A_AMNT, A_ENUM, A_VAL1, A_VAL2); break;
-  case ET_SHOW_AI_DATA:           EvAct_ShowAIData          (A_SIDE, A_VAL1); break;
+  case ET_SET_AI_PROPERTY:                EvAct_SetAIProperty                 (ID, A0, A1, A3, A5, A6);                     break;
+  case ET_SHOW_AI_DATA:                   EvAct_ShowAIData                    (ID, A0, A5);                                 break;
   // Memory manipulation
-  case ET_SET_MEMORY_DATA:        EvAct_SetMemoryData       (A_AMNT, A_ENUM, A_VAL1, A_VAL2); break;
-  case ET_SHOW_MEMORY_DATA:       EvAct_ShowMemoryData      (A_VAL1); break;
+  case ET_SET_MEMORY_DATA:                EvAct_SetMemoryData                 (ID, A1, A3, A5, A6);                         break;
+  case ET_SHOW_MEMORY_DATA:               EvAct_ShowMemoryData                (ID, A5);                                     break;
   // Unit manipulation
-  case ET_DESTROY_UNIT:           EvAct_DestroyUnit         (A_SIDE, A_BOOL, OBJ_ID); break;
-  case ET_DAMAGE_HEAL_UNIT:       EvAct_DamageHealUnit      (A_SIDE, A_ENUM, A_BOOL, A_VAL1, OBJ_ID); break;
-  case ET_CHANGE_UNIT_OWNER:      ChangeUnitOwner           (A_SIDE, A_ITEM, OBJ_ID, 0); break;
-  case ET_CHANGE_UNIT_TYPE:       EvAct_ChangeUnitType      (A_SIDE, A_ITEM, A_BOOL, OBJ_ID); break;
-  case ET_SET_UNIT_FLAG:          EvAct_SetUnitFlag         (A_SIDE, A_ENUM, A_VAL1, OBJ_ID); break;
-  case ET_SET_UNIT_PROPERTY:      EvAct_SetUnitProperty     (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_VAL1, OBJ_ID); break;
-  case ET_SELECT_UNIT:            EvAct_SelectUnit          (A_SIDE, A_BOOL, OBJ_ID); break;
-  case ET_AIRLIFT_UNIT:           EvAct_AirliftUnit         (A_SIDE, COORD0, A_BOOL, OBJ_ID); break;
-  case ET_SHOW_UNIT_DATA:         EvAct_ShowUnitData        (A_SIDE, OBJ_ID); break;
+  case ET_DESTROY_UNIT:                   EvAct_DestroyUnit                   (ID, A0, A4, OBJ);                            break;
+  case ET_DAMAGE_HEAL_UNIT:               EvAct_DamageHealUnit                (ID, A0, A3, A4, A5, OBJ);                    break;
+  case ET_CHANGE_UNIT_OWNER:              ChangeUnitOwner                     (A0, A2, OBJ, 0);                             break;
+  case ET_CHANGE_UNIT_TYPE:               EvAct_ChangeUnitType                (ID, A0, A2, A4, OBJ);                        break;
+  case ET_SET_UNIT_FLAG:                  EvAct_SetUnitFlag                   (ID, A0, A3, A5, OBJ);                        break;
+  case ET_SET_UNIT_PROPERTY:              EvAct_SetUnitProperty               (ID, A0, A1, A2, A3, A5, OBJ);                break;
+  case ET_SELECT_UNIT:                    EvAct_SelectUnit                    (ID, A0, A4, OBJ);                            break;
+  case ET_AIRLIFT_UNIT:                   EvAct_AirliftUnit                   (ID, A0, C0, A4, OBJ);                        break;
+  case ET_SHOW_UNIT_DATA:                 EvAct_ShowUnitData                  (ID, A0, OBJ);                                break;
   // Building manipulation
-  case ET_DESTROY_BUILDING:       EvAct_DestroyBuilding     (A_SIDE, A_BOOL, OBJ_ID); break;
-  case ET_DAMAGE_HEAL_BUILDING:   EvAct_DamageHealBuilding  (A_SIDE, A_ENUM, A_BOOL, A_VAL1, OBJ_ID); break;
-  case ET_CHANGE_BUILDING_OWNER:  EvAct_ChangeBuildingOwner (A_SIDE, A_ITEM, OBJ_ID); break;
-  case ET_CHANGE_BUILDING_TYPE:   EvAct_ChangeBuildingType  (A_SIDE, A_ITEM, OBJ_ID); break;
-  case ET_SET_BUILDING_FLAG:      EvAct_SetBuildingFlag     (A_SIDE, A_ENUM, A_VAL1, OBJ_ID); break;
-  case ET_SET_BUILDING_PROPERTY:  EvAct_SetBuildingProperty (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_VAL1, OBJ_ID); break;
-  case ET_SELECT_BUILDING:        EvAct_SelectBuilding      (A_SIDE, A_BOOL, OBJ_ID); break;
-  case ET_SHOW_BUILDING_DATA:     EvAct_ShowBuildingData    (A_SIDE, OBJ_ID); break;
+  case ET_DESTROY_BUILDING:               EvAct_DestroyBuilding               (ID, A0, A4, OBJ);                            break;
+  case ET_DAMAGE_HEAL_BUILDING:           EvAct_DamageHealBuilding            (ID, A0, A3, A4, A5, OBJ);                    break;
+  case ET_CHANGE_BUILDING_OWNER:          EvAct_ChangeBuildingOwner           (ID, A0, A2, OBJ);                            break;
+  case ET_CHANGE_BUILDING_TYPE:           EvAct_ChangeBuildingType            (ID, A0, A2, OBJ);                            break;
+  case ET_SET_BUILDING_FLAG:              EvAct_SetBuildingFlag               (ID, A0, A3, A5, OBJ);                        break;
+  case ET_SET_BUILDING_PROPERTY:          EvAct_SetBuildingProperty           (ID, A0, A1, A2, A3, A5, OBJ);                break;
+  case ET_SELECT_BUILDING:                EvAct_SelectBuilding                (ID, A0, A4, OBJ);                            break;
+  case ET_SHOW_BUILDING_DATA:             EvAct_ShowBuildingData              (ID, A0, OBJ);                                break;
   // Bullet manipulation
-  case ET_SET_BULLET_PROPERTY:    EvAct_SetBulletProperty   (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_VAL1, OBJ_ID); break;
+  case ET_SET_BULLET_PROPERTY:            EvAct_SetBulletProperty             (ID, A0, A1, A2, A3, A5, OBJ);                break;
   // Explosion manipulation
-  case ET_SET_EXPLOSION_PROPERTY: EvAct_SetExplosionProperty(A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_VAL1, OBJ_ID); break;
+  case ET_SET_EXPLOSION_PROPERTY:         EvAct_SetExplosionProperty          (ID, A0, A1, A2, A3, A5, OBJ);                break;
   // Crate manipulation
-  case ET_REMOVE_CRATE:           EvAct_RemoveCrate         (OBJ_ID); break;
-  case ET_PICKUP_CRATE:           EvAct_PickupCrate         (A_SIDE, OBJ_ID); break;
-  case ET_SET_CRATE_PROPERTY:     EvAct_SetCrateProperty    (A_AMNT, A_ITEM, A_ENUM, A_VAL1, OBJ_ID); break;
-  case ET_SHOW_CRATE_DATA:        EvAct_ShowCrateData       (OBJ_ID); break;
+  case ET_REMOVE_CRATE:                   EvAct_RemoveCrate                   (ID, OBJ);                                    break;
+  case ET_PICKUP_CRATE:                   EvAct_PickupCrate                   (ID, A0, OBJ);                                break;
+  case ET_SET_CRATE_PROPERTY:             EvAct_SetCrateProperty              (ID, A1, A2, A3, A5, OBJ);                    break;
+  case ET_SHOW_CRATE_DATA:                EvAct_ShowCrateData                 (ID, OBJ);                                    break;
   // Tile manipulation
-  case ET_CHANGE_TILE:            EvAct_ChangeTile          (A_ENUM, A_VAL1, COORD0); break;
-  case ET_SET_TILE_ATTRIBUTE:     EvAct_SetTileAttribute    (A_ENUM, A_VAL1, COORD0); break;
-  case ET_SET_TILE_PROPERTY:      EvAct_SetTileProperty     (A_AMNT, A_ITEM, A_ENUM, A_VAL1, COORD0); break;
-  case ET_REVEAL_TILE:            EvAct_RevealTile          (A_AMNT, COORD0); break;
-  case ET_HIDE_TILE:              EvAct_HideTile            (COORD0); break;
-  case ET_SHOW_TILE_DATA:         EvAct_ShowTileData        (COORD0); break;
+  case ET_CHANGE_TILE:                    EvAct_ChangeTile                    (ID, A3, A5, C0);                             break;
+  case ET_SET_TILE_ATTRIBUTE:             EvAct_SetTileAttribute              (ID, A3, A5, C0);                             break;
+  case ET_SET_TILE_PROPERTY:              EvAct_SetTileProperty               (ID, A1, A2, A3, A5, C0);                     break;
+  case ET_REVEAL_TILE:                    EvAct_RevealTile                    (ID, A1, C0);                                 break;
+  case ET_HIDE_TILE:                      EvAct_HideTile                      (ID, C0);                                     break;
+  case ET_SHOW_TILE_DATA:                 EvAct_ShowTileData                  (ID, C0);                                     break;
   // Orders
-  case ET_ORDER_UNIT_MOVE:                GenerateUnitMoveOrder               (A_SIDE, COORD0);                         RestoreUnitSelection(A_SIDE, A_BOOL); break;
-  case ET_ORDER_DOCK_WITH_REFINERY:       GenerateDockWithRefineryOrder       (A_SIDE, OBJ_ID);                         RestoreUnitSelection(A_SIDE, A_BOOL); break;
-  case ET_ORDER_REPAIR_SELECTED_UNITS:    GenerateRepairSelectedUnitsOrder    (A_SIDE, OBJ_ID);                         RestoreUnitSelection(A_SIDE, A_BOOL); break;
-  case ET_ORDER_REPAIR_SINGLE_UNIT:       GenerateRepairSingleUnitOrder       (A_SIDE, OBJ_ID);                         break;
-  case ET_ORDER_UNIT_ATTACK_UNIT:         GenerateUnitAttackUnitOrder         (A_ITEM, A_SIDE, OBJ_ID);                 RestoreUnitSelection(A_ITEM, A_BOOL); break;
-  case ET_ORDER_UNIT_ATTACK_BUILDING:     GenerateUnitAttackBuildingOrder     (A_ITEM, A_SIDE, OBJ_ID);                 RestoreUnitSelection(A_ITEM, A_BOOL); break;
-  case ET_ORDER_UNIT_ATTACK_TILE:         GenerateUnitAttackTileOrder         (A_SIDE, COORD0);                         RestoreUnitSelection(A_SIDE, A_BOOL); break;
-  case ET_ORDER_UNIT_GUARD:               GenerateUnitGuardOrder              (A_SIDE);                                 RestoreUnitSelection(A_SIDE, A_BOOL); break;
-  case ET_ORDER_UNIT_SCATTER:             GenerateUnitScatterOrder            (A_SIDE);                                 RestoreUnitSelection(A_SIDE, A_BOOL); break;
-  case ET_ORDER_UNIT_RETREAT:             EvAct_OrderUnitRetreat              (A_SIDE);                                 RestoreUnitSelection(A_SIDE, A_BOOL); break;
-  case ET_ORDER_UNIT_DEPLOY:              GenerateUnitDeployOrder             (A_SIDE, OBJ_ID);                         break;
-  case ET_ORDER_BUILDING_ATTACK_UNIT:     GenerateBuildingAttackUnitOrder     (A_ITEM, A_SIDE, OBJ_ID);                 RestoreBuildingSelection(A_SIDE, A_BOOL); break;
-  case ET_ORDER_BUILDING_ATTACK_BUILDING: GenerateBuildingAttackBuildingOrder (A_ITEM, A_SIDE, OBJ_ID);                 RestoreBuildingSelection(A_SIDE, A_BOOL); break;
-  case ET_ORDER_BUILDING_SET_PRIMARY:     GenerateBuildingSetPrimaryOrder     (A_SIDE);                                 RestoreBuildingSelection(A_SIDE, A_BOOL); break;
-  case ET_ORDER_BUILDING_REPAIR:          GenerateBuildingRepairOrder         (A_SIDE, OBJ_ID);                         break;
-  case ET_ORDER_BUILDING_SELL:            GenerateBuildingSellOrder           (A_SIDE, OBJ_ID);                         break;
-  case ET_ORDER_STOP:                     GenerateStopOrder                   (A_SIDE);                                 RestoreUnitSelection(A_SIDE, A_BOOL); RestoreBuildingSelection(A_SIDE, A_BOOL); break;
-  case ET_ORDER_BUILD_BUILDING_PICK:      GenerateBuildBuildingPickOrder      (A_SIDE, A_ITEM);                         break;
-  case ET_ORDER_BUILD_BUILDING_CANCEL:    EvAct_OrderBuildBuildingCancel      (A_SIDE, A_BOOL);                         break;
-  case ET_ORDER_BUILD_PLACE_BUILDING:     EvAct_OrderBuildPlaceBuilding       (A_SIDE, COORD0);                         break;
-  case ET_ORDER_BUILD_UNIT_PICK:          GenerateBuildUnitPickOrder          (A_SIDE, A_ITEM);                         break;
-  case ET_ORDER_BUILD_UNIT_CANCEL:        EvAct_OrderBuildUnitCancel          (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL); break;
-  case ET_ORDER_STARPORT_PICK:            EvAct_OrderStarportPick             (A_SIDE, A_ITEM);                         break;
-  case ET_ORDER_STARPORT_UNPICK:          GenerateStarportUnpickOrder         (A_SIDE, A_ITEM);                         break;
-  case ET_ORDER_STARPORT_PURCHASE:        GenerateStarportPurchaseOrder       (A_SIDE);                                 break;
-  case ET_ORDER_STARPORT_CANCEL:          GenerateStarportCancelOrder         (A_SIDE);                                 break;
-  case ET_ORDER_UPGRADE_PICK:             GenerateUpgradePickOrder            (A_SIDE, A_ITEM);                         break;
-  case ET_ORDER_UPGRADE_CANCEL:           EvAct_OrderUpgradeCancel            (A_SIDE, A_BOOL);                         break;
-  case ET_ORDER_SPECIAL_WEAPON:           GenerateSpecialWeaponOrder          (A_SIDE, A_ITEM, COORD0);                 break;
+  case ET_ORDER_UNIT_MOVE:                GenerateUnitMoveOrder               (A0, C0);       RestoreUnitSelection(A0, A4); break;
+  case ET_ORDER_DOCK_WITH_REFINERY:       GenerateDockWithRefineryOrder       (A0, OBJ);      RestoreUnitSelection(A0, A4); break;
+  case ET_ORDER_REPAIR_SELECTED_UNITS:    GenerateRepairSelectedUnitsOrder    (A0, OBJ);      RestoreUnitSelection(A0, A4); break;
+  case ET_ORDER_REPAIR_SINGLE_UNIT:       GenerateRepairSingleUnitOrder       (A0, OBJ);                                    break;
+  case ET_ORDER_UNIT_ATTACK_UNIT:         GenerateUnitAttackUnitOrder         (A2, A0, OBJ);  RestoreUnitSelection(A2, A4); break;
+  case ET_ORDER_UNIT_ATTACK_BUILDING:     GenerateUnitAttackBuildingOrder     (A2, A0, OBJ);  RestoreUnitSelection(A2, A4); break;
+  case ET_ORDER_UNIT_ATTACK_TILE:         GenerateUnitAttackTileOrder         (A0, C0);       RestoreUnitSelection(A0, A4); break;
+  case ET_ORDER_UNIT_GUARD:               GenerateUnitGuardOrder              (A0);           RestoreUnitSelection(A0, A4); break;
+  case ET_ORDER_UNIT_SCATTER:             GenerateUnitScatterOrder            (A0);           RestoreUnitSelection(A0, A4); break;
+  case ET_ORDER_UNIT_RETREAT:             EvAct_OrderUnitRetreat              (ID, A0);       RestoreUnitSelection(A0, A4); break;
+  case ET_ORDER_UNIT_DEPLOY:              GenerateUnitDeployOrder             (A0, OBJ);                                    break;
+  case ET_ORDER_BUILDING_ATTACK_UNIT:     GenerateBuildingAttackUnitOrder     (A2, A0, OBJ);  RestoreBuildingSelection(A0, A4); break;
+  case ET_ORDER_BUILDING_ATTACK_BUILDING: GenerateBuildingAttackBuildingOrder (A2, A0, OBJ);  RestoreBuildingSelection(A0, A4); break;
+  case ET_ORDER_BUILDING_SET_PRIMARY:     GenerateBuildingSetPrimaryOrder     (A0);           RestoreBuildingSelection(A0, A4); break;
+  case ET_ORDER_BUILDING_REPAIR:          GenerateBuildingRepairOrder         (A0, OBJ);                                    break;
+  case ET_ORDER_BUILDING_SELL:            GenerateBuildingSellOrder           (A0, OBJ);                                    break;
+  case ET_ORDER_STOP:                     GenerateStopOrder                   (A0);           RestoreUnitSelection(A0, A4); RestoreBuildingSelection(A0, A4); break;
+  case ET_ORDER_BUILD_BUILDING_PICK:      GenerateBuildBuildingPickOrder      (A0, A2);                                     break;
+  case ET_ORDER_BUILD_BUILDING_CANCEL:    EvAct_OrderBuildBuildingCancel      (ID, A0, A4);                                 break;
+  case ET_ORDER_BUILD_PLACE_BUILDING:     EvAct_OrderBuildPlaceBuilding       (ID, A0, C0);                                 break;
+  case ET_ORDER_BUILD_UNIT_PICK:          GenerateBuildUnitPickOrder          (A0, A2);                                     break;
+  case ET_ORDER_BUILD_UNIT_CANCEL:        EvAct_OrderBuildUnitCancel          (ID, A0, A1, A2, A3, A4);                     break;
+  case ET_ORDER_STARPORT_PICK:            EvAct_OrderStarportPick             (ID, A0, A2);                                 break;
+  case ET_ORDER_STARPORT_UNPICK:          GenerateStarportUnpickOrder         (A0, A2);                                     break;
+  case ET_ORDER_STARPORT_PURCHASE:        GenerateStarportPurchaseOrder       (A0);                                         break;
+  case ET_ORDER_STARPORT_CANCEL:          GenerateStarportCancelOrder         (A0);                                         break;
+  case ET_ORDER_UPGRADE_PICK:             GenerateUpgradePickOrder            (A0, A2);                                     break;
+  case ET_ORDER_UPGRADE_CANCEL:           EvAct_OrderUpgradeCancel            (ID, A0, A4);                                 break;
+  case ET_ORDER_SPECIAL_WEAPON:           GenerateSpecialWeaponOrder          (A0, A2, C0);                                 break;
   // Miscellaneous
-  case ET_ADD_RADAR_MARKER:               EvAct_AddRadarMarker                (COORD0, A_SIDE, A_AMNT, A_ENUM, A_BOOL, A_VAL1, A_VAL2);     break;
+  case ET_ADD_RADAR_MARKER:               EvAct_AddRadarMarker                (ID, C0, A0, A1, A3, A4, A5, A6);             break;
   // Variable operations
-  case ET_SET_VARIABLE:                   EvAct_SetVariable                   (A_AMNT, A_ITEM, A_ENUM, A_BOOL, A_VAL1);                     break;
-  case ET_GET_VARIABLE:                   EvAct_GetVariable                   (A_ITEM, A_ENUM, A_BOOL);                                     break;
-  case ET_SET_FLOAT_VARIABLE:             EvAct_SetFloatVariable              (A_AMNT, A_ITEM, A_ENUM, A_BOOL, A_VAL1);                     break;
-  case ET_CONVERT_VARIABLE:               EvAct_ConvertVariable               (A_ITEM, A_ENUM, A_BOOL);                                     break;
-  case ET_DEBUG_VARIABLES:                EvAct_DebugVariables                (A_ITEM, A_ENUM, A_BOOL);                                     break;
-  case ET_GET_RANDOM_VALUE:               EvAct_GetRandomValue                (A_ITEM, A_VAL1, A_VAL2);                                     break;
-  case ET_GET_RANDOM_COORDS:              EvAct_GetRandomCoords               (COORD0, COORD1, A_ITEM);                                     break;
-  case ET_GET_VALUE_FROM_LIST:            EvAct_GetValueFromList              (EV_IDX, A_AMNT, A_ITEM, A_ENUM, A_BOOL, (uint8_t *)e->data); break;
-  case ET_GET_COORDS_FROM_LIST:           EvAct_GetCoordsFromList             (EV_IDX, A_AMNT, A_ITEM, A_ENUM, A_BOOL, (uint8_t *)e->data); break;
-  case ET_GET_AREA_FROM_LIST:             EvAct_GetAreaFromList               (EV_IDX, A_AMNT, A_ITEM, A_ENUM, A_BOOL, (uint8_t *)e->data); break;
-  case ET_GET_UNIT_COUNT:                 EvAct_GetCount                      (A_AMNT);                                                     break;
-  case ET_GET_BUILDING_COUNT:             EvAct_GetCount                      (A_AMNT);                                                     break;
-  case ET_GET_BULLET_COUNT:               EvAct_GetCount                      (A_AMNT);                                                     break;
-  case ET_GET_EXPLOSION_COUNT:            EvAct_GetCount                      (A_AMNT);                                                     break;
-  case ET_GET_CRATE_COUNT:                EvAct_GetCount                      (A_AMNT);                                                     break;
-  case ET_GET_TILE_COUNT:                 EvAct_GetCount                      (A_AMNT);                                                     break;
-  case ET_GET_SIDE_COUNT:                 EvAct_GetCount                      (A_AMNT);                                                     break;
-  case ET_GET_SPICE_COUNT:                EvAct_GetSpiceCount                 (A_AMNT, COORD0);                                             break;
-  case ET_GET_DAMAGE_COUNT:               EvAct_GetDamageCount                (A_AMNT, COORD0);                                             break;
-  case ET_GET_UNIT_PROPERTY:              EvAct_GetObjectProperty             (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL);                     break;
-  case ET_GET_BUILDING_PROPERTY:          EvAct_GetObjectProperty             (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL);                     break;
-  case ET_GET_BULLET_PROPERTY:            EvAct_GetObjectProperty             (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL);                     break;
-  case ET_GET_EXPLOSION_PROPERTY:         EvAct_GetObjectProperty             (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL);                     break;
-  case ET_GET_CRATE_PROPERTY:             EvAct_GetCrateProperty              (A_AMNT, A_ITEM, A_ENUM, A_BOOL);                             break;
-  case ET_GET_TILE_PROPERTY:              EvAct_GetTileProperty               (A_AMNT, A_ITEM, A_ENUM, A_BOOL);                             break;
-  case ET_GET_SIDE_PROPERTY:              EvAct_GetSideProperty               (A_SIDE, A_AMNT, A_BOOL, A_VAL1);                             break;
-  case ET_GET_AI_PROPERTY:                EvAct_GetAIProperty                 (A_SIDE, A_AMNT, A_BOOL, A_VAL1);                             break;
-  case ET_GET_MEMORY_DATA:                EvAct_GetMemoryData                 (A_AMNT, A_BOOL, A_VAL1);                                     break;
-  case ET_GET_UNIT_TEMPLATE_PROPERTY:     EvAct_GetUnitTemplateProperty       (A_AMNT, A_ITEM, A_ENUM, A_BOOL);                             break;
-  case ET_GET_BUILDING_TEMPLATE_PROPERTY: EvAct_GetBuildingTemplateProperty   (A_AMNT, A_ITEM, A_ENUM, A_BOOL);                             break;
-  case ET_GET_WEAPON_TEMPLATE_PROPERTY:   EvAct_GetWeaponTemplateProperty     (A_AMNT, A_ITEM, A_ENUM, A_BOOL);                             break;
-  case ET_GET_EXPLOSION_TEMPLATE_PROPERTY:EvAct_GetExplosionTemplateProperty  (A_AMNT, A_ITEM, A_ENUM, A_BOOL);                             break;
-  case ET_GET_ARMOUR_VALUE:               EvAct_GetArmourValue                (A_AMNT, A_ITEM, A_ENUM, A_BOOL, A_VAL1);                     break;
-  case ET_GET_SPEED_VALUE:                EvAct_GetSpeedValue                 (A_AMNT, A_ITEM, A_ENUM);                                     break;
-  case ET_GET_GROUP_ID_VALUE:             EvAct_GetGroupIDValue               (A_AMNT, A_ITEM);                                             break;
-  case ET_GET_UNIT_TYPE:                  EvAct_GetUnitType                   (A_SIDE, A_AMNT, A_ENUM, A_BOOL, (ObjectFilterStruct *)&e->data[1]);break;
-  case ET_GET_BUILDING_TYPE:              EvAct_GetBuildingType               (A_SIDE, A_AMNT, A_ENUM, A_BOOL, (ObjectFilterStruct *)&e->data[1]);break;
-  case ET_GET_GAME_TICKS:                 EvAct_GetGameTicks                  (A_BOOL);                                                     break;
-  case ET_GET_MY_SIDE_ID:                 EvAct_GetMySideId                   (A_BOOL);                                                     break;
-  case ET_GET_DIFFICULTY:                 EvAct_GetDifficulty                 (A_BOOL);                                                     break;
-  case ET_GET_RULE:                       EvAct_GetRule                       (A_ITEM, A_BOOL);                                             break;
-  case ET_GET_DIPLOMACY:                  EvAct_GetDiplomacy                  (A_SIDE, A_ITEM, A_BOOL);                                     break;
-  case ET_GET_TECH:                       EvAct_GetTech                       (A_SIDE, A_BOOL);                                             break;
-  case ET_GET_HOUSE_ID:                   EvAct_GetHouseId                    (A_SIDE, A_BOOL);                                             break;
-  case ET_GET_CREDITS:                    EvAct_GetCredits                    (A_SIDE, A_ENUM, A_BOOL);                                     break;
-  case ET_GET_POWER:                      EvAct_GetPower                      (A_SIDE, A_ENUM, A_BOOL);                                     break;
-  case ET_GET_BUILDING_UPGRADES:          EvAct_GetBuildingUpgrades           (A_SIDE, A_ITEM, A_BOOL);                                     break;
-  case ET_GET_STARPORT_STOCK:             EvAct_GetStarportStock              (A_SIDE, A_ITEM, A_BOOL);                                     break;
-  case ET_GET_STARPORT_COST:              EvAct_GetStarportCost               (A_SIDE, A_ITEM, A_BOOL);                                     break;
-  case ET_GET_STARPORT_PICK:              EvAct_GetStarportPick               (A_SIDE, A_ITEM, A_BOOL);                                     break;
-  case ET_GET_BUILDING_QUEUE_STATE:       EvAct_GetBuildingQueueState         (A_SIDE, A_AMNT, A_ITEM, A_BOOL);                             break;
-  case ET_GET_UNIT_QUEUE_STATE:           EvAct_GetUnitQueueState             (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL, A_VAL1);             break;
-  case ET_GET_UPGRADE_QUEUE_STATE:        EvAct_GetUpgradeQueueState          (A_SIDE, A_AMNT, A_ITEM, A_BOOL);                             break;
-  case ET_GET_SPICE_HARVESTED:            EvAct_GetSpiceHarvested             (A_SIDE, A_BOOL);                                             break;
-  case ET_GET_UNITS_BUILT:                EvAct_GetUnitsBuilt                 (A_SIDE, A_ITEM, A_ENUM, A_BOOL);                             break;
-  case ET_GET_BUILDINGS_BUILT:            EvAct_GetBuildingsBuilt             (A_SIDE, A_ITEM, A_ENUM, A_BOOL);                             break;
-  case ET_GET_UNITS_LOST:                 EvAct_GetUnitsLost                  (A_SIDE, A_ITEM, A_ENUM, A_BOOL);                             break;
-  case ET_GET_BUILDINGS_LOST:             EvAct_GetBuildingsLost              (A_SIDE, A_BOOL);                                             break;
-  case ET_GET_UNITS_KILLED:               EvAct_GetUnitsKilled                (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL);                     break;
-  case ET_GET_BUILDINGS_KILLED:           EvAct_GetBuildingsKilled            (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL);                     break;
-  case ET_GET_MOUSE_POSITION:             EvAct_GetMousePosition              (A_ITEM, A_ENUM);                                             break;
-  case ET_GET_KEYBOARD_MOUSE_STATE:       EvAct_GetKeyboardMouseState         (A_ITEM, A_ENUM);                                             break;
-  case ET_GET_UNIT_UNDER_CURSOR:          EvAct_GetUnitUnderCursor            (A_ITEM, A_ENUM, A_BOOL, A_VAL1);                             break;
-  case ET_GET_BUILDING_UNDER_CURSOR:      EvAct_GetBuildingUnderCursor        (A_ITEM, A_ENUM, A_BOOL);                                     break;
-  case ET_GET_SIDEBAR_BUTTON_UNDER_CURSOR:EvAct_GetSidebarButtonUnderCursor   (A_ITEM, A_ENUM, A_BOOL);                                     break;
-  case ET_GET_GAME_INTERFACE_DATA:        EvAct_GetGameInterfaceData          (A_AMNT, A_ITEM, A_ENUM);                                     break;
-  case ET_GET_OBJECT_POSITION:            EvAct_GetObjectPosition             (A_SIDE, A_ITEM, A_ENUM, A_BOOL);                             break;
-  case ET_GET_DIRECTION:                  EvAct_GetDirection                  (A_ITEM, A_ENUM, A_BOOL);                                     break;
-  case ET_GET_POSITION_ON_CIRCLE:         EvAct_GetPositionOnCircle           (A_AMNT, A_BOOL, A_VAL1, A_VAL2);                             break;
-  case ET_GET_NEAREST_BUILDING_TILE:      EvAct_GetNearestBuildingTile        (A_SIDE, A_AMNT, A_ITEM, A_ENUM, A_BOOL);                     break;
-  case ET_GET_DISTANCE:                   EvAct_GetDistance                   (A_AMNT, A_ITEM, A_ENUM, A_BOOL);                             break;
-  case ET_CHECK_DISTANCE:                 EvAct_CheckDistance                 (A_AMNT, A_ITEM, A_VAL1, A_VAL2);                             break;
+  case ET_SET_VARIABLE:                   EvAct_SetVariable                   (ID, A1, A2, A3, A4, A5);                     break;
+  case ET_GET_VARIABLE:                   EvAct_GetVariable                   (A2, A3, A4);                                 break;
+  case ET_SET_FLOAT_VARIABLE:             EvAct_SetFloatVariable              (ID, A1, A2, A3, A4, A5);                     break;
+  case ET_CONVERT_VARIABLE:               EvAct_ConvertVariable               (A2, A3, A4);                                 break;
+  case ET_DEBUG_VARIABLES:                EvAct_DebugVariables                (A2, A3, A4);                                 break;
+  case ET_GET_RANDOM_VALUE:               EvAct_GetRandomValue                (A2, A5, A6);                                 break;
+  case ET_GET_RANDOM_COORDS:              EvAct_GetRandomCoords               (C0, C1, A2);                                 break;
+  case ET_GET_VALUE_FROM_LIST:            EvAct_GetValueFromList              (ID, A1, A2, A3, A4, (uint8_t *)e->data);     break;
+  case ET_GET_COORDS_FROM_LIST:           EvAct_GetCoordsFromList             (ID, A1, A2, A3, A4, (uint8_t *)e->data);     break;
+  case ET_GET_AREA_FROM_LIST:             EvAct_GetAreaFromList               (ID, A1, A2, A3, A4, (uint8_t *)e->data);     break;
+  case ET_GET_UNIT_COUNT:                 EvAct_GetCount                      (A1);                                         break;
+  case ET_GET_BUILDING_COUNT:             EvAct_GetCount                      (A1);                                         break;
+  case ET_GET_BULLET_COUNT:               EvAct_GetCount                      (A1);                                         break;
+  case ET_GET_EXPLOSION_COUNT:            EvAct_GetCount                      (A1);                                         break;
+  case ET_GET_CRATE_COUNT:                EvAct_GetCount                      (A1);                                         break;
+  case ET_GET_TILE_COUNT:                 EvAct_GetCount                      (A1);                                         break;
+  case ET_GET_SIDE_COUNT:                 EvAct_GetCount                      (A1);                                         break;
+  case ET_GET_SPICE_COUNT:                EvAct_GetSpiceCount                 (A1, C0);                                     break;
+  case ET_GET_DAMAGE_COUNT:               EvAct_GetDamageCount                (A1, C0);                                     break;
+  case ET_GET_UNIT_PROPERTY:              EvAct_GetObjectProperty             (ID, A0, A1, A2, A3, A4, OBJECT_UNIT);        break;
+  case ET_GET_BUILDING_PROPERTY:          EvAct_GetObjectProperty             (ID, A0, A1, A2, A3, A4, OBJECT_BUILDING);    break;
+  case ET_GET_BULLET_PROPERTY:            EvAct_GetObjectProperty             (ID, A0, A1, A2, A3, A4, OBJECT_BULLET);      break;
+  case ET_GET_EXPLOSION_PROPERTY:         EvAct_GetObjectProperty             (ID, A0, A1, A2, A3, A4, OBJECT_EXPLOSION);   break;
+  case ET_GET_CRATE_PROPERTY:             EvAct_GetCrateProperty              (ID, A1, A2, A3, A4);                         break;
+  case ET_GET_TILE_PROPERTY:              EvAct_GetTileProperty               (ID, A1, A2, A3, A4);                         break;
+  case ET_GET_SIDE_PROPERTY:              EvAct_GetSideProperty               (ID, A0, A1, A4, A5);                         break;
+  case ET_GET_AI_PROPERTY:                EvAct_GetAIProperty                 (ID, A0, A1, A4, A5);                         break;
+  case ET_GET_MEMORY_DATA:                EvAct_GetMemoryData                 (ID, A1, A4, A5);                             break;
+  case ET_GET_UNIT_TEMPLATE_PROPERTY:     EvAct_GetUnitTemplateProperty       (ID, A1, A2, A3, A4);                         break;
+  case ET_GET_BUILDING_TEMPLATE_PROPERTY: EvAct_GetBuildingTemplateProperty   (ID, A1, A2, A3, A4);                         break;
+  case ET_GET_WEAPON_TEMPLATE_PROPERTY:   EvAct_GetWeaponTemplateProperty     (ID, A1, A2, A3, A4);                         break;
+  case ET_GET_EXPLOSION_TEMPLATE_PROPERTY:EvAct_GetExplosionTemplateProperty  (ID, A1, A2, A3, A4);                         break;
+  case ET_GET_ARMOUR_VALUE:               EvAct_GetArmourValue                (ID, A1, A2, A3, A4, A5);                     break;
+  case ET_GET_SPEED_VALUE:                EvAct_GetSpeedValue                 (ID, A1, A2, A3);                             break;
+  case ET_GET_GROUP_ID_VALUE:             EvAct_GetGroupIDValue               (A1, A2);                                     break;
+  case ET_GET_UNIT_TYPE:                  EvAct_GetUnitType                   (ID, A0, A1, A3, A4, (ObjectFilterStruct *)&e->data[1]);break;
+  case ET_GET_BUILDING_TYPE:              EvAct_GetBuildingType               (ID, A0, A1, A3, A4, (ObjectFilterStruct *)&e->data[1]);break;
+  case ET_GET_GAME_TICKS:                 EvAct_GetGameTicks                  (A4);                                         break;
+  case ET_GET_MY_SIDE_ID:                 EvAct_GetMySideId                   (A4);                                         break;
+  case ET_GET_DIFFICULTY:                 EvAct_GetDifficulty                 (A4);                                         break;
+  case ET_GET_RULE:                       EvAct_GetRule                       (A2, A4);                                     break;
+  case ET_GET_DIPLOMACY:                  EvAct_GetDiplomacy                  (ID, A0, A2, A4);                             break;
+  case ET_GET_TECH:                       EvAct_GetTech                       (ID, A0, A4);                                 break;
+  case ET_GET_HOUSE_ID:                   EvAct_GetHouseId                    (ID, A0, A4);                                 break;
+  case ET_GET_CREDITS:                    EvAct_GetCredits                    (ID, A0, A3, A4);                             break;
+  case ET_GET_POWER:                      EvAct_GetPower                      (ID, A0, A3, A4);                             break;
+  case ET_GET_BUILDING_UPGRADES:          EvAct_GetBuildingUpgrades           (ID, A0, A2, A4);                             break;
+  case ET_GET_STARPORT_STOCK:             EvAct_GetStarportStock              (ID, A0, A2, A4);                             break;
+  case ET_GET_STARPORT_COST:              EvAct_GetStarportCost               (ID, A0, A2, A4);                             break;
+  case ET_GET_STARPORT_PICK:              EvAct_GetStarportPick               (ID, A0, A2, A4);                             break;
+  case ET_GET_BUILDING_QUEUE_STATE:       EvAct_GetBuildingQueueState         (ID, A0, A1, A2, A4);                         break;
+  case ET_GET_UNIT_QUEUE_STATE:           EvAct_GetUnitQueueState             (ID, A0, A1, A2, A3, A4, A5);                 break;
+  case ET_GET_UPGRADE_QUEUE_STATE:        EvAct_GetUpgradeQueueState          (ID, A0, A1, A2, A4);                         break;
+  case ET_GET_SPICE_HARVESTED:            EvAct_GetSpiceHarvested             (ID, A0, A4);                                 break;
+  case ET_GET_UNITS_BUILT:                EvAct_GetUnitsBuilt                 (ID, A0, A2, A3, A4);                         break;
+  case ET_GET_BUILDINGS_BUILT:            EvAct_GetBuildingsBuilt             (ID, A0, A2, A3, A4);                         break;
+  case ET_GET_UNITS_LOST:                 EvAct_GetUnitsLost                  (ID, A0, A2, A3, A4);                         break;
+  case ET_GET_BUILDINGS_LOST:             EvAct_GetBuildingsLost              (ID, A0, A4);                                 break;
+  case ET_GET_UNITS_KILLED:               EvAct_GetUnitsKilled                (ID, A0, A1, A2, A3, A4);                     break;
+  case ET_GET_BUILDINGS_KILLED:           EvAct_GetBuildingsKilled            (ID, A0, A1, A2, A3, A4);                     break;
+  case ET_GET_MOUSE_POSITION:             EvAct_GetMousePosition              (A2, A3);                                     break;
+  case ET_GET_KEYBOARD_MOUSE_STATE:       EvAct_GetKeyboardMouseState         (A2, A3);                                     break;
+  case ET_GET_UNIT_UNDER_CURSOR:          EvAct_GetUnitUnderCursor            (A2, A3, A4, A5);                             break;
+  case ET_GET_BUILDING_UNDER_CURSOR:      EvAct_GetBuildingUnderCursor        (A2, A3, A4);                                 break;
+  case ET_GET_SIDEBAR_BUTTON_UNDER_CURSOR:EvAct_GetSidebarButtonUnderCursor   (A2, A3, A4);                                 break;
+  case ET_GET_GAME_INTERFACE_DATA:        EvAct_GetGameInterfaceData          (A1, A2, A3);                                 break;
+  case ET_GET_OBJECT_POSITION:            EvAct_GetObjectPosition             (ID, A0, A2, A3, A4);                         break;
+  case ET_GET_DIRECTION:                  EvAct_GetDirection                  (A2, A3, A4);                                 break;
+  case ET_GET_POSITION_ON_CIRCLE:         EvAct_GetPositionOnCircle           (A1, A4, A5, A6);                             break;
+  case ET_GET_NEAREST_BUILDING_TILE:      EvAct_GetNearestBuildingTile        (ID, A0, A1, A2, A3, A4);                     break;
+  case ET_GET_DISTANCE:                   EvAct_GetDistance                   (A1, A2, A3, A4);                             break;
+  case ET_CHECK_DISTANCE:                 EvAct_CheckDistance                 (A1, A2, A5, A6);                             break;
   // Blocks
-  case ET_CALLABLE_BLOCK_START:                                                                                                     break;
-  case ET_HOOK_BLOCK_START:                                                                                                         break;
-  case ET_EXECUTE_BLOCK:                  EvAct_ExecuteBlock                  (EV_IDX, A_VAL1);                                     break;
-  case ET_EXIT_FROM_BLOCK:                exit_count = 1;                                                                           break;
+  case ET_CALLABLE_BLOCK_START:                                                                                             break;
+  case ET_HOOK_BLOCK_START:                                                                                                 break;
+  case ET_EXECUTE_BLOCK:                  EvAct_ExecuteBlock                  (ID, A5);                                     break;
+  case ET_EXIT_FROM_BLOCK:                exit_count = 1;                                                                   break;
   // Conditional expression
-  case ET_IF:                             EvAct_If                            (EV_IDX, A_AMNT, A_ITEM, A_ENUM, (CondExprData *)&e->data[1]);break;
-  case ET_ELSE_IF:                        DebugFatal("event-core.c", "Invalid ELSE IF event (event %d)", e->event_index);           break;
-  case ET_ELSE:                           DebugFatal("event-core.c", "Invalid ELSE event (event %d)", e->event_index);              break;
+  case ET_IF:                             EvAct_If                            (ID, A1, A2, A3, (CondExprData *)&e->data[1]);break;
+  case ET_ELSE_IF:                        DebugFatal(EVENT_ERROR, "Invalid ELSE IF event (event %d)", ID);                  break;
+  case ET_ELSE:                           DebugFatal(EVENT_ERROR, "Invalid ELSE event (event %d)", ID);                     break;
   // Loops
-  case ET_LOOP_WHILE:                     EvAct_LoopWhile                     (EV_IDX, (CondExprData *)&e->data[1]);                break;
-  case ET_LOOP_VALUES_FROM_RANGE:         EvAct_LoopValuesFromRange           (EV_IDX, A_ITEM, A_VAL1, A_VAL2);                     break;
-  case ET_LOOP_COORDS_FROM_AREA:          EvAct_LoopCoordsFromArea            (EV_IDX, COORD0, COORD1, A_ITEM);                     break;
-  case ET_LOOP_VALUES_FROM_LIST:          EvAct_LoopValuesFromList            (EV_IDX, A_AMNT, A_ITEM, (uint8_t *)e->data);         break;
-  case ET_LOOP_COORDS_FROM_LIST:          EvAct_LoopCoordsFromList            (EV_IDX, A_AMNT, A_ITEM, (uint8_t *)e->data);         break;
-  case ET_LOOP_AREAS_FROM_LIST:           EvAct_LoopAreasFromList             (EV_IDX, A_AMNT, A_ITEM, (uint8_t *)e->data);         break;
-  case ET_LOOP_UNITS:                     EvAct_LoopObject                    (EV_IDX, A_AMNT, A_ITEM, A_SIDE, OBJ_ID);             break;
-  case ET_LOOP_BUILDINGS:                 EvAct_LoopObject                    (EV_IDX, A_AMNT, A_ITEM, A_SIDE, OBJ_ID);             break;
-  case ET_LOOP_BULLETS:                   EvAct_LoopObject                    (EV_IDX, A_AMNT, A_ITEM, A_SIDE, OBJ_ID);             break;
-  case ET_LOOP_EXPLOSIONS:                EvAct_LoopObject                    (EV_IDX, A_AMNT, A_ITEM, A_SIDE, OBJ_ID);             break;
-  case ET_LOOP_CRATES:                    EvAct_LoopItem                      (EV_IDX, A_AMNT, OBJ_ID);                             break;
-  case ET_LOOP_TILES:                     EvAct_LoopTiles                     (EV_IDX, A_AMNT, COORD0);                             break;
-  case ET_LOOP_SIDES:                     EvAct_LoopItem                      (EV_IDX, A_AMNT, OBJ_ID);                             break;
-  case ET_BREAK_LOOP:                     break_count = 1;                                                                          break;
-  case ET_CONTINUE_LOOP:                  continue_count = 1;                                                                       break;
+  case ET_LOOP_WHILE:                     EvAct_LoopWhile                     (ID, (CondExprData *)&e->data[1]);            break;
+  case ET_LOOP_VALUES_FROM_RANGE:         EvAct_LoopValuesFromRange           (ID, A2, A5, A6);                             break;
+  case ET_LOOP_COORDS_FROM_AREA:          EvAct_LoopCoordsFromArea            (ID, C0, C1, A2);                             break;
+  case ET_LOOP_VALUES_FROM_LIST:          EvAct_LoopValuesFromList            (ID, A1, A2, (uint8_t *)e->data);             break;
+  case ET_LOOP_COORDS_FROM_LIST:          EvAct_LoopCoordsFromList            (ID, A1, A2, (uint8_t *)e->data);             break;
+  case ET_LOOP_AREAS_FROM_LIST:           EvAct_LoopAreasFromList             (ID, A1, A2, (uint8_t *)e->data);             break;
+  case ET_LOOP_UNITS:                     EvAct_LoopObject                    (ID, A1, A2, A0, OBJ);                        break;
+  case ET_LOOP_BUILDINGS:                 EvAct_LoopObject                    (ID, A1, A2, A0, OBJ);                        break;
+  case ET_LOOP_BULLETS:                   EvAct_LoopObject                    (ID, A1, A2, A0, OBJ);                        break;
+  case ET_LOOP_EXPLOSIONS:                EvAct_LoopObject                    (ID, A1, A2, A0, OBJ);                        break;
+  case ET_LOOP_CRATES:                    EvAct_LoopItem                      (ID, A1, OBJ);                                break;
+  case ET_LOOP_TILES:                     EvAct_LoopTiles                     (ID, A1, C0);                                 break;
+  case ET_LOOP_SIDES:                     EvAct_LoopItem                      (ID, A1, OBJ);                                break;
+  case ET_BREAK_LOOP:                     break_count = 1;                                                                  break;
+  case ET_CONTINUE_LOOP:                  continue_count = 1;                                                               break;
   // End
-  case ET_END:                            DebugFatal("event-core.c", "Invalid END event (event %d)", e->event_index);               break;
-  default:
-    DebugFatal("event-core.c", "Unknown event type %d (event %d)", e->event_type, e->event_index);
+  case ET_END:                            DebugFatal(EVENT_ERROR, "Invalid END event (event %d)", ID);                      break;
+  default:                                DebugFatal(EVENT_ERROR, "Unknown event type %d (event %d)", e->event_type, ID);
   }
 }
 
@@ -1015,6 +1012,8 @@ int GetVariableValueOrConst(int flags, int flag_index, int var_index_or_const)
 
 void SetVariableValue(int var_index, int value)
 {
+  if (var_index < 0 || var_index >= MAX_EVENT_VARIABLES)
+    DebugFatal(EVENT_ERROR, "Trying to write to variable %d", var_index);
   EventVariable *v = &gEventVariableArray[var_index];
   if (v->ticks != gGameTicks)
   {
@@ -1026,5 +1025,7 @@ void SetVariableValue(int var_index, int value)
 
 int GetVariableValue(int var_index)
 {
+  if (var_index < 0 || var_index >= MAX_EVENT_VARIABLES)
+    DebugFatal(EVENT_ERROR, "Trying to read from variable %d", var_index);
   return gEventVariableArray[var_index].value;
 }

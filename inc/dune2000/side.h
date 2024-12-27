@@ -2,7 +2,7 @@
 
 typedef enum eObjectType
 {
-  OBJECT_0 = 0x0,
+  OBJECT_NONE = 0x0,
   OBJECT_UNIT = 0x1,
   OBJECT_BUILDING = 0x2,
   OBJECT_BULLET = 0x3,
@@ -562,7 +562,7 @@ typedef struct Explosion
 
 typedef struct StructForCSide2
 {
-  int32_t __kills_per_side[8];
+  int32_t __kills_per_side[MAX_SIDES];
 }StructForCSide2;
 
 typedef struct DeliveryStruct
@@ -627,7 +627,7 @@ typedef struct CSide
   Explosion *__LastExplosionPtr;
   int32_t dw_field_28_ptr;
   int32_t dw_field_2C_ptr;
-  Unit __ObjectArray[1000];
+  Unit __ObjectArray[MAX_OBJECTS];
   char __ParticipatesInGame;
   char c_field_24251_unused;
   char __SideId;
@@ -637,13 +637,13 @@ typedef struct CSide
   int32_t CashReal;
   int32_t CashDrip;
   int32_t SpiceDrip;
-  int32_t __StarportUnitTypePicked[60];
-  int32_t __StarportUnitTypeStock[60];
-  int32_t __StarportUnitTypeCost[60];
+  int32_t __StarportUnitTypePicked[MAX_UNIT_TYPES];
+  int32_t __StarportUnitTypeStock[MAX_UNIT_TYPES];
+  int32_t __StarportUnitTypeCost[MAX_UNIT_TYPES];
   uint32_t __StarportUpdateDelayCounter;
   uint32_t __StarportStockIncreaseDelayCounter;
   uint32_t __StarportOrderCost;
-  uint8_t __BuildingGroupUpgradeCount[100];
+  uint8_t __BuildingGroupUpgradeCount[MAX_BUILDING_TYPES];
   uint32_t __PowerOutput;
   uint32_t __PowerDrained;
   uint32_t __PowerPercent;
@@ -654,25 +654,25 @@ typedef struct CSide
   char field_245BB;
   int32_t dw_field_245BC_unused;
   char __CarryallCount;
-  char __BuildingsExistPerGroup[100];
+  char __BuildingsExistPerGroup[MAX_BUILDING_TYPES];
   char field_24625;
   char field_24626;
   char field_24627;
-  int32_t __UnitsExistPerType[60];
-  char __BuildingTypeCanBeBuilt[100];
+  int32_t __UnitsExistPerType[MAX_UNIT_TYPES];
+  char __BuildingTypeCanBeBuilt[MAX_BUILDING_TYPES];
   int32_t __SpiceHarvested;
   int32_t __UnitsBuilt;
   int32_t __BuildingsBuilt;
-  int32_t __UnitsBuiltPerType[60];
-  int32_t __BuildingsBuiltPerType[100];
+  int32_t __UnitsBuiltPerType[MAX_UNIT_TYPES];
+  int32_t __BuildingsBuiltPerType[MAX_BUILDING_TYPES];
   int32_t __UnitsLost;
   int32_t __BuildingsLost;
-  int32_t __UnitsLostPerType[60];
-  int32_t ar_field_24B00_unused[100];
+  int32_t __UnitsLostPerType[MAX_UNIT_TYPES];
+  int32_t ar_field_24B00_unused[MAX_BUILDING_TYPES];
   uint32_t __UnitsKilled;
   uint32_t __BuildingsKilled;
-  StructForCSide2 __UnitsKilledPerTypeAndSide[60];
-  StructForCSide2 __BuildingsKilledPerTypeAndSide[100];
+  StructForCSide2 __UnitsKilledPerTypeAndSide[MAX_UNIT_TYPES];
+  StructForCSide2 __BuildingsKilledPerTypeAndSide[MAX_BUILDING_TYPES];
   int16_t __PrimaryConyard;
   int16_t __PrimaryLightFactory;
   int16_t __PrimaryHeavyFactory;
@@ -705,7 +705,7 @@ typedef struct CSide
   char __BasePosMaxX;
   DeliveryStruct __Deliveries[10];
   BuildQueueStruct __BuildingBuildQueue;
-  BuildQueueStruct __UnitBuildQueue[10];
+  BuildQueueStruct __UnitBuildQueue[MAX_UNIT_BUILD_QUEUES];
   BuildQueueStruct __BuildingUpgradeQueue;
   PickupQueueStruct __PickupQueue[32];
   char __PickupQueueCount;

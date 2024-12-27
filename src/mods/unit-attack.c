@@ -270,7 +270,7 @@ LABEL_21:
     return 1;
   }
   enemy_side = GetSide(unit->EnemySide);
-  if ( unit->EnemyIndex >= 1000 )
+  if ( unit->EnemyIndex >= MAX_OBJECTS )
   {
     DebugFatal("AttackUnit", "unit->enemyIndex >= kMaxUnitsPerSide");
   }
@@ -386,7 +386,7 @@ char Mod__UnitAttackBuilding(Unit *unit, char side_id, short index)
     return 0;
   }
   enemy_side = GetSide(unit->EnemySide);
-  if ( unit_->EnemyIndex >= 1000 )
+  if ( unit_->EnemyIndex >= MAX_OBJECTS )
   {
     DebugFatal("AttackUnit", "unit->enemyIndex >= kMaxUnitsPerSide");
   }
@@ -549,7 +549,7 @@ void Mod__UnitShootTarget(Unit *unit, char side, unsigned short index, int targe
   {
     DebugFatal("ShootTarget", "Unit %s told to shoot", _templates_UnitNameList[unit->Type]);
   }
-  if ( enemyIndex > 1000 )
+  if ( enemyIndex > MAX_OBJECTS )
   {
     DebugFatal("UNIT.CPP", "enemyIndex > kMaxUnitsPerSide");
   }

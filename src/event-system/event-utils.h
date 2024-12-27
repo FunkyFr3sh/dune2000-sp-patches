@@ -1,3 +1,5 @@
+#define EVENT_ERROR "Event execution error"
+
 typedef enum eValueOperation
 {
   VALUEOPERATION_SET,
@@ -42,10 +44,10 @@ typedef enum eDataType
   DATATYPE_FLOAT
 } eDataType;
 
-int ValueOperation(int val1, int val2, eValueOperation operation);
-float ValueOperationFloat(float val1, float val2, eValueOperation operation);
+int ValueOperation(int event_id, int val1, int val2, eValueOperation operation);
+float ValueOperationFloat(int event_id, float val1, float val2, eValueOperation operation);
 int FlagOperation(int value, int flag, eFlagOperation operation);
-void SetDataValue(char *data_ptr, eDataType data_type, int offset, eValueOperation operation, int value);
+void SetDataValue(int event_id, char *data_ptr, eDataType data_type, int offset, eValueOperation operation, int value);
 int GetDataValue(char *data_ptr, eDataType data_type, int offset);
 bool CompareValue(int val, int comp_val, bool comparison);
 bool CompareValueFloat(float val, float comp_val, bool comparison);

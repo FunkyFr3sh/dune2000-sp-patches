@@ -202,7 +202,7 @@ char Mod__BuildingAttackUnit(Building *building, char side_id, short building_in
   {
     return 0;
   }
-  if ( enemy_index >= 1000 )
+  if ( enemy_index >= MAX_OBJECTS )
   {
     DebugFatal("AttackUnit", "unit->enemyIndex >= kMaxUnitsPerSide");
   }
@@ -251,7 +251,7 @@ char Mod__BuildingAttackBuilding(Building *building, char side_id, short buildin
   {
     return 0;
   }
-  if ( enemy_index >= 1000 )
+  if ( enemy_index >= MAX_OBJECTS )
   {
     DebugFatal("AttackUnit", "unit->enemyIndex >= kMaxUnitsPerSide");
   }

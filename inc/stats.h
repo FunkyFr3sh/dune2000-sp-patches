@@ -103,5 +103,5 @@ int GetHeavyVehiclesOwned(int house);
 int GetLightVehiclesOwned(int house);
 int GetAirUnitsOwned(int house);
 
-extern UnitTracker PlayersUnitsOwned[8];
-extern BuildingTracker PlayersBuildingsOwned[8];
+extern UnitTracker PlayersUnitsOwned[MAX_SIDES];
+extern BuildingTracker PlayersBuildingsOwned[MAX_SIDES];

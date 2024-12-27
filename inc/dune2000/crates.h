@@ -39,5 +39,3 @@ typedef struct CrateStruct
   uint8_t custom_byte_1; // Field for extended crate functionality (mod)
   int32_t __timing;
 }CrateStruct;
-
-#define MAX_CRATES 30

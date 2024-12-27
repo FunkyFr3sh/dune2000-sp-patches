@@ -33,6 +33,6 @@ typedef struct TooltipExtraData
 
 // Variables
 
-#define TOOLTIP_LINES 10
+#define MAX_TOOLTIP_LINES 10
 
-extern TooltipExtraData gTooltipExtraData[TOOLTIP_LINES];
+extern TooltipExtraData gTooltipExtraData[MAX_TOOLTIP_LINES];

@@ -4,7 +4,7 @@
 #include "tooltips.h"
 #include "../event-system/event-core.h"
 
-TooltipExtraData gTooltipExtraData[TOOLTIP_LINES];
+TooltipExtraData gTooltipExtraData[MAX_TOOLTIP_LINES];
 int tooltip_used_lines;
 
 // Custom implementation of function HandleTooltips
@@ -464,7 +464,7 @@ LABEL_64:
 LABEL_87:
   if ( tooltip_type )
   {
-    for (int i = 0; i < TOOLTIP_LINES; i++)
+    for (int i = 0; i < MAX_TOOLTIP_LINES; i++)
       gTooltipExtraData[i].color = _Tooltipdata.__Color;
     ExecuteEventHook(HOOK_HANDLETOOLTIP, 3, tooltip_type, tooltip_arg1, tooltip_arg2, 0, 0);
   }
@@ -478,7 +478,7 @@ LABEL_87:
     font_height = GetFontHeight(0);
     int max_width = 0;
     int total_height = 0;
-    for (int i = 0; i < TOOLTIP_LINES; i++)
+    for (int i = 0; i < MAX_TOOLTIP_LINES; i++)
     {
       if (gTooltipExtraData[i].text[0])
       {

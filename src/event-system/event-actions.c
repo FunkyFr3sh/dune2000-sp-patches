@@ -1,6 +1,3 @@
-#include <windows.h>
-#include <stdio.h>
-#include <stdint.h>
 #include "macros/patch.h"
 #include "dune2000.h"
 #include "patch.h"
@@ -17,8 +14,30 @@
 
 uint32_t MapScrollLockTicks = 0;
 
-void EvAct_AddDelivery(int xpos, int ypos, int side_id, int amount, int tag, int deploy_action, int delay, eDeliveryType delivery_type, char *unit_list)
+char *object_type_names[5] = {
+  "None",
+  "Unit",
+  "Building",
+  "Bullet",
+  "Explosion"
+};
+
+#define CHECK_PARAMETER(var_name, name, max) if (var_name < 0 || var_name >= max) DebugFatal(EVENT_ERROR, "Invalid " name " %d (event %d)", var_name, event_id);
+#define CHECK_SIDE_ID         CHECK_PARAMETER(side_id, "side ID", MAX_SIDES)
+#define CHECK_OBJECT_INDEX    CHECK_PARAMETER(index, "object index", MAX_OBJECTS)
+#define CHECK_CRATE_INDEX     CHECK_PARAMETER(crate_index, "crate index", MAX_CRATES)
+#define CHECK_UNIT_TYPE       CHECK_PARAMETER(unit_type, "unit type", gUnitTypeNum)
+#define CHECK_BUILDING_TYPE   CHECK_PARAMETER(building_type, "building type", gBuildingTypeNum)
+#define CHECK_BUILDING_GROUP  CHECK_PARAMETER(building_group, "building group", _templates_BuildingGroupCount);
+#define CHECK_WEAPON_TYPE     CHECK_PARAMETER(weapon_type, "weapon type", gBulletTypeNum)
+#define CHECK_EXPLOSION_TYPE  CHECK_PARAMETER(explosion_type, "explosion type", gExplosionTypeNum)
+#define CHECK_ADDRESS         if (!address) DebugFatal(EVENT_ERROR, "Memory address is NULL (event %d)", event_id)
+#define CHECK_POSITION        if (xpos < 0 || xpos >= gGameMap.width || ypos < 0 || ypos >= gGameMap.height) DebugFatal(EVENT_ERROR, "Invalid tile coordinates %d %d (event %d)", xpos, ypos, event_id)
+
+void EvAct_AddDelivery(int event_id, int xpos, int ypos, int side_id, int amount, int tag, int deploy_action, int delay, eDeliveryType delivery_type, char *unit_list)
 {
+  CHECK_POSITION;
+  CHECK_SIDE_ID;
   CSide *side = GetSide(side_id);
   if (delivery_type == DELIVERYTYPE_STARPORT && side->__PrimaryStarport == -1)
     return;
@@ -27,7 +46,7 @@ void EvAct_AddDelivery(int xpos, int ypos, int side_id, int amount, int tag, int
   {
     if (i == 10)
     {
-      DebugFatal("event-actions.c", "Too many deliveries");
+      DebugFatal(EVENT_ERROR, "Too many deliveries (event %d)", event_id);
     }
     if (!side->__Deliveries[i].__is_active)
     {
@@ -49,8 +68,10 @@ void EvAct_AddDelivery(int xpos, int ypos, int side_id, int amount, int tag, int
     side->__StarportDeliveryInProgress = 1;
 }
 
-void EvAct_SetDiplomacy(int source_side, int target_side, int allegiance_type, bool both_sided)
+void EvAct_SetDiplomacy(int event_id, int source_side, int target_side, int allegiance_type, bool both_sided)
 {
+  CHECK_PARAMETER(source_side, "source side ID", MAX_SIDES);
+  CHECK_PARAMETER(target_side, "target side ID", MAX_SIDES);
   _gDiplomacy[source_side][target_side] = allegiance_type;
   if ( allegiance_type == 0 || allegiance_type == 2 )
   {
@@ -67,10 +88,13 @@ void EvAct_SetDiplomacy(int source_side, int target_side, int allegiance_type, b
   }
 }
 
-void EvAct_PlaySound(int sample_id, bool force, bool point_sound, int xpos, int ypos)
+void EvAct_PlaySound(int event_id, int xpos, int ypos, int sample_id, bool force, bool point_sound)
 {
   if (point_sound)
+  {
+    CHECK_POSITION;
     PlaySoundAt(sample_id, xpos, ypos);
+  }
   else
   {
     if (force)
@@ -79,11 +103,12 @@ void EvAct_PlaySound(int sample_id, bool force, bool point_sound, int xpos, int 
   }
 }
 
-void EvAct_SetCash(int side_id, eValueOperation operation, int value)
+void EvAct_SetCash(int event_id, int side_id, eValueOperation operation, int value)
 {
+  CHECK_SIDE_ID;
   CSide *side = GetSide(side_id);
   int actual_cash = side->SpiceReal + side->SpiceDrip + side->CashReal + side->CashDrip;
-  int target_cash = ValueOperation(actual_cash, value, operation);
+  int target_cash = ValueOperation(event_id, actual_cash, value, operation);
   int cost = actual_cash - target_cash;
 
   cost = HLIMIT(cost, actual_cash);
@@ -102,9 +127,10 @@ void EvAct_SetCash(int side_id, eValueOperation operation, int value)
   }
 }
 
-void EvAct_SetTech(int side_id, eValueOperation operation, bool immediate_update, int value)
+void EvAct_SetTech(int event_id, int side_id, eValueOperation operation, bool immediate_update, int value)
 {
-  _gMiscData.Tech[side_id] = ValueOperation(_gMiscData.Tech[side_id], value, operation);
+  CHECK_SIDE_ID;
+  _gMiscData.Tech[side_id] = ValueOperation(event_id, _gMiscData.Tech[side_id], value, operation);
   // Immediately update available buildings and units
   if (immediate_update)
   {
@@ -112,8 +138,9 @@ void EvAct_SetTech(int side_id, eValueOperation operation, bool immediate_update
   }
 }
 
-void EvAct_SwitchMySide(int side_id, int ai_switch, bool reveal_base)
+void EvAct_SwitchMySide(int event_id, int side_id, int ai_switch, bool reveal_base)
 {
+  CHECK_SIDE_ID;
   if (ai_switch & 2)
     _gAIArray[gSideId].__IsAI = 1;
   gSideId = side_id;
@@ -147,8 +174,9 @@ void EvAct_HideMap()
   RevealTilesSeenByBuildingsAndUnits(gSideId);
 }
 
-void EvAct_RevealMap(int xpos, int ypos, int radius)
+void EvAct_RevealMap(int event_id, int xpos, int ypos, int radius)
 {
+  CHECK_POSITION;
   if (radius == 0)
   {
     RevealMap();
@@ -208,7 +236,7 @@ void GetMessageText(char *buffer, unsigned int buffer_len, ShowMessageEventData 
             case MSGVARIABLETYPE_STRING_FROM_TABLE: GetTextStringToBuffer(val.int_val, var_text, sizeof(var_text)); break;
             case MSGVARIABLETYPE_UNIT_NAME:
             {
-              if (val.int_val >= 0 && val.int_val < 60)
+              if (val.int_val >= 0 && val.int_val < MAX_UNIT_TYPES)
               {
                 int unit_group = _templates_unitattribs[val.int_val].__UnitType;
                 int string_id = _UnitGroupTextIds[unit_group];
@@ -218,7 +246,7 @@ void GetMessageText(char *buffer, unsigned int buffer_len, ShowMessageEventData 
             };
             case MSGVARIABLETYPE_BUILDING_NAME:
             {
-              if (val.int_val >= 0 && val.int_val < 100)
+              if (val.int_val >= 0 && val.int_val < MAX_BUILDING_TYPES)
               {
                 int building_group = _templates_buildattribs[val.int_val].GroupType;
                 int string_id = _BuildingGroupTextIds[building_group];
@@ -226,14 +254,14 @@ void GetMessageText(char *buffer, unsigned int buffer_len, ShowMessageEventData 
               }
               break;
             };
-            case MSGVARIABLETYPE_UNIT_TYPE: if (val.int_val >= 0 && val.int_val < 60) {strcpy(var_text, _templates_UnitNameList[val.int_val]);} break;
-            case MSGVARIABLETYPE_BUILDING_TYPE: if (val.int_val >= 0 && val.int_val < 100) {strcpy(var_text, _templates_BuildingNameList[val.int_val]);} break;
-            case MSGVARIABLETYPE_UNIT_GROUP: if (val.int_val >= 0 && val.int_val < 60) {strcpy(var_text, _templates_UnitGroupNameList[val.int_val]);} break;
-            case MSGVARIABLETYPE_BUILDING_GROUP: if (val.int_val >= 0 && val.int_val < 100) {strcpy(var_text, _templates_BuildingGroupNameList[val.int_val]);} break;
-            case MSGVARIABLETYPE_WEAPON_NAME: if (val.int_val >= 0 && val.int_val < 64) {strcpy(var_text, _templates_BulletNameList[val.int_val]);} break;
-            case MSGVARIABLETYPE_EXPLOSION_NAME: if (val.int_val >= 0 && val.int_val < 64) {strcpy(var_text, _templates_ExplosionNameList[val.int_val]);} break;
-            case MSGVARIABLETYPE_WARHEAD_NAME: if (val.int_val >= 0 && val.int_val < 30) {strcpy(var_text, _WarheadNames[val.int_val]);} break;
-            case MSGVARIABLETYPE_ARMOUR_TYPE: if (val.int_val >= 0 && val.int_val < 12) {strcpy(var_text, _ArmourNames[val.int_val]);} break;
+            case MSGVARIABLETYPE_UNIT_TYPE: if (val.int_val >= 0 && val.int_val < MAX_UNIT_TYPES) {strcpy(var_text, _templates_UnitNameList[val.int_val]);} break;
+            case MSGVARIABLETYPE_BUILDING_TYPE: if (val.int_val >= 0 && val.int_val < MAX_BUILDING_TYPES) {strcpy(var_text, _templates_BuildingNameList[val.int_val]);} break;
+            case MSGVARIABLETYPE_UNIT_GROUP: if (val.int_val >= 0 && val.int_val < MAX_UNIT_TYPES) {strcpy(var_text, _templates_UnitGroupNameList[val.int_val]);} break;
+            case MSGVARIABLETYPE_BUILDING_GROUP: if (val.int_val >= 0 && val.int_val < MAX_BUILDING_TYPES) {strcpy(var_text, _templates_BuildingGroupNameList[val.int_val]);} break;
+            case MSGVARIABLETYPE_WEAPON_NAME: if (val.int_val >= 0 && val.int_val < MAX_WEAPON_TYPES) {strcpy(var_text, _templates_BulletNameList[val.int_val]);} break;
+            case MSGVARIABLETYPE_EXPLOSION_NAME: if (val.int_val >= 0 && val.int_val < MAX_EXPLOSION_TYPES) {strcpy(var_text, _templates_ExplosionNameList[val.int_val]);} break;
+            case MSGVARIABLETYPE_WARHEAD_NAME: if (val.int_val >= 0 && val.int_val < MAX_WARHEAD_TYPES) {strcpy(var_text, _WarheadNames[val.int_val]);} break;
+            case MSGVARIABLETYPE_ARMOUR_TYPE: if (val.int_val >= 0 && val.int_val < MAX_ARMOUR_TYPES) {strcpy(var_text, _ArmourNames[val.int_val]);} break;
           }
           unsigned int var_text_len = strlen(var_text);
 
@@ -284,8 +312,10 @@ void EvAct_ShowMessage(int xoff, int yoff, int ref_id, int screen_pos, int color
   QueueMessageExt(buffer, duration, ref_id, screen_pos, xoff, yoff, color, type_on);
 }
 
-void EvAct_UnitSpawn(int xpos, int ypos, int side_id, int amount, int facing, int tag, char *unit_list)
+void EvAct_UnitSpawn(int event_id, int xpos, int ypos, int side_id, int amount, int facing, int tag, char *unit_list)
 {
+  CHECK_POSITION;
+  CHECK_SIDE_ID;
   for (int i = 0; i < amount; i++)
   {
     unsigned char x = xpos;
@@ -305,12 +335,13 @@ void EvAct_UnitSpawn(int xpos, int ypos, int side_id, int amount, int facing, in
   }
 }
 
-void EvAct_UnBlockEvent(int operation, int event_index)
+void EvAct_UnBlockEvent(int event_id, int operation, int target_event_index)
 {
+  CHECK_PARAMETER(target_event_index, "event ID", _gEventCount);
   if (operation)
-    _gEventArray[event_index].event_flags |= EVENTFLAG_BLOCKED;
+    _gEventArray[target_event_index].event_flags |= EVENTFLAG_BLOCKED;
   else
-    _gEventArray[event_index].event_flags &= ~EVENTFLAG_BLOCKED;
+    _gEventArray[target_event_index].event_flags &= ~EVENTFLAG_BLOCKED;
 }
 
 void EvAct_PlayMusic(char *name)
@@ -339,8 +370,11 @@ void random_spread(int *x, int *y, int spread_x, int spread_y, bool circle_sprea
   }
 }
 
-void EvAct_DamageTiles(int xpos, int ypos, int pixel_x, int pixel_y, int spread_x, int spread_y, int side_id, int weapon_type, bool circle_spread, bool hit_explosion)
+void EvAct_DamageTiles(int event_id, int xpos, int ypos, int pixel_x, int pixel_y, int spread_x, int spread_y, int side_id, int weapon_type, bool circle_spread, bool hit_explosion)
 {
+  CHECK_POSITION;
+  CHECK_SIDE_ID;
+  CHECK_WEAPON_TYPE;
   int pixel_pos_x = xpos * 32 + pixel_x;
   int pixel_pos_y = ypos * 32 + pixel_y;
   random_spread(&pixel_pos_x, &pixel_pos_y, spread_x, spread_y, circle_spread);
@@ -357,8 +391,11 @@ void EvAct_DamageTiles(int xpos, int ypos, int pixel_x, int pixel_y, int spread_
   }
 }
 
-void EvAct_AddUnit(int xpos, int ypos, int side_id, int properties, int unit_type, int movement, int facing, int tag, int target_var)
+void EvAct_AddUnit(int event_id, int xpos, int ypos, int side_id, int properties, int unit_type, int movement, int facing, int tag, int target_var)
 {
+  CHECK_POSITION;
+  CHECK_SIDE_ID;
+  CHECK_UNIT_TYPE;
   GameMapTileStruct *tile = &gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]];
   // Do not add unit if tile is already occupied by unit
   if (_templates_unitattribs[unit_type].__Behavior != UnitBehavior_SANDWORM && tile->__tile_bitflags & TileFlags_8_OCC_UNIT)
@@ -418,8 +455,11 @@ void EvAct_AddUnit(int xpos, int ypos, int side_id, int properties, int unit_typ
   SetVariableValue(target_var, unit_index);
 }
 
-void EvAct_AddBuilding(int xpos, int ypos, int side_id, int properties, int building_type, int method, int facing, int tag, int target_var)
+void EvAct_AddBuilding(int event_id, int xpos, int ypos, int side_id, int properties, int building_type, int method, int facing, int tag, int target_var)
 {
+  CHECK_POSITION;
+  CHECK_SIDE_ID;
+  CHECK_BUILDING_TYPE;
   bool initialsetup = false;
   bool captured = false;
   bool place_concrete = false;
@@ -457,13 +497,16 @@ void EvAct_AddBuilding(int xpos, int ypos, int side_id, int properties, int buil
   SetVariableValue(target_var, building_index);
 }
 
-void EvAct_AddBullet(int src_x, int src_y, int targ_x, int targ_y, int pixel_x, int pixel_y, int spread_x, int spread_y, int side_id, int weapon_type, bool circle_spread, bool play_sound, int tag, int target_var)
+void EvAct_AddBullet(int event_id, int xpos, int ypos, int targ_x, int targ_y, int pixel_x, int pixel_y, int spread_x, int spread_y, int side_id, int weapon_type, bool circle_spread, bool play_sound, int tag, int target_var)
 {
+  CHECK_POSITION;
+  CHECK_SIDE_ID;
+  CHECK_WEAPON_TYPE;
   int pixel_pos_x = targ_x * 32 + pixel_x;
   int pixel_pos_y = targ_y * 32 + pixel_y;
   random_spread(&pixel_pos_x, &pixel_pos_y, spread_x, spread_y, circle_spread);
 
-  int bullet_index = ModelAddBullet(side_id, weapon_type, 0, -1, src_x*32+16, src_y*32+16, pixel_pos_x, pixel_pos_y, -1, -1);
+  int bullet_index = ModelAddBullet(side_id, weapon_type, 0, -1, xpos*32+16, ypos*32+16, pixel_pos_x, pixel_pos_y, -1, -1);
   SetVariableValue(target_var, bullet_index);
   if (bullet_index != -1)
   {
@@ -471,11 +514,14 @@ void EvAct_AddBullet(int src_x, int src_y, int targ_x, int targ_y, int pixel_x, 
     bullet->Tag = tag;
   }
   if (play_sound)
-    PlaySoundAt(_templates_bulletattribs[weapon_type].__FiringSound, src_x, src_y);
+    PlaySoundAt(_templates_bulletattribs[weapon_type].__FiringSound, xpos, ypos);
 }
 
-void EvAct_AddExplosion(int xpos, int ypos, int pixel_x, int pixel_y, int spread_x, int spread_y, int side_id, int explosion_type, bool circle_spread, bool play_sound, int tag, int target_var)
+void EvAct_AddExplosion(int event_id, int xpos, int ypos, int pixel_x, int pixel_y, int spread_x, int spread_y, int side_id, int explosion_type, bool circle_spread, bool play_sound, int tag, int target_var)
 {
+  CHECK_POSITION;
+  CHECK_SIDE_ID;
+  CHECK_EXPLOSION_TYPE;
   int pixel_pos_x = xpos * 32 + pixel_x;
   int pixel_pos_y = ypos * 32 + pixel_y;
   random_spread(&pixel_pos_x, &pixel_pos_y, spread_x, spread_y, circle_spread);
@@ -493,8 +539,9 @@ void EvAct_AddExplosion(int xpos, int ypos, int pixel_x, int pixel_y, int spread
   }
 }
 
-int EvAct_AddCrate(int xpos, int ypos, int crate_type, int image, int ext_data, int respawns, int expiration)
+int EvAct_AddCrate(int event_id, int xpos, int ypos, int crate_type, int image, int ext_data, int respawns, int expiration)
 {
+  CHECK_POSITION;
   // There is already crate
   if (gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]].__tile_bitflags & TileFlags_1000_HAS_CRATE)
     return -1;
@@ -515,8 +562,9 @@ int EvAct_AddCrate(int xpos, int ypos, int crate_type, int image, int ext_data, 
   return index;
 }
 
-void EvAct_AddConcrete(int min_x, int min_y, int max_x, int max_y, int side_id, int tilebitmask)
+void EvAct_AddConcrete(int event_id, int min_x, int min_y, int max_x, int max_y, int side_id, int tilebitmask)
 {
+  CHECK_SIDE_ID;
   if (tilebitmask)
     ModelAddConcrete(side_id, CSide__MyVersionOfBuilding(GetSide(side_id), _templates_GroupIDs.Concrete1, 0), min_x, min_y, 0, tilebitmask);
   else
@@ -542,8 +590,9 @@ bool NotSpiceOn(int x, int y)
   return (gGameMap.map[x + _CellNumbersWidthSpan[y]].__tile_bitflags & (TileFlags_100000_SPICE | TileFlags_200000_SPICE | TileFlags_400000_SPICE)) == 0;
 }
 
-void EvAct_SpiceBloom(int xpos, int ypos, int range, eSpiceBloomMode mode, bool randomizer)
+void EvAct_SpiceBloom(int event_id, int xpos, int ypos, int range, eSpiceBloomMode mode, bool randomizer)
 {
+  CHECK_POSITION;
   // Extended behavior: instant spice blooms
   if (mode != SPICEBLOOM_CLASSIC)
   {
@@ -743,11 +792,12 @@ void ChangeMapTile(int xpos, int ypos, int new_tile_index, eChangeTileMode mode)
   SetPixelOnRadar(xpos, ypos);
 };
 
-void EvAct_ChangeMapBlock(int xpos, int ypos, int width, int height, eChangeTileMode mode, uint16_t *tiles)
+void EvAct_ChangeMapBlock(int event_id, int xpos, int ypos, int width, int height, eChangeTileMode mode, uint16_t *tiles)
 {
+  CHECK_POSITION;
   int tile_count = height * width;
   if (tile_count > 12)
-    DebugFatal("event-actions.c", "Max allowed tiles in Change Tiles event is 12, actual is %d", tile_count);
+    DebugFatal(EVENT_ERROR, "Max allowed tiles in Change Tiles event is 12, actual is %d (event %d)", tile_count, event_id);
   for (int y = 0; y < height; y++)
     for (int x = 0; x < width; x++)
       ChangeMapTile(x + xpos, y + ypos, tiles[y * width + x], mode);
@@ -760,10 +810,10 @@ void EvAct_ChangeMapBlock(int xpos, int ypos, int width, int height, eChangeTile
   UpdateSpiceInRegion(&r);
 }
 
-void EvAct_TransformTiles(int amount, eChangeTileMode mode, uint16_t *tiles)
+void EvAct_TransformTiles(int event_id, int amount, eChangeTileMode mode, uint16_t *tiles)
 {
   if (amount > 6)
-    DebugFatal("event-actions.c", "Max allowed tile pairs in Transform Tiles event is 6, actual is %d", amount);
+    DebugFatal(EVENT_ERROR, "Max allowed tile pairs in Transform Tiles event is 6, actual is %d (event %d)", amount, event_id);
   for (int y = 0; y < gGameMapHeight; y++)
     for (int x = 0; x < gGameMapWidth; x++)
       for (int i = 0; i < amount; i++)
@@ -774,8 +824,11 @@ void EvAct_TransformTiles(int amount, eChangeTileMode mode, uint16_t *tiles)
         }
 }
 
-void EvAct_AddBuildingDestruct(int xpos, int ypos, int side_id, int building_type)
+void EvAct_AddBuildingDestruct(int event_id, int xpos, int ypos, int side_id, int building_type)
 {
+  CHECK_POSITION;
+  CHECK_SIDE_ID;
+  CHECK_BUILDING_TYPE;
   int old_screen_shakes = _ScreenShakes;
   int building_index = ModelAddBuilding(side_id, building_type, xpos, ypos, 0, 1, 1);
   if (building_index == -1)
@@ -789,10 +842,13 @@ void EvAct_AddBuildingDestruct(int xpos, int ypos, int side_id, int building_typ
   _ScreenShakes = old_screen_shakes;
 }
 
-void EvAct_AddHomingBullet(int src_x, int src_y, int pixel_x, int pixel_y, int side_id, int weapon_type, int enemy_side, int enemy_index_var, bool play_sound, int tag, int target_var)
+void EvAct_AddHomingBullet(int event_id, int xpos, int ypos, int pixel_x, int pixel_y, int side_id, int weapon_type, int enemy_side, int enemy_index_var, bool play_sound, int tag, int target_var)
 {
-  int pixel_pos_x = src_x * 32 + pixel_x;
-  int pixel_pos_y = src_y * 32 + pixel_y;
+  CHECK_POSITION;
+  CHECK_SIDE_ID;
+  CHECK_WEAPON_TYPE;
+  int pixel_pos_x = xpos * 32 + pixel_x;
+  int pixel_pos_y = ypos * 32 + pixel_y;
   int enemy_index = GetVariableValue(enemy_index_var);
 
   int target_x = 0;
@@ -826,11 +882,12 @@ void EvAct_AddHomingBullet(int src_x, int src_y, int pixel_x, int pixel_y, int s
     PlaySoundAt(_templates_bulletattribs[weapon_type].__FiringSound, pixel_pos_x / 32, pixel_pos_y / 32);
 }
 
-void EvAct_ActivateTimer(int condition_index)
+void EvAct_ActivateTimer(int event_id, int condition_index)
 {
+  CHECK_PARAMETER(condition_index, "condition ID", _gConditionCount);
   ConditionData *condition = &_gConditionArray[condition_index];
   if (!(condition->condition_type == CT_INTERVAL || condition->condition_type == CT_TIMER || condition->condition_type == CT_RANDOMINTERVAL))
-    DebugFatal("event-actions.c", "Activate Timer: The target condition (ID %d) must be Timer, Interval or Random Interval type.", condition_index);
+    DebugFatal(EVENT_ERROR, "Activate Timer: The target condition (ID %d) must be Timer, Interval or Random Interval type (event %d)", condition_index, event_id);
   // Set Inactive to false
   condition->arg1 = 0;
   // Set Base time to current time
@@ -903,8 +960,9 @@ void EvAct_RemoveMessage(eRemoveMessageMode mode, int ref_id, int amount)
   }
 }
 
-void EvAct_SetMessageColor(int color_index, eSetMessageColorMode mode, int transition_speed, int transition_stages, int color1, int color2)
+void EvAct_SetMessageColor(int event_id, int color_index, eSetMessageColorMode mode, int transition_speed, int transition_stages, int color1, int color2)
 {
+  CHECK_PARAMETER(color_index, "color index", 16);
   switch (mode)
   {
     case SETMSGCOLORMODE_SOLID_SHADOW: SetFontColorSolid(color_index, color1, color2); break;
@@ -920,8 +978,9 @@ void EvAct_SetMessageColor(int color_index, eSetMessageColorMode mode, int trans
   }
 }
 
-void EvAct_SetTooltip(int line, eSetTooltipColorMode color_mode, int color, ShowMessageEventData *data)
+void EvAct_SetTooltip(int event_id, int line, eSetTooltipColorMode color_mode, int color, ShowMessageEventData *data)
 {
+  CHECK_PARAMETER(line, "line number", MAX_TOOLTIP_LINES);
   switch (color_mode)
   {
     case SETTOOLTIPCOLORMODE_KEEP: break;
@@ -932,8 +991,9 @@ void EvAct_SetTooltip(int line, eSetTooltipColorMode color_mode, int color, Show
   GetMessageText(gTooltipExtraData[line].text, 100, data);
 }
 
-void EvAct_TransferCredits(int side_id, eTransferCreditsOperation operation, int value)
+void EvAct_TransferCredits(int event_id, int side_id, eTransferCreditsOperation operation, int value)
 {
+  CHECK_SIDE_ID;
   CSide *side = GetSide(side_id);
   int remaining_transfer = 0;
   switch (operation)
@@ -978,11 +1038,13 @@ void EvAct_TransferCredits(int side_id, eTransferCreditsOperation operation, int
   }
 }
 
-void EvAct_SetBuildingUpgrades(int side_id, int building_group, eValueOperation operation, int value)
+void EvAct_SetBuildingUpgrades(int event_id, int side_id, int building_group, eValueOperation operation, int value)
 {
+  CHECK_SIDE_ID;
+  CHECK_BUILDING_GROUP;
   CSide *side = GetSide(side_id);
   int old_upgrades = side->__BuildingGroupUpgradeCount[building_group];
-  int new_upgrades = LLIMIT(ValueOperation(old_upgrades, value, operation), 0);
+  int new_upgrades = LLIMIT(ValueOperation(event_id, old_upgrades, value, operation), 0);
   side->__BuildingGroupUpgradeCount[building_group] = new_upgrades;
   CSide__UpdateBuildingAndUnitIconsAndBaseBoundaries(side);
   if ((old_upgrades < new_upgrades) && (side->__BuildingUpgradeQueue.__type == CSide__MyVersionOfBuilding(side, building_group, 0)))
@@ -992,17 +1054,20 @@ void EvAct_SetBuildingUpgrades(int side_id, int building_group, eValueOperation 
   }
 }
 
-void EvAct_SetStarportCost(int side_id, int unit_type, eValueOperation operation, bool default_cost, int value)
+void EvAct_SetStarportCost(int event_id, int side_id, int unit_type, eValueOperation operation, bool default_cost, int value)
 {
+  CHECK_SIDE_ID;
+  CHECK_UNIT_TYPE;
   CSide *side = GetSide(side_id);
   if (default_cost)
     side->__StarportUnitTypeCost[unit_type] = _templates_unitattribs[unit_type].__Cost;
   else
-    side->__StarportUnitTypeCost[unit_type] = LLIMIT(ValueOperation(side->__StarportUnitTypeCost[unit_type], value, operation), 0);
+    side->__StarportUnitTypeCost[unit_type] = LLIMIT(ValueOperation(event_id, side->__StarportUnitTypeCost[unit_type], value, operation), 0);
 }
 
-void EvAct_ShowSideData(int side_id, int offset)
+void EvAct_ShowSideData(int event_id, int side_id, int offset)
 {
+  CHECK_SIDE_ID;
   CSide *side = GetSide(side_id);
   char header[128];
   memset(header, 0, sizeof(header));
@@ -1010,14 +1075,16 @@ void EvAct_ShowSideData(int side_id, int offset)
   ShowDataOnScreen(header, ((unsigned char *)side) + offset);
 }
 
-void EvAct_SetAIProperty(int side_id, eDataType data_type, eValueOperation operation, int offset, int value)
+void EvAct_SetAIProperty(int event_id, int side_id, eDataType data_type, eValueOperation operation, int offset, int value)
 {
+  CHECK_SIDE_ID;
   CAI_ *ai = &_gAIArray[side_id];
-  SetDataValue((char *)ai, data_type, offset, operation, value);
+  SetDataValue(event_id, (char *)ai, data_type, offset, operation, value);
 }
 
-void EvAct_ShowAIData(int side_id, int offset)
+void EvAct_ShowAIData(int event_id, int side_id, int offset)
 {
+  CHECK_SIDE_ID;
   CAI_ *ai = &_gAIArray[side_id];
   char header[128];
   memset(header, 0, sizeof(header));
@@ -1025,26 +1092,26 @@ void EvAct_ShowAIData(int side_id, int offset)
   ShowDataOnScreen(header, ((unsigned char *)ai) + offset);
 }
 
-void EvAct_SetMemoryData(eDataType data_type, eValueOperation operation, int address, int value)
+void EvAct_SetMemoryData(int event_id, eDataType data_type, eValueOperation operation, int address, int value)
 {
-  if (!address)
-    DebugFatal("event-actions.c", "Memory address is NULL");
-  SetDataValue((char *)address, data_type, 0, operation, value);
+  CHECK_ADDRESS;
+  SetDataValue(event_id, (char *)address, data_type, 0, operation, value);
 }
 
-void EvAct_ShowMemoryData(int address)
+void EvAct_ShowMemoryData(int event_id, int address)
 {
-  if (!address)
-    DebugFatal("event-actions.c", "Memory address is NULL");
+  CHECK_ADDRESS;
   char header[128];
   memset(header, 0, sizeof(header));
   sprintf(header, "Memory dump at address %08X", address);
   ShowDataOnScreen(header, (unsigned char *)address);
 }
 
-void EvAct_DestroyUnit(int side_id, bool silent, int unit_index)
+void EvAct_DestroyUnit(int event_id, int side_id, bool silent, int index)
 {
-  Unit *unit = GetUnit(side_id, unit_index);
+  CHECK_SIDE_ID;
+  CHECK_OBJECT_INDEX;
+  Unit *unit = GetUnit(side_id, index);
   if (unit->State == UNIT_STATE_17_DEAD)
     return;
   if (silent)
@@ -1054,24 +1121,29 @@ void EvAct_DestroyUnit(int side_id, bool silent, int unit_index)
     unit->__AttackerIndex = -1;
   }
   else
-    DestroyUnit(side_id, unit_index);
+    DestroyUnit(side_id, index);
 }
 
-void EvAct_DamageHealUnit(int side_id, int action, int units, int value, int unit_index)
+void EvAct_DamageHealUnit(int event_id, int side_id, int action, int units, int value, int index)
 {
-  Unit *unit = GetUnit(side_id, unit_index);
+  CHECK_SIDE_ID;
+  CHECK_OBJECT_INDEX;
+  Unit *unit = GetUnit(side_id, index);
   if (unit->State == UNIT_STATE_17_DEAD)
     return;
   UnitAtribStruct *unit_template = &_templates_unitattribs[unit->Type];
   int hit_points = (units?((unit_template->__Strength * value) / 100):value) * (action?1:-1);
   unit->Health = LIMIT(unit->Health + hit_points, 0, unit_template->__Strength);
   if (!unit->Health)
-    DestroyUnit(side_id, unit_index);
+    DestroyUnit(side_id, index);
 }
 
-void EvAct_ChangeUnitType(int side_id, int target_type, bool defined_type, int unit_index)
+void EvAct_ChangeUnitType(int event_id, int side_id, int target_type, bool defined_type, int index)
 {
-  Unit *unit = GetUnit(side_id, unit_index);
+  CHECK_SIDE_ID;
+  CHECK_PARAMETER(target_type, "target unit type", gUnitTypeNum);
+  CHECK_OBJECT_INDEX;
+  Unit *unit = GetUnit(side_id, index);
   if (defined_type)
   {
     if (_templates_unitattribs[unit->Type].UnitUpgradeAllowed)
@@ -1085,30 +1157,38 @@ void EvAct_ChangeUnitType(int side_id, int target_type, bool defined_type, int u
   unit->Type = target_type;
 }
 
-void EvAct_SetUnitFlag(int side_id, eFlagOperation operation, int flag, int unit_index)
+void EvAct_SetUnitFlag(int event_id, int side_id, eFlagOperation operation, int flag, int index)
 {
-  Unit *unit = GetUnit(side_id, unit_index);
+  CHECK_SIDE_ID;
+  CHECK_OBJECT_INDEX;
+  Unit *unit = GetUnit(side_id, index);
   unit->Flags = FlagOperation(unit->Flags, flag, operation);
 }
 
-void EvAct_SetUnitProperty(int side_id, eDataType data_type, int offset, eValueOperation operation, int value, int unit_index)
+void EvAct_SetUnitProperty(int event_id, int side_id, eDataType data_type, int offset, eValueOperation operation, int value, int index)
 {
-  Unit *unit = GetUnit(side_id, unit_index);
-  SetDataValue((char *)unit, data_type, offset, operation, value);
+  CHECK_SIDE_ID;
+  CHECK_OBJECT_INDEX;
+  Unit *unit = GetUnit(side_id, index);
+  SetDataValue(event_id, (char *)unit, data_type, offset, operation, value);
 }
 
-void EvAct_SelectUnit(int side_id, bool exclude_from_restore, int unit_index)
+void EvAct_SelectUnit(int event_id, int side_id, bool exclude_from_restore, int index)
 {
-  Unit *unit = GetUnit(side_id, unit_index);
+  CHECK_SIDE_ID;
+  CHECK_OBJECT_INDEX;
+  Unit *unit = GetUnit(side_id, index);
   unit->__IsSelected = 1;
   if (exclude_from_restore)
     unit->PrevWasSelected = 0;
 }
 
-void EvAct_AirliftUnit(int side_id, int target_x, int target_y, bool units_target, int unit_index)
+void EvAct_AirliftUnit(int event_id, int side_id, int target_x, int target_y, bool units_target, int index)
 {
+  CHECK_SIDE_ID;
+  CHECK_OBJECT_INDEX;
   CSide *side = GetSide(side_id);
-  Unit *unit = GetUnit(side_id, unit_index);
+  Unit *unit = GetUnit(side_id, index);
   if (unit->State == UNIT_STATE_18_AWAITING_AIRLIFT)
     return;
   if (units_target && unit->TargetX == unit->BlockFromX && unit->TargetY == unit->BlockFromY)
@@ -1140,19 +1220,21 @@ void EvAct_AirliftUnit(int side_id, int target_x, int target_y, bool units_targe
       unit->__pos_stepsmax = 0;
       unit->pos_steps = 0;
     }
-    if ( CSide__AddToQueue(side, unit, unit_index, queue_pos, 100, unit->State) )
+    if ( CSide__AddToQueue(side, unit, index, queue_pos, 100, unit->State) )
     {
       UnitAdjustState(unit, UNIT_STATE_18_AWAITING_AIRLIFT);
     }
   }
 }
 
-void EvAct_ShowUnitData(int side_id, int unit_index)
+void EvAct_ShowUnitData(int event_id, int side_id, int index)
 {
-  Unit *unit = GetUnit(side_id, unit_index);
+  CHECK_SIDE_ID;
+  CHECK_OBJECT_INDEX;
+  Unit *unit = GetUnit(side_id, index);
   char buf[128];
   memset(buf, 0, sizeof(buf));
-  sprintf(buf, "Unit %d (%p) Type %d HP %d State %d Flags: ", unit_index, unit, unit->Type, unit->Health, unit->State);
+  sprintf(buf, "Unit %d (%p) Type %d HP %d State %d Flags: ", index, unit, unit->Type, unit->Health, unit->State);
   int l = strlen(buf);
   memset(&buf[l], ' ', 43);
   for (int i = 0; i < 32; i++)
@@ -1160,9 +1242,11 @@ void EvAct_ShowUnitData(int side_id, int unit_index)
   ShowDataOnScreen(buf, (unsigned char *)unit);
 }
 
-void EvAct_DestroyBuilding(int side_id, bool silent, int building_index)
+void EvAct_DestroyBuilding(int event_id, int side_id, bool silent, int index)
 {
-  Building *bld = GetBuilding(side_id, building_index);
+  CHECK_SIDE_ID;
+  CHECK_OBJECT_INDEX;
+  Building *bld = GetBuilding(side_id, index);
   if (bld->__State == UNIT_STATE_17_DEAD)
     return;
   if (silent)
@@ -1172,62 +1256,77 @@ void EvAct_DestroyBuilding(int side_id, bool silent, int building_index)
     bld->__AttackerIndex = -1;
   }
   else
-    DestroyBuilding(side_id, building_index, 0);
+    DestroyBuilding(side_id, index, 0);
 }
 
-void EvAct_DamageHealBuilding(int side_id, int action, int units, int value, int building_index)
+void EvAct_DamageHealBuilding(int event_id, int side_id, int action, int units, int value, int index)
 {
-  Building *bld = GetBuilding(side_id, building_index);
+  CHECK_SIDE_ID;
+  CHECK_OBJECT_INDEX;
+  Building *bld = GetBuilding(side_id, index);
   if (bld->__State == UNIT_STATE_17_DEAD)
     return;
   BuildingAtrbStruct *bld_template = &_templates_buildattribs[bld->Type];
   int hit_points = (units?((bld_template->_____HitPoints * value) / 100):value) * (action?1:-1);
   bld->Health = LIMIT((int)bld->Health + hit_points, 0, bld_template->_____HitPoints);
   if (!bld->Health)
-    DestroyBuilding(side_id, building_index, 0);
+    DestroyBuilding(side_id, index, 0);
 }
 
-void EvAct_ChangeBuildingOwner(int side_id, int target_side, int building_index)
+void EvAct_ChangeBuildingOwner(int event_id, int side_id, int target_side, int index)
 {
-  Building *bld = GetBuilding(side_id, building_index);
+  CHECK_SIDE_ID;
+  CHECK_OBJECT_INDEX;
+  Building *bld = GetBuilding(side_id, index);
   bld->Flags |= BFLAGS_1000000_INFILTRATED;
-  CaptureBuilding(side_id, target_side, building_index);
+  CaptureBuilding(side_id, target_side, index);
 }
 
-void EvAct_ChangeBuildingType(int side_id, int target_type, int building_index)
+void EvAct_ChangeBuildingType(int event_id, int side_id, int target_type, int index)
 {
-  Building *bld = GetBuilding(side_id, building_index);
+  CHECK_SIDE_ID;
+  CHECK_PARAMETER(target_type, "target building type", gBuildingTypeNum);
+  CHECK_OBJECT_INDEX;
+  Building *bld = GetBuilding(side_id, index);
   bld->Health = LLIMIT(bld->Health + _templates_buildattribs[target_type]._____HitPoints - _templates_buildattribs[bld->Type]._____HitPoints, 1);
   bld->Flags = (bld->Flags & (~_templates_buildattribs[bld->Type]._____Flags)) | _templates_buildattribs[target_type]._____Flags;
   bld->Type = target_type;
 }
 
-void EvAct_SetBuildingFlag(int side_id, eFlagOperation operation, int flag, int building_index)
+void EvAct_SetBuildingFlag(int event_id, int side_id, eFlagOperation operation, int flag, int index)
 {
-  Building *bld = GetBuilding(side_id, building_index);
+  CHECK_SIDE_ID;
+  CHECK_OBJECT_INDEX;
+  Building *bld = GetBuilding(side_id, index);
   bld->Flags = FlagOperation(bld->Flags, flag, operation);
 }
 
-void EvAct_SetBuildingProperty(int side_id, eDataType data_type, int offset, eValueOperation operation, int value, int building_index)
+void EvAct_SetBuildingProperty(int event_id, int side_id, eDataType data_type, int offset, eValueOperation operation, int value, int index)
 {
-  Building *bld = GetBuilding(side_id, building_index);
-  SetDataValue((char *)bld, data_type, offset, operation, value);
+  CHECK_SIDE_ID;
+  CHECK_OBJECT_INDEX;
+  Building *bld = GetBuilding(side_id, index);
+  SetDataValue(event_id, (char *)bld, data_type, offset, operation, value);
 }
 
-void EvAct_SelectBuilding(int side_id, bool exclude_from_restore, int building_index)
+void EvAct_SelectBuilding(int event_id, int side_id, bool exclude_from_restore, int index)
 {
-  Building *bld = GetBuilding(side_id, building_index);
+  CHECK_SIDE_ID;
+  CHECK_OBJECT_INDEX;
+  Building *bld = GetBuilding(side_id, index);
   bld->__IsSelected = 1;
   if (exclude_from_restore)
     bld->PrevWasSelected = 0;
 }
 
-void EvAct_ShowBuildingData(int side_id, int building_index)
+void EvAct_ShowBuildingData(int event_id, int side_id, int index)
 {
-  Building *bld = GetBuilding(side_id, building_index);
+  CHECK_SIDE_ID;
+  CHECK_OBJECT_INDEX;
+  Building *bld = GetBuilding(side_id, index);
   char buf[128];
   memset(buf, 0, sizeof(buf));
-  sprintf(buf, "Building %d (%p) Type %d HP %d State %d Flags: ", building_index, bld, bld->Type, bld->Health, bld->__State);
+  sprintf(buf, "Building %d (%p) Type %d HP %d State %d Flags: ", index, bld, bld->Type, bld->Health, bld->__State);
   int l = strlen(buf);
   memset(&buf[l], ' ', 43);
   for (int i = 0; i < 32; i++)
@@ -1235,36 +1334,44 @@ void EvAct_ShowBuildingData(int side_id, int building_index)
   ShowDataOnScreen(buf, (unsigned char *)bld);
 }
 
-void EvAct_SetBulletProperty(int side_id, eDataType data_type, int offset, eValueOperation operation, int value, int bullet_index)
+void EvAct_SetBulletProperty(int event_id, int side_id, eDataType data_type, int offset, eValueOperation operation, int value, int index)
 {
-  Bullet *bul = (Bullet *)&gSideArray[side_id].__ObjectArray[bullet_index];
-  SetDataValue((char *)bul, data_type, offset, operation, value);
+  CHECK_SIDE_ID;
+  CHECK_OBJECT_INDEX;
+  Bullet *bul = (Bullet *)&gSideArray[side_id].__ObjectArray[index];
+  SetDataValue(event_id, (char *)bul, data_type, offset, operation, value);
 }
 
-void EvAct_SetExplosionProperty(int side_id, eDataType data_type, int offset, eValueOperation operation, int value, int explosion_index)
+void EvAct_SetExplosionProperty(int event_id, int side_id, eDataType data_type, int offset, eValueOperation operation, int value, int index)
 {
-  Explosion *exp = (Explosion *)&gSideArray[side_id].__ObjectArray[explosion_index];
-  SetDataValue((char *)exp, data_type, offset, operation, value);
+  CHECK_SIDE_ID;
+  CHECK_OBJECT_INDEX;
+  Explosion *exp = (Explosion *)&gSideArray[side_id].__ObjectArray[index];
+  SetDataValue(event_id, (char *)exp, data_type, offset, operation, value);
 }
 
-void EvAct_RemoveCrate(int crate_index)
+void EvAct_RemoveCrate(int event_id, int crate_index)
 {
+  CHECK_CRATE_INDEX;
   CrateStruct *crate = &gCrates[crate_index];
   crate->__is_active = 0;
   gGameMap.map[crate->__x + _CellNumbersWidthSpan[crate->__y]].__tile_bitflags &= ~TileFlags_1000_HAS_CRATE;
 }
 
-void EvAct_PickupCrate(int side_id, int crate_index)
+void EvAct_PickupCrate(int event_id, int side_id, int crate_index)
 {
+  CHECK_SIDE_ID;
+  CHECK_CRATE_INDEX;
   DoPickupCrate(crate_index, NULL, side_id);
 }
 
-void EvAct_SetCrateProperty(eDataType data_type, int offset, eValueOperation operation, int value, int crate_index)
+void EvAct_SetCrateProperty(int event_id, eDataType data_type, int offset, eValueOperation operation, int value, int crate_index)
 {
+  CHECK_CRATE_INDEX;
   CrateStruct *crate = &gCrates[crate_index];
   int old_x = crate->__x;
   int old_y = crate->__y;
-  SetDataValue((char *)crate, data_type, offset, operation, value);
+  SetDataValue(event_id, (char *)crate, data_type, offset, operation, value);
   // Crate was moved around - fix attributes
   if (old_x != crate->__x || old_y != crate->__y)
   {
@@ -1273,8 +1380,9 @@ void EvAct_SetCrateProperty(eDataType data_type, int offset, eValueOperation ope
   }
 }
 
-void EvAct_ShowCrateData(int crate_index)
+void EvAct_ShowCrateData(int event_id, int crate_index)
 {
+  CHECK_CRATE_INDEX;
   CrateStruct *crate = &gCrates[crate_index];
   char buf[128];
   memset(buf, 0, sizeof(buf));
@@ -1282,13 +1390,15 @@ void EvAct_ShowCrateData(int crate_index)
   QueueMessageExt(buf, 1, 250, 0, 0, 0, 0, 0);
 }
 
-void EvAct_ChangeTile(eChangeTileMode mode, int tile_index, int xpos, int ypos)
+void EvAct_ChangeTile(int event_id, eChangeTileMode mode, int tile_index, int xpos, int ypos)
 {
+  CHECK_POSITION;
   ChangeMapTile(xpos, ypos, tile_index, mode);
 }
 
-void EvAct_SetTileAttribute(eFlagOperation operation, int attribute, int xpos, int ypos)
+void EvAct_SetTileAttribute(int event_id, eFlagOperation operation, int attribute, int xpos, int ypos)
 {
+  CHECK_POSITION;
   GameMapTileStruct *tile = &gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]];
   TileFlags old_flags = tile->__tile_bitflags;
   tile->__tile_bitflags = FlagOperation(tile->__tile_bitflags, attribute, operation);
@@ -1311,19 +1421,22 @@ void EvAct_SetTileAttribute(eFlagOperation operation, int attribute, int xpos, i
   }
 }
 
-void EvAct_SetTileProperty(eDataType data_type, int offset, eValueOperation operation, int value, int xpos, int ypos)
+void EvAct_SetTileProperty(int event_id, eDataType data_type, int offset, eValueOperation operation, int value, int xpos, int ypos)
 {
+  CHECK_POSITION;
   GameMapTileStruct *tile = &gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]];
-  SetDataValue((char *)tile, data_type, offset, operation, value);
+  SetDataValue(event_id, (char *)tile, data_type, offset, operation, value);
 }
 
-void EvAct_RevealTile(int radius, int xpos, int ypos)
+void EvAct_RevealTile(int event_id, int radius, int xpos, int ypos)
 {
+  CHECK_POSITION;
   RevealCircle(xpos, ypos, radius);
 }
 
-void EvAct_HideTile(int xpos, int ypos)
+void EvAct_HideTile(int event_id, int xpos, int ypos)
 {
+  CHECK_POSITION;
   if ( gBitsPerPixel == 16 )
   {
     _RadarMap1->buffer[2 * (ypos * gGameMap.width + xpos)] = 0;
@@ -1344,12 +1457,13 @@ void EvAct_HideTile(int xpos, int ypos)
   UpdateShroudInRegion(&r, gGameMapWidth, gGameMapHeight);
 }
 
-void EvAct_ShowTileData(int xpos, int ypos)
+void EvAct_ShowTileData(int event_id, int xpos, int ypos)
 {
+  CHECK_POSITION;
   GameMapTileStruct *tile = &gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]];
   char buf[128];
   memset(buf, 0, sizeof(buf));
-  sprintf(buf, "Tile %d %d (%p) Idx %d Backup %d Shroud %d Damage %d Flags: ", xpos, ypos, tile, tile->__tile_index, tile->back_up_tile_index, tile->__shroud, tile->__damage);
+  sprintf(buf, "Tile %d %d (%p) Idx %d Bkup %d Shroud %d Damage %d Uncrush %d Flags: ", xpos, ypos, tile, tile->__tile_index, tile->back_up_tile_index, tile->__shroud, tile->__damage, tile->num_uncrushable_infantry);
   int l = strlen(buf);
   memset(&buf[l], ' ', 43);
   for (int i = 0; i < 32; i++)
@@ -1357,33 +1471,39 @@ void EvAct_ShowTileData(int xpos, int ypos)
   QueueMessageExt(buf, 1, 250, 0, 0, 0, 0, 0);
 }
 
-void EvAct_OrderUnitRetreat(int side_id)
+void EvAct_OrderUnitRetreat(int event_id, int side_id)
 {
+  CHECK_SIDE_ID;
   CSide *side = GetSide(side_id);
   uint8_t x, y;
   if (CSide__FindBestBasePosition(side, &x, &y))
     GenerateUnitRetreatOrder(side_id, x, y);
 }
 
-void EvAct_OrderBuildBuildingCancel(int side_id, bool force)
+void EvAct_OrderBuildBuildingCancel(int event_id, int side_id, bool force)
 {
+  CHECK_SIDE_ID;
   CSide *side = GetSide(side_id);
   if (force)
     side->__BuildingBuildQueue.__on_hold = 1;
   GenerateBuildBuildingCancelOrder(side_id, side->__BuildingBuildQueue.__type);
 }
 
-void EvAct_OrderBuildPlaceBuilding(int side_id, int xpos, int ypos)
+void EvAct_OrderBuildPlaceBuilding(int event_id, int side_id, int xpos, int ypos)
 {
+  CHECK_SIDE_ID;
+  CHECK_POSITION;
   CSide *side = GetSide(side_id);
   GenerateBuildPlaceBuildingOrder(side_id, side->__BuildingBuildQueue.__type, xpos, ypos);
 }
 
-void EvAct_OrderBuildUnitCancel(int side_id, bool any_unit, int unit_type, int queue, bool force)
+void EvAct_OrderBuildUnitCancel(int event_id, int side_id, bool any_unit, int unit_type, int queue, bool force)
 {
+  CHECK_SIDE_ID;
+  CHECK_UNIT_TYPE;
   CSide *side = GetSide(side_id);
   char *queue_groups = (char *)&_templates_GroupIDs;
-  for (int i = 0; i < 10; i++)
+  for (int i = 0; i < MAX_UNIT_BUILD_QUEUES; i++)
   {
     int unit_type_built = side->__UnitBuildQueue[i].__type;
     int prereq1_group = _templates_unitattribs[unit_type_built].__PreReq1;
@@ -1396,26 +1516,33 @@ void EvAct_OrderBuildUnitCancel(int side_id, bool any_unit, int unit_type, int q
   }
 }
 
-void EvAct_OrderStarportPick(int side_id, int unit_type)
+void EvAct_OrderStarportPick(int event_id, int side_id, int unit_type)
 {
+  CHECK_SIDE_ID;
+  CHECK_UNIT_TYPE;
   CSide *side = GetSide(side_id);
   if (!side->__StarportDeliveryInProgress)
     GenerateStarportPickOrder(side_id, unit_type);
 }
 
-void EvAct_OrderUpgradeCancel(int side_id, bool force)
+void EvAct_OrderUpgradeCancel(int event_id, int side_id, bool force)
 {
+  CHECK_SIDE_ID;
   CSide *side = GetSide(side_id);
   if (force)
     side->__BuildingUpgradeQueue.__on_hold = 1;
   GenerateUpgradeCancelOrder(side_id, side->__BuildingUpgradeQueue.__type);
 }
 
-void EvAct_AddRadarMarker(int xpos, int ypos, int slot, int ref_id, int color, int thickness, int duration, int custom_color)
+void EvAct_AddRadarMarker(int event_id, int xpos, int ypos, int slot, int ref_id, int color, int thickness, int duration, int custom_color)
 {
+  CHECK_POSITION;
   int id = -1;
   if (slot)
+  {
+    CHECK_PARAMETER(ref_id, "reference ID", MAX_RADAR_MARKERS);
     id = ref_id;
+  }
   else
   {
     for (int i = MAX_RADAR_MARKERS - 1; i >=0; i--)
@@ -1449,11 +1576,11 @@ void EvAct_AddRadarMarker(int xpos, int ypos, int slot, int ref_id, int color, i
   }
 }
 
-void EvAct_SetVariable(int target_var, bool use_offset, int offset_var, eValueOperation operation, int value)
+void EvAct_SetVariable(int event_id, int target_var, bool use_offset, int offset_var, eValueOperation operation, int value)
 {
   if (use_offset)
     target_var += GetVariableValue(offset_var);
-  SetVariableValue(target_var, ValueOperation(GetVariableValue(target_var), value, operation));
+  SetVariableValue(target_var, ValueOperation(event_id, GetVariableValue(target_var), value, operation));
 }
 
 void EvAct_GetVariable(int target_var, int src_var_base, int src_var_offset)
@@ -1461,7 +1588,7 @@ void EvAct_GetVariable(int target_var, int src_var_base, int src_var_offset)
   SetVariableValue(target_var, GetVariableValue(src_var_base + GetVariableValue(src_var_offset)));
 }
 
-void EvAct_SetFloatVariable(int target_var, bool use_offset, int offset_var, eValueOperation operation, int value)
+void EvAct_SetFloatVariable(int event_id, int target_var, bool use_offset, int offset_var, eValueOperation operation, int value)
 {
   if (use_offset)
     target_var += GetVariableValue(offset_var);
@@ -1470,7 +1597,7 @@ void EvAct_SetFloatVariable(int target_var, bool use_offset, int offset_var, eVa
   int_or_float result;
   operand1.int_val = GetVariableValue(target_var);
   operand2.int_val = value;
-  result.float_val = ValueOperationFloat(operand1.float_val, operand2.float_val, operation);
+  result.float_val = ValueOperationFloat(event_id, operand1.float_val, operand2.float_val, operation);
   SetVariableValue(target_var, result.int_val);
 }
 
@@ -1524,11 +1651,11 @@ void EvAct_GetRandomCoords(int min_x, int min_y, int max_x, int max_y, int first
   SetVariableValue(first_var + 1, (rand() % (max_y - min_y + 1)) + min_y);
 }
 
-void EvAct_GetValueFromList(int event_index, int amount, int target_var, int mode, int index_var, uint8_t *value_list)
+void EvAct_GetValueFromList(int event_id, int amount, int target_var, int mode, int index_var, uint8_t *value_list)
 {
   int index;
   if (!amount)
-    DebugFatal("event-actions.c", "List has zero values! (event %d)", event_index);
+    DebugFatal(EVENT_ERROR, "List has zero values! (event %d)", event_id);
   if (mode)
   {
     index = rand() % amount;
@@ -1537,16 +1664,16 @@ void EvAct_GetValueFromList(int event_index, int amount, int target_var, int mod
   {
     index = GetVariableValue(index_var);
     if ((index >= amount) || (index < 0))
-      DebugFatal("event-actions.c", "Indexing list of values out of range! Index: %d Amount: %d (event %d)", index, amount, event_index);
+      DebugFatal(EVENT_ERROR, "Indexing list of values out of range! Index: %d Amount: %d (event %d)", index, amount, event_id);
   }
   SetVariableValue(target_var, value_list[index]);
 }
 
-void EvAct_GetCoordsFromList(int event_index, int amount, int first_var, int mode, int index_var, uint8_t *value_list)
+void EvAct_GetCoordsFromList(int event_id, int amount, int first_var, int mode, int index_var, uint8_t *value_list)
 {
   int index;
   if (!amount)
-    DebugFatal("event-actions.c", "List has zero coordinates! (event %d)", event_index);
+    DebugFatal(EVENT_ERROR, "List has zero coordinates! (event %d)", event_id);
   if (mode)
   {
     index = rand() % amount;
@@ -1555,17 +1682,17 @@ void EvAct_GetCoordsFromList(int event_index, int amount, int first_var, int mod
   {
     index = GetVariableValue(index_var);
     if ((index >= amount) || (index < 0))
-      DebugFatal("event-actions.c", "Indexing list of coordinates out of range! Index: %d Amount: %d (event %d)", index, amount, event_index);
+      DebugFatal(EVENT_ERROR, "Indexing list of coordinates out of range! Index: %d Amount: %d (event %d)", index, amount, event_id);
   }
   SetVariableValue(first_var,     value_list[index * 2 + 1]);
   SetVariableValue(first_var + 1, value_list[index * 2 + 2]);
 }
 
-void EvAct_GetAreaFromList(int event_index, int amount, int first_var, int mode, int index_var, uint8_t *value_list)
+void EvAct_GetAreaFromList(int event_id, int amount, int first_var, int mode, int index_var, uint8_t *value_list)
 {
   int index;
   if (!amount)
-    DebugFatal("event-actions.c", "List has zero areas! (event %d)", event_index);
+    DebugFatal(EVENT_ERROR, "List has zero areas! (event %d)", event_id);
   if (mode)
   {
     index = rand() % amount;
@@ -1574,7 +1701,7 @@ void EvAct_GetAreaFromList(int event_index, int amount, int first_var, int mode,
   {
     index = GetVariableValue(index_var);
     if ((index >= amount) || (index < 0))
-      DebugFatal("event-actions.c", "Indexing list of areas out of range! Index: %d Amount: %d (event %d)", index, amount, event_index);
+      DebugFatal(EVENT_ERROR, "Indexing list of areas out of range! Index: %d Amount: %d (event %d)", index, amount, event_id);
   }
   SetVariableValue(first_var,     value_list[index * 4 + 1]);
   SetVariableValue(first_var + 1, value_list[index * 4 + 2]);
@@ -1597,78 +1724,95 @@ void EvAct_GetDamageCount(int target_var, int xpos, int ypos)
   SetVariableValue(target_var, GetVariableValue(target_var) + gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]].__damage);
 }
 
-void EvAct_GetObjectProperty(int side_id, eDataType data_type, int offset, int index_var, int target_var)
+void EvAct_GetObjectProperty(int event_id, int side_id, eDataType data_type, int offset, int index_var, int target_var, eObjectType object_type)
 {
-  Unit *obj = &GetSide(side_id)->__ObjectArray[GetVariableValue(index_var)];
+  CHECK_SIDE_ID;
+  int index = GetVariableValue(index_var);
+  CHECK_OBJECT_INDEX;
+  Unit *obj = &GetSide(side_id)->__ObjectArray[index];
+  if ((int)obj->ObjectType != (int)object_type)
+    DebugFatal(EVENT_ERROR, "Trying to get %s property of object %d, but the object type is %s (event %d)", object_type_names[object_type], index, object_type_names[obj->ObjectType], event_id);
   SetVariableValue(target_var, GetDataValue((char *)obj, data_type, offset));
 }
 
-void EvAct_GetCrateProperty(eDataType data_type, int offset, int index_var, int target_var)
+void EvAct_GetCrateProperty(int event_id, eDataType data_type, int offset, int index_var, int target_var)
 {
-  CrateStruct *crate = &gCrates[GetVariableValue(index_var)];
+  int crate_index = GetVariableValue(index_var);
+  CHECK_CRATE_INDEX;
+  CrateStruct *crate = &gCrates[crate_index];
   SetVariableValue(target_var, GetDataValue((char *)crate, data_type, offset));
 }
 
-void EvAct_GetTileProperty(eDataType data_type, int offset, int first_var, int target_var)
+void EvAct_GetTileProperty(int event_id, eDataType data_type, int offset, int first_var, int target_var)
 {
   int xpos = GetVariableValue(first_var);
   int ypos = GetVariableValue(first_var + 1);
+  CHECK_POSITION;
   GameMapTileStruct *tile = &gGameMap.map[xpos + _CellNumbersWidthSpan[ypos]];
   SetVariableValue(target_var, GetDataValue((char *)tile, data_type, offset));
 }
 
-void EvAct_GetSideProperty(int side_id, eDataType data_type, int target_var, int offset)
+void EvAct_GetSideProperty(int event_id, int side_id, eDataType data_type, int target_var, int offset)
 {
+  CHECK_SIDE_ID;
   CSide *side = GetSide(side_id);
   SetVariableValue(target_var, GetDataValue((char *)side, data_type, offset));
 }
 
-void EvAct_GetAIProperty(int side_id, eDataType data_type, int target_var, int offset)
+void EvAct_GetAIProperty(int event_id, int side_id, eDataType data_type, int target_var, int offset)
 {
+  CHECK_SIDE_ID;
   CAI_ *ai = &_gAIArray[side_id];
   SetVariableValue(target_var, GetDataValue((char *)ai, data_type, offset));
 }
 
-void EvAct_GetMemoryData(eDataType data_type, int target_var, int address)
+void EvAct_GetMemoryData(int event_id, eDataType data_type, int target_var, int address)
 {
-  if (!address)
-    DebugFatal("event-actions.c", "Memory address is NULL");
+  CHECK_ADDRESS;
   SetVariableValue(target_var, GetDataValue((char *)address, data_type, 0));
 }
 
-void EvAct_GetUnitTemplateProperty(eDataType data_type, int offset, int unit_type, int target_var)
+void EvAct_GetUnitTemplateProperty(int event_id, eDataType data_type, int offset, int unit_type, int target_var)
 {
+  CHECK_UNIT_TYPE;
   UnitAtribStruct *unit_template = &_templates_unitattribs[unit_type];
   SetVariableValue(target_var, GetDataValue((char *)unit_template, data_type, offset));
 }
 
-void EvAct_GetBuildingTemplateProperty(eDataType data_type, int offset, int building_type, int target_var)
+void EvAct_GetBuildingTemplateProperty(int event_id, eDataType data_type, int offset, int building_type, int target_var)
 {
+  CHECK_BUILDING_TYPE;
   BuildingAtrbStruct *building_template = &_templates_buildattribs[building_type];
   SetVariableValue(target_var, GetDataValue((char *)building_template, data_type, offset));
 }
 
-void EvAct_GetWeaponTemplateProperty(eDataType data_type, int offset, int weapon_type, int target_var)
+void EvAct_GetWeaponTemplateProperty(int event_id, eDataType data_type, int offset, int weapon_type, int target_var)
 {
+  CHECK_WEAPON_TYPE;
   BullAtrbStruct *weapon_template = &_templates_bulletattribs[weapon_type];
   SetVariableValue(target_var, GetDataValue((char *)weapon_template, data_type, offset));
 }
 
-void EvAct_GetExplosionTemplateProperty(eDataType data_type, int offset, int explosion_type, int target_var)
+void EvAct_GetExplosionTemplateProperty(int event_id, eDataType data_type, int offset, int explosion_type, int target_var)
 {
+  CHECK_EXPLOSION_TYPE;
   ExploisonAtrbStruct *explosion_template = &_templates_explosionattribs[explosion_type];
   SetVariableValue(target_var, GetDataValue((char *)explosion_template, data_type, offset));
 }
 
-void EvAct_GetArmourValue(int armour_type, int select_by, int weapon_type, int warhead_type, int target_var)
+void EvAct_GetArmourValue(int event_id, int armour_type, int select_by, int weapon_type, int warhead_type, int target_var)
 {
+  CHECK_PARAMETER(armour_type, "armour type", MAX_ARMOUR_TYPES);
   if (select_by == 0)
     warhead_type = _templates_bulletattribs[weapon_type].Warhead;
+  CHECK_PARAMETER(warhead_type, "warhead type", MAX_WARHEAD_TYPES);
   SetVariableValue(target_var, _WarheadData[warhead_type].Verses[armour_type]);
 }
 
-void EvAct_GetSpeedValue(int vehicle_type, int terrain_type, int target_var)
+void EvAct_GetSpeedValue(int event_id, int vehicle_type, int terrain_type, int target_var)
 {
+  CHECK_PARAMETER(terrain_type, "terrain type", MAX_TERRAIN_TYPES);
+  CHECK_PARAMETER(vehicle_type, "vehicle type", MAX_VEHICLE_TYPES);
   int_or_float val;
   val.float_val = _speed_values[terrain_type][vehicle_type];
   SetVariableValue(target_var, val.int_val);
@@ -1679,13 +1823,14 @@ void EvAct_GetGroupIDValue(int what, int target_var)
   SetVariableValue(target_var, GetDataValue((char *)&_templates_GroupIDs, DATATYPE_BYTE, what));
 }
 
-void EvAct_GetUnitType(int side_id, int target_var, bool my_version_only, bool random, ObjectFilterStruct *filter)
+void EvAct_GetUnitType(int event_id, int side_id, int target_var, bool my_version_only, bool random, ObjectFilterStruct *filter)
 {
+  CHECK_SIDE_ID;
   int result = -1;
   if (random)
   {
     int found = 0;
-    int found_array[60];
+    int found_array[MAX_UNIT_TYPES];
     if (my_version_only)
     {
       for (int i = 0; i < _templates_UnitGroupCount; i++)
@@ -1735,13 +1880,14 @@ void EvAct_GetUnitType(int side_id, int target_var, bool my_version_only, bool r
   SetVariableValue(target_var, result);
 }
 
-void EvAct_GetBuildingType(int side_id, int target_var, bool my_version_only, bool random, ObjectFilterStruct *filter)
+void EvAct_GetBuildingType(int event_id, int side_id, int target_var, bool my_version_only, bool random, ObjectFilterStruct *filter)
 {
+  CHECK_SIDE_ID;
   int result = -1;
   if (random)
   {
     int found = 0;
-    int found_array[100];
+    int found_array[MAX_BUILDING_TYPES];
     if (my_version_only)
     {
       for (int i = 0; i < _templates_BuildingGroupCount; i++)
@@ -1857,23 +2003,28 @@ void EvAct_GetRule(int rule, int target_var)
   SetVariableValue(target_var, result);
 }
 
-void EvAct_GetDiplomacy(int source, int target, int target_var)
+void EvAct_GetDiplomacy(int event_id, int source, int target, int target_var)
 {
+  CHECK_PARAMETER(source, "source side ID", MAX_SIDES);
+  CHECK_PARAMETER(target, "target side ID", MAX_SIDES);
   SetVariableValue(target_var, _gDiplomacy[source][target]);
 }
 
-void EvAct_GetTech(int side_id, int target_var)
+void EvAct_GetTech(int event_id, int side_id, int target_var)
 {
+  CHECK_SIDE_ID;
   SetVariableValue(target_var, _gMiscData.Tech[side_id]);
 }
 
-void EvAct_GetHouseId(int side_id, int target_var)
+void EvAct_GetHouseId(int event_id, int side_id, int target_var)
 {
+  CHECK_SIDE_ID;
   SetVariableValue(target_var, _IRValues[side_id]);
 }
 
-void EvAct_GetCredits(int side_id, eGetCreditsType what, int target_var)
+void EvAct_GetCredits(int event_id, int side_id, eGetCreditsType what, int target_var)
 {
+  CHECK_SIDE_ID;
   CSide *side = GetSide(side_id);
   switch (what)
   {
@@ -1884,8 +2035,9 @@ void EvAct_GetCredits(int side_id, eGetCreditsType what, int target_var)
   }
 }
 
-void EvAct_GetPower(int side_id, eGetPowerType what, int target_var)
+void EvAct_GetPower(int event_id, int side_id, eGetPowerType what, int target_var)
 {
+  CHECK_SIDE_ID;
   CSide *side = GetSide(side_id);
   switch (what)
   {
@@ -1897,39 +2049,49 @@ void EvAct_GetPower(int side_id, eGetPowerType what, int target_var)
   }
 }
 
-void EvAct_GetBuildingUpgrades(int side_id, int building_group, int target_var)
+void EvAct_GetBuildingUpgrades(int event_id, int side_id, int building_group, int target_var)
 {
+  CHECK_SIDE_ID;
+  CHECK_BUILDING_GROUP;
   SetVariableValue(target_var, GetSide(side_id)->__BuildingGroupUpgradeCount[building_group]);
 }
 
-void EvAct_GetStarportStock(int side_id, int unit_type, int target_var)
+void EvAct_GetStarportStock(int event_id, int side_id, int unit_type, int target_var)
 {
+  CHECK_SIDE_ID;
+  CHECK_UNIT_TYPE;
   SetVariableValue(target_var, GetSide(side_id)->__StarportUnitTypeStock[unit_type]);
 }
 
-void EvAct_GetStarportCost(int side_id, int unit_type, int target_var)
+void EvAct_GetStarportCost(int event_id, int side_id, int unit_type, int target_var)
 {
+  CHECK_SIDE_ID;
+  CHECK_UNIT_TYPE;
   SetVariableValue(target_var, GetSide(side_id)->__StarportUnitTypeCost[unit_type]);
 }
 
-void EvAct_GetStarportPick(int side_id, int unit_type, int target_var)
+void EvAct_GetStarportPick(int event_id, int side_id, int unit_type, int target_var)
 {
+  CHECK_SIDE_ID;
+  CHECK_UNIT_TYPE;
   SetVariableValue(target_var, GetSide(side_id)->__StarportUnitTypePicked[unit_type]);
 }
 
-void EvAct_GetBuildingQueueState(int side_id, eDataType data_type, int offset, int target_var)
+void EvAct_GetBuildingQueueState(int event_id, int side_id, eDataType data_type, int offset, int target_var)
 {
+  CHECK_SIDE_ID;
   CSide *side = GetSide(side_id);
   SetVariableValue(target_var, GetDataValue((char *)&side->__BuildingBuildQueue, data_type, offset));
 }
 
-void EvAct_GetUnitQueueState(int side_id, eDataType data_type, int offset, int queue, int queue_num, int target_var)
+void EvAct_GetUnitQueueState(int event_id, int side_id, eDataType data_type, int offset, int queue, int queue_num, int target_var)
 {
+  CHECK_SIDE_ID;
   CSide *side = GetSide(side_id);
   if (queue)
   {
     queue_num = -1;
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < MAX_UNIT_BUILD_QUEUES; i++)
     {
       int unit_type_built = side->__UnitBuildQueue[i].__type;
       if (unit_type_built == -1)
@@ -1943,72 +2105,99 @@ void EvAct_GetUnitQueueState(int side_id, eDataType data_type, int offset, int q
       }
     }
   }
+  else
+    CHECK_PARAMETER(queue_num, "unit build queue ID", MAX_UNIT_BUILD_QUEUES);
   if (queue_num >= 0)
     SetVariableValue(target_var, GetDataValue((char *)&side->__UnitBuildQueue[queue_num], data_type, offset));
   else
     SetVariableValue(target_var, -1);
 }
 
-void EvAct_GetUpgradeQueueState(int side_id, eDataType data_type, int offset, int target_var)
+void EvAct_GetUpgradeQueueState(int event_id, int side_id, eDataType data_type, int offset, int target_var)
 {
+  CHECK_SIDE_ID;
   CSide *side = GetSide(side_id);
   SetVariableValue(target_var, GetDataValue((char *)&side->__BuildingUpgradeQueue, data_type, offset));
 }
 
-void EvAct_GetSpiceHarvested(int side_id, int target_var)
+void EvAct_GetSpiceHarvested(int event_id, int side_id, int target_var)
 {
+  CHECK_SIDE_ID;
   SetVariableValue(target_var, GetSide(side_id)->__SpiceHarvested);
 }
 
-void EvAct_GetUnitsBuilt(int side_id, int unit_type, bool total, int target_var)
+void EvAct_GetUnitsBuilt(int event_id, int side_id, int unit_type, bool total, int target_var)
 {
+  CHECK_SIDE_ID;
   CSide *side = GetSide(side_id);
   if (total)
     SetVariableValue(target_var, side->__UnitsBuilt);
   else
+  {
+    CHECK_UNIT_TYPE;
     SetVariableValue(target_var, side->__UnitsBuiltPerType[unit_type]);
+  }
 }
 
-void EvAct_GetBuildingsBuilt(int side_id, int building_type, bool total, int target_var)
+void EvAct_GetBuildingsBuilt(int event_id, int side_id, int building_type, bool total, int target_var)
 {
+  CHECK_SIDE_ID;
   CSide *side = GetSide(side_id);
   if (total)
     SetVariableValue(target_var, side->__BuildingsBuilt);
   else
+  {
+    CHECK_BUILDING_TYPE;
     SetVariableValue(target_var, side->__BuildingsBuiltPerType[building_type]);
+  }
 }
 
-void EvAct_GetUnitsLost(int side_id, int unit_type, bool total, int target_var)
+void EvAct_GetUnitsLost(int event_id, int side_id, int unit_type, bool total, int target_var)
 {
+  CHECK_SIDE_ID;
   CSide *side = GetSide(side_id);
   if (total)
     SetVariableValue(target_var, side->__UnitsLost);
   else
+  {
+    CHECK_UNIT_TYPE;
     SetVariableValue(target_var, side->__UnitsLostPerType[unit_type]);
+  }
 }
 
-void EvAct_GetBuildingsLost(int side_id, int target_var)
+void EvAct_GetBuildingsLost(int event_id, int side_id, int target_var)
 {
+  CHECK_SIDE_ID;
   CSide *side = GetSide(side_id);
   return SetVariableValue(target_var, side->__BuildingsLost);
 }
 
-void EvAct_GetUnitsKilled(int side_id, int enemy, int unit_type, bool total, int target_var)
+void EvAct_GetUnitsKilled(int event_id, int side_id, int enemy, int unit_type, bool total, int target_var)
 {
+  CHECK_SIDE_ID;
   CSide *side = GetSide(side_id);
   if (total)
     SetVariableValue(target_var, side->__UnitsKilled);
   else
+  {
+    CHECK_PARAMETER(enemy, "enemy side ID", MAX_SIDES);
+    CHECK_UNIT_TYPE;
     SetVariableValue(target_var, side->__UnitsKilledPerTypeAndSide[unit_type].__kills_per_side[enemy]);
+  }
 }
 
-void EvAct_GetBuildingsKilled(int side_id, int enemy, int building_type, bool total, int target_var)
+void EvAct_GetBuildingsKilled(int event_id, int side_id, int enemy, int building_type, bool total, int target_var)
 {
+  CHECK_SIDE_ID;
   CSide *side = GetSide(side_id);
   if (total)
     SetVariableValue(target_var, side->__BuildingsKilled);
   else
+  {
+    CHECK_PARAMETER(enemy, "enemy side ID", MAX_SIDES);
+    CHECK_BUILDING_TYPE;
     SetVariableValue(target_var, side->__BuildingsKilledPerTypeAndSide[building_type].__kills_per_side[enemy]);
+  }
 }
 
 void EvAct_GetMousePosition(eGetMousePositionType what, int first_var)
@@ -2170,9 +2359,11 @@ void EvAct_GetGameInterfaceData(eDataType data_type, int offset, int target_var)
   SetVariableValue(target_var, GetDataValue((char *)&_TacticalData, data_type, offset));
 }
 
-void EvAct_GetObjectPosition(int side_id, int index_var, int format, int target_var)
+void EvAct_GetObjectPosition(int event_id, int side_id, int index_var, int format, int target_var)
 {
+  CHECK_SIDE_ID;
   int index = GetVariableValue(index_var);
+  CHECK_OBJECT_INDEX;
   Unit *unit = &gSideArray[side_id].__ObjectArray[index];
   int result_x = 0;
   int result_y = 0;
@@ -2234,14 +2425,16 @@ void EvAct_GetPositionOnCircle(int center_pos_var, int angle, int distance, int 
   SetVariableValue(target_var + 1, ypos);
 }
 
-void EvAct_GetNearestBuildingTile(int side_id, int index_var, int from_pos_var, int format, int target_var)
+void EvAct_GetNearestBuildingTile(int event_id, int side_id, int index_var, int from_pos_var, int format, int target_var)
 {
+  CHECK_SIDE_ID;
   int from_pos_x = GetVariableValue(from_pos_var) / 32;
   int from_pos_y = GetVariableValue(from_pos_var + 1) / 32;
   int result_x = 0;
   int result_y = 0;
-  int idx = GetVariableValue(index_var);
-  ClosestBuildingTile(GetBuilding(side_id, idx), from_pos_x, from_pos_y, &result_x, &result_y);
+  int index = GetVariableValue(index_var);
+  CHECK_OBJECT_INDEX;
+  ClosestBuildingTile(GetBuilding(side_id, index), from_pos_x, from_pos_y, &result_x, &result_y);
   if (!format)
   {
     result_x = result_x * 32 + 16;
@@ -2342,28 +2535,28 @@ bool EvaluateConditionalExpression(CondExprData *cond_expr)
   return operation_result[0];
 }
 
-void EvAct_ExecuteBlock(int event_index, int target_event_index)
+void EvAct_ExecuteBlock(int event_id, int target_event_index)
 {
   if (_gEventArray[target_event_index].event_type == ET_CALLABLE_BLOCK_START)
     ExecuteEventBlock(target_event_index, EBT_BLOCK);
   else
-    DebugFatal("event-actions.c", "Execute block: Target event must be of type Callable Block Start (event %d)", event_index);
+    DebugFatal(EVENT_ERROR, "Execute block: Target event must be of type Callable Block Start (event %d)", event_id);
 }
 
-void EvAct_If(int event_index, eIfConditionType condition_type, int side_var, int object_index_var, CondExprData *cond_expr)
+void EvAct_If(int event_id, eIfConditionType condition_type, int side_var, int object_index_var, CondExprData *cond_expr)
 {
-  int else_event_index = gEventExtraData[event_index].else_event_index;
+  int else_event_index = gEventExtraData[event_id].else_event_index;
   int side_id = GetVariableValue(side_var);
-  int object_index = GetVariableValue(object_index_var);
+  int index = GetVariableValue(object_index_var);
   bool result = false;
   switch (condition_type)
   {
     case IFCONDTYPE_EXPRESSION:           result = EvaluateConditionalExpression(cond_expr); break;
-    case IFCONDTYPE_CHECK_UNIT:           result = CheckIfUnitMatchesFilter((ObjectFilterStruct *)cond_expr, &(GetSide(side_id)->__ObjectArray[object_index]), side_id); break;
-    case IFCONDTYPE_CHECK_BUILDING:       result = CheckIfBuildingMatchesFilter((ObjectFilterStruct *)cond_expr, (Building *)&(GetSide(side_id)->__ObjectArray[object_index]), side_id); break;
-    case IFCONDTYPE_CHECK_BULLET:         result = CheckIfBulletMatchesFilter((ObjectFilterStruct *)cond_expr, (Bullet *)&(GetSide(side_id)->__ObjectArray[object_index])); break;
-    case IFCONDTYPE_CHECK_EXPLOSION:      result = CheckIfExplosionMatchesFilter((ObjectFilterStruct *)cond_expr, (Explosion *)&(GetSide(side_id)->__ObjectArray[object_index])); break;
-    case IFCONDTYPE_CHECK_CRATE:          result = CheckIfCrateMatchesFilter((ObjectFilterStruct *)cond_expr, &gCrates[object_index]); break;
+    case IFCONDTYPE_CHECK_UNIT:           CHECK_SIDE_ID; CHECK_OBJECT_INDEX; result = CheckIfUnitMatchesFilter((ObjectFilterStruct *)cond_expr, &(GetSide(side_id)->__ObjectArray[index]), side_id); break;
+    case IFCONDTYPE_CHECK_BUILDING:       CHECK_SIDE_ID; CHECK_OBJECT_INDEX; result = CheckIfBuildingMatchesFilter((ObjectFilterStruct *)cond_expr, (Building *)&(GetSide(side_id)->__ObjectArray[index]), side_id); break;
+    case IFCONDTYPE_CHECK_BULLET:         CHECK_SIDE_ID; CHECK_OBJECT_INDEX; result = CheckIfBulletMatchesFilter((ObjectFilterStruct *)cond_expr, (Bullet *)&(GetSide(side_id)->__ObjectArray[index])); break;
+    case IFCONDTYPE_CHECK_EXPLOSION:      CHECK_SIDE_ID; CHECK_OBJECT_INDEX; result = CheckIfExplosionMatchesFilter((ObjectFilterStruct *)cond_expr, (Explosion *)&(GetSide(side_id)->__ObjectArray[index])); break;
+    case IFCONDTYPE_CHECK_CRATE:          result = CheckIfCrateMatchesFilter((ObjectFilterStruct *)cond_expr, &gCrates[index]); break;
     case IFCONDTYPE_CHECK_TILE:
     {
       int x = GetVariableValue(side_var);
@@ -2371,12 +2564,12 @@ void EvAct_If(int event_index, eIfConditionType condition_type, int side_var, in
       result = CheckIfTileMatchesFilter((ObjectFilterStruct *)cond_expr, &gGameMap.map[x + _CellNumbersWidthSpan[y]], x, y);
       break;
     }
-    case IFCONDTYPE_CHECK_SIDE:           result = CheckIfSideMatchesFilter((ObjectFilterStruct *)cond_expr, object_index); break;
-    case IFCONDTYPE_CHECK_UNIT_TYPE:      result = CheckIfUnitTypeMatchesFilter((ObjectFilterStruct *)cond_expr, object_index); break;
-    case IFCONDTYPE_CHECK_BUILDING_TYPE:  result = CheckIfBuildingTypeMatchesFilter((ObjectFilterStruct *)cond_expr, object_index); break;
+    case IFCONDTYPE_CHECK_SIDE:           result = CheckIfSideMatchesFilter((ObjectFilterStruct *)cond_expr, index); break;
+    case IFCONDTYPE_CHECK_UNIT_TYPE:      result = CheckIfUnitTypeMatchesFilter((ObjectFilterStruct *)cond_expr, index); break;
+    case IFCONDTYPE_CHECK_BUILDING_TYPE:  result = CheckIfBuildingTypeMatchesFilter((ObjectFilterStruct *)cond_expr, index); break;
   }
   if (result)
-    ExecuteEventsInRange(event_index + 1, (else_event_index != -1)?(else_event_index):(gEventExtraData[event_index].next_event_index - 1), EBT_CONDITION);
+    ExecuteEventsInRange(event_id + 1, (else_event_index != -1)?(else_event_index):(gEventExtraData[event_id].next_event_index - 1), EBT_CONDITION);
   else if (else_event_index != -1)
   {
     if (_gEventArray[else_event_index].event_type == ET_ELSE_IF)
@@ -2388,18 +2581,18 @@ void EvAct_If(int event_index, eIfConditionType condition_type, int side_var, in
       EvAct_If(else_event_index, condition_type, side_var, object_index_var, (CondExprData *)&e->data[1]);
     }
     else if (_gEventArray[else_event_index].event_type == ET_ELSE)
-      ExecuteEventsInRange(else_event_index + 1, gEventExtraData[event_index].next_event_index - 1, EBT_CONDITION);
+      ExecuteEventsInRange(else_event_index + 1, gEventExtraData[event_id].next_event_index - 1, EBT_CONDITION);
   }
 }
 
-void EvAct_LoopWhile(int event_index, CondExprData *cond_expr)
+void EvAct_LoopWhile(int event_id, CondExprData *cond_expr)
 {
   int num_cycles = 0;
   while (EvaluateConditionalExpression(cond_expr))
   {
     if (num_cycles++ >= 65536)
-      DebugFatal("event-actions.c", "Infinite loop detected (event %d)", event_index);
-    ExecuteEventBlock(event_index, EBT_LOOP);
+      DebugFatal(EVENT_ERROR, "Infinite loop detected (event %d)", event_id);
+    ExecuteEventBlock(event_id, EBT_LOOP);
     if (break_count)
     {
       break_count--;
@@ -2408,12 +2601,12 @@ void EvAct_LoopWhile(int event_index, CondExprData *cond_expr)
   }
 }
 
-void EvAct_LoopValuesFromRange(int event_index, int loop_var, int min_value, int max_value)
+void EvAct_LoopValuesFromRange(int event_id, int loop_var, int min_value, int max_value)
 {
   for (int i = min_value; i <= max_value; i++)
   {
     SetVariableValue(loop_var, i);
-    ExecuteEventBlock(event_index, EBT_LOOP);
+    ExecuteEventBlock(event_id, EBT_LOOP);
     if (break_count)
     {
       break_count--;
@@ -2422,14 +2615,14 @@ void EvAct_LoopValuesFromRange(int event_index, int loop_var, int min_value, int
   }
 }
 
-void EvAct_LoopCoordsFromArea(int event_index, int min_x, int min_y, int max_x, int max_y, int first_var)
+void EvAct_LoopCoordsFromArea(int event_id, int min_x, int min_y, int max_x, int max_y, int first_var)
 {
   for (int y = min_y; y <= max_y; y++)
     for (int x = min_x; x <= max_x; x++)
     {
       SetVariableValue(first_var, x);
       SetVariableValue(first_var + 1, y);
-      ExecuteEventBlock(event_index, EBT_LOOP);
+      ExecuteEventBlock(event_id, EBT_LOOP);
       if (break_count)
       {
         break_count--;
@@ -2438,12 +2631,12 @@ void EvAct_LoopCoordsFromArea(int event_index, int min_x, int min_y, int max_x, 
     }
 }
 
-void EvAct_LoopValuesFromList(int event_index, int amount, int loop_var, uint8_t *value_list)
+void EvAct_LoopValuesFromList(int event_id, int amount, int loop_var, uint8_t *value_list)
 {
   for (int i = 0; i < amount; i++)
   {
     SetVariableValue(loop_var, value_list[i]);
-    ExecuteEventBlock(event_index, EBT_LOOP);
+    ExecuteEventBlock(event_id, EBT_LOOP);
     if (break_count)
     {
       break_count--;
@@ -2452,13 +2645,13 @@ void EvAct_LoopValuesFromList(int event_index, int amount, int loop_var, uint8_t
   }
 }
 
-void EvAct_LoopCoordsFromList(int event_index, int amount, int first_var, uint8_t *value_list)
+void EvAct_LoopCoordsFromList(int event_id, int amount, int first_var, uint8_t *value_list)
 {
   for (int i = 0; i < amount; i++)
   {
     SetVariableValue(first_var,     value_list[i * 2 + 1]);
     SetVariableValue(first_var + 1, value_list[i * 2 + 2]);
-    ExecuteEventBlock(event_index, EBT_LOOP);
+    ExecuteEventBlock(event_id, EBT_LOOP);
     if (break_count)
     {
       break_count--;
@@ -2467,7 +2660,7 @@ void EvAct_LoopCoordsFromList(int event_index, int amount, int first_var, uint8_
   }
 }
 
-void EvAct_LoopAreasFromList(int event_index, int amount, int first_var, uint8_t *value_list)
+void EvAct_LoopAreasFromList(int event_id, int amount, int first_var, uint8_t *value_list)
 {
   for (int i = 0; i < amount; i++)
   {
@@ -2475,7 +2668,7 @@ void EvAct_LoopAreasFromList(int event_index, int amount, int first_var, uint8_t
     SetVariableValue(first_var + 1, value_list[i * 4 + 2]);
     SetVariableValue(first_var + 2, value_list[i * 4 + 3]);
     SetVariableValue(first_var + 3, value_list[i * 4 + 4]);
-    ExecuteEventBlock(event_index, EBT_LOOP);
+    ExecuteEventBlock(event_id, EBT_LOOP);
     if (break_count)
     {
       break_count--;
@@ -2484,22 +2677,22 @@ void EvAct_LoopAreasFromList(int event_index, int amount, int first_var, uint8_t
   }
 }
 
-void EvAct_LoopObject(int event_index, int side_var, int index_var, int side_id, int object_index)
+void EvAct_LoopObject(int event_id, int side_var, int index_var, int side_id, int object_index)
 {
   SetVariableValue(side_var, side_id);
   SetVariableValue(index_var, object_index);
-  ExecuteEventBlock(event_index, EBT_LOOP);
+  ExecuteEventBlock(event_id, EBT_LOOP);
 }
 
-void EvAct_LoopItem(int event_index, int index_var, int object_index)
+void EvAct_LoopItem(int event_id, int index_var, int object_index)
 {
   SetVariableValue(index_var, object_index);
-  ExecuteEventBlock(event_index, EBT_LOOP);
+  ExecuteEventBlock(event_id, EBT_LOOP);
 }
 
-void EvAct_LoopTiles(int event_index, int first_var, int xpos, int ypos)
+void EvAct_LoopTiles(int event_id, int first_var, int xpos, int ypos)
 {
   SetVariableValue(first_var, xpos);
   SetVariableValue(first_var + 1, ypos);
-  ExecuteEventBlock(event_index, EBT_LOOP);
+  ExecuteEventBlock(event_id, EBT_LOOP);
 }

@@ -163,21 +163,21 @@ typedef struct CAI_
   int32_t CashStash[9];
   char Morale[19];
   char DontFaceUnitsAwayFromConYard; // Newly added parameter (mod)
-  float DefendBuildingPriority[100];
-  float AttackBuildingPriority[100];
-  float BuildingRepairValue[100];
-  int32_t TimeBeforeRebuilding[100];
-  float BuildRatio[100];
-  int32_t MaxBuildings[100];
+  float DefendBuildingPriority[MAX_BUILDING_TYPES];
+  float AttackBuildingPriority[MAX_BUILDING_TYPES];
+  float BuildingRepairValue[MAX_BUILDING_TYPES];
+  int32_t TimeBeforeRebuilding[MAX_BUILDING_TYPES];
+  float BuildRatio[MAX_BUILDING_TYPES];
+  int32_t MaxBuildings[MAX_BUILDING_TYPES];
   char c_field_19EC;
-  char AttackSidePriority[8];
+  char AttackSidePriority[MAX_SIDES];
   char AutoBerserkMode; // Newly added parameter (mod)
   char DontPreferTargetingHumanPlayers; // Newly added parameter (mod)
   char field_19F7;
-  float UnitBuildPriority[60];
-  float UnitRepairValue[60];
-  float __AttackUnitPriority_1BD8[60];
-  char ProtectUnit[60];
+  float UnitBuildPriority[MAX_UNIT_TYPES];
+  float UnitRepairValue[MAX_UNIT_TYPES];
+  float __AttackUnitPriority_1BD8[MAX_UNIT_TYPES];
+  char ProtectUnit[MAX_UNIT_TYPES];
   char HarvestersPerRefinery;
   char CarryallsPerRefinery;
   char RecogniseThreat;

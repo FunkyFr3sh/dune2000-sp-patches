@@ -5,7 +5,7 @@
 
 RadarColorRule radar_color_rules[32];
 int radar_color_rules_used;
-uint32_t extra_tileflags[800];
+uint32_t extra_tileflags[MAX_TILES];
 RadarMarker gRadarMarkers[MAX_RADAR_MARKERS];
 
 // Extension wrapper for function LoadMapData

@@ -2,7 +2,7 @@
 
 typedef struct MiscData
 {
-  char Tech[8];
-  int  Cash[8];
+  char Tech[MAX_SIDES];
+  int  Cash[MAX_SIDES];
   char Empty[40];
 } MiscData;

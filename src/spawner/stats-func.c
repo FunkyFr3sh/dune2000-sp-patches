@@ -6,8 +6,8 @@
 #include "macros/patch.h"
 
 char StatsDmp[] = ".\\stats.dmp";
-UnitTracker PlayersUnitsOwned[8];
-BuildingTracker PlayersBuildingsOwned[8];
+UnitTracker PlayersUnitsOwned[MAX_SIDES];
+BuildingTracker PlayersBuildingsOwned[MAX_SIDES];
 
 static char StatsDmpBuffer[1024 * 20]; 
 static unsigned short StatsDmpLength = 0;

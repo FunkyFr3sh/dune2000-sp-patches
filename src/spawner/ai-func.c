@@ -8,11 +8,11 @@ CLEAR(0x00450006+5, 0x90, 0x0045006A);
 CALL(0x00450006, _SetupAIPlayerCredits);
 CALL(0x00469DE4, _SetupAIPlayerSides);
 
-AIPlayer AIPlayers[8];
+AIPlayer AIPlayers[MAX_SIDES];
 
 void InitAIPlayers()
 {
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < MAX_SIDES; i++)
     {
         char multiX[10];
         sprintf(multiX, "Multi%d", i+1);
@@ -39,7 +39,7 @@ void InitAIPlayers()
 
 void SetupAIPlayerCredits()
 {
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < MAX_SIDES; i++)
     {
         NetPlayersTechLevel[i] = gNetTechLevel;
         
@@ -85,7 +85,7 @@ void SetupAIPlayerColors()
 {
     if (!SpawnerActive) return;
     
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < MAX_SIDES; i++)
     {
         if (AIPlayers[i].color != -1) NetPlayersColor[i*0x3c] = AIPlayers[i].color;
     }

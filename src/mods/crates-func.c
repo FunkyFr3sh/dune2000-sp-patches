@@ -495,6 +495,6 @@ void HandleSpiceBloomCrate(CrateStruct *crate, int crate_type, Unit *unit, unsig
   int xpos = crate->__x;
   int ypos = crate->__y;
   
-  EvAct_SpiceBloom(xpos, ypos, range, mode, (crate->ext_data_field & 8) == 8);
+  EvAct_SpiceBloom(-1, xpos, ypos, range, mode, (crate->ext_data_field & 8) == 8);
 }
 

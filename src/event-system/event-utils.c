@@ -1,10 +1,9 @@
-#include <stdio.h>
 #include "dune2000.h"
 #include "utils.h"
 #include "event-utils.h"
 #include "../mods/messages-func.h"
 
-int ValueOperation(int val1, int val2, eValueOperation operation)
+int ValueOperation(int event_id, int val1, int val2, eValueOperation operation)
 {
   switch (operation)
   {
@@ -13,8 +12,8 @@ int ValueOperation(int val1, int val2, eValueOperation operation)
     case VALUEOPERATION_SUBSTRACT:  return val1 - val2; break;
     case VALUEOPERATION_MULTIPLY:   return (val1 * val2); break;
     case VALUEOPERATION_MULPERCENT: return (val1 * val2) / 100; break;
-    case VALUEOPERATION_DIVIDE:     if (!val2) DebugFatal("event-utils.c", "Division by zero!"); return val1 / val2; break;
-    case VALUEOPERATION_MODULO:     if (!val2) DebugFatal("event-utils.c", "Division by zero!"); return val1 % val2; break;
+    case VALUEOPERATION_DIVIDE:     if (!val2) DebugFatal(EVENT_ERROR, "Division by zero! (event %d)", event_id); return val1 / val2; break;
+    case VALUEOPERATION_MODULO:     if (!val2) DebugFatal(EVENT_ERROR, "Division by zero! (event %d)", event_id); return val1 % val2; break;
     case VALUEOPERATION_CAPMAX:     return HLIMIT(val1, val2); break;
     case VALUEOPERATION_CAPMIN:     return LLIMIT(val1, val2); break;
     case VALUEOPERATION_ADDCAP255:  return HLIMIT(val1 + val2, 255); break;
@@ -37,7 +36,7 @@ int ValueOperation(int val1, int val2, eValueOperation operation)
   }
 }
 
-float ValueOperationFloat(float val1, float val2, eValueOperation operation)
+float ValueOperationFloat(int event_id, float val1, float val2, eValueOperation operation)
 {
   switch (operation)
   {
@@ -46,10 +45,10 @@ float ValueOperationFloat(float val1, float val2, eValueOperation operation)
     case VALUEOPERATION_SUBSTRACT:  return val1 - val2; break;
     case VALUEOPERATION_MULTIPLY:   return (val1 * val2); break;
     case VALUEOPERATION_MULPERCENT: return (val1 * val2) / 100; break;
-    case VALUEOPERATION_DIVIDE:     if (val2 == 0.0) DebugFatal("event-utils.c", "Division by zero!"); return val1 / val2; break;
+    case VALUEOPERATION_DIVIDE:     if (val2 == 0.0) DebugFatal(EVENT_ERROR, "Division by zero! (event %d)", event_id); return val1 / val2; break;
     case VALUEOPERATION_CAPMAX:     return HLIMIT(val1, val2); break;
     case VALUEOPERATION_CAPMIN:     return LLIMIT(val1, val2); break;
-    default: DebugFatal("event-utils.c", "Invalid operation %d for floating-point value.", operation);
+    default: DebugFatal(EVENT_ERROR, "Invalid operation %d for floating-point value (event %d)", operation, event_id);
   }
   return 0;
 }
@@ -65,33 +64,33 @@ int FlagOperation(int value, int flag, eFlagOperation operation)
   }
 }
 
-void SetDataValue(char *data_ptr, eDataType data_type, int offset, eValueOperation operation, int value)
+void SetDataValue(int event_id, char *data_ptr, eDataType data_type, int offset, eValueOperation operation, int value)
 {
   switch (data_type)
   {
     case DATATYPE_BYTE:
     {
       int8_t *p = (int8_t *)&data_ptr[offset];
-      *p = ValueOperation(*p, value, operation);
+      *p = ValueOperation(event_id, *p, value, operation);
       break;
     }
     case DATATYPE_WORD:
     {
       int16_t *p = (int16_t *)&data_ptr[offset];
-      *p = ValueOperation(*p, value, operation);
+      *p = ValueOperation(event_id, *p, value, operation);
       break;
     }
     case DATATYPE_DWORD:
     {
       int32_t *p = (int32_t *)&data_ptr[offset];
-      *p = ValueOperation(*p, value, operation);
+      *p = ValueOperation(event_id, *p, value, operation);
       break;
     }
     case DATATYPE_FLOAT:
     {
       float *p = (float *)&data_ptr[offset];
       float *fvalptr = (float *)&value;
-      *p = ValueOperationFloat(*p, *fvalptr, operation);
+      *p = ValueOperationFloat(event_id, *p, *fvalptr, operation);
       break;
     }
   }
