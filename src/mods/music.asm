@@ -13,7 +13,7 @@
 hack 0x0046FFE4, 0x0046FFEA ; Do not repeat the same song over and over
     cmp byte[RandomMusicEnabled], 1
     jnz .out
-    cmp dword[GameState], GS_MAINLOOP ; Use random songs only in-game, never in the menus
+    cmp dword[gGameState], GS_MAINLOOP ; Use random songs only in-game, never in the menus
     jnz .out
     
     mov eax, dword[esi+0x1A8]
@@ -33,7 +33,7 @@ hack 0x0046FFE4, 0x0046FFEA ; Do not repeat the same song over and over
     jmp 0x0046FFEA
 
     
-hack 0x004700FC, 0x00470102 ; Sound__PlayMusic() - Save current soundtrack
+hack 0x004700FC, 0x00470102 ; OpenAudioStream() - Save current soundtrack
     mov esi, dword[esp+8] ; FileName
     pushad
     push esi
@@ -85,6 +85,6 @@ hack 0x00481486, 0x0048148F ; current music track over, use random new track if 
     
 .out:
     push eax
-    call Sound__PlayMusic
+    call OpenAudioStream
     add esp, 4
     jmp hackend

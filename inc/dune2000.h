@@ -294,7 +294,7 @@ extern bool FirstTimePlay;
 extern unsigned int ScrollRate;
 extern unsigned short GameSpeed;
 extern unsigned int GameBitsPerPixel;
-extern unsigned int SFXVolume;
+extern unsigned int gSFXVolume;
 extern unsigned int MusicVolume;
 extern bool MoviesEnabled;
 extern bool SoundsEnabled;
@@ -348,7 +348,7 @@ extern unsigned char        MissionNumber;
 
 
 
-extern int                  GameState;
+extern int                  gGameState;
 extern int                  _firgcrap_dword_4E3AE8;
 
 extern int                  _RadarLocationX;
@@ -368,6 +368,7 @@ extern short                gDifficultyLevel;
 extern short                _SandTileIDs[8];
 extern POINT                _UnitAnimTypeFrames[16];
 extern char                 _gFullscreen_DebugModes_pathfinddebug;
+extern char                 _gSoundOn;
 extern int                  gBitsPerPixel;
 extern int                  _ScreenClipWidth;
 extern int                  _ScreenClipHeight;
@@ -387,7 +388,7 @@ extern CAI_                 _gAIArray[];
 extern char                 ResourcePath[];
 extern char                 gRES_PATH[152];
 extern char                 MoviesResourcePath[];
-extern char                 MusicResourcePath[];
+extern char                 gMUSIC_RES_PATH[152];
 extern char                 MissionsResourcePath[];
 extern char                 MapsResourcePath[];
 extern char                 _FontBinData[256];
@@ -435,6 +436,7 @@ extern char                 _blitflag;
 
 extern TImage               *gBackBuf;
 extern short                _ScreenShakes;
+extern char                 _musicbool_byte_5179D0;
 extern CrateStruct          gCrates[MAX_CRATES];
 extern GameMapStruct        gGameMap;
 extern int                  gGameMapWidth;
@@ -513,8 +515,12 @@ extern unsigned char        gBuildingTypeNum;
 extern unsigned char        gBulletTypeNum;
 extern unsigned char        gExplosionTypeNum;
 extern int                  _CreditsTextYPos;
-extern int                  SoundClassObject;
+extern char                 _musicboolbyte_795600;
 extern ISampleManager *     _gSampleMgr;
+extern int                  _samplemanunused;
+extern char                 _SampleManagerInitDone;
+extern char *               sample_filebuffer;
+extern char *               sample_buffer;
 extern TextTableStruct **   gTextTable;
 extern SampleTableStruct ** gSampleTable;
 extern int                  _sampletablecount;
@@ -566,6 +572,8 @@ void            Image__BlitClipTImage(int *unk1, int x, int y, int *image, int u
 
 // Others
 bool __stdcall  IsLocalIp(char *Ip);
+void            sosCODECInitStream(_SOS_COMPRESS_INFO *sSOSInfo);
+void            sosCODECDecompressData(_SOS_COMPRESS_INFO *sSOSInfo, DWORD wBytes);
 
 bool            IsCurrentlyShown(char *menu);
 void            WOL__StartGuestINetGame();
@@ -588,6 +596,7 @@ FILE *          _OpenFile(char * filename, char *mode, char *path);
 void            CloseFile(FILE *Stream);
 size_t          _ReadFile(void *buffer, size_t size, size_t count, FILE *file);
 size_t          _WriteFile(void *buffer, size_t size, size_t count, FILE *file);
+int             SeekFile(FILE *file, int offset, int origin);
 
 // Graphlib
 void            BlitHorizontalLineRGB(TImage *img, int x, int y, int length, int color);
@@ -650,7 +659,8 @@ void            SpiceMound(unsigned char xpos, unsigned char ypos, int range);
 void            RecycleCrate(unsigned char index);
 int             GetMapVisState();
 // Memory
-void *          Memory__HeapAllocWrapper(size_t size, char *debugString);
+void *          Alloc(size_t size, char *debugString);
+void            Free(LPVOID pointer);
 // Mission
 
 void            Mission__CheckEvents();
@@ -755,14 +765,43 @@ char __thiscall CSide__ReturnMoneyFromStarportOrder(CSide *this);
 void __thiscall CSide__ResetStarportOrderCost(CSide *this);
 void __thiscall CSide__ResetEnemyForSide(CSide *this, char a2);
 // Sound
+void            LoadSoundEffects();
+WaveDataStruct *FindSoundEffectByFilename(char *filename);
+size_t          LoadSoundEffect(WaveDataStruct *data, void *buffer);
+void __thiscall ISampleManager__Init(ISampleManager *this, int handle_count, int a3);
+void __thiscall ISampleManager__Allocate(ISampleManager *this);
+void __thiscall ISampleManager__Deallocate(ISampleManager *this);
+char __thiscall ISampleManager__LoadSampleCache(ISampleManager *this, int sound_id, int cache_id);
+int __thiscall  ISampleManager__HandleCache(ISampleManager *this, int sound_id, int a2);
+void __thiscall ISampleManager__PlaySample(ISampleManager *this, HSAMPLE sample, int handle_id, int sound_id, unsigned __int16 loop_count, int pan, int volume);
+__int16 __thiscall ISampleManager__PlaySample_0(ISampleManager *this, int a1, int pan, unsigned int volume, unsigned int a4, unsigned int a5, int a6);
+void __thiscall ISampleManager__setsamplevals(ISampleManager *this, int handle_id, HSAMPLE sample, int pan, int volume);
+void __thiscall ISampleManager__SetSampleData(ISampleManager *this, int handle_id, int pan, int volume, int position, int rate, int a7, int a8);
+void __thiscall ISampleManager__Deinit(ISampleManager *this);
+void __thiscall ISampleManager__EndSamples(ISampleManager *this);
 void __thiscall ISampleManager__EndSample(ISampleManager *this, int handle_id);
+void            InitSampleManager();
+void            DeinitSampleManager();
 char            IsSoundPlaying(int sound_id);
 void            PlaySoundAt(int id, unsigned char xpos, unsigned char ypos);
+void            audio_priority_init_46F6A0();
+bool            audio_priority_46F6C0(int a1);
+char            audio_46F6E0();
+char            is_audio_priority_46F700(int table_id, int priority);
+char            audio_priority_46F770(int table_id, int priority);
+bool            getqueuedsoundid(_DWORD *id);
 void            QueueAudioToPlay(int id, char state, int time, int priority);
 void            PlayMentatSound(int at_table, int or_table, int hark_table, char state, int time, int priority);
-void __thiscall Sound__LoadMusicFile(int this, char *fileName);
-void __thiscall Sound__SetMusicVolume(int soundClassObject, int volume);
-void            Sound__PlayMusic(char *fileName);
+void            init_audio();
+int             CopySample();
+void            SoundLoop();
+int __thiscall  ISampleManager__CopyStreamSample(ISampleManager *this, FILE *file, void *src, void *dest, int size);
+bool __thiscall ISampleManager__InitStream(ISampleManager *this, char *filename);
+void __thiscall ISampleManager__StreamLoop(ISampleManager *this);
+void __thiscall ISampleManager__CloseStream(ISampleManager *this);
+void __thiscall ISampleManager__SetStreamVolume(ISampleManager *this, int volume);
+void            OpenAudioStream(char *filename);
+void            CloseAudioStream();
 // CUIManager
 void __thiscall CUIManager__ReplaceWithOne_470E60(CUIManager *this, char *name, TImage *image);
 void            CUIManager__JumpToMenu(char *menu);
@@ -778,6 +817,7 @@ void            CUIManager__GetCD(char *arg);
 int             GetTextID(char *String1);
 char *          GetTextString(int stringId, bool showError);
 int             GetSoundTableID(const char *key);
+char *          GetSampleFilename(int id);
 // Other
 void            GetNextSquare(Unit *unit, eSideType side, char flags);
 bool            TurnUnitInDirection(Unit *unit, unsigned char target_facing);

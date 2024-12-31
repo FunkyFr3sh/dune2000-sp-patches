@@ -17,7 +17,7 @@ hack 0x004488AA ; Call Mission__LoadObjectives to load the binary MisFile and af
     mov byte[UseBinaryMapFiles], 0
     push MissionMapData
     call Mission__LoadObjectives
-    mov dword[GameState], GS_QUIT
+    mov dword[gGameState], GS_QUIT
     jmp 0x004488AF
     
 hack 0x0044FC89, 0x0044FC8F ; load binary mis file

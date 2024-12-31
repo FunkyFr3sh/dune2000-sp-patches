@@ -54,7 +54,7 @@ int PlayRandomSong = VK_OEM_PLUS;
 
 void HandleKeyEvent(int key, bool keyIsDown)
 {
-    if (GameState == GS_MAINLOOP && !gUIMgr->dw_field_110_index && key != OptionsMenu)
+    if (gGameState == GS_MAINLOOP && !gUIMgr->dw_field_110_index && key != OptionsMenu)
     {
       if (keyIsDown)
       {
@@ -133,7 +133,7 @@ void HandleKeyEvent(int key, bool keyIsDown)
     if (key == VK_ESCAPE && !keyIsDown && IsCurrentlyShown("MP_TIMEOUT"))
     {
         ForceQuickExit = true;
-        GameState = GS_QUIT;
+        gGameState = GS_QUIT;
         return;
     }
     
@@ -151,7 +151,7 @@ void HandleKeyEvent(int key, bool keyIsDown)
         case VK_F6:
         { 
             //rate limit for in game messages to avoid spam
-            if (keyIsDown && GameState == GS_MAINLOOP)
+            if (keyIsDown && gGameState == GS_MAINLOOP)
             {
                 static uint32_t LastTickCount = 0;
                 if (!LastTickCount) LastTickCount = fake_timeGetTime();

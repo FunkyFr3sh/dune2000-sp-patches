@@ -348,7 +348,7 @@ void EvAct_PlayMusic(char *name)
 {
   //abusing the units array to pass the file name
   if (strcmp(name, "*") == 0) PlayRandomMusic();
-  else if (strlen(name) > 0) Sound__PlayMusic(name);
+  else if (strlen(name) > 0) OpenAudioStream(name);
 }
 
 void random_spread(int *x, int *y, int spread_x, int spread_y, bool circle_spread)

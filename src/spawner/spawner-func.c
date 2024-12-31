@@ -144,7 +144,7 @@ void InitSpawner()
     // ### Fire it up! ###
     if (singlePlayer) // Single-Player
     {
-        GameState = GS_MAINLOOP;
+        gGameState = GS_MAINLOOP;
         CUIManager__LoadMission(gUIMgr, NetMap);
     }
     else if (gTotalPlayers > 1) // Multi-Player

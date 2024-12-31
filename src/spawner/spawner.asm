@@ -56,7 +56,7 @@ hack 0x0045A942, 0x0045A94C ; Spawner_Settings
 hack 0x0044A2CC, 0x0044A2D3 ; ExitAfterOnlineGame
     cmp byte[SpawnerActive], 1
     jnz .out
-    mov dword[GameState], GS_QUIT
+    mov dword[gGameState], GS_QUIT
     jmp 0x0044A42C
     
 .out:
@@ -69,10 +69,10 @@ hack 0x0044A2CC, 0x0044A2D3 ; ExitAfterOnlineGame
 hack 0x00482850, 0x00482856 ; ExitAfterScore
     cmp byte[SpawnerActive], 1
     jnz .out
-    cmp dword[GameState], GS_BRIEFING
+    cmp dword[gGameState], GS_BRIEFING
     jnz .out
     mov dword[gGameType], GAME_SKIRMISH
-    mov dword[GameState], GS_QUIT
+    mov dword[gGameState], GS_QUIT
     
 .out:
     sub esp, 0x0D0
@@ -82,10 +82,10 @@ hack 0x00482850, 0x00482856 ; ExitAfterScore
 hack 0x00473E51 ; ExitIfNoScoreShown
     cmp byte[SpawnerActive], 1
     jnz .out
-    cmp dword[GameState], GS_BRIEFING
+    cmp dword[gGameState], GS_BRIEFING
     jnz .out
     mov dword[gGameType], GAME_SKIRMISH
-    mov dword[GameState], GS_QUIT
+    mov dword[gGameState], GS_QUIT
     jmp 0x00474085
     
 .out:
@@ -96,11 +96,11 @@ hack 0x00473E51 ; ExitIfNoScoreShown
 hack 0x00473DF7 ; ExitIfNoScoreShownSP
     cmp byte[SpawnerActive], 1
     jnz .out
-    cmp dword[GameState], GS_BRIEFING
+    cmp dword[gGameState], GS_BRIEFING
     jnz .out
     cmp dword[gGameType], GAME_CAMPAIGN
     jnz .out
-    mov dword[GameState], GS_QUIT
+    mov dword[gGameState], GS_QUIT
     jmp 0x00474085
     
 .out:
@@ -114,10 +114,10 @@ hack 0x0044A440, 0x0044A447 ; ExitIfLoseSP2 ; works also for skirmish
     jnz .out
     cmp byte[gLose], 1
     jnz .out
-    mov dword[GameState], GS_QUIT
+    mov dword[gGameState], GS_QUIT
     
 .out:
-    cmp dword[GameState], GS_BRIEFING
+    cmp dword[gGameState], GS_BRIEFING
     jmp 0x0044A447
 %endif
 

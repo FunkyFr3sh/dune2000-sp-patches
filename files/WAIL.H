@@ -828,22 +828,22 @@ WIN32S_CALLBACKS;
  
 #define Only16Pop32s() 
  
-#define WAIL_do_cb1(type,addr,ds,win32sflag,param1) \ 
+#define WAIL_do_cb1(type,addr,ds,win32sflag,param1) \
   (addr)(param1) 
  
-#define WAIL_do_cb3(type,addr,ds,win32sflag,param1,param2,param3) \ 
+#define WAIL_do_cb3(type,addr,ds,win32sflag,param1,param2,param3) \
   (addr)(param1,param2,param3) 
  
-#define WAIL_do_cb4(type,addr,ds,win32sflag,param1,param2,param3,param4) \ 
+#define WAIL_do_cb4(type,addr,ds,win32sflag,param1,param2,param3,param4) \
   (addr)(param1,param2,param3,param4) 
  
-#define WAIL_do_cb1_with_ret(ret,type,addr,ds,win32sflag,win32sret,param1) \ 
+#define WAIL_do_cb1_with_ret(ret,type,addr,ds,win32sflag,win32sret,param1) \
   ret = (addr)(param1) 
  
-#define WAIL_do_cb3_with_ret(ret,type,addr,ds,win32sflag,win32sret,param1,param2,param3) \ 
+#define WAIL_do_cb3_with_ret(ret,type,addr,ds,win32sflag,win32sret,param1,param2,param3) \
   ret = (addr)(param1,param2,param3) 
  
-#define WAIL_do_cb5_with_ret(ret,type,addr,ds,win32sflag,win32sret,param1,param2,param3,param4,param5) \ 
+#define WAIL_do_cb5_with_ret(ret,type,addr,ds,win32sflag,win32sret,param1,param2,param3,param4,param5) \
   ret = (addr)(param1,param2,param3,param4,param5) 
  
 #else   
@@ -870,62 +870,62 @@ extern void Win32sAddCB4(void FAR* addr, U32 val1, U32 val2, U32 val3, U32 val4)
  
 extern void Win32sAddCB5(void FAR* addr, U32 val1, U32 val2, U32 val3, U32 val4, U32 val5); 
  
-#define CheckWin32sCB(param) \ 
-  if (FromWin32sCB) {        \ 
-    param=1;                 \ 
-    Win32sMakeCB();          \ 
-  } else                     \ 
+#define CheckWin32sCB(param) \
+  if (FromWin32sCB) {        \
+    param=1;                 \
+    Win32sMakeCB();          \
+  } else                     \
     param=0;                
  
-#define WAIL_do_cb1(type,addr,ds,win32sflag,param1)                         \ 
-  if (win32sflag)                                                           \ 
-    Win32sAddCB1(addr,(U32)param1);                                         \ 
-  else {                                                                    \ 
-    SetupWAILCall16((void FAR*)type addr,(U16)(ds));                        \ 
-    (type &WAILCall16)(param1);                                             \ 
+#define WAIL_do_cb1(type,addr,ds,win32sflag,param1)                         \
+  if (win32sflag)                                                           \
+    Win32sAddCB1(addr,(U32)param1);                                         \
+  else {                                                                    \
+    SetupWAILCall16((void FAR*)type addr,(U16)(ds));                        \
+    (type &WAILCall16)(param1);                                             \
   } 
  
-#define WAIL_do_cb3(type,addr,ds,win32sflag,param1,param2,param3)           \ 
-  if (win32sflag)                                                           \ 
-    Win32sAddCB3(addr,(U32)param1,(U32)param2,(U32)param3);                 \ 
-  else {                                                                    \ 
-    SetupWAILCall16((void FAR*)type addr,(U16)(ds));                        \ 
-    (type &WAILCall16)(param1,param2,param3);                               \ 
+#define WAIL_do_cb3(type,addr,ds,win32sflag,param1,param2,param3)           \
+  if (win32sflag)                                                           \
+    Win32sAddCB3(addr,(U32)param1,(U32)param2,(U32)param3);                 \
+  else {                                                                    \
+    SetupWAILCall16((void FAR*)type addr,(U16)(ds));                        \
+    (type &WAILCall16)(param1,param2,param3);                               \
   } 
  
-#define WAIL_do_cb4(type,addr,ds,win32sflag,param1,param2,param3,param4)    \ 
-  if (win32sflag)                                                           \ 
-    Win32sAddCB4(addr,(U32)param1,(U32)param2,(U32)param3,(U32)param4);     \ 
-  else {                                                                    \ 
-    SetupWAILCall16((void FAR*)type addr,(U16)(ds));                        \ 
-    (type &WAILCall16)(param1,param2,param3,param4);                        \ 
+#define WAIL_do_cb4(type,addr,ds,win32sflag,param1,param2,param3,param4)    \
+  if (win32sflag)                                                           \
+    Win32sAddCB4(addr,(U32)param1,(U32)param2,(U32)param3,(U32)param4);     \
+  else {                                                                    \
+    SetupWAILCall16((void FAR*)type addr,(U16)(ds));                        \
+    (type &WAILCall16)(param1,param2,param3,param4);                        \
   } 
  
-#define WAIL_do_cb1_with_ret(ret,type,addr,ds,win32sflag,win32sret,param1)  \ 
-  if (win32sflag) {                                                         \ 
-    Win32sAddCB1(addr,(U32)param1);                                         \ 
-    ret=win32sret;                                                          \ 
-  } else {                                                                  \ 
-    SetupWAILCall16((void FAR*)type addr,(U16)(ds));                        \ 
-    ret=(type &WAILCall16)(param1);                                         \ 
+#define WAIL_do_cb1_with_ret(ret,type,addr,ds,win32sflag,win32sret,param1)  \
+  if (win32sflag) {                                                         \
+    Win32sAddCB1(addr,(U32)param1);                                         \
+    ret=win32sret;                                                          \
+  } else {                                                                  \
+    SetupWAILCall16((void FAR*)type addr,(U16)(ds));                        \
+    ret=(type &WAILCall16)(param1);                                         \
   } 
  
-#define WAIL_do_cb3_with_ret(ret,type,addr,ds,win32sflag,win32sret,param1,param2,param3) \ 
-  if (win32sflag) {                                                         \ 
-    Win32sAddCB3(addr,(U32)param1,(U32)param2,(U32)param3);                 \ 
-    ret=win32sret;                                                          \ 
-  } else {                                                                  \ 
-    SetupWAILCall16((void FAR*)type addr,(U16)(ds));                        \ 
-    ret=(type &WAILCall16)(param1,param2,param3);                           \ 
+#define WAIL_do_cb3_with_ret(ret,type,addr,ds,win32sflag,win32sret,param1,param2,param3) \
+  if (win32sflag) {                                                         \
+    Win32sAddCB3(addr,(U32)param1,(U32)param2,(U32)param3);                 \
+    ret=win32sret;                                                          \
+  } else {                                                                  \
+    SetupWAILCall16((void FAR*)type addr,(U16)(ds));                        \
+    ret=(type &WAILCall16)(param1,param2,param3);                           \
   }                                                                    
  
-#define WAIL_do_cb5_with_ret(ret,type,addr,ds,win32sflag,win32sret,param1,param2,param3,param4,param5) \ 
-  if (win32sflag) {                                                         \ 
-    Win32sAddCB5(addr,(U32)param1,(U32)param2,(U32)param3,(U32)param4,(U32)param5); \ 
-    ret=win32sret;                                                          \ 
-  } else {                                                                  \ 
-    SetupWAILCall16((void FAR*)type addr,(U16)(ds));                        \ 
-    ret=(type &WAILCall16)(param1,param2,param3,param4,param5);             \ 
+#define WAIL_do_cb5_with_ret(ret,type,addr,ds,win32sflag,win32sret,param1,param2,param3,param4,param5) \
+  if (win32sflag) {                                                         \
+    Win32sAddCB5(addr,(U32)param1,(U32)param2,(U32)param3,(U32)param4,(U32)param5); \
+    ret=win32sret;                                                          \
+  } else {                                                                  \
+    SetupWAILCall16((void FAR*)type addr,(U16)(ds));                        \
+    ret=(type &WAILCall16)(param1,param2,param3,param4,param5);             \
   } 
  
 #endif 

@@ -690,7 +690,7 @@ extern int _ValidateExecute(int (*)(void))                                      
 //extern int SubKey                                                                        BLOB;
 //extern int int MissionNumber                                                             BLOB;
 //extern int Source                                                                        BLOB;
-//extern int int GameState                                                                 BLOB;
+//extern int int gGameState                                                                 BLOB;
 //extern int int gNetUnitCount                                                              BLOB;
 //extern int int gNetTechLevel                                                              BLOB;
 //extern int int gNetStartingCredits                                                        BLOB;
@@ -702,7 +702,7 @@ extern int _ValidateExecute(int (*)(void))                                      
 //extern int Offset                                                                        BLOB;
 //extern int SubStr                                                                        BLOB;
 //extern int int CurrentCDTrack                                                            BLOB;
-//extern int int SFXVolume                                                                 BLOB;
+//extern int int gSFXVolume                                                                 BLOB;
 //extern int int CDVolume                                                                  BLOB;
 //extern int bool FirstTimePlay                                                            BLOB;
 //extern int bool UseCampaignSelection                                                     BLOB;

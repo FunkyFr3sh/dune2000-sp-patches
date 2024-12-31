@@ -79,7 +79,7 @@ cextern FirstTimePlay
 cextern ScrollRate
 cextern GameSpeed
 cextern GameBitsPerPixel
-cextern SFXVolume
+cextern gSFXVolume
 cextern MusicVolume
 cextern MoviesEnabled
 cextern SoundsEnabled
@@ -128,7 +128,7 @@ cextern gWin
 cextern gLose
 cextern gDifficultyLevel
 cextern gGameType
-cextern GameState
+cextern gGameState
 cextern AtreidesMoney
 cextern MissionNumber
 cextern GameEndTickCount
@@ -153,7 +153,6 @@ cextern _GameOver
 cextern RandSeed
 cextern _IsMultiplayer
 cextern _gDiplomacy
-cextern SoundClassObject
 cextern WindowActivated
 cextern _IRValues
 
@@ -175,8 +174,7 @@ cextern Mission__LoadObjectives
 cextern DrawMenu
 cextern GetTextID
 cextern GetSide
-cextern Sound__PlayMusic
-cextern Sound__SetMusicVolume
+cextern OpenAudioStream
 cextern GetBuildingCost
 cextern CanSideUpgradeBuildingGroup
 cextern IsAnyStarportUnitPicked

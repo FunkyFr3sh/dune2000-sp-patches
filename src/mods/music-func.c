@@ -18,7 +18,7 @@ static void FindMusicFiles();
 void PlayRandomMusic()
 {
     if (!MusicListCount) FindMusicFiles();
-    if (MusicListCount) Sound__PlayMusic(MusicList[(unsigned int)RandSeed % MusicListCount]); // calling rand() is OOS'ing the game, use seed instead
+    if (MusicListCount) OpenAudioStream(MusicList[(unsigned int)RandSeed % MusicListCount]); // calling rand() is OOS'ing the game, use seed instead
 }
 
 void FakeSound__PlayMusic(char *fileName)
@@ -31,8 +31,8 @@ void FakeSound__PlayMusic(char *fileName)
     
     RandomMusicEnabled = strcmp(customFile, "*") == 0;
     if (RandomMusicEnabled) PlayRandomMusic();
-    else if (strlen(customFile) > 0) Sound__PlayMusic(customFile);
-    else Sound__PlayMusic(fileName);
+    else if (strlen(customFile) > 0) OpenAudioStream(customFile);
+    else OpenAudioStream(fileName);
 }
 
 static void FindMusicFiles()
@@ -40,7 +40,7 @@ static void FindMusicFiles()
     WIN32_FIND_DATA ffd;
     HANDLE hFind = INVALID_HANDLE_VALUE;
     char searchPath[256];
-    sprintf(searchPath, "%s*.aud", MusicResourcePath);
+    sprintf(searchPath, "%s*.aud", gMUSIC_RES_PATH);
     hFind = FindFirstFile(searchPath, &ffd);
     if (hFind == INVALID_HANDLE_VALUE)
       return;

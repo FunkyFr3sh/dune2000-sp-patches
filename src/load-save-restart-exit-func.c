@@ -50,7 +50,7 @@ void GamePlayStart() // Triggers when the game-play starts
 }
 
 DETOUR(0x00478FA0, 0x0047916B, _GameExit);
-void GameExit() // Clean game exit - GameState = GS_QUIT
+void GameExit() // Clean game exit - gGameState = GS_QUIT
 {
     SaveDune2000Ini();
     if (UseImprovedFPSLimiter)

@@ -64,7 +64,7 @@ setcglob 0x004E7ACC, FirstTimePlay
 setcglob 0x004EB030, ScrollRate
 setcglob 0x004E3B18, GameSpeed
 setcglob 0x004EB01C, GameBitsPerPixel
-setcglob 0x004E5FC4, SFXVolume
+setcglob 0x004E5FC4, gSFXVolume
 setcglob 0x004E5FC8, MusicVolume
 setcglob 0x005178C4, DebugMode
 setcglob 0x005178C8, DebugModeBlocks
@@ -172,7 +172,7 @@ setcglob 0x004DE610, MissionNumber
 setcglob 0x004DEDB8, CreditsScreenWidth
 setcglob 0x004DEDB4, CreditsScreenTop
 setcglob 0x004DEDBC, CreditsScreenBottom
-setcglob 0x004DFB08, GameState
+setcglob 0x004DFB08, gGameState
 setcglob 0x004E3AE8, _firgcrap_dword_4E3AE8
 setcglob 0x004E3B14, MyCurrentFrameRate
 setcglob 0x004E41E4, _RadarLocationX
@@ -192,6 +192,7 @@ setcglob 0x004E8BF0, gDifficultyLevel
 setcglob 0x004E9520, _SandTileIDs
 setcglob 0x004E9530, _UnitAnimTypeFrames
 setcglob 0x004EB008, _gFullscreen_DebugModes_pathfinddebug
+setcglob 0x004EB00C, _gSoundOn
 setcglob 0x004EB018, gBitsPerPixel
 setcglob 0x004EB028, _ScreenClipWidth
 setcglob 0x004EB02C, _ScreenClipHeight
@@ -211,7 +212,7 @@ setcglob 0x00504030, _gMessageData
 setcglob 0x00513488, ResourcePath
 setcglob 0x00513488, gRES_PATH
 setcglob 0x00513520, MoviesResourcePath
-setcglob 0x005135B8, MusicResourcePath
+setcglob 0x005135B8, gMUSIC_RES_PATH
 setcglob 0x00513650, MissionsResourcePath
 setcglob 0x005136E8, MapsResourcePath
 setcglob 0x00513A20, _FontBinData
@@ -259,6 +260,7 @@ setcglob 0x005178AC, _blitflag
 setcglob 0x005178B4, PointerToMainImage
 setcglob 0x005178B4, gBackBuf
 setcglob 0x005178D8, _ScreenShakes
+setcglob 0x005179D0, _musicbool_byte_5179D0
 setcglob 0x00517B98, gCrates
 setcglob 0x00517DE8, gGameMap
 setcglob 0x00517DE8, gGameMapWidth
@@ -337,8 +339,12 @@ setcglob 0x0079553C, gBuildingTypeNum
 setcglob 0x00795540, gBulletTypeNum
 setcglob 0x00795544, gExplosionTypeNum
 setcglob 0x00795560, _CreditsTextYPos
-setcglob 0x00795608, SoundClassObject
+setcglob 0x00795600, _musicboolbyte_795600
 setcglob 0x00795608, _gSampleMgr
+setcglob 0x0079560C, _samplemanunused
+setcglob 0x00795610, _SampleManagerInitDone
+setcglob 0x00795618, sample_filebuffer
+setcglob 0x00795628, sample_buffer
 setcglob 0x007975A8, gTextTable
 setcglob 0x007975B8, gSampleTable
 setcglob 0x007975BC, _sampletablecount
@@ -417,6 +423,8 @@ setcglob 0x00492A70, DrawMenu
 
 ; Others
 setcglob 0x00402FF0, IsLocalIp
+setcglob 0x00404860, sosCODECInitStream
+setcglob 0x004048C0, sosCODECDecompressData
 setcglob 0x0040D2D0, WOL__SendGameResultsToServer
 setcglob 0x00411E70, IsCurrentlyShown
 setcglob 0x00417C40, WOL__StartGuestINetGame
@@ -439,6 +447,7 @@ setcglob 0x0042BA50, _OpenFile
 setcglob 0x0042BB40, CloseFile
 setcglob 0x0042BB60, _ReadFile
 setcglob 0x0042BB80, _WriteFile
+setcglob 0x0042BBA0, SeekFile
 setcglob 0x0042BC60, CreateGlobe
 ; Graphlib
 setcglob 0x0042D450, BlitHorizontalLineRGB
@@ -501,7 +510,8 @@ setcglob 0x0044EF10, SpiceMound
 setcglob 0x0044F110, RecycleCrate
 setcglob 0x0044F440, GetMapVisState
 ; Memory
-setcglob 0x0044F4D0, Memory__HeapAllocWrapper
+setcglob 0x0044F4D0, Alloc
+setcglob 0x0044F630, Free
 ; Mission
 setcglob 0x0044F8E0, Mission__LoadObjectives
 setcglob 0x00453B90, Mission__CheckEvents
@@ -606,14 +616,43 @@ setcglob 0x0046EAC0, CSide__ReturnMoneyFromStarportOrder
 setcglob 0x0046EAF0, CSide__ResetStarportOrderCost
 setcglob 0x0046EB00, CSide__ResetEnemyForSide
 ; Sound
+setcglob 0x0046EB60, LoadSoundEffects
+setcglob 0x0046ECC0, FindSoundEffectByFilename
+setcglob 0x0046ED00, LoadSoundEffect
+setcglob 0x0046EDA0, ISampleManager__Init
+setcglob 0x0046EEE0, ISampleManager__Allocate
+setcglob 0x0046EF40, ISampleManager__Deallocate
+setcglob 0x0046EF90, ISampleManager__LoadSampleCache
+setcglob 0x0046F080, ISampleManager__HandleCache
+setcglob 0x0046F170, ISampleManager__PlaySample
+setcglob 0x0046F210, ISampleManager__PlaySample_0
+setcglob 0x0046F330, ISampleManager__setsamplevals
+setcglob 0x0046F390, ISampleManager__SetSampleData
+setcglob 0x0046F3E0, ISampleManager__Deinit
+setcglob 0x0046F400, ISampleManager__EndSamples
 setcglob 0x0046F420, ISampleManager__EndSample
+setcglob 0x0046F450, InitSampleManager
+setcglob 0x0046F490, DeinitSampleManager
 setcglob 0x0046F4F0, IsSoundPlaying
 setcglob 0x0046F540, PlaySoundAt
+setcglob 0x0046F6A0, audio_priority_init_46F6A0
+setcglob 0x0046F6C0, audio_priority_46F6C0
+setcglob 0x0046F6E0, audio_46F6E0
+setcglob 0x0046F700, is_audio_priority_46F700
+setcglob 0x0046F770, audio_priority_46F770
+setcglob 0x0046F7D0, getqueuedsoundid
 setcglob 0x0046F820, QueueAudioToPlay
 setcglob 0x0046F900, PlayMentatSound
-setcglob 0x0046FD90, Sound__LoadMusicFile
-setcglob 0x004700B0, Sound__SetMusicVolume
-setcglob 0x004700E0, Sound__PlayMusic
+setcglob 0x0046F980, init_audio
+setcglob 0x0046F9A0, CopySample
+setcglob 0x0046FAA0, SoundLoop
+setcglob 0x0046FCC0, ISampleManager__CopyStreamSample
+setcglob 0x0046FD90, ISampleManager__InitStream
+setcglob 0x0046FF30, ISampleManager__StreamLoop
+setcglob 0x00470070, ISampleManager__CloseStream
+setcglob 0x004700B0, ISampleManager__SetStreamVolume
+setcglob 0x004700E0, OpenAudioStream
+setcglob 0x00470170, CloseAudioStream
 ; CUIManager
 setcglob 0x00470E60, CUIManager__ReplaceWithOne_470E60
 setcglob 0x004734E0, CUIManager__JumpToMenu 				;(char *menu)
@@ -629,6 +668,7 @@ setcglob 0x00482690, CUIManager__GetCD					 ;       Get_CD::Get_CD(void)
 setcglob 0x0048DC10, GetTextID			; (char *key, int unk)
 setcglob 0x0048DCC0, GetTextString			; (int id, int unk)
 setcglob 0x0048DD90, GetSoundTableID
+setcglob 0x0048DE10, GetSampleFilename
 ; Other
 setcglob 0x004936A0, GetNextSquare
 setcglob 0x00493EB0, TurnUnitInDirection
@@ -948,7 +988,7 @@ setcglob 0x004BC5B0, stat
 ;008CF6D4         GetTopWindow                       USER32  
 ;008CF6D8         BeginPaint                         USER32  
 ;008CF6E0         timeSetEvent                       WINMM   
-;008CF6E4         waveOutGetNumDevs                  WINMM   
+setcglob 0x008CF6E4, _imp__waveOutGetNumDevs@0
 ;008CF6E8         timeGetTime                        WINMM   
 ;008CF6EC         timeKillEvent                      WINMM     
 ;008CF6FC 52      __imp_gethostbyname                WSOCK32 
@@ -968,28 +1008,28 @@ setcglob 0x004BC5B0, stat
 ;008CF734 23      __imp_socket                       WSOCK32 
 ;008CF738 9       __imp_htons                        WSOCK32 
 ;008CF73C 15      __imp_ntohs                        WSOCK32 
-;008CF744         _AIL_set_sample_position@8         mss32   
-;008CF748         _AIL_set_sample_pan@8              mss32   
-;008CF74C         _AIL_set_sample_volume@8           mss32   
-;008CF750         _AIL_stop_sample@4                 mss32   
-;008CF754         _AIL_end_sample@4                  mss32   
-;008CF758         _AIL_set_sample_file@12            mss32   
-;008CF75C         _AIL_set_preference@8              mss32   
-;008CF760         _AIL_last_error@0                  mss32   
-;008CF764         _AIL_start_sample@4                mss32   
-;008CF768         _AIL_waveOutOpen@16                mss32   
-;008CF76C         _AIL_startup@0                     mss32   
-;008CF770         _AIL_allocate_sample_handle@4      mss32   
-;008CF774         _AIL_init_sample@4                 mss32   
-;008CF778         _AIL_sample_status@4               mss32   
-;008CF77C         _AIL_sample_volume@4               mss32   
-;008CF780         _AIL_load_sample_buffer@16         mss32   
-;008CF784         _AIL_sample_buffer_ready@4         mss32   
-;008CF788         _AIL_set_sample_playback_rate@8    mss32   
-;008CF78C         _AIL_set_sample_type@12            mss32   
-;008CF790         _AIL_minimum_sample_buffer_size@12 mss32   
-;008CF794         _AIL_shutdown@0                    mss32   
-;008CF798         _AIL_set_sample_loop_count@8       mss32   
+setcglob 0x008CF744, _imp__AIL_set_sample_position@8
+setcglob 0x008CF748, _imp__AIL_set_sample_pan@8
+setcglob 0x008CF74C, _imp__AIL_set_sample_volume@8
+setcglob 0x008CF750, _imp__AIL_stop_sample@4
+setcglob 0x008CF754, _imp__AIL_end_sample@4
+setcglob 0x008CF758, _imp__AIL_set_sample_file@12
+setcglob 0x008CF75C, _imp__AIL_set_preference@8
+setcglob 0x008CF760, _imp__AIL_last_error@0
+setcglob 0x008CF764, _imp__AIL_start_sample@4
+setcglob 0x008CF768, _imp__AIL_waveOutOpen@16
+setcglob 0x008CF76C, _imp__AIL_startup@0
+setcglob 0x008CF770, _imp__AIL_allocate_sample_handle@4
+setcglob 0x008CF774, _imp__AIL_init_sample@4
+setcglob 0x008CF778, _imp__AIL_sample_status@4
+setcglob 0x008CF77C, _imp__AIL_sample_volume@4
+setcglob 0x008CF780, _imp__AIL_load_sample_buffer@16
+setcglob 0x008CF784, _imp__AIL_sample_buffer_ready@4
+setcglob 0x008CF788, _imp__AIL_set_sample_playback_rate@8
+setcglob 0x008CF78C, _imp__AIL_set_sample_type@12
+setcglob 0x008CF790, _imp__AIL_minimum_sample_buffer_size@12
+setcglob 0x008CF794, _imp__AIL_shutdown@0
+setcglob 0x008CF798, _imp__AIL_set_sample_loop_count@8
 ;008CF7A0         OleInitialize                      ole32   
 ;008CF7A4         CoCreateInstance                   ole32   
 ;008CF7A8         OleUninitialize                    ole32   

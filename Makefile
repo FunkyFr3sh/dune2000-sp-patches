@@ -84,6 +84,8 @@ OBJS            ?= callsites.o \
         src/mods/unit-move.o \
         src/mods/unit-add.o \
         src/mods/unit-destroy.o \
+        src/mods/sample-manager.o \
+        src/mods/sound-extend-num-handles.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \

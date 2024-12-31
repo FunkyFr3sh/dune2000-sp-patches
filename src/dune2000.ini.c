@@ -29,7 +29,7 @@ void SaveDune2000Ini()
     D2kIniSetInt("Options", "ScrollRate", ScrollRate);
     D2kIniSetInt("Options", "GameSpeed", GameSpeed);
     D2kIniSetInt("Options", "GameBitsPerPixel", GameBitsPerPixel);
-    D2kIniSetInt("Options", "SFXVolume", SFXVolume);
+    D2kIniSetInt("Options", "SFXVolume", gSFXVolume);
     D2kIniSetInt("Options", "MusicVolume", MusicVolume);
     D2kIniSetBool("Options", "MoviesEnabled", MoviesEnabled);
     D2kIniSetBool("Options", "SoundsEnabled", SoundsEnabled);
@@ -124,7 +124,7 @@ void LoadDune2000Ini()
         GameBitsPerPixel = 8;
         BitsPerPixelChanged = true;
     }
-    SFXVolume = D2kIniGetInt("Options", "SFXVolume", 100);
+    gSFXVolume = D2kIniGetInt("Options", "SFXVolume", 100);
     MusicVolume = D2kIniGetInt("Options", "MusicVolume", 100);
     MoviesEnabled = D2kIniGetBool("Options", "MoviesEnabled", true);
     SoundsEnabled = D2kIniGetBool("Options", "SoundsEnabled", true);

@@ -25,7 +25,7 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
                 MB_YESNO | MB_TASKMODAL | MB_TOPMOST) == IDYES)
         {
             AbortGame();
-            GameState = GS_QUIT;
+            gGameState = GS_QUIT;
         }
 
         return 0;
