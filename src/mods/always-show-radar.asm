@@ -35,20 +35,22 @@ hack 0x0044905D ; GameLoop
 ;    jmp hackend
 
 ; Play S_POWERUP sound instead of S_RADARONLINE sound
-hack 0x0044AB6A ; DoPower
-    add esp, 8 ; Instruction replaced by long jump
-    cmp byte [rulesExt__alwaysShowRadar], 0
-    je .Skip
-    xor eax, eax
-.Skip:
-    test al, al ; Instruction replaced by long jump
-    jmp hackend
+; Superseded by Mod__DoPower
+;hack 0x0044AB6A ; DoPower
+;    add esp, 8 ; Instruction replaced by long jump
+;    cmp byte [rulesExt__alwaysShowRadar], 0
+;    je .Skip
+;    xor eax, eax
+;.Skip:
+;    test al, al ; Instruction replaced by long jump
+;    jmp hackend
     
-hack 0x0044AB9B ; DoPower
-    add esp, 8 ; Instruction replaced by long jump
-    cmp byte [rulesExt__alwaysShowRadar], 0
-    je .Skip2
-    xor eax, eax
-.Skip2:
-    test al, al ; Instruction replaced by long jump
-    jmp hackend
+; Superseded by Mod__DoPower
+;hack 0x0044AB9B ; DoPower
+;    add esp, 8 ; Instruction replaced by long jump
+;    cmp byte [rulesExt__alwaysShowRadar], 0
+;    je .Skip2
+;    xor eax, eax
+;.Skip2:
+;    test al, al ; Instruction replaced by long jump
+;    jmp hackend

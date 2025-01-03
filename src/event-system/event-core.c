@@ -48,6 +48,40 @@ void Mod__HandleConditionsAndEvents()
   v30 = 0;
   v29 = -1;
   EvaluateIfBuildingsOrUnitsExistForSide(a1, gGameTicks & 1);
+
+  // Debug features
+  if (DebugFeatures & DEBUGFEATURE_INSTANT_BUILD)
+  {
+    CSide *side = GetSide(gSideId);
+    if (side->__BuildingBuildQueue.__type != -1)
+      side->__BuildingBuildQueue.__build_progress = 0x5A00;
+    if (side->__BuildingUpgradeQueue.__type != -1)
+      side->__BuildingUpgradeQueue.__build_progress = 0x59FF;
+    for (int i = 0; i < MAX_UNIT_BUILD_QUEUES; i++)
+      if (side->__UnitBuildQueue[i].__type != -1 && side->__UnitBuildQueue[i].__build_progress < 0x5A00)
+        side->__UnitBuildQueue[i].__build_progress = 0x5A00;
+  }
+  if (DebugFeatures & DEBUGFEATURE_SHOW_SELECTED_UNIT_DATA)
+  {
+    for (int i = 0; i < MAX_SIDES; i++)
+      for (Unit *u = GetSide(i)->__FirstUnitPtr; u; u = u->Next)
+        if (u->__IsSelected)
+        {
+          EvAct_ShowUnitData(-1, i, u->MyIndex);
+          break;
+        }
+  }
+  if (DebugFeatures & DEBUGFEATURE_SHOW_SELECTED_BUILDING_DATA)
+  {
+    for (int i = 0; i < MAX_SIDES; i++)
+      for (Building *b = GetSide(i)->__FirstBuildingPtr; b; b = b->Next)
+        if (b->__IsSelected)
+        {
+          EvAct_ShowBuildingData(-1, i, b->MyIndex);
+          break;
+        }
+  }
+
   if (!MapScriptExists && (_IsMultiplayer || gGameType == GAME_SKIRMISH))
   {
 DEFAULT_WIN_LOSE_EVENTS:

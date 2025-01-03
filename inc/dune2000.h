@@ -243,6 +243,20 @@ enum eSidebarButton
   SIDEBARBUTTON_PURCHASE = 14,
 };
 
+enum eDebugFeatures
+{
+  DEBUGFEATURE_REVEAL_MAP = 0x1,
+  DEBUGFEATURE_ALWAYS_SHOW_RADAR = 0x2,
+  DEBUGFEATURE_INSTANT_BUILD = 0x4,
+  DEBUGFEATURE_UNLIMITED_POWER = 0x8,
+  DEBUGFEATURE_QUICK_SWITCH_SIDE = 0x10,
+  DEBUGFEATURE_DEBUG_TEXT_ON_SCREEN = 0x20,
+  DEBUGFEATURE_DEBUG_TILES = 0x40,
+  DEBUGFEATURE_DEBUG_UNIT_PATH = 0x80,
+  DEBUGFEATURE_SHOW_SELECTED_UNIT_DATA = 0x100,
+  DEBUGFEATURE_SHOW_SELECTED_BUILDING_DATA = 0x200
+};
+
 // Side (HouseClass)
 #define HC_CREDITS 0x2425C
 #define HC_SILO_CREDITS 0x24254
@@ -435,6 +449,8 @@ extern int                  _StoredMouseCursorIndex;
 extern char                 _blitflag;
 
 extern TImage               *gBackBuf;
+extern char                 _DebugPrintStuff;
+extern char                 _DebugTiles;
 extern short                _ScreenShakes;
 extern char                 _musicbool_byte_5179D0;
 extern CrateStruct          gCrates[MAX_CRATES];

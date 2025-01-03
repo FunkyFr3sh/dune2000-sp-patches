@@ -1,9 +1,12 @@
 #include "macros/patch.h"
 #include "dune2000.h"
+#include "../event-system/event-utils.h"
 #include "../event-system/event-core.h"
+#include "../event-system/event-actions.h"
 #include "messages-func.h"
 #include "patch.h"
 #include "radar.h"
+#include "rules.h"
 
 #define SETUP_MAP_ERROR "Setup map error"
 
@@ -412,6 +415,18 @@ void Mod__setupmapstuff()
     }
 
   Mod__SetupRadarMap();
+
+  // Debug features
+  if (DebugFeatures & DEBUGFEATURE_REVEAL_MAP)
+    EvAct_RevealMap(-1, 0, 0, 0);
+  if (DebugFeatures & DEBUGFEATURE_ALWAYS_SHOW_RADAR)
+    rulesExt__alwaysShowRadar = 1;
+  if (DebugFeatures & DEBUGFEATURE_DEBUG_TEXT_ON_SCREEN)
+    _DebugPrintStuff = 1;
+  if (DebugFeatures & DEBUGFEATURE_DEBUG_TILES)
+    _DebugTiles = 1;
+  if (DebugFeatures & DEBUGFEATURE_DEBUG_UNIT_PATH)
+    _DebugOn_Pathfind_WinLose_DebugNewGame = 1;
 
   if ( _SpawnLocationCount != 8 && (gGameType == GAME_SKIRMISH || _IsMultiplayer) )
   {

@@ -2190,6 +2190,21 @@ LABEL_665:
     _KeyboardKeyDown[VK_W] = 0;
   }
   // New logic end
+  // New logic start
+  // Quick switch side debug feature
+  if (DebugFeatures & DEBUGFEATURE_QUICK_SWITCH_SIDE)
+  {
+    for (int i = 0; i < MAX_SIDES; i++)
+      if (_KeyboardKeyDown[VK_NUMPAD0 + i])
+      {
+        gSideId = i;
+        GetSide(gSideId)->__PowerPercentPrev = 0xFFFF;
+        _blitflag = 1;
+        _TacticalData.__radarfade = 1;
+        _KeyboardKeyDown[VK_NUMPAD0 + i] = 0;
+      }
+  }
+  // New logic end
   if ( _KeyboardKeyDown[VK_HOME] )
   {
     if ( !CenterViewportOnSelectedUnits(gSideId, &_ViewportXPos, &_ViewportYPos) )

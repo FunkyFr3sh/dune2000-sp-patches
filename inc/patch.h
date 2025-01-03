@@ -73,6 +73,7 @@ extern uint32_t NetKey;
 extern uint32_t P2Pheader;
 extern unsigned char gOldSideId;
 extern uint32_t MapScrollLockTicks;
+extern unsigned int DebugFeatures;
 
 extern const char Cursor0Data[];
 extern const unsigned int Cursor0DataLength;

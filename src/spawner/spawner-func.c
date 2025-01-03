@@ -14,6 +14,7 @@ LPCTSTR spawnIni = ".\\spawn.ini";
 unsigned int ListenPort = DEFAULT_PORT;
 NetPlayerExt NetPlayersExt[6];
 extern SOCKET SendSocket;
+unsigned int DebugFeatures;
 
 static int MyIndex;
 
@@ -46,6 +47,7 @@ void InitSpawner()
         MissionNumber = SpawnIniGetInt("Settings", "MissionNumber", 0);
         MySideID = mySideID;
         gDifficultyLevel = SpawnIniGetInt("Settings", "DifficultyLevel", 1);
+        DebugFeatures = SpawnIniGetInt("Settings", "DebugFeatures", 0);
         // stats hack
         gTotalPlayers = 1;
         gNetAIPlayers = 7;

@@ -259,6 +259,8 @@ setcglob 0x0051789C, _StoredMouseCursorIndex
 setcglob 0x005178AC, _blitflag
 setcglob 0x005178B4, PointerToMainImage
 setcglob 0x005178B4, gBackBuf
+setcglob 0x005178C4, _DebugPrintStuff
+setcglob 0x005178C8, _DebugTiles
 setcglob 0x005178D8, _ScreenShakes
 setcglob 0x005179D0, _musicbool_byte_5179D0
 setcglob 0x00517B98, gCrates
