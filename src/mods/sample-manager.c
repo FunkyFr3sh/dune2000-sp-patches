@@ -505,7 +505,14 @@ bool __thiscall Mod__ISampleManager__InitStream(ISampleManager *this, char *file
   file = _OpenFile(filename, "rb", gMUSIC_RES_PATH);
   if ( !file )
   {
-    return 0;
+    // New logic start
+    // Allow playing music file also from GAMESFX folder
+    char filename_buffer[260];
+    sprintf(filename_buffer, "GameSFX\\%s", filename);
+    file = _OpenFile(filename_buffer, "rb", gRES_PATH);
+    if ( !file )
+      return 0;
+    // New logic end
   }
   if ( !sm->__musicfilesamplebuffer_1A0 )
   {
