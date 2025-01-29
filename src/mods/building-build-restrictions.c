@@ -32,7 +32,23 @@ void Mod__GetOwnershipStatusOfCell(int x, int y, unsigned char side_id, _BYTE *f
   }
 }
 
-bool CheckTerrainRestriction(int tile_flags, int default_flag, int restriction);
+enum BuildingBuildRestriction
+{
+  BUILDINGBUILDRESTRICTON_NORMAL_OR,
+  BUILDINGBUILDRESTRICTON_NORMAL_AND,
+  BUILDINGBUILDRESTRICTON_TERRAIN
+};
+
+bool CheckBuildingBuildRestriction(int tile_flags, int restriction, int restriction_terrain)
+{
+  switch (restriction)
+  {
+    case BUILDINGBUILDRESTRICTON_NORMAL_OR:  return ((tile_flags & TileFlags_8000_BUILD_ON) != 0) || ((restriction_terrain & (0x80 >> ((tile_flags >> 29) & 7))) != 0);
+    case BUILDINGBUILDRESTRICTON_NORMAL_AND: return ((tile_flags & TileFlags_8000_BUILD_ON) != 0) && ((restriction_terrain & (0x80 >> ((tile_flags >> 29) & 7))) != 0);
+    case BUILDINGBUILDRESTRICTON_TERRAIN:    return (restriction_terrain & (0x80 >> ((tile_flags >> 29) & 7))) != 0;
+  }
+  return false;
+};
 
 // Custom implementation of function HandleBuildingPlacement
 DETOUR(0x004285C0, 0x004288C1, _Mod__HandleBuildingPlacement);
@@ -88,6 +104,7 @@ bool Mod__HandleBuildingPlacement(eSideType side_id, int tile_bitfield, int tile
   int building_type = GetSide(side_id)->__BuildingBuildQueue.__type;
   BuildingAtrbStruct *building_template = &_templates_buildattribs[building_type];
   int build_restriction = building_template->BuildRestriction;
+  int build_restriction_terrain = building_template->BuildRestrictionTerrain;
   int max_build_distance = building_template->BuildMaxDistance?building_template->BuildMaxDistance:2;
   // New logic end
 
@@ -194,7 +211,7 @@ bool Mod__HandleBuildingPlacement(eSideType side_id, int tile_bitfield, int tile
           // Mod - Don't allow building on tiles with spice
           if ( (!(tile_flags & (TileFlags_400000_SPICE|TileFlags_200000_SPICE|TileFlags_100000_SPICE|TileFlags_1000_HAS_CRATE|TileFlags_200_CSPOT_TL|TileFlags_100_CSPOT_DL|TileFlags_80_CSPOT_DR|TileFlags_40_CSPOT_TR|TileFlags_20_CSPOT_MID|TileFlags_10_OCC_BUILDING|TileFlags_8_OCC_UNIT)))
             // New logic - Perform check for tile flags according to build restriction
-            && CheckTerrainRestriction(tile_flags, TileFlags_8000_BUILD_ON, build_restriction)
+            && CheckBuildingBuildRestriction(tile_flags, build_restriction, build_restriction_terrain)
             && v22
             && flags & 3 )
           {
@@ -288,6 +305,7 @@ bool Mod__HandleConcretePlacement(int tile_bitfield1, int tile_bitfield2, TImage
   int building_type = GetSide(gSideId)->__BuildingBuildQueue.__type;
   BuildingAtrbStruct *building_template = &_templates_buildattribs[building_type];
   int build_restriction = building_template->BuildRestriction;
+  int build_restriction_terrain = building_template->BuildRestrictionTerrain;
   int max_build_distance = building_template->BuildMaxDistance?building_template->BuildMaxDistance:2;
   // New logic end
 
@@ -399,7 +417,7 @@ bool Mod__HandleConcretePlacement(int tile_bitfield1, int tile_bitfield2, TImage
       if ( tile_flags & (TileFlags_400000_SPICE|TileFlags_200000_SPICE|TileFlags_100000_SPICE|TileFlags_1000_HAS_CRATE|TileFlags_200_CSPOT_TL|TileFlags_100_CSPOT_DL|TileFlags_80_CSPOT_DR|TileFlags_40_CSPOT_TR|TileFlags_20_CSPOT_MID|TileFlags_10_OCC_BUILDING|TileFlags_8_OCC_UNIT)
         || (bool1 && tile_flags & TileFlags_800_HAS_CONCRETE)
         // New logic - Perform check for tile flags according to build restriction
-        || !CheckTerrainRestriction(tile_flags, TileFlags_8000_BUILD_ON, build_restriction)
+        || !CheckBuildingBuildRestriction(tile_flags, build_restriction, build_restriction_terrain)
         || !v22 )
       {
         BlitClipTImage2(

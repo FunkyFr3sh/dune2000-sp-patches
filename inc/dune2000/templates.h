@@ -58,7 +58,7 @@ typedef struct UnitAtribStruct
   bool SecondaryWeaponNoAutoAttack;
   uint8_t SecondaryWeaponShootOffset;
   uint8_t SecondaryWeaponShootAngle;
-  uint8_t zero_padding;
+  uint8_t MovementRestrictionTerrain;
   uint8_t CustomDeathSoundNumber;
   int CustomDeathSound;
   char ZeroBytes[64];
@@ -134,7 +134,8 @@ typedef struct BuildingAtrbStruct
   uint8_t SecondaryWeaponDoubleShot;
   uint8_t SecondaryWeaponShootOffset;
   uint8_t SecondaryWeaponShootAngle;
-  char field_8D[114];
+  uint8_t BuildRestrictionTerrain;
+  char field_8D[113];
 }BuildingAtrbStruct;
 
 typedef struct SmokeDataStruct

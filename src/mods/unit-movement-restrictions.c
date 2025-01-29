@@ -4,18 +4,26 @@
 #include "dune2000.h"
 #include "../event-system/event-core.h"
 
-bool CheckTerrainRestriction(int tile_flags, int default_flag, int restriction)
+enum UnitMovementRestriction
 {
-  if (restriction == 0)
-    return (tile_flags & default_flag) != 0;
-  else if (restriction < 8)
-    return ((tile_flags >> 29) & 7) == restriction;
-  else if (restriction < 15)
-    return (((tile_flags >> 29) & 7) & (restriction & 7)) == (restriction & 7);
-  else if (restriction == 15)
-    return (tile_flags & TileFlags_10000_SANDY) != 0;
-  else
-    return false;
+  UNITMOVEMENTRESTRICTON_NORMAL_OR,
+  UNITMOVEMENTRESTRICTON_NORMAL_AND,
+  UNITMOVEMENTRESTRICTON_SANDY_OR,
+  UNITMOVEMENTRESTRICTON_SANDY_AND,
+  UNITMOVEMENTRESTRICTON_TERRAIN
+};
+
+bool CheckUnitMovementRestriction(int tile_flags, int default_flag, int restriction, int restriction_terrain)
+{
+  switch (restriction)
+  {
+    case UNITMOVEMENTRESTRICTON_NORMAL_OR:  return ((tile_flags & default_flag) != 0) || ((restriction_terrain & (0x80 >> ((tile_flags >> 29) & 7))) != 0);
+    case UNITMOVEMENTRESTRICTON_NORMAL_AND: return ((tile_flags & default_flag) != 0) && ((restriction_terrain & (0x80 >> ((tile_flags >> 29) & 7))) != 0);
+    case UNITMOVEMENTRESTRICTON_SANDY_OR:   return ((tile_flags & TileFlags_10000_SANDY) != 0) || ((restriction_terrain & (0x80 >> ((tile_flags >> 29) & 7))) != 0);
+    case UNITMOVEMENTRESTRICTON_SANDY_AND:  return ((tile_flags & TileFlags_10000_SANDY) != 0) && ((restriction_terrain & (0x80 >> ((tile_flags >> 29) & 7))) != 0);
+    case UNITMOVEMENTRESTRICTON_TERRAIN:    return (restriction_terrain & (0x80 >> ((tile_flags >> 29) & 7))) != 0;
+  }
+  return false;
 };
 
 // Custom implementation of function CanUnitUseSquare
@@ -38,7 +46,8 @@ BOOL Mod__CanUnitUseSquare(dwXYStruct x, Unit *unit, eSideType side_id, char rou
   unsigned int v20; // [esp+14h] [ebp-4h]
   bool uncrushable_infantry;
 
-  int movement_restriction = _templates_unitattribs[unit->Type].MovementRestriction;
+  int restriction = _templates_unitattribs[unit->Type].MovementRestriction;
+  int restriction_terrain = _templates_unitattribs[unit->Type].MovementRestrictionTerrain;
 
   unit_ = unit;
   v5 = unit->Type << 8;
@@ -136,7 +145,7 @@ LABEL_34:
     case 0:
       if ( is_infantry )
       {
-        if ( CheckTerrainRestriction(tile_flags, TileFlags_4000_WALK_ON, movement_restriction) && !(tile_flags & (TileFlags_10_OCC_BUILDING|TileFlags_8_OCC_UNIT)) )
+        if ( CheckUnitMovementRestriction(tile_flags, TileFlags_4000_WALK_ON, restriction, restriction_terrain) && !(tile_flags & (TileFlags_10_OCC_BUILDING|TileFlags_8_OCC_UNIT)) )
         {
           if ( tile_flags & (TileFlags_200_CSPOT_TL|TileFlags_100_CSPOT_DL|TileFlags_80_CSPOT_DR|TileFlags_40_CSPOT_TR|TileFlags_20_CSPOT_MID) )
           {
@@ -149,7 +158,7 @@ LABEL_34:
           return 1;
         }
       }
-      else if ( CheckTerrainRestriction(tile_flags, TileFlags_2000_DRIVE_ON, movement_restriction) && !uncrushable_infantry && !(tile_flags & (TileFlags_10_OCC_BUILDING|TileFlags_8_OCC_UNIT)) )
+      else if ( CheckUnitMovementRestriction(tile_flags, TileFlags_2000_DRIVE_ON, restriction, restriction_terrain) && !uncrushable_infantry && !(tile_flags & (TileFlags_10_OCC_BUILDING|TileFlags_8_OCC_UNIT)) )
       {
         if ( tile_flags & (TileFlags_200_CSPOT_TL|TileFlags_100_CSPOT_DL|TileFlags_80_CSPOT_DR|TileFlags_40_CSPOT_TR|TileFlags_20_CSPOT_MID) )
         {
@@ -165,7 +174,7 @@ LABEL_34:
     case 1:
       if ( is_infantry )
       {
-        if ( CheckTerrainRestriction(tile_flags, TileFlags_4000_WALK_ON, movement_restriction) && !(tile_flags & TileFlags_10_OCC_BUILDING) )
+        if ( CheckUnitMovementRestriction(tile_flags, TileFlags_4000_WALK_ON, restriction, restriction_terrain) && !(tile_flags & TileFlags_10_OCC_BUILDING) )
         {
           if ( !v20 )
           {
@@ -188,7 +197,7 @@ LABEL_34:
         }
         return 0;
       }
-      if ( !CheckTerrainRestriction(tile_flags, TileFlags_2000_DRIVE_ON, movement_restriction) || uncrushable_infantry || tile_flags & TileFlags_10_OCC_BUILDING )
+      if ( !CheckUnitMovementRestriction(tile_flags, TileFlags_2000_DRIVE_ON, restriction, restriction_terrain) || uncrushable_infantry || tile_flags & TileFlags_10_OCC_BUILDING )
       {
         return 0;
       }
@@ -213,7 +222,7 @@ LABEL_34:
     case 2:
       if ( is_infantry )
       {
-        if ( CheckTerrainRestriction(tile_flags, TileFlags_4000_WALK_ON, movement_restriction) && !(tile_flags & TileFlags_10_OCC_BUILDING) )
+        if ( CheckUnitMovementRestriction(tile_flags, TileFlags_4000_WALK_ON, restriction, restriction_terrain) && !(tile_flags & TileFlags_10_OCC_BUILDING) )
         {
           if ( v20 )
           {
@@ -227,7 +236,7 @@ LABEL_34:
         }
         return 0;
       }
-      if ( !CheckTerrainRestriction(tile_flags, TileFlags_2000_DRIVE_ON, movement_restriction) || uncrushable_infantry || tile_flags & TileFlags_10_OCC_BUILDING )
+      if ( !CheckUnitMovementRestriction(tile_flags, TileFlags_2000_DRIVE_ON, restriction, restriction_terrain) || uncrushable_infantry || tile_flags & TileFlags_10_OCC_BUILDING )
       {
         return 0;
       }
@@ -244,7 +253,7 @@ LABEL_77:
       }
       return 0;
     case 3:
-      if ( CheckTerrainRestriction(tile_flags, is_infantry?TileFlags_4000_WALK_ON:TileFlags_2000_DRIVE_ON, movement_restriction) && !(!is_infantry && uncrushable_infantry) )
+      if ( CheckUnitMovementRestriction(tile_flags, is_infantry?TileFlags_4000_WALK_ON:TileFlags_2000_DRIVE_ON, restriction, restriction_terrain) && !(!is_infantry && uncrushable_infantry) )
       {
         if ( tile_flags & TileFlags_400_HAS_WALL )
         {
