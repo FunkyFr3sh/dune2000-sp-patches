@@ -495,8 +495,8 @@ setcglob 0x0044C4F0, Map__PlayerDefeated
 setcglob 0x0044C520, Map__SetDeadOrder
 setcglob 0x0044C6D0, LoadMapData
 setcglob 0x0044CD10, UpdateShroudInRegion
-setcglob 0x0044D500, FindSandwormsTarget
-setcglob 0x0044D630, ValidateSandwormsTarget
+setcglob 0x0044D500, FindNearestActiveThumper
+setcglob 0x0044D630, FindSandwormsTarget
 setcglob 0x0044D760, GetSpiceTileToHarvest
 setcglob 0x0044D970, spice_44D970
 setcglob 0x0044DA90, FindFreeSpotForInfantry

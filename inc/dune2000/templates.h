@@ -61,7 +61,8 @@ typedef struct UnitAtribStruct
   uint8_t MovementRestrictionTerrain;
   uint8_t CustomDeathSoundNumber;
   int CustomDeathSound;
-  char ZeroBytes[64];
+  bool NotEdible;
+  char ZeroBytes[63];
 }UnitAtribStruct;
 
 typedef struct BuildingAtrbStruct

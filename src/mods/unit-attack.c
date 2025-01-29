@@ -117,6 +117,8 @@ char Mod__UnitAttack(Unit *unit, char side_id, short index, char *enemy_side_id_
   int enemy_building_y; // [esp+1Ch] [ebp-10h]
   int enemy_building_x; // [esp+20h] [ebp-Ch]
   char secondary_weapon; // [esp+24h] [ebp-8h]
+  eSideType s;
+  _WORD i;
 
   unit_ = unit;
   if ( !CanUnitShoot(unit) )
@@ -230,7 +232,7 @@ char Mod__UnitAttack(Unit *unit, char side_id, short index, char *enemy_side_id_
     return 1;
   }
   if ( _templates_unitattribs[enemy_unit->Type].__Behavior == UnitBehavior_SANDWORM
-    && GetUnitOnTile(enemy_unit_xpos, enemy_unit_ypos, (eSideType *)enemy_side_id_ptr, enemy_index_ptr, 0) )
+    && GetUnitOnTile(enemy_unit_xpos, enemy_unit_ypos, &s, &i, 0) )
   {
     return 1;
   }

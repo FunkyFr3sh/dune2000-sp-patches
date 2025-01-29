@@ -4,6 +4,96 @@
 
 bool CanUnitShoot(Unit *unit);
 
+// Custom implementation of function FindSandwormsTarget
+DETOUR(0x0044D630, 0x0044D75B, _Mod__FindSandwormsTarget);
+
+bool Mod__FindSandwormsTarget(unsigned char from_x, unsigned char from_y, unsigned char *target_x_ptr, unsigned char *target_y_ptr)
+{
+  int map_height; // edi
+  int from_y_; // ecx
+  unsigned short min_distance; // si
+  bool result; // al
+  int x; // ebx
+  int x_distance; // edi
+  int cell_index; // eax
+  int new_distance; // ecx
+  bool v12; // cf
+  int y_distance; // [esp+10h] [ebp-8h]
+  int from_x_; // [esp+14h] [ebp-4h]
+  int *a1a; // [esp+1Ch] [ebp+4h]
+  int y; // [esp+20h] [ebp+8h]
+  eSideType s;
+  _WORD i;
+  Unit *unit_on_tile;
+
+  map_height = gGameMap.height;
+  from_y_ = from_y;
+  min_distance = gGameMap.height + gGameMap.width;
+  from_x_ = from_x;
+  // New logic start
+  // Implement not edible units
+  if ( gGameMap.map[from_x + _CellNumbersWidthSpan[from_y]].__tile_bitflags & TileFlags_8_OCC_UNIT )
+  {
+    unit_on_tile = GetUnitOnTile(32 * from_x, 32 * from_y, &s, &i, 0);
+    if (unit_on_tile && !_templates_unitattribs[unit_on_tile->Type].NotEdible)
+    {
+      *target_x_ptr = from_x;
+      *target_y_ptr = from_y;
+      return 1;
+    }
+  }
+  // New logic end
+  y = 0;
+  if ( gGameMap.height )
+  {
+    y_distance = from_y_;
+    a1a = _CellNumbersWidthSpan;
+    do
+    {
+      x = 0;
+      if ( gGameMap.width )
+      {
+        x_distance = from_x_;
+        do
+        {
+          cell_index = x + *a1a;
+          if ( gGameMap.map[cell_index].__tile_bitflags & TileFlags_10000_SANDY )
+          {
+            if ( gGameMap.map[cell_index].__tile_bitflags & TileFlags_8_OCC_UNIT )
+            {
+              // New logic start
+              // Implement not edible units
+
+              unit_on_tile = GetUnitOnTile(32 * x, 32 * y, &s, &i, 0);
+              if (unit_on_tile && !_templates_unitattribs[unit_on_tile->Type].NotEdible)
+              // New logic end
+              {
+                new_distance = abs(y_distance) + abs(x_distance);
+                if ( (unsigned short)new_distance < min_distance )
+                {
+                  min_distance = new_distance;
+                  *target_x_ptr = x;
+                  *target_y_ptr = y;
+                }
+              }
+            }
+          }
+          ++x;
+          --x_distance;
+        }
+        while ( x < gGameMap.width );
+        map_height = gGameMap.height;
+      }
+      v12 = y++ + 1 < map_height;
+      ++a1a;
+      --y_distance;
+    }
+    while ( v12 );
+  }
+  result = min_distance < (signed int)(gGameMap.width + map_height);
+  return result;
+}
+
 // Custom implementation of function UpdateUnit
 DETOUR(0x00497B90, 0x0049B76E, _Mod__UpdateUnit);
 
@@ -2262,7 +2352,10 @@ LABEL_612:
         else
         {
           unit_on_tile = GetUnitOnTile(32 * unit->BlockFromX, 32 * unit->BlockFromY, (eSideType *)&a1, &index, 0);
-          if ( !unit_on_tile || _templates_unitattribs[unit_on_tile->Type].__IsInfantry )
+          // New logic start
+          // Implement not edible units
+          if ( !unit_on_tile || _templates_unitattribs[unit_on_tile->Type].__IsInfantry || _templates_unitattribs[unit_on_tile->Type].NotEdible )
+          // New logic end
           {
             unit->Flags &= ~UFLAGS_4_CLOAKED;
             unit->__CurrentAnimDelayCounter_SandwormSleepTimeCounter = 0;
@@ -2327,9 +2420,9 @@ LABEL_612:
         unit->__CurrentAnimDelayCounter_SandwormSleepTimeCounter = sleep_time_counter - 1;
         goto LABEL_612;
       }
-      if ( FindSandwormsTarget(unit->BlockFromX, unit->BlockFromY, &x, &y) )
+      if ( FindNearestActiveThumper(unit->BlockFromX, unit->BlockFromY, &x, &y) )
       {
-        if ( ValidateSandwormsTarget(x, y, &xx, &yy) )
+        if ( FindSandwormsTarget(x, y, &xx, &yy) )
         {
           if ( abs(x - xx) >= 5 || abs(y - yy) >= 5 )
           {
@@ -2353,7 +2446,7 @@ LABEL_612:
       }
       else
       {
-        if ( !ValidateSandwormsTarget(unit->BlockFromX, unit->BlockFromY, &x, &y) )
+        if ( !FindSandwormsTarget(unit->BlockFromX, unit->BlockFromY, &x, &y) )
         {
           unit->TargetX = (unsigned int)GetRandomValue("C:\\MsDev\\Projects\\July2000\\code\\unit.cpp", 6051)
                         % gGameMap.width;
