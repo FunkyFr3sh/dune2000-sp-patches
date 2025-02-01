@@ -87,6 +87,7 @@ OBJS            ?= callsites.o \
         src/mods/sample-manager.o \
         src/mods/sound-extend-num-handles.o \
         src/mods/do-power.o \
+        src/mods/blit-objects.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \
