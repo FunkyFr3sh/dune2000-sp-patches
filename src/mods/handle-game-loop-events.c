@@ -1372,7 +1372,10 @@ LABEL_544:
         GenerateStarportPickOrder(gSideId, side->__StarportIcons[starport_icon_index]);
       }
     }
-    else if ( _MouseClickCoords.x >= _SidebarIconWidth + _SidebarStrip1XPos )
+    // New logic start
+    // Fix mouse clicking to the left of unit icon
+    else if ( _MouseClickCoords.x > _SidebarStrip2XPos )
+    // New logic end
     {
       sidebar_icon_mouse_pos = (_MouseClickCoords.y - _SidebarStrip1YPos) / (unsigned int)_SideBarIconHeight2;
       if ( sidebar_icon_mouse_pos >= _SideBarIconCount )
@@ -1432,22 +1435,28 @@ LABEL_544:
         }
       }
     }
-    else if ( side->__BuildingBuildQueue.__type < 0 || (unsigned int)side->__BuildingBuildQueue.__build_progress < 0x5A00u )
+    // New logic start
+    // Fix mouse clicking to the left of unit icon
+    else if ( _MouseClickCoords.x < _SidebarStrip1XPos + _SidebarIconWidth )
+    // New logic end
     {
-      sidebar_icon_mouse_pos = (_MouseClickCoords.y - _SidebarStrip1YPos) / (unsigned int)_SideBarIconHeight2;
-      if ( sidebar_icon_mouse_pos >= _SideBarIconCount )
+      if ( side->__BuildingBuildQueue.__type < 0 || (unsigned int)side->__BuildingBuildQueue.__build_progress < 0x5A00u )
       {
-        DebugFatal("HandleGameLoopEvents", "Miscalculation in UI");
+        sidebar_icon_mouse_pos = (_MouseClickCoords.y - _SidebarStrip1YPos) / (unsigned int)_SideBarIconHeight2;
+        if ( sidebar_icon_mouse_pos >= _SideBarIconCount )
+        {
+          DebugFatal("HandleGameLoopEvents", "Miscalculation in UI");
+        }
+        building_icon_index = _TacticalData.__Strip1ScrollPos1 + sidebar_icon_mouse_pos;
+        if ( side->__BuildingIcons[building_icon_index] >= 0 )
+        {
+          GenerateBuildBuildingPickOrder(gSideId, side->__BuildingIcons[building_icon_index]);
+        }
       }
-      building_icon_index = _TacticalData.__Strip1ScrollPos1 + sidebar_icon_mouse_pos;
-      if ( side->__BuildingIcons[building_icon_index] >= 0 )
+      else if ( !side->__BuildingBuildQueue.c_field_11_cancel )
       {
-        GenerateBuildBuildingPickOrder(gSideId, side->__BuildingIcons[building_icon_index]);
+        _TacticalData.__SidebarButtonMode = 1;
       }
-    }
-    else if ( !side->__BuildingBuildQueue.c_field_11_cancel )
-    {
-      _TacticalData.__SidebarButtonMode = 1;
     }
     goto LABEL_649;
   }

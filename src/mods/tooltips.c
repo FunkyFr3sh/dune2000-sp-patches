@@ -345,7 +345,7 @@ void Mod__HandleTooltips()
   }
   else
   {
-    sidebar_icons_column = (_gMousePos.x - _SidebarStrip1XPos) / (unsigned int)_SidebarIconWidth;
+    sidebar_icons_column = (_gMousePos.x > SideBarPanelLeftUIPosX + _SidebarIconWidth)?1:0;
     show_at_x = sidebar_icons_column * _SidebarIconWidth + _SidebarStrip1XPos + ((unsigned int)_SidebarIconWidth >> 1);
     sidebar_icons_row = (_gMousePos.y - _SidebarStrip1YPos) / (unsigned int)_SideBarIconHeight2;
     show_at_y = sidebar_icons_row * _SideBarIconHeight1 + _SidebarStrip1YPos + ((unsigned int)_SideBarIconHeight1 >> 1);
