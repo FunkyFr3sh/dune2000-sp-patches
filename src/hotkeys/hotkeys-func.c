@@ -64,7 +64,17 @@ void HandleKeyEvent(int key, bool keyIsDown)
       else
       {
         if (ExecuteEventHook(HOOK_KEYBOARD_MOUSE_UP, 2, 0, key, 0, 0, 0))
+        {
+          if (key == VK_LBUTTON)
+          {
+            _MouseLeftState = 0;
+            _TacticalData.__DraggingBandbox = 0;
+          }
+          if (key == VK_RBUTTON)
+            _MouseRightState = 0;
+          KeyIsDown2[key] = 0;
           return;
+        }
       }
     }
 
