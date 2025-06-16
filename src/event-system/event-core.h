@@ -469,5 +469,5 @@ void ExecuteEvent(int event_index);
 void ExecuteEventAction(EventContext *e);
 int ExecuteEventHook(int hook_type, int num_vars, int var0, int var1, int var2, int var3, int var4);
 int GetVariableValueOrConst(int flags, int flag_index, int var_index_or_const);
-void SetVariableValue(int var_index, int value);
-int GetVariableValue(int var_index);
+void SetVariableValue(int event_index, int var_index, int value);
+int GetVariableValue(int event_index, int var_index);

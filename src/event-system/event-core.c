@@ -447,12 +447,12 @@ void ExecuteEvent(int event_index)
   {
     if (et >= ET_CHANGE_TILE && et <= ET_SHOW_TILE_DATA)
     {
-      e.coord_x[0] = GetVariableValue(event->filter_skip);
-      e.coord_y[0] = GetVariableValue(event->filter_skip + 1);
+      e.coord_x[0] = GetVariableValue(event_index, event->filter_skip);
+      e.coord_y[0] = GetVariableValue(event_index, event->filter_skip + 1);
     }
     else
     {
-      e.object_index = GetVariableValue(event->filter_skip);
+      e.object_index = GetVariableValue(event_index, event->filter_skip);
       // Clear and backup unit selection
       if (et == ET_SELECT_UNIT)
         for (Unit *unit = GetSide(e.args[1])->__FirstUnitPtr; unit; unit = unit->Next)
@@ -484,7 +484,7 @@ void ExecuteEvent(int event_index)
         || et == ET_ORDER_BUILDING_ATTACK_UNIT)
       limit = 1;
     if (et == ET_GET_UNIT_COUNT)
-      SetVariableValue(e.args[0], 0);
+      SetVariableValue(event_index, e.args[0], 0);
     int affected = 0;
     int arg_side_id = e.args[1];
     for (int side_id = 0; side_id < MAX_SIDES; side_id++)
@@ -543,7 +543,7 @@ void ExecuteEvent(int event_index)
         || et == ET_ORDER_BUILDING_ATTACK_BUILDING)
       limit = 1;
     if (et == ET_GET_BUILDING_COUNT)
-      SetVariableValue(e.args[0], 0);
+      SetVariableValue(event_index, e.args[0], 0);
     int affected = 0;
     int arg_side_id = e.args[1];
     for (int side_id = 0; side_id < MAX_SIDES; side_id++)
@@ -589,7 +589,7 @@ void ExecuteEvent(int event_index)
   if (et == ET_SET_BULLET_PROPERTY || et == ET_GET_BULLET_COUNT || et == ET_LOOP_BULLETS)
   {
     if (et == ET_GET_BULLET_COUNT)
-      SetVariableValue(e.args[0], 0);
+      SetVariableValue(event_index, e.args[0], 0);
     int affected = 0;
     int arg_side_id = e.args[1];
     for (int side_id = 0; side_id < MAX_SIDES; side_id++)
@@ -628,7 +628,7 @@ void ExecuteEvent(int event_index)
   if (et == ET_SET_EXPLOSION_PROPERTY || et == ET_GET_EXPLOSION_COUNT || et == ET_LOOP_EXPLOSIONS)
   {
     if (et == ET_GET_EXPLOSION_COUNT)
-      SetVariableValue(e.args[0], 0);
+      SetVariableValue(event_index, e.args[0], 0);
     int affected = 0;
     int arg_side_id = e.args[1];
     for (int side_id = 0; side_id < MAX_SIDES; side_id++)
@@ -669,7 +669,7 @@ void ExecuteEvent(int event_index)
       || et == ET_LOOP_CRATES)
   {
     if (et == ET_GET_CRATE_COUNT)
-      SetVariableValue(e.args[0], 0);
+      SetVariableValue(event_index, e.args[0], 0);
     int affected = 0;
     // Process all crates
     for (int i = 0; i < MAX_CRATES; i++)
@@ -703,7 +703,7 @@ void ExecuteEvent(int event_index)
       || et == ET_LOOP_TILES)
   {
     if (et == ET_GET_TILE_COUNT || et == ET_GET_SPICE_COUNT || et == ET_GET_DAMAGE_COUNT)
-      SetVariableValue(e.args[0], 0);
+      SetVariableValue(event_index, e.args[0], 0);
     int affected = 0;
     // Position optimization
     int min_x;
@@ -741,7 +741,7 @@ void ExecuteEvent(int event_index)
   if (et == ET_GET_SIDE_COUNT || et == ET_LOOP_SIDES)
   {
     if (et == ET_GET_SIDE_COUNT)
-      SetVariableValue(e.args[0], 0);
+      SetVariableValue(event_index, e.args[0], 0);
     int affected = 0;
     // Process all sides
     for (int i = 0; i < MAX_SIDES; i++)
@@ -809,7 +809,7 @@ void ExecuteEventAction(EventContext *e)
   case ET_REVEAL:                         EvAct_RevealMap                     (ID, C0, A1);                                 break;
   case ET_SETTIMER:                       VALUEOPERATION(_gTimerValue);                                                     break;
   case ET_HIDETIMER:                      _gTimerValue = -1;                                                                break;
-  case ET_SHOWMESSAGE:                    EvAct_ShowMessage                   (C0, A0, A1, A2, A3, A4, A5, (ShowMessageEventData *)&e->data[1]); break;
+  case ET_SHOWMESSAGE:                    EvAct_ShowMessage                   (ID, C0, A0, A1, A2, A3, A4, A5, (ShowMessageEventData *)&e->data[1]); break;
   case ET_UNIT_SPAWN:                     EvAct_UnitSpawn                     (ID, C0, A0, A1, A3, A5, e->data);            break;
   case ET_SET_FLAG:                       _gConditionArray[A0].val3 = A5;                                                   break;
   case ET_UN_BLOCK_EVENT:                 EvAct_UnBlockEvent                  (ID, A4, A5);                                 break;
@@ -914,24 +914,24 @@ void ExecuteEventAction(EventContext *e)
   case ET_ADD_RADAR_MARKER:               EvAct_AddRadarMarker                (ID, C0, A0, A1, A3, A4, A5, A6);             break;
   // Variable operations
   case ET_SET_VARIABLE:                   EvAct_SetVariable                   (ID, A1, A2, A3, A4, A5);                     break;
-  case ET_GET_VARIABLE:                   EvAct_GetVariable                   (A2, A3, A4);                                 break;
+  case ET_GET_VARIABLE:                   EvAct_GetVariable                   (ID, A2, A3, A4);                             break;
   case ET_SET_FLOAT_VARIABLE:             EvAct_SetFloatVariable              (ID, A1, A2, A3, A4, A5);                     break;
-  case ET_CONVERT_VARIABLE:               EvAct_ConvertVariable               (A2, A3, A4);                                 break;
-  case ET_DEBUG_VARIABLES:                EvAct_DebugVariables                (A2, A3, A4);                                 break;
-  case ET_GET_RANDOM_VALUE:               EvAct_GetRandomValue                (A2, A5, A6);                                 break;
-  case ET_GET_RANDOM_COORDS:              EvAct_GetRandomCoords               (C0, C1, A2);                                 break;
+  case ET_CONVERT_VARIABLE:               EvAct_ConvertVariable               (ID, A2, A3, A4);                             break;
+  case ET_DEBUG_VARIABLES:                EvAct_DebugVariables                (ID, A2, A3, A4);                             break;
+  case ET_GET_RANDOM_VALUE:               EvAct_GetRandomValue                (ID, A2, A5, A6);                             break;
+  case ET_GET_RANDOM_COORDS:              EvAct_GetRandomCoords               (ID, C0, C1, A2);                             break;
   case ET_GET_VALUE_FROM_LIST:            EvAct_GetValueFromList              (ID, A1, A2, A3, A4, (uint8_t *)e->data);     break;
   case ET_GET_COORDS_FROM_LIST:           EvAct_GetCoordsFromList             (ID, A1, A2, A3, A4, (uint8_t *)e->data);     break;
   case ET_GET_AREA_FROM_LIST:             EvAct_GetAreaFromList               (ID, A1, A2, A3, A4, (uint8_t *)e->data);     break;
-  case ET_GET_UNIT_COUNT:                 EvAct_GetCount                      (A1);                                         break;
-  case ET_GET_BUILDING_COUNT:             EvAct_GetCount                      (A1);                                         break;
-  case ET_GET_BULLET_COUNT:               EvAct_GetCount                      (A1);                                         break;
-  case ET_GET_EXPLOSION_COUNT:            EvAct_GetCount                      (A1);                                         break;
-  case ET_GET_CRATE_COUNT:                EvAct_GetCount                      (A1);                                         break;
-  case ET_GET_TILE_COUNT:                 EvAct_GetCount                      (A1);                                         break;
-  case ET_GET_SIDE_COUNT:                 EvAct_GetCount                      (A1);                                         break;
-  case ET_GET_SPICE_COUNT:                EvAct_GetSpiceCount                 (A1, C0);                                     break;
-  case ET_GET_DAMAGE_COUNT:               EvAct_GetDamageCount                (A1, C0);                                     break;
+  case ET_GET_UNIT_COUNT:                 EvAct_GetCount                      (ID, A1);                                     break;
+  case ET_GET_BUILDING_COUNT:             EvAct_GetCount                      (ID, A1);                                     break;
+  case ET_GET_BULLET_COUNT:               EvAct_GetCount                      (ID, A1);                                     break;
+  case ET_GET_EXPLOSION_COUNT:            EvAct_GetCount                      (ID, A1);                                     break;
+  case ET_GET_CRATE_COUNT:                EvAct_GetCount                      (ID, A1);                                     break;
+  case ET_GET_TILE_COUNT:                 EvAct_GetCount                      (ID, A1);                                     break;
+  case ET_GET_SIDE_COUNT:                 EvAct_GetCount                      (ID, A1);                                     break;
+  case ET_GET_SPICE_COUNT:                EvAct_GetSpiceCount                 (ID, A1, C0);                                 break;
+  case ET_GET_DAMAGE_COUNT:               EvAct_GetDamageCount                (ID, A1, C0);                                 break;
   case ET_GET_UNIT_PROPERTY:              EvAct_GetObjectProperty             (ID, A0, A1, A2, A3, A4, OBJECT_UNIT);        break;
   case ET_GET_BUILDING_PROPERTY:          EvAct_GetObjectProperty             (ID, A0, A1, A2, A3, A4, OBJECT_BUILDING);    break;
   case ET_GET_BULLET_PROPERTY:            EvAct_GetObjectProperty             (ID, A0, A1, A2, A3, A4, OBJECT_BULLET);      break;
@@ -947,13 +947,13 @@ void ExecuteEventAction(EventContext *e)
   case ET_GET_EXPLOSION_TEMPLATE_PROPERTY:EvAct_GetExplosionTemplateProperty  (ID, A1, A2, A3, A4);                         break;
   case ET_GET_ARMOUR_VALUE:               EvAct_GetArmourValue                (ID, A1, A2, A3, A4, A5);                     break;
   case ET_GET_SPEED_VALUE:                EvAct_GetSpeedValue                 (ID, A1, A2, A3);                             break;
-  case ET_GET_GROUP_ID_VALUE:             EvAct_GetGroupIDValue               (A1, A2);                                     break;
+  case ET_GET_GROUP_ID_VALUE:             EvAct_GetGroupIDValue               (ID, A1, A2);                                 break;
   case ET_GET_UNIT_TYPE:                  EvAct_GetUnitType                   (ID, A0, A1, A3, A4, (ObjectFilterStruct *)&e->data[1]);break;
   case ET_GET_BUILDING_TYPE:              EvAct_GetBuildingType               (ID, A0, A1, A3, A4, (ObjectFilterStruct *)&e->data[1]);break;
-  case ET_GET_GAME_TICKS:                 EvAct_GetGameTicks                  (A4);                                         break;
-  case ET_GET_MY_SIDE_ID:                 EvAct_GetMySideId                   (A4);                                         break;
-  case ET_GET_DIFFICULTY:                 EvAct_GetDifficulty                 (A4);                                         break;
-  case ET_GET_RULE:                       EvAct_GetRule                       (A2, A4);                                     break;
+  case ET_GET_GAME_TICKS:                 EvAct_GetGameTicks                  (ID, A4);                                     break;
+  case ET_GET_MY_SIDE_ID:                 EvAct_GetMySideId                   (ID, A4);                                     break;
+  case ET_GET_DIFFICULTY:                 EvAct_GetDifficulty                 (ID, A4);                                     break;
+  case ET_GET_RULE:                       EvAct_GetRule                       (ID, A2, A4);                                 break;
   case ET_GET_DIPLOMACY:                  EvAct_GetDiplomacy                  (ID, A0, A2, A4);                             break;
   case ET_GET_TECH:                       EvAct_GetTech                       (ID, A0, A4);                                 break;
   case ET_GET_HOUSE_ID:                   EvAct_GetHouseId                    (ID, A0, A4);                                 break;
@@ -973,18 +973,18 @@ void ExecuteEventAction(EventContext *e)
   case ET_GET_BUILDINGS_LOST:             EvAct_GetBuildingsLost              (ID, A0, A4);                                 break;
   case ET_GET_UNITS_KILLED:               EvAct_GetUnitsKilled                (ID, A0, A1, A2, A3, A4);                     break;
   case ET_GET_BUILDINGS_KILLED:           EvAct_GetBuildingsKilled            (ID, A0, A1, A2, A3, A4);                     break;
-  case ET_GET_MOUSE_POSITION:             EvAct_GetMousePosition              (A2, A3);                                     break;
-  case ET_GET_KEYBOARD_MOUSE_STATE:       EvAct_GetKeyboardMouseState         (A2, A3);                                     break;
-  case ET_GET_UNIT_UNDER_CURSOR:          EvAct_GetUnitUnderCursor            (A2, A3, A4, A5);                             break;
-  case ET_GET_BUILDING_UNDER_CURSOR:      EvAct_GetBuildingUnderCursor        (A2, A3, A4);                                 break;
-  case ET_GET_SIDEBAR_BUTTON_UNDER_CURSOR:EvAct_GetSidebarButtonUnderCursor   (A2, A3, A4);                                 break;
-  case ET_GET_GAME_INTERFACE_DATA:        EvAct_GetGameInterfaceData          (A1, A2, A3);                                 break;
+  case ET_GET_MOUSE_POSITION:             EvAct_GetMousePosition              (ID, A2, A3);                                 break;
+  case ET_GET_KEYBOARD_MOUSE_STATE:       EvAct_GetKeyboardMouseState         (ID, A2, A3);                                 break;
+  case ET_GET_UNIT_UNDER_CURSOR:          EvAct_GetUnitUnderCursor            (ID, A2, A3, A4, A5);                         break;
+  case ET_GET_BUILDING_UNDER_CURSOR:      EvAct_GetBuildingUnderCursor        (ID, A2, A3, A4);                             break;
+  case ET_GET_SIDEBAR_BUTTON_UNDER_CURSOR:EvAct_GetSidebarButtonUnderCursor   (ID, A2, A3, A4);                             break;
+  case ET_GET_GAME_INTERFACE_DATA:        EvAct_GetGameInterfaceData          (ID, A1, A2, A3);                             break;
   case ET_GET_OBJECT_POSITION:            EvAct_GetObjectPosition             (ID, A0, A2, A3, A4);                         break;
-  case ET_GET_DIRECTION:                  EvAct_GetDirection                  (A2, A3, A4);                                 break;
-  case ET_GET_POSITION_ON_CIRCLE:         EvAct_GetPositionOnCircle           (A1, A4, A5, A6);                             break;
+  case ET_GET_DIRECTION:                  EvAct_GetDirection                  (ID, A2, A3, A4);                             break;
+  case ET_GET_POSITION_ON_CIRCLE:         EvAct_GetPositionOnCircle           (ID, A1, A4, A5, A6);                         break;
   case ET_GET_NEAREST_BUILDING_TILE:      EvAct_GetNearestBuildingTile        (ID, A0, A1, A2, A3, A4);                     break;
-  case ET_GET_DISTANCE:                   EvAct_GetDistance                   (A1, A2, A3, A4);                             break;
-  case ET_CHECK_DISTANCE:                 EvAct_CheckDistance                 (A1, A2, A5, A6);                             break;
+  case ET_GET_DISTANCE:                   EvAct_GetDistance                   (ID, A1, A2, A3, A4);                         break;
+  case ET_CHECK_DISTANCE:                 EvAct_CheckDistance                 (ID, A1, A2, A5, A6);                         break;
   // Blocks
   case ET_CALLABLE_BLOCK_START:                                                                                             break;
   case ET_HOOK_BLOCK_START:                                                                                                 break;
@@ -1022,18 +1022,18 @@ int ExecuteEventHook(int hook_type, int num_vars, int var0, int var1, int var2, 
     return var0;
   // Set variables
   if (num_vars >= 1)
-    SetVariableValue(0, var0);
+    SetVariableValue(-1, 0, var0);
   if (num_vars >= 2)
-    SetVariableValue(1, var1);
+    SetVariableValue(-1, 1, var1);
   if (num_vars >= 3)
-    SetVariableValue(2, var2);
+    SetVariableValue(-1, 2, var2);
   if (num_vars >= 4)
-    SetVariableValue(3, var3);
+    SetVariableValue(-1, 3, var3);
   if (num_vars >= 5)
-    SetVariableValue(4, var4);
+    SetVariableValue(-1, 4, var4);
   // Execute hook
   ExecuteEventBlock(event_hooks[hook_type], EBT_BLOCK);
-  return GetVariableValue(0);
+  return GetVariableValue(-1, 0);
 }
 
 int GetVariableValueOrConst(int flags, int flag_index, int var_index_or_const)
@@ -1044,10 +1044,10 @@ int GetVariableValueOrConst(int flags, int flag_index, int var_index_or_const)
     return var_index_or_const;
 }
 
-void SetVariableValue(int var_index, int value)
+void SetVariableValue(int event_index, int var_index, int value)
 {
   if (var_index < 0 || var_index >= MAX_EVENT_VARIABLES)
-    DebugFatal(EVENT_ERROR, "Trying to write to variable %d", var_index);
+    DebugFatal(EVENT_ERROR, "Trying to write to variable %d (event %d)", var_index, event_index);
   EventVariable *v = &gEventVariableArray[var_index];
   if (v->ticks != gGameTicks)
   {
@@ -1057,9 +1057,9 @@ void SetVariableValue(int var_index, int value)
   v->value = value;
 }
 
-int GetVariableValue(int var_index)
+int GetVariableValue(int event_index, int var_index)
 {
   if (var_index < 0 || var_index >= MAX_EVENT_VARIABLES)
-    DebugFatal(EVENT_ERROR, "Trying to read from variable %d", var_index);
+    DebugFatal(EVENT_ERROR, "Trying to read from variable %d (event %d)", var_index, event_index);
   return gEventVariableArray[var_index].value;
 }

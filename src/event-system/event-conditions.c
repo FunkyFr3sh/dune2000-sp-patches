@@ -441,7 +441,7 @@ bool Cond_BuildingsKilled(int side_id, int building_type, int enemy, bool total,
 
 bool Cond_VariableValue(int variable, bool equal, int value)
 {
-  return CompareValue(GetVariableValue(variable), value, !equal);
+  return CompareValue(GetVariableValue(-1, variable), value, !equal);
 }
 
 bool Cond_VariableChanged(int variable)

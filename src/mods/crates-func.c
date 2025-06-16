@@ -354,9 +354,9 @@ bool DoPickupCrate(int crate_index, Unit *unit, unsigned char side_id)
       // New crate type: execute event
       if (_gEventArray[crate->ext_data_field].event_type == ET_CALLABLE_BLOCK_START)
       {
-        SetVariableValue(0, crate_index);
-        SetVariableValue(1, side_id);
-        SetVariableValue(2, unit->MyIndex);
+        SetVariableValue(crate->ext_data_field, 0, crate_index);
+        SetVariableValue(crate->ext_data_field, 1, side_id);
+        SetVariableValue(crate->ext_data_field, 2, unit->MyIndex);
         ExecuteEventBlock(crate->ext_data_field, EBT_BLOCK);
       }
       else
