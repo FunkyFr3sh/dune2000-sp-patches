@@ -102,7 +102,7 @@ int GetDataValue(char *data_ptr, eDataType data_type, int offset)
   {
     case DATATYPE_BYTE:
     {
-      int8_t *p = (int8_t *)&data_ptr[offset];
+      uint8_t *p = (uint8_t *)&data_ptr[offset];
       return *p;
     }
     case DATATYPE_WORD:
