@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "macros/patch.h"
 #include "dune2000.h"
+#include "extended-tileset.h"
 
 // Custom implementation of function GetOwnershipStatusOfCell
 DETOUR(0x00428C30, 0x00428C91, _Mod__GetOwnershipStatusOfCell);

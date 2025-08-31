@@ -209,6 +209,8 @@ setcglob 0x004F3D24, _DrawOffered1
 setcglob 0x004F3D28, _DrawOffered2
 setcglob 0x004F3D3C, gTournamentGame
 setcglob 0x004F4118, _gAIArray
+setcglob 0x00502ED8, _crater_draw_offsets_y
+setcglob 0x00503F88, _crater_draw_offsets_x
 setcglob 0x00504030, _gMessageData
 setcglob 0x00512D58, _selectedmaybe_dw_BlitVehicles_512D58
 setcglob 0x00513488, ResourcePath
@@ -235,7 +237,7 @@ setcglob 0x005165BC, _GreyColor8
 setcglob 0x005165C0, _radarcolor16_driveon
 setcglob 0x00516690, _GreenColor16
 setcglob 0x005166A0, _BloxFileName
-setcglob 0x00516770, _TileTooltips
+;setcglob 0x00516770, _TileTooltips // Replaced by mod
 setcglob 0x005173F0, _radarcolor16_sand
 setcglob 0x005173F4, gGameTicks
 setcglob 0x005173F8, _NeutralUnitText
@@ -297,11 +299,13 @@ setcglob 0x006D60D8, _templates_GroupIDs
 setcglob 0x006D6130, _SideBarPowerImages
 setcglob 0x006D7BA0, _RadarMap1
 setcglob 0x006D7BA8, _SpawnLocations
+setcglob 0x006D7BE8, _images_crater
 setcglob 0x006D7DE8, _tiledata
 setcglob 0x006D8D88, _images_blobs
 setcglob 0x006D8D98, _RadarHouseImages
 setcglob 0x006D9350, _palettes_6D9350
 setcglob 0x006D9B50, _templates_UnitGroupCount
+;setcglob 0x006D9B58, _images_tiles ; Replaced by mod
 setcglob 0x006DA7D8, _templates_UnitGroupNameList
 setcglob 0x006DB390, _templates_BulletNameList
 setcglob 0x006DC018, _images_unstealts
@@ -340,7 +344,7 @@ setcglob 0x00786D90, _ArmourNames
 setcglob 0x00786FE8, _image_placement_marker_buildable
 setcglob 0x00786FEC, _SpawnLocationCount
 setcglob 0x00786FF0, _radarcolor8_sidecolor
-setcglob 0x00786FF8, _TileBitflags
+;setcglob 0x00786FF8, _TileBitflags // Replaced by mod
 setcglob 0x00787E08, _templates_BuildingGroupNameList
 setcglob 0x00789198, _images_healthbars
 setcglob 0x007891B0, _templates_UnitNameList
@@ -363,6 +367,7 @@ setcglob 0x0079553C, gBuildingTypeNum
 setcglob 0x00795540, gBulletTypeNum
 setcglob 0x00795544, gExplosionTypeNum
 setcglob 0x00795560, _CreditsTextYPos
+setcglob 0x00795570, _tileset_resource_buffer
 setcglob 0x00795600, _musicboolbyte_795600
 setcglob 0x00795608, _gSampleMgr
 setcglob 0x0079560C, _samplemanunused
@@ -507,6 +512,7 @@ setcglob 0x0042ADA0, SetLensImage
 setcglob 0x0042AF00, BlitInfantryBehindObjects
 setcglob 0x0042B590, DebugFatal ; Game_ShowErrorAndExit
 setcglob 0x00492EB0, AbortGame
+setcglob 0x0042B730, ReportFileError
 setcglob 0x0042BA50, _OpenFile
 setcglob 0x0042BB40, CloseFile
 setcglob 0x0042BB60, _ReadFile
@@ -661,6 +667,7 @@ setcglob 0x0045DEE0, GetFreeAdjacentTile
 setcglob 0x0045DFE0, GetFacing
 setcglob 0x0045E020, GetFacing_and_252
 ; Setup
+setcglob 0x00460550, SetTImageToResource
 setcglob 0x00460C80, Setup__LoadUIBBFile
 setcglob 0x00460EC0, Setup__LoadUI_LanguageFile
 setcglob 0x00462010, SetPixelOnRadar8
@@ -869,6 +876,8 @@ setcglob 0x004A5E80, GetRefineryIndex
 setcglob 0x004A5F80, GetNearestBuildingWithBehavior
 setcglob 0x004A60E0, GetNearestFreeTileForUnit
 setcglob 0x004B1890, cinit
+setcglob 0x004BCD80, _filelength
+setcglob 0x004BCE20, __fileno
 
 ; winapi
 setcglob 0x008CF5EC, _imp__LoadLibraryA

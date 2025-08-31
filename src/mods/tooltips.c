@@ -3,6 +3,7 @@
 #include "dune2000.h"
 #include "tooltips.h"
 #include "../event-system/event-core.h"
+#include "extended-tileset.h"
 
 TooltipExtraData gTooltipExtraData[MAX_TOOLTIP_LINES];
 int tooltip_used_lines;
@@ -196,7 +197,7 @@ void Mod__HandleTooltips()
             else
             {
               _Tooltipdata.__Color = _tooltipcolor_gray;
-              if ( gGameMap.map[_CellNumbersWidthSpan[tile_y] + tile_x].__tile_index >= 800u )
+              if ( gGameMap.map[_CellNumbersWidthSpan[tile_y] + tile_x].__tile_index >= num_tileset_tiles )
               {
                 DebugFatal("MAIN.CPP", "TT: INVALID TILE");
               }

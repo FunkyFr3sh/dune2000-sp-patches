@@ -9,6 +9,7 @@
 #include "../mods/crates-func.h"
 #include "../mods/messages-func.h"
 #include "../mods/tooltips.h"
+#include "../mods/extended-tileset.h"
 #include "../mods/radar.h"
 #include "rules.h"
 

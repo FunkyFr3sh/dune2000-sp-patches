@@ -1,6 +1,7 @@
 #include "macros/patch.h"
 #include "dune2000.h"
 #include "rules.h"
+#include "extended-tileset.h"
 
 bool CanUnitShoot(Unit *unit);
 

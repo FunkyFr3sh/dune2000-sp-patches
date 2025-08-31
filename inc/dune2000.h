@@ -130,6 +130,12 @@ typedef struct HighScoreStruct
   int __score;
 } HighScoreStruct;
 
+typedef struct ResourceInfo
+{
+  int address;
+  int filestart;
+} ResourceInfo;
+
 // ### Constants ###
 
 enum eSideType
@@ -400,6 +406,8 @@ extern char                 _DrawOffered1;
 extern char                 _DrawOffered2;
 extern char                 gTournamentGame;
 extern CAI_                 _gAIArray[];
+extern int                  _crater_draw_offsets_y[16];
+extern int                  _crater_draw_offsets_x[16];
 // extern MessageData          _gMessageData; // Replaced by mod
 extern DisplayListStruct *  _selectedmaybe_dw_BlitVehicles_512D58;
 extern char                 ResourcePath[];
@@ -426,7 +434,7 @@ extern char                 _GreyColor8;
 extern short                _radarcolor16_driveon;
 extern short                _GreenColor16;
 extern char                 _BloxFileName[200];
-extern int                  _TileTooltips[MAX_TILES];
+// extern int                  _TileTooltips[MAX_TILES]; // Replaced by mod
 extern short                _radarcolor16_sand;
 extern unsigned int         gGameTicks;
 extern unsigned int         _NeutralUnitText;
@@ -488,11 +496,13 @@ extern GroupIDsStruct       _templates_GroupIDs;
 extern TImage *             _SideBarPowerImages[4];
 extern TImage *             _RadarMap1;
 extern POINT                _SpawnLocations[MAX_SIDES];
+extern TImage *             _images_crater[64][2];
 extern int                  _tiledata[1000];
 extern TImage *             _images_blobs[2];
 extern TImage *             _RadarHouseImages[3];
 extern char                 _palettes_6D9350[2048];
 extern char                 _templates_UnitGroupCount;
+// extern TImage *             _images_tiles[MAX_TILES]; // Replaced by mod
 extern char                 _templates_UnitGroupNameList[MAX_UNIT_TYPES][50];
 extern char                 _templates_BulletNameList[MAX_WEAPON_TYPES][50];
 extern TImage *             _images_unstealts[12];
@@ -531,7 +541,7 @@ extern char                 _ArmourNames[MAX_ARMOUR_TYPES][50];
 extern TImage *             _image_placement_marker_buildable;
 extern char                 _SpawnLocationCount;
 extern char                 _radarcolor8_sidecolor[MAX_SIDES];
-extern unsigned int         _TileBitflags[MAX_TILES];
+// extern unsigned int         _TileBitflags[MAX_TILES]; // Replaced by mod
 extern char                 _templates_BuildingGroupNameList[MAX_BUILDING_TYPES][50];
 extern TImage *             _images_healthbars[6];
 extern char                 _templates_UnitNameList[MAX_UNIT_TYPES][450];
@@ -554,6 +564,7 @@ extern unsigned char        gBuildingTypeNum;
 extern unsigned char        gBulletTypeNum;
 extern unsigned char        gExplosionTypeNum;
 extern int                  _CreditsTextYPos;
+extern void *               _tileset_resource_buffer;
 extern char                 _musicboolbyte_795600;
 extern ISampleManager *     _gSampleMgr;
 extern int                  _samplemanunused;
@@ -671,6 +682,7 @@ void            SetLensImage(int x, int y, TImage *lpTIFrom, TImage *lpTITo);
 void            BlitInfantryBehindObjects(TImage *img);
 void            DebugFatal(char *caption, char *format, ...);
 void            AbortGame();
+void            ReportFileError(char *message, bool no_fail_message);
 FILE *          _OpenFile(char * filename, char *mode, char *path);
 void            CloseFile(FILE *Stream);
 size_t          _ReadFile(void *buffer, size_t size, size_t count, FILE *file);
@@ -825,6 +837,7 @@ char            GetFreeAdjacentTile(int x, int y, Unit *unit, int side_id, dwXYS
 char            GetFacing(int x1, int y1, int x2, int y2);
 char            GetFacing_and_252(int x1, int y1, int x2, int y2);
 // Setup
+TImage *        SetTImageToResource(ResourceInfo *resource);
 void            Setup__LoadUIBBFile();
 
 void            SetPixelOnRadar8(unsigned char x, unsigned char y, char color);
@@ -1033,4 +1046,5 @@ int16_t         GetRefineryIndex(eSideType side_id);
 Building *      GetNearestBuildingWithBehavior(unsigned char x, unsigned char y, eSideType side_id, BuildingBehaviorType behavior, _BYTE *exit_x1, _BYTE *exit_y1);
 bool            GetNearestFreeTileForUnit(unsigned char *x, unsigned char *y, unsigned char a3);
 void            cinit();
-
+int             _filelength(int FileHandle);
+int             __fileno(FILE *Stream);

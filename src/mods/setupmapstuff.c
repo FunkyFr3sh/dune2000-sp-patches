@@ -7,6 +7,7 @@
 #include "patch.h"
 #include "radar.h"
 #include "rules.h"
+#include "extended-tileset.h"
 
 #define SETUP_MAP_ERROR "Setup map error"
 

@@ -1,57 +1,30 @@
 #include "dune2000.h"
 #include "utils.h"
+#include "extended-tileset.h"
 #include "radar.h"
 #include "macros/patch.h"
 
-RadarColorRule radar_color_rules[32];
-int radar_color_rules_used;
-uint32_t extra_tileflags[MAX_TILES];
 RadarMarker gRadarMarkers[MAX_RADAR_MARKERS];
-
-// Extension wrapper for function LoadMapData
-CALL(0x00441D7B, _Ext__LoadMapData); // LoadGame
-CALL(0x004488B9, _Ext__LoadMapData); // GameLoop
-
-void Ext__LoadMapData(const CHAR *ArgList, char a2)
-{
-  LoadMapData(ArgList, a2);
-  if (!gRestartGame)
-  {
-    char path[256];
-    sprintf(path, "%s.rcl", _BloxFileName);
-    LoadRadarColorRulesFromFile(path);
-  }
-}
 
 void InitDefaultRadarColorRules()
 {
   radar_color_rules_used = 4;
-  radar_color_rules[0] = (RadarColorRule) {(TileFlags_400000_SPICE|TileFlags_200000_SPICE|TileFlags_100000_SPICE) * -1, 0,  0, _radarcolor8_spice, _radarcolor16_spice};
-  radar_color_rules[1] = (RadarColorRule) {TileFlags_10000_SANDY, 0,                                                        0, _radarcolor8_sand, _radarcolor16_sand};
-  radar_color_rules[2] = (RadarColorRule) {0, TileFlags_2000_DRIVE_ON,                                                      0, _radarcolor8_impassable, _radarcolor16_impassable};
-  radar_color_rules[3] = (RadarColorRule) {0, 0,                                                                            0, _radarcolor8_drive_on, _radarcolor16_driveon};
-}
-
-void LoadRadarColorRulesFromFile(char *filename)
-{
-  FILE *file = _OpenFile(filename, "rb", NULL);
-  if (!file)
-  {
-    InitDefaultRadarColorRules();
-    return;
-  }
-  _ReadFile(&radar_color_rules_used, 4, 1, file);
-  _ReadFile(radar_color_rules, sizeof(radar_color_rules), 1, file);
-  _ReadFile(extra_tileflags, sizeof(extra_tileflags), 1, file);
-  CloseFile(file);
-  for (int i = 0; i < radar_color_rules_used; i++)
-  {
-    uint32_t color = radar_color_rules[i].color;
-    if (gBitsPerPixel == 16)
-      radar_color_rules[i].color_16bit = GetColor16bit(_colormask1, color);
-    if (gBitsPerPixel == 8)
-      radar_color_rules[i].color_8bit = GetColor8bit(color >> 18 & 63, color >> 10 & 63, color >> 2 & 63, _PalettePtr, 0, 0, 1);
-  }
+  radar_color_rules[0].attr = (TileFlags_400000_SPICE|TileFlags_200000_SPICE|TileFlags_100000_SPICE) * -1;
+  radar_color_rules[0].not_attr = 0;
+  radar_color_rules[0].color_8bit = _radarcolor8_spice;
+  radar_color_rules[0].color_16bit = _radarcolor16_spice;
+  radar_color_rules[1].attr = TileFlags_10000_SANDY;
+  radar_color_rules[1].not_attr = 0;
+  radar_color_rules[1].color_8bit = _radarcolor8_sand;
+  radar_color_rules[1].color_16bit = _radarcolor16_sand;
+  radar_color_rules[2].attr = 0;
+  radar_color_rules[2].not_attr = TileFlags_2000_DRIVE_ON;
+  radar_color_rules[2].color_8bit = _radarcolor8_impassable;
+  radar_color_rules[2].color_16bit = _radarcolor16_impassable;
+  radar_color_rules[3].attr = 0;
+  radar_color_rules[3].not_attr = 0;
+  radar_color_rules[3].color_8bit = _radarcolor8_drive_on;
+  radar_color_rules[3].color_16bit = _radarcolor16_driveon;
 }
 
 int GetRadarColorRule(int xpos, int ypos)
