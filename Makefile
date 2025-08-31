@@ -32,7 +32,6 @@ OBJS            ?= callsites.o \
 	src/spawner/spectators-func.o \
 	src/spawner/stats.o \
 	src/spawner/stats-func.o \
-	src/spawner/starting-locations.o \
 	src/spawner/starting-locations-func.o \
 	src/spawner/nethack.o \
 	src/spawner/mission-events.o \

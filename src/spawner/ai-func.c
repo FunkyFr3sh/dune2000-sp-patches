@@ -6,7 +6,6 @@
 
 CLEAR(0x00450006+5, 0x90, 0x0045006A);
 CALL(0x00450006, _SetupAIPlayerCredits);
-CALL(0x00469DE4, _SetupAIPlayerSides);
 
 AIPlayer AIPlayers[MAX_SIDES];
 

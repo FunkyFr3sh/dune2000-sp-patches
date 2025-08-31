@@ -201,5 +201,8 @@ void StatsClear();
 void SetSingleProcessorAffinity();
 void InitHighRes();
 void InitImports();
+int SetupAIPlayerSides();
+int GetStartingLocation(int house);
+int GetFreeStartingLocation(int currentLocation);
 DWORD WINAPI fake_timeGetTime();
 DWORD WINAPI fake_GetTickCount();

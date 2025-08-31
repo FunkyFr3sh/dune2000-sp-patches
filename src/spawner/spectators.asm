@@ -88,35 +88,36 @@ hack 0x00425F20, 0x00425F2E ; ShowPlayerCreditsForSpectators
     jmp 0x00425F2E
 
 
-hack 0x00469ECD, 0x00469ED6 ; SkipSpawningStartingUnitsForSpectators
-    cmp byte[SpawnerActive], 1
-    jnz .out
-    cmp dword[gGameType], GAME_SKIRMISH
-    jz .out
-    pushad
-    
-.CheckCurrentPlayer:
-    xor eax, eax
-    mov al, byte[esp+0x24+(8*4)]
-    push eax
-    call IsSpectator
-    add esp, 4
-    cmp al, 1
-    jnz .IsNotSpectator
-    add byte[esp+0x24+(8*4)], 1 ;raise the house, skip spawning units and check the next house
-    jmp .CheckCurrentPlayer
-    
-.IsNotSpectator:
-    mov al, byte[esp+0x2F+(8*4)]
-    cmp al, byte[esp+0x24+(8*4)]
-    popad
-    jz 0x0046A271
-    
-.out:
-    test al, al
-    jne 0x00469EFC
-    push 0x1628
-    jmp 0x00469ED6
+; Superseded by Mod__setupmapstuff
+;hack 0x00469ECD, 0x00469ED6 ; SkipSpawningStartingUnitsForSpectators
+;    cmp byte[SpawnerActive], 1
+;    jnz .out
+;    cmp dword[gGameType], GAME_SKIRMISH
+;    jz .out
+;    pushad
+;
+;.CheckCurrentPlayer:
+;    xor eax, eax
+;    mov al, byte[esp+0x24+(8*4)]
+;    push eax
+;    call IsSpectator
+;    add esp, 4
+;    cmp al, 1
+;    jnz .IsNotSpectator
+;    add byte[esp+0x24+(8*4)], 1 ;raise the house, skip spawning units and check the next house
+;    jmp .CheckCurrentPlayer
+;
+;.IsNotSpectator:
+;    mov al, byte[esp+0x2F+(8*4)]
+;    cmp al, byte[esp+0x24+(8*4)]
+;    popad
+;    jz 0x0046A271
+;
+;.out:
+;    test al, al
+;    jne 0x00469EFC
+;    push 0x1628
+;    jmp 0x00469ED6
 
 
 hack 0x004494B8 ; draw live stats
@@ -130,22 +131,23 @@ hack 0x004494B8 ; draw live stats
     jmp 0x004494BD
     
 
-hack 0x00469BB1 ;do not pre place buildings/units for spectators
-    cmp byte[SpawnerActive], 1
-    jnz .out
-    cmp dword[gGameType], GAME_SKIRMISH
-    jz .out
-    pushad
-    push edx
-    call IsSpectator
-    add esp, 4
-    cmp al, 1
-    popad
-    jz 0x00469D1B
-    
-.out:
-    test eax, 0x80000000
-    jmp hackend
+; Superseded by Mod__setupmapstuff
+;hack 0x00469BB1 ;do not pre place buildings/units for spectators
+;    cmp byte[SpawnerActive], 1
+;    jnz .out
+;    cmp dword[gGameType], GAME_SKIRMISH
+;    jz .out
+;    pushad
+;    push edx
+;    call IsSpectator
+;    add esp, 4
+;    cmp al, 1
+;    popad
+;    jz 0x00469D1B
+;
+;.out:
+;    test eax, 0x80000000
+;    jmp hackend
 
     
 hack 0x0044FC53; set bool gLose to true on game start

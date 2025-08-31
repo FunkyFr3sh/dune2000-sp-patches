@@ -312,18 +312,19 @@ hack 0x0043C550, 0x0043C556 ; center background images
     jmp hackend
 
 
-hack 0x0042565A ; AlignMissionTimer
-    cmp byte[HighResPatchEnabled], 1
-    jnz .out
-    mov eax, dword[HighResAddedWidth]
-    add eax, 0x1A4
-    push eax
-    xor eax, eax
-    jmp 0x0042565F
-    
-.out:
-    push 0x1A4
-    jmp 0x0042565F
+; Superseded by Mod__BlitMessages
+;hack 0x0042565A ; AlignMissionTimer
+;    cmp byte[HighResPatchEnabled], 1
+;    jnz .out
+;    mov eax, dword[HighResAddedWidth]
+;    add eax, 0x1A4
+;    push eax
+;    xor eax, eax
+;    jmp 0x0042565F
+;
+;.out:
+;    push 0x1A4
+;    jmp 0x0042565F
 
 
 hack 0x0044916C, 0x00449172 ; SideBarStarportDrawingGlitchFix

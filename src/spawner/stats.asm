@@ -223,32 +223,33 @@ hack 0x0045CD36 ; ConnectionLost
 
 
 
-hack 0x00455938, 0x0045593E ; SaveUnitOwnedStats
-%define house esp+0x18
-%define unitId esp+0x10
-
-    cmp byte[SpawnerActive], 1
-    jnz .out
-    mov ecx, dword[house]
-    mov eax, dword[unitId]
-    cmp cl, 8
-    jge .out
-    cmp al, 30
-    jge .out
-    
-    pushad
-    and ecx, 0x000000FF
-    imul ecx, UnitTrackerSize
-    
-    and eax, 0x000000FF
-    imul eax, 4
-    
-    inc dword[PlayersUnitsOwned+eax+ecx]
-    popad
-    
-.out:
-    mov edx, dword[edi+0x24780]
-    jmp 0x0045593E
+; Superseded by Mod__ModelAddUnit
+;hack 0x00455938, 0x0045593E ; SaveUnitOwnedStats
+;%define house esp+0x18
+;%define unitId esp+0x10
+;
+;    cmp byte[SpawnerActive], 1
+;    jnz .out
+;    mov ecx, dword[house]
+;    mov eax, dword[unitId]
+;    cmp cl, 8
+;    jge .out
+;    cmp al, 30
+;    jge .out
+;
+;    pushad
+;    and ecx, 0x000000FF
+;    imul ecx, UnitTrackerSize
+;
+;    and eax, 0x000000FF
+;    imul eax, 4
+;
+;    inc dword[PlayersUnitsOwned+eax+ecx]
+;    popad
+;
+;.out:
+;    mov edx, dword[edi+0x24780]
+;    jmp 0x0045593E
 
 
 hack 0x004563E5, 0x004563EF ; SaveBuildingsOwnedStats

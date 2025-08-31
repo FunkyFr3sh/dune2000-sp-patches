@@ -68,8 +68,6 @@ cextern HandleKeyEvent
 cextern LoadRulesFromMap
 cextern SetDisableMaxWindowedMode
 cextern InitDxWnd
-cextern GetStartingLocation
-cextern GetFreeStartingLocation
 cextern SetupAIPlayerColors
 cextern IsSpectator
 cextern DrawLiveStats

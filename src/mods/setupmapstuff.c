@@ -225,6 +225,11 @@ void Mod__setupmapstuff()
     }
   }
 
+  // Skip spawning starting buildings and units for spectators
+  for (int i = 0; i < _SidesToProcess; i++)
+    if (SpawnerActive && gGameType != GAME_SKIRMISH && IsSpectator(i))
+      GetSide(i)->__ParticipatesInGame = 0;
+
   // First pass - back up tile and special value, set up tile flags and preplaced spice/concrete
   for (int ypos = 0; ypos < gGameMap.height; ypos++)
     for (int xpos = 0; xpos < gGameMap.width; xpos++)
@@ -355,16 +360,19 @@ void Mod__setupmapstuff()
             if (unit_type >= gUnitTypeNum)
               DebugFatal(SETUP_MAP_ERROR, "Invalid unit type %d at %d,%d (maximum is %d)", unit_type, xpos, ypos, gUnitTypeNum - 1);
             int unit_index = ModelAddUnit(side_id, unit_type, xpos, ypos, xpos, ypos, 0, 0);
-            Unit *unit = GetUnit(side_id, unit_index);
-            if (unit)
+            if (unit_index != -1)
             {
-              unit->__Facing = direction;
-              unit->__FacingTurret = direction;
-              unit->__FacingTurretTarget = direction;
-              if (special_value & 0x1000)
-                unit->Flags |= UFLAGS_10_STEALTH;
-              if (special_value & 0x2000)
-                unit->Tag = 1;
+              Unit *unit = GetUnit(side_id, unit_index);
+              if (unit)
+              {
+                unit->__Facing = direction;
+                unit->__FacingTurret = direction;
+                unit->__FacingTurretTarget = direction;
+                if (special_value & 0x1000)
+                  unit->Flags |= UFLAGS_10_STEALTH;
+                if (special_value & 0x2000)
+                  unit->Tag = 1;
+              }
             }
             break;
           }
@@ -387,18 +395,21 @@ void Mod__setupmapstuff()
             if (building_type >= gBuildingTypeNum)
               DebugFatal(SETUP_MAP_ERROR, "Invalid building type %d at %d,%d (maximum is %d)", building_type, xpos, ypos, gBuildingTypeNum - 1);
             int building_index = ModelAddBuilding(side_id, building_type, xpos, ypos, true, no_new_harv, false);
-            Building *bld = GetBuilding(side_id, building_index);
-            // Turret barrel direction
-            if (_templates_buildattribs[building_type].__Behavior == BuildingBehavior_TURRET)
+            if (building_index != -1)
             {
-              if (bld)
-                bld->__Facing = direction;
+              Building *bld = GetBuilding(side_id, building_index);
+              // Turret barrel direction
+              if (_templates_buildattribs[building_type].__Behavior == BuildingBehavior_TURRET)
+              {
+                if (bld)
+                  bld->__Facing = direction;
+              }
+              // Primary building
+              else if (primary)
+                SetBuildingAsPrimary(side_id, building_index);
+              if (tagged && bld)
+                bld->Tag = 1;
             }
-            // Primary building
-            else if (primary)
-              SetBuildingAsPrimary(side_id, building_index);
-            if (tagged && bld)
-              bld->Tag = 1;
             break;
           }
           // Default behavior: Tiledata entry
@@ -545,7 +556,10 @@ void Mod__setupmapstuff()
     v63 = v54;
     do
     {
-      _IRValues[v63] = GetRandomValue("C:\\MsDev\\Projects\\July2000\\code\\Setup.cpp", 5640) % 3u;
+      // New logic start
+      // Replace GetRandomValue with SetupAIPlayerSides
+      _IRValues[v63] = SetupAIPlayerSides() % 3u;
+      // New logic end
       GetSide(v62)->fHouseID = _IRValues[v63];
       v64 = v63;
       _gAIArray[v64].AISide = v61++;
@@ -651,6 +665,21 @@ void Mod__setupmapstuff()
         spawn_location = GetRandomValue("C:\\MsDev\\Projects\\July2000\\code\\Setup.cpp", 5672)
                        % (unsigned int)(unsigned char)_SpawnLocationCount;
       }
+      // New logic start
+      // Spawner starting locations
+      if (SpawnerActive && (gGameType != GAME_CAMPAIGN))
+      {
+        int override_spawn_location = GetStartingLocation(side);
+        if (override_spawn_location != -1)
+        {
+          spawn_location = override_spawn_location;
+        }
+        else
+        {
+          spawn_location = GetFreeStartingLocation(spawn_location);
+        }
+      }
+      // New logic end
       v79 = LOBYTE(_SpawnLocations[spawn_location].x);
       yposb = LOBYTE(_SpawnLocations[spawn_location].y);
       y = _SpawnLocations[spawn_location].y;
