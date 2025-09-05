@@ -77,14 +77,14 @@ hack 0x0046D0D5, 0x0046D0DB ; Airstrike OOS - GetCenterOfScreen? Building not Ex
     mov ecx, dword[BattleFieldHeight]
     jmp hackend
 
-    
-hack 0x0044C784 ; LoadMapData() - map too small crash fix, adjust BattleField size
-    mov dword[gGameMapHeight], eax
-    
-    pushad
-    call SetBattleFieldSize
-    popad
-    jmp hackend
+; Superseded by Mod__LoadMapData
+;hack 0x0044C784 ; LoadMapData() - map too small crash fix, adjust BattleField size
+;    mov dword[gGameMapHeight], eax
+;
+;    pushad
+;    call SetBattleFieldSize
+;    popad
+;    jmp hackend
     
 ; Superseded by Mod__HandleGameLoopEvents
 ;hack 0x00444678, 0x0044467E ; map too small - Do not draw selection rectangle if cursor out of battlefield

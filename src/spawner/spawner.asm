@@ -17,7 +17,7 @@ hack 0x0042BA0B, 0x0042BA13 ; force map resource path when the spawner is active
     jnz hackend
     pushad
     push SpawnerMapsResourcePath
-    push MapsResourcePath
+    push gMAPS_RES_PATH
     call strcpy
     add esp, 8
     popad

@@ -73,7 +73,6 @@ cextern IsSpectator
 cextern DrawLiveStats
 cextern WriteStatsDmp
 cextern PlayRandomMusic
-cextern SetBattleFieldSize
 cextern FPSLimiter
 cextern ExecuteCustomEvent
 cextern InitMissionScript

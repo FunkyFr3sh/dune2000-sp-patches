@@ -1,64 +1,188 @@
 #include "macros/patch.h"
 #include "dune2000.h"
+#include "patch.h"
 #include "extended-tileset.h"
 #include "radar.h"
 
-// Extended array of tile images
-TImage *        _images_tiles[4000];
-int             num_tileset_tiles;
-
 // Tileset data
+int             num_tileset_tiles;
+TImage *        _images_tiles[4000]; // Extended array
 TilesetHeader   tileset_header;
-uint32_t        _TileBitflags[4000];
+uint32_t        _TileBitflags[4000]; // Extended array
 uint32_t        extra_tileflags[4000];
-int             _TileTooltips[4000];
-uint32_t        restrictions[4000];
-char            extra_attribute_names[8][32];
+int             _TileTooltips[4000]; // Extended array
+uint32_t        tile_restrictions[4000];
 int             radar_color_rules_used;
 RadarColorRule  radar_color_rules[32];
 
-// LoadMapData - change address where tile attributes are loaded
-SETDWORD(0x0044CCD4, __TileBitflags);
-SETDWORD(0x0044CCE9, __TileTooltips);
+// Change address of arrays
+SETDWORD(0x00424E84, __images_tiles); // DebugPrintOnScreen
+SETDWORD(0x0045D8C1, __images_tiles); // UpdateParticles
+SETDWORD(0x0046305D, __images_tiles); // LoadTileset
+SETDWORD(0x004630D3, __images_tiles + 3200); // LoadTileset
 
-// Extension wrapper for function LoadMapData
-CALL(0x00441D7B, _Ext__LoadMapData); // LoadGame
-CALL(0x004488B9, _Ext__LoadMapData); // GameLoop
+// Custom implementation of function LoadMapData
+DETOUR(0x0044C6D0, 0x0044CD09, _Mod__LoadMapData);
 
-void Ext__LoadMapData(const CHAR *ArgList, char a2)
+void Mod__LoadMapData(char *map_name, char initial_load)
 {
-  LoadMapData(ArgList, a2);
+  FILE *map_file; // ebp
+  int cell_offset; // ecx
+  int *cell_number_width_span_ptr; // eax MAPDST
+  short width_; // ax
+  int x; // esi
+  int cell_index; // eax
+  FILE *tileatr_file; // eax MAPDST
+  char *maps_folder; // [esp-4h] [ebp-3B0h]
+  int width; // [esp+14h] [ebp-398h] MAPDST
+  int height; // [esp+18h] [ebp-394h]
+  int Buffer; // [esp+1Ch] [ebp-390h]
+  int y; // [esp+20h] [ebp-38Ch]
+  char file_name[452]; // [esp+24h] [ebp-388h]
+
+  memset(_TileTooltips, 0xFFu, sizeof(_TileTooltips));
+  if ( !gRestartGame )
+  {
+    LoadTileset(_BloxFileName);
+  }
+  if ( gGameType )
+  {
+    maps_folder = gMAPS_RES_PATH;
+  }
+  else
+  {
+    maps_folder = gMISSIONS_RES_PATH;
+  }
+  map_file = _OpenFile(map_name, "rb", maps_folder);
+  if ( !map_file )
+  {
+    DebugFatal("LoadMapData", "Cannot open file");
+  }
+  _ReadFile(&width, 2u, 1u, map_file);
+  gGameMap.width = (unsigned short)width;
+  _ReadFile(&height, 2u, 1u, map_file);
+  width = gGameMap.width;
+  gGameMap.height = (unsigned short)height;
+  // New logic start
+  // Map too small crash fix, adjust BattleField size
+  SetBattleFieldSize();
+  // New logic end
+  cell_offset = 0;
+  cell_number_width_span_ptr = _CellNumbersWidthSpan;
+  do
+  {
+    *cell_number_width_span_ptr = cell_offset;
+    ++cell_number_width_span_ptr;
+    cell_offset += width;
+  }
+  while ( (unsigned int)cell_number_width_span_ptr < 0x547FF0 );
+  width_ = width;
+  if ( (unsigned short)width > 128u )
+  {
+    DebugFatal("LoadMapData", "Error in file %s", map_name);
+    width_ = width;
+  }
+  if ( (unsigned short)height > 128u )
+  {
+    DebugFatal("LoadMapData", "Error in file %s", map_name);
+    width_ = width;
+  }
+  if ( initial_load )
+  {
+    y = 0;
+    if ( (_WORD)height )
+    {
+      cell_number_width_span_ptr = _CellNumbersWidthSpan;
+      do
+      {
+        x = 0;
+        if ( width_ )
+        {
+          do
+          {
+            _ReadFile(&Buffer, 2u, 1u, map_file);
+            gGameMap.map[*cell_number_width_span_ptr + x].__tile_index = Buffer;
+            // New logic start
+            // Store back-up tile index into GameMapTileStruct.back_up_tile_index during loading of map
+            gGameMap.map[*cell_number_width_span_ptr + x].back_up_tile_index = Buffer;
+            // New logic end
+            _ReadFile(&Buffer, 2u, 1u, map_file);
+            cell_index = *cell_number_width_span_ptr + x++;
+            gGameMap.map[cell_index].__tile_bitflags = (unsigned short)Buffer;
+            gGameMap.map[cell_index].__shroud = 17;
+            gGameMap.map[cell_index].__damage = 0;
+            width_ = width;
+          }
+          while ( x < (unsigned short)width );
+        }
+        ++cell_number_width_span_ptr;
+        ++y;
+      }
+      while ( y < (unsigned short)height );
+    }
+  }
+  CloseFile(map_file);
+  _mapvisstate_548010 = GetMapVisState();
+  _ptr_circles[0] = _circle_1x1grid;
+  _ptr_circles[1] = _circle_3x3grid;
+  _ptr_circles[2] = _circle_5x5grid;
+  _ptr_circles[3] = _circle_7x7grid;
+  _ptr_circles[4] = _circle_9x9grid;
+  _ptr_circles[5] = _circle_11x11grid;
+  _ptr_circles[6] = _circle_13x13grid;
+  _ptr_circles[7] = _circle_15x15grid;
+  // New logic - Load tileset data from TLS file
   if (!gRestartGame)
   {
+    bool tls_loaded = false;
     char path[256];
     sprintf(path, "Tilesets\\%s.TLS", _BloxFileName);
-    FILE *file = _OpenFile(path, "rb", NULL);
-    if (!file)
+    FILE *tls_file = _OpenFile(path, "rb", NULL);
+    if (tls_file)
+    {
+      _ReadFile(&tileset_header,          sizeof(tileset_header),         1, tls_file);
+      _ReadFile(_TileBitflags,            sizeof(_TileBitflags),          1, tls_file);
+      _ReadFile(extra_tileflags,          sizeof(extra_tileflags),        1, tls_file);
+      _ReadFile(_TileTooltips,            sizeof(_TileTooltips),          1, tls_file);
+      _ReadFile(tile_restrictions,        sizeof(tile_restrictions),      1, tls_file);
+      fseek(tls_file, 8*32, SEEK_CUR);
+      _ReadFile(&radar_color_rules_used,  sizeof(radar_color_rules_used), 1, tls_file);
+      _ReadFile(radar_color_rules,        sizeof(radar_color_rules),      1, tls_file);
+      CloseFile(tls_file);
+      tls_loaded = true;
+      if (tileset_header.custom_minimap_colors_allowed)
+      {
+        for (int i = 0; i < radar_color_rules_used; i++)
+        {
+          uint32_t color = radar_color_rules[i].color;
+          if (gBitsPerPixel == 16)
+            radar_color_rules[i].color_16bit = GetColor16bit(_colormask1, color);
+          if (gBitsPerPixel == 8)
+            radar_color_rules[i].color_8bit = GetColor8bit(color >> 18 & 63, color >> 10 & 63, color >> 2 & 63, _PalettePtr, 0, 0, 1);
+        }
+      }
+      else
+      {
+        InitDefaultRadarColorRules();
+      }
+    }
+    else
     {
       InitDefaultRadarColorRules();
-      return;
     }
-    _ReadFile(&tileset_header,          sizeof(tileset_header),         1, file);
-    _ReadFile(_TileBitflags,            sizeof(_TileBitflags),          1, file);
-    _ReadFile(extra_tileflags,          sizeof(extra_tileflags),        1, file);
-    _ReadFile(_TileTooltips,            sizeof(_TileTooltips),          1, file);
-    _ReadFile(restrictions,             sizeof(restrictions),           1, file);
-    _ReadFile(extra_attribute_names,    sizeof(extra_attribute_names),  1, file);
-    _ReadFile(&radar_color_rules_used,  sizeof(radar_color_rules_used), 1, file);
-    _ReadFile(radar_color_rules,        sizeof(radar_color_rules),      1, file);
-    CloseFile(file);
-    if (!tileset_header.custom_minimap_colors_allowed)
+    // Fall back to loading TILEATRx.BIN file
+    if (!tls_loaded)
     {
-      InitDefaultRadarColorRules();
-      return;
-    }
-    for (int i = 0; i < radar_color_rules_used; i++)
-    {
-      uint32_t color = radar_color_rules[i].color;
-      if (gBitsPerPixel == 16)
-        radar_color_rules[i].color_16bit = GetColor16bit(_colormask1, color);
-      if (gBitsPerPixel == 8)
-        radar_color_rules[i].color_8bit = GetColor8bit(color >> 18 & 63, color >> 10 & 63, color >> 2 & 63, _PalettePtr, 0, 0, 1);
+      sprintf(file_name, "bin\\%s.bin", _AttribFileName);
+      tileatr_file = _OpenFile(file_name, "rb", 0);
+      if ( !tileatr_file )
+      {
+        ReportFileError(file_name, 0);
+        return;
+      }
+      _ReadFile(_TileBitflags, 1u, 3200u, tileatr_file);
+      _ReadFile(_TileTooltips, 1u, 3200u, tileatr_file);
+      CloseFile(tileatr_file);
     }
   }
 }

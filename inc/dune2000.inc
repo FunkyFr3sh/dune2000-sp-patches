@@ -136,7 +136,7 @@ cextern UseBinaryMapFiles
 cextern MissionMapData
 cextern MissionMap
 cextern LimitedModelRate
-cextern MapsResourcePath
+cextern gMAPS_RES_PATH
 cextern ResourcePath
 cextern MoviesResourcePath
 cextern gGameMapWidth

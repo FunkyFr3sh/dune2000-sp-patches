@@ -35,7 +35,7 @@ void LoadRulesFromMap()
     Mission__LoadVarsFile();
     LoadVars(SpawnerActive ? rulesSpawnIni : rulesIni);
     char mapIniPath[256];
-    sprintf(mapIniPath, ".\\%s%s", gGameType == GAME_CAMPAIGN ? MissionsResourcePath : MapsResourcePath, PathChangeExtension(MissionMap, ".ini"));
+    sprintf(mapIniPath, ".\\%s%s", gGameType == GAME_CAMPAIGN ? gMISSIONS_RES_PATH : gMAPS_RES_PATH, PathChangeExtension(MissionMap, ".ini"));
     LoadVars(mapIniPath);
     LoadMultiPlayerSettings(mapIniPath);
 }

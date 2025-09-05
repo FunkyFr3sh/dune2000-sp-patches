@@ -166,7 +166,7 @@ void InitSpawner()
         SpawnIniSetString("Tunnel", "IP", "");
 
         char tempMap[128];
-        sprintf(tempMap, ".\\%s%s.map", MapsResourcePath, NetMap);
+        sprintf(tempMap, ".\\%s%s.map", gMAPS_RES_PATH, NetMap);
         NetKey = GetCRC32(tempMap) + (uint16_t)WOLGameId;
 
         NetworkType = NT_UDP;
@@ -198,7 +198,7 @@ void InitSpawner()
 void InitMissionScript()
 {
     char mapScript[128];
-    sprintf(mapScript, ".\\%s_%s.mis", MapsResourcePath, PathChangeExtension(MissionMap, ""));
+    sprintf(mapScript, ".\\%s_%s.mis", gMAPS_RES_PATH, PathChangeExtension(MissionMap, ""));
     if (FileExists(mapScript))
     {
         MapScriptExists = true;

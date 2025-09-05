@@ -192,7 +192,7 @@ void GetTextStringToBuffer(int string_id, char *buffer, int buffer_size)
   // Attempt to get custom text from mission ini file
   char mapIniPath[256];
   char id[12];
-  sprintf(mapIniPath, ".\\%s%s", gGameType == GAME_CAMPAIGN ? MissionsResourcePath : MapsResourcePath, PathChangeExtension(MissionMap, ".ini"));
+  sprintf(mapIniPath, ".\\%s%s", gGameType == GAME_CAMPAIGN ? gMISSIONS_RES_PATH : gMAPS_RES_PATH, PathChangeExtension(MissionMap, ".ini"));
   sprintf(id, "%d", string_id);
   IniGetString("Text", id, "", buffer, buffer_size, mapIniPath);
   if (!strlen(buffer))
@@ -602,7 +602,7 @@ void EvAct_SpiceBloom(int event_id, int xpos, int ypos, int range, eSpiceBloomMo
     if (mode == SPICEBLOOM_CIRCLE || mode == SPICEBLOOM_DUNE2)
     {
       range = HLIMIT(range, 7);
-      char **circle_ptr = &_ptr_circle_1x1grid;
+      char **circle_ptr = _ptr_circles;
       circle = circle_ptr[range];
     }
 

@@ -24,7 +24,7 @@ void PlayRandomMusic()
 void FakeSound__PlayMusic(char *fileName)
 {
     char mapIniPath[256];
-    sprintf(mapIniPath, ".\\%s%s", gGameType == GAME_CAMPAIGN ? MissionsResourcePath : MapsResourcePath, PathChangeExtension(MissionMap, ".ini"));
+    sprintf(mapIniPath, ".\\%s%s", gGameType == GAME_CAMPAIGN ? gMISSIONS_RES_PATH : gMAPS_RES_PATH, PathChangeExtension(MissionMap, ".ini"));
     
     char customFile[256];
     IniGetString("Basic", "Music", gGameType == GAME_CAMPAIGN ? "" : "*", customFile, 256, mapIniPath);

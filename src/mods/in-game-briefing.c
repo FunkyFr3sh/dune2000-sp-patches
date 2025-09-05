@@ -14,7 +14,7 @@ char *FakeData__GetTextString_Briefing(int stringId, bool showError)
     if (SpawnerActive && gGameType == GAME_CAMPAIGN)
     {
         char mapIniPath[256];
-        sprintf(mapIniPath, ".\\%s%s", MissionsResourcePath, PathChangeExtension(MissionMap, ".ini"));
+        sprintf(mapIniPath, ".\\%s%s", gMISSIONS_RES_PATH, PathChangeExtension(MissionMap, ".ini"));
     
         IniGetString("Basic", "Briefing", "", result, 65536, mapIniPath);
         

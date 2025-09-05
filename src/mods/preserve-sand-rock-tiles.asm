@@ -4,10 +4,11 @@
 ; (This will free up hardcoded sand and rock tiles in tileset for any other purpose)
 
 ; Store back-up tile index into GameMapTileStruct.back_up_tile_index during loading of map
-hack 0x0044C83A, 0x0044C842 ; LoadMapData
-    mov [edx*4+0x517DF0], ax ; instruction which was replaced by long jump
-    mov [edx*4+0x517DF2], ax ; extra store into GameMapTileStruct.back_up_tile_index
-    jmp hackend
+; Superseded by Mod__LoadMapData
+;hack 0x0044C83A, 0x0044C842 ; LoadMapData
+;    mov [edx*4+0x517DF0], ax ; instruction which was replaced by long jump
+;    mov [edx*4+0x517DF2], ax ; extra store into GameMapTileStruct.back_up_tile_index
+;    jmp hackend
 
 ; Restore back-up tile index when concrete is destroyed
 @PATCH 0x0049DD4D ; DamageTiles

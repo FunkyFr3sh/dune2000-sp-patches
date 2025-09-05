@@ -29,10 +29,10 @@ typedef struct RadarColorRule
 } RadarColorRule;
 
 // Tileset data
-
 extern int            num_tileset_tiles;
 extern uint32_t       _TileBitflags[4000];
 extern uint32_t       extra_tileflags[4000];
 extern int            _TileTooltips[4000];
+extern uint32_t       tile_restrictions[4000];
 extern int            radar_color_rules_used;
 extern RadarColorRule radar_color_rules[32];

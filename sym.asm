@@ -194,6 +194,7 @@ setcglob 0x004E9520, _SandTileIDs
 setcglob 0x004E9530, _UnitAnimTypeFrames
 setcglob 0x004EB008, _gFullscreen_DebugModes_pathfinddebug
 setcglob 0x004EB00C, _gSoundOn
+setcglob 0x004EB014, _ReadBinaries
 setcglob 0x004EB018, gBitsPerPixel
 setcglob 0x004EB028, _ScreenClipWidth
 setcglob 0x004EB02C, _ScreenClipHeight
@@ -217,8 +218,8 @@ setcglob 0x00513488, ResourcePath
 setcglob 0x00513488, gRES_PATH
 setcglob 0x00513520, MoviesResourcePath
 setcglob 0x005135B8, gMUSIC_RES_PATH
-setcglob 0x00513650, MissionsResourcePath
-setcglob 0x005136E8, MapsResourcePath
+setcglob 0x00513650, gMISSIONS_RES_PATH
+setcglob 0x005136E8, gMAPS_RES_PATH
 setcglob 0x00513A20, _FontBinData
 setcglob 0x00513B20, _FontData
 setcglob 0x00515B60, _FontPals
@@ -235,6 +236,7 @@ setcglob 0x0051653C, _RedColor16
 setcglob 0x005165B0, _UnitGroupKeyState
 setcglob 0x005165BC, _GreyColor8
 setcglob 0x005165C0, _radarcolor16_driveon
+setcglob 0x005165C8, _AttribFileName
 setcglob 0x00516690, _GreenColor16
 setcglob 0x005166A0, _BloxFileName
 ;setcglob 0x00516770, _TileTooltips // Replaced by mod
@@ -268,13 +270,21 @@ setcglob 0x005178C4, _DebugPrintStuff
 setcglob 0x005178C8, _DebugTiles
 setcglob 0x005178D8, _ScreenShakes
 setcglob 0x005179D0, _musicbool_byte_5179D0
+setcglob 0x005179D8, _circle_13x13grid
+setcglob 0x00517A88, _circle_11x11grid
+setcglob 0x00517B08, _circle_9x9grid
+setcglob 0x00517B60, _circle_7x7grid
 setcglob 0x00517B98, gCrates
+setcglob 0x00517D00, _circle_15x15grid
 setcglob 0x00517DE8, gGameMap
 setcglob 0x00517DE8, gGameMapWidth
 setcglob 0x00517DEC, gGameMapHeight
 setcglob 0x00547DF0, _CellNumbersWidthSpan
-setcglob 0x00547FF0, _ptr_circle_1x1grid
+setcglob 0x00547FF0, _ptr_circles
 setcglob 0x00548010, _mapvisstate_548010
+setcglob 0x00548018, _circle_5x5grid
+setcglob 0x00548038, _circle_3x3grid
+setcglob 0x00548044, _circle_1x1grid
 setcglob 0x00548048, _NumCratesAllowed
 setcglob 0x006B63C8, _GameOver
 setcglob 0x006B63CC, _gEventCount
@@ -673,6 +683,7 @@ setcglob 0x00460EC0, Setup__LoadUI_LanguageFile
 setcglob 0x00462010, SetPixelOnRadar8
 setcglob 0x004620B0, SetPixelOnRadar16
 setcglob 0x00462140, SetupRadarMap
+setcglob 0x00462D10, LoadTileset
 setcglob 0x00466140, Setup__LoadGraphicsFile
 ; CSide
 setcglob 0x0046B990, CSide__Init

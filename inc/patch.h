@@ -204,5 +204,6 @@ void InitImports();
 int SetupAIPlayerSides();
 int GetStartingLocation(int house);
 int GetFreeStartingLocation(int currentLocation);
+void SetBattleFieldSize();
 DWORD WINAPI fake_timeGetTime();
 DWORD WINAPI fake_GetTickCount();
