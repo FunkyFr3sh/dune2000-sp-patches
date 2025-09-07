@@ -25,9 +25,10 @@ bool CanUnitShoot(Unit *unit)
   return false;
 }
 
-// Reimplementation of function CanUnitAttackTile -> CanUnitAttackTarget
+// Custom implementation of function CanUnitAttackTile
+DETOUR(0x00497270, 0x00497386, _Mod__CanUnitAttackTile);
 
-bool CanUnitAttackTarget(Unit *unit, int target_xpos, int target_ypos, bool air_target)
+bool Mod__CanUnitAttackTile(Unit *unit, int target_x, int target_y, bool air_target)
 {
   int primary_weapon;
   int secondary_weapon;
@@ -35,12 +36,14 @@ bool CanUnitAttackTarget(Unit *unit, int target_xpos, int target_ypos, bool air_
   unsigned int primary_weapon_range;
   int unit_xpos;
   int unit_ypos;
+  int target_xpos;
+  int target_ypos;
   char secondary_weapon_antiaircraft;
   unsigned int secondary_weapon_range;
 
   if ( unit->pos_steps )
   {
-    DebugFatal("CanUnitAttackTarget", "unit->pos.steps not zero");
+    DebugFatal("CanUnitAttackTile", "unit->pos.steps not zero");
   }
   primary_weapon = _templates_unitattribs[unit->Type].__PrimaryWeapon;
   secondary_weapon = _templates_unitattribs[unit->Type].__SecondaryWeapon;
@@ -57,6 +60,8 @@ bool CanUnitAttackTarget(Unit *unit, int target_xpos, int target_ypos, bool air_
   }
   unit_xpos = 32 * unit->BlockFromX + 16;
   unit_ypos = 32 * unit->BlockFromY + 16;
+  target_xpos = 32 * target_x + 16;
+  target_ypos = 32 * target_y + 16;
   if ( secondary_weapon == -1 || unit->LastUsedWeapon == 1 )
   {
     secondary_weapon_antiaircraft = 0;
@@ -154,7 +159,7 @@ char Mod__UnitAttack(Unit *unit, char side_id, short index, char *enemy_side_id_
       {
         enemy_unit_xpos = enemy_object->__PosX / 0x10000;
         enemy_unit_ypos = enemy_object->__PosY / 0x10000;
-        if ( CanUnitAttackTarget(unit_, enemy_unit_xpos, enemy_unit_ypos, (enemy_object->Flags & UFLAGS_40_FLYING) != 0) )
+        if ( CanUnitAttackTile(unit_, enemy_unit_xpos / 32, enemy_unit_ypos / 32, (enemy_object->Flags & UFLAGS_40_FLYING) != 0) )
         {
           UnitShootTarget(unit_, side_id, index, enemy_unit_xpos, enemy_unit_ypos, (int)unit, enemy_index, 1);
           return 1;
@@ -169,7 +174,7 @@ char Mod__UnitAttack(Unit *unit, char side_id, short index, char *enemy_side_id_
           (Building *)enemy_object,
           (char *)&enemy_building_x,
           (char *)&enemy_building_y);
-        if ( CanUnitAttackTarget(unit_, enemy_building_x * 32 + 16, enemy_building_y * 32 + 16, 0) )
+        if ( CanUnitAttackTile(unit_, enemy_building_x, enemy_building_y, 0) )
         {
           UnitShootTarget(
             unit_,
@@ -217,7 +222,7 @@ char Mod__UnitAttack(Unit *unit, char side_id, short index, char *enemy_side_id_
       *enemy_side_id_ptr = (int)unit;
       enemy_index_ = enemy_index;
       *enemy_index_ptr = enemy_index;
-      if (CanUnitAttackTarget(unit_, enemy_unit_xpos, enemy_unit_ypos, 0))
+      if (CanUnitAttackTile(unit_, enemy_unit_xpos / 32, enemy_unit_ypos / 32, 0))
         UnitShootTarget(unit_, side_id, index, enemy_unit_xpos, enemy_unit_ypos, (int)unit, enemy_index_, 2);
       return 1;
     }
@@ -236,7 +241,7 @@ char Mod__UnitAttack(Unit *unit, char side_id, short index, char *enemy_side_id_
   {
     return 1;
   }
-  if (CanUnitAttackTarget(unit_, enemy_unit_xpos, enemy_unit_ypos, (enemy_unit->Flags & UFLAGS_40_FLYING) != 0))
+  if (CanUnitAttackTile(unit_, enemy_unit_xpos / 32, enemy_unit_ypos / 32, (enemy_unit->Flags & UFLAGS_40_FLYING) != 0))
     UnitShootTarget(unit_, side_id, index, enemy_unit_xpos, enemy_unit_ypos, (int)unit, enemy_index, 1);
   return 1;
 }
@@ -306,7 +311,7 @@ LABEL_21:
     }
     return 0;
   }
-  if ( !CanUnitAttackTarget(unit, enemy_unit->__PosX / 0x10000, enemy_unit->__PosY / 0x10000, (enemy_unit->Flags & UFLAGS_40_FLYING) != 0) || unit->pos_steps )
+  if ( !CanUnitAttackTile(unit, enemy_unit->BlockFromX, enemy_unit->BlockFromY, (enemy_unit->Flags & UFLAGS_40_FLYING) != 0) || unit->pos_steps )
   {
     unit->TargetX = enemy_unit->BlockToX;
     unit->TargetY = enemy_unit->BlockToY;
@@ -354,7 +359,7 @@ bool Mod__CanUnitAttackBuilding(Unit *unit, Building *building, int *tile_x_ptr,
     (char *)&y);
   *tile_x_ptr = x;
   *tile_y_ptr = y;
-  return CanUnitAttackTarget(unit, x * 32 + 16, y * 32 + 16, 0);
+  return CanUnitAttackTile(unit, x, y, 0);
 }
 
 // Custom implementation of function UnitAttackBuilding
@@ -490,7 +495,7 @@ DETOUR(0x00496FF0, 0x00497086, _Mod__UnitAttackTile);
 
 char Mod__UnitAttackTile(Unit *unit, char side, short index)
 {
-  if ( unit->pos_steps || !CanUnitAttackTarget(unit, unit->TargetX * 32 + 16, unit->TargetY * 32 + 16, 0) )
+  if ( unit->pos_steps || !CanUnitAttackTile(unit, unit->TargetX, unit->TargetY, 0) )
   {
     MoveUnit(unit, side, index);
     return 1;
