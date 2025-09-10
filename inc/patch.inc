@@ -51,6 +51,7 @@ cextern nextGameTick
 cextern _gEventArray
 cextern _gConditionArray
 cextern gMessageData
+cextern _TileBitflags
 
 ; ### Extra rules ###
 

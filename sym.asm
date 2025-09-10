@@ -212,7 +212,7 @@ setcglob 0x004F3D3C, gTournamentGame
 setcglob 0x004F4118, _gAIArray
 setcglob 0x00502ED8, _crater_draw_offsets_y
 setcglob 0x00503F88, _crater_draw_offsets_x
-setcglob 0x00504030, _gMessageData
+;setcglob 0x00504030, _gMessageData ; Replaced by mod
 setcglob 0x00512D58, _selectedmaybe_dw_BlitVehicles_512D58
 setcglob 0x00513488, ResourcePath
 setcglob 0x00513488, gRES_PATH
@@ -239,7 +239,7 @@ setcglob 0x005165C0, _radarcolor16_driveon
 setcglob 0x005165C8, _AttribFileName
 setcglob 0x00516690, _GreenColor16
 setcglob 0x005166A0, _BloxFileName
-;setcglob 0x00516770, _TileTooltips // Replaced by mod
+;setcglob 0x00516770, _TileTooltips ; Replaced by mod
 setcglob 0x005173F0, _radarcolor16_sand
 setcglob 0x005173F4, gGameTicks
 setcglob 0x005173F8, _NeutralUnitText
@@ -354,7 +354,7 @@ setcglob 0x00786D90, _ArmourNames
 setcglob 0x00786FE8, _image_placement_marker_buildable
 setcglob 0x00786FEC, _SpawnLocationCount
 setcglob 0x00786FF0, _radarcolor8_sidecolor
-;setcglob 0x00786FF8, _TileBitflags // Replaced by mod
+;setcglob 0x00786FF8, _TileBitflags ; Replaced by mod
 setcglob 0x00787E08, _templates_BuildingGroupNameList
 setcglob 0x00789198, _images_healthbars
 setcglob 0x007891B0, _templates_UnitNameList
