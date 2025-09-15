@@ -142,7 +142,6 @@ OBJS            ?= callsites.o \
 	src/jump-to-menu-on-start.o \
 	src/command-line-parameters-func.o \
 	src/multiplayer-network-settings.o \
-	src/show-in-game-mes-longer.o \
 	src/multi-language.o \
 	src/window-procedure.o \
 	src/no-cd.o \
