@@ -771,7 +771,7 @@ int             RevealMap();
 void            Map__PlayerDefeated(uint8_t sideId);
 
 void            LoadMapData(const CHAR *ArgList, char a2);
-char            UpdateShroudInRegion(RECT *rect, unsigned char width, unsigned char height);
+void            UpdateShroudInRegion(RECT *rect, unsigned char width, unsigned char height);
 bool            FindNearestActiveThumper(unsigned char blockfromx, unsigned char blockfromy, _BYTE *targetx, _BYTE *targety);
 bool            FindSandwormsTarget(unsigned char from_x, unsigned char from_y, unsigned char *target_x_ptr, unsigned char *target_y_ptr);
 char            GetSpiceTileToHarvest(Unit *unit, eSideType side, _BYTE *x, _BYTE *y);

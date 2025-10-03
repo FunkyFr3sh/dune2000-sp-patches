@@ -88,6 +88,7 @@ OBJS            ?= callsites.o \
         src/mods/do-power.o \
         src/mods/blit-objects.o \
         src/mods/extended-tileset.o \
+        src/mods/block-sight-restriction.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \
