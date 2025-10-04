@@ -228,6 +228,7 @@ void EvAct_HideTile                     (int event_id, int xpos, int ypos);
 void EvAct_ShowTileData                 (int event_id, int xpos, int ypos);
 // Orders
 void EvAct_OrderUnitRetreat             (int event_id, int side_id);
+void EvAct_OrderBuildBuildingPick       (int event_id, int side_id, int building_type);
 void EvAct_OrderBuildBuildingCancel     (int event_id, int side_id, bool force);
 void EvAct_OrderBuildPlaceBuilding      (int event_id, int side_id, int xpos, int ypos);
 void EvAct_OrderBuildUnitCancel         (int event_id, int side_id, bool any_unit, int unit_type, int queue, bool force);

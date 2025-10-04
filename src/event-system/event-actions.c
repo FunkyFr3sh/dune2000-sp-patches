@@ -1481,6 +1481,21 @@ void EvAct_OrderUnitRetreat(int event_id, int side_id)
     GenerateUnitRetreatOrder(side_id, x, y);
 }
 
+void EvAct_OrderBuildBuildingPick(int event_id, int side_id, int building_type)
+{
+  CHECK_SIDE_ID;
+  CHECK_BUILDING_TYPE;
+  CSide *side = GetSide(side_id);
+  for (unsigned int i = 0; i < side->__BuildingIconCount; i++)
+  {
+    if (side->__BuildingIcons[i] == building_type)
+    {
+      GenerateBuildBuildingPickOrder(side_id, building_type);
+      break;
+    }
+  }
+}
+
 void EvAct_OrderBuildBuildingCancel(int event_id, int side_id, bool force)
 {
   CHECK_SIDE_ID;

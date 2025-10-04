@@ -898,7 +898,7 @@ void ExecuteEventAction(EventContext *e)
   case ET_ORDER_BUILDING_REPAIR:          GenerateBuildingRepairOrder         (A0, OBJ);                                    break;
   case ET_ORDER_BUILDING_SELL:            GenerateBuildingSellOrder           (A0, OBJ);                                    break;
   case ET_ORDER_STOP:                     GenerateStopOrder                   (A0);           RestoreUnitSelection(A0, A4); RestoreBuildingSelection(A0, A4); break;
-  case ET_ORDER_BUILD_BUILDING_PICK:      GenerateBuildBuildingPickOrder      (A0, A2);                                     break;
+  case ET_ORDER_BUILD_BUILDING_PICK:      EvAct_OrderBuildBuildingPick        (ID, A0, A2);                                 break;
   case ET_ORDER_BUILD_BUILDING_CANCEL:    EvAct_OrderBuildBuildingCancel      (ID, A0, A4);                                 break;
   case ET_ORDER_BUILD_PLACE_BUILDING:     EvAct_OrderBuildPlaceBuilding       (ID, A0, C0);                                 break;
   case ET_ORDER_BUILD_UNIT_PICK:          GenerateBuildUnitPickOrder          (A0, A2);                                     break;
