@@ -25,6 +25,13 @@ int exit_count;
 int break_count;
 int continue_count;
 
+// Profiling variables
+
+int profiler_executed_events_cur_tick;
+int profiler_executed_events[MAX_EVENTS + 1];
+int profiler_filter_check_cur_tick;
+int profiler_filter_check[MAX_EVENTS + 1];
+
 // Custom implementation of function HandleConditionsAndEvents
 DETOUR(0x00453B90, 0x004540DC, _Mod__HandleConditionsAndEvents);
 void Mod__HandleConditionsAndEvents()
@@ -194,7 +201,7 @@ DEFAULT_WIN_LOSE_EVENTS:
     exit_count = 0;
     break_count = 0;
     continue_count = 0;
-    
+
     if (SpawnerActive)
     {
         if (UseDefaultWinLoseEvents || (!_gEventCount && gGameType != GAME_CAMPAIGN))
@@ -204,6 +211,18 @@ DEFAULT_WIN_LOSE_EVENTS:
     }
     
     ExecuteEventsInRange(0, _gEventCount, EBT_GLOBAL);
+
+    // Show number of executed events in current tick
+    if (DebugFeatures & DEBUGFEATURE_ENABLE_EVENT_PROFILING)
+    {
+      char s[200];
+      sprintf(s, "Tick %d executed events %d filter checks %d", gGameTicks, profiler_executed_events_cur_tick, profiler_filter_check_cur_tick);
+      QueueMessage(s, 0);
+    }
+
+    // Reset number of executed events
+    profiler_executed_events_cur_tick = 0;
+    profiler_filter_check_cur_tick = 0;
   }
 }
 
@@ -420,6 +439,9 @@ void ExecuteEvent(int event_index)
     return;
   if (event->event_flags & EVENTFLAG_AUTO_BLOCK)
     event->event_flags |= EVENTFLAG_BLOCKED;
+  // Count this execution in profiler
+  profiler_executed_events_cur_tick++;
+  profiler_executed_events[event_index]++;
   // Fill event context
   EventContext e;
   e.event_type = et;
@@ -503,7 +525,7 @@ void ExecuteEvent(int event_index)
       // Process all units
       for (Unit *unit = side->__FirstUnitPtr; unit; unit = unit->Next)
       {
-        if (CheckIfUnitMatchesFilter((ObjectFilterStruct *)&e.data[1], unit, side_id))
+        if (CheckIfUnitMatchesFilter(event_index, (ObjectFilterStruct *)&e.data[1], unit, side_id))
         {
           if (skip)
             skip--;
@@ -562,7 +584,7 @@ void ExecuteEvent(int event_index)
       // Process all buildings
       for (Building *building = side->__FirstBuildingPtr; building; building = building->Next)
       {
-        if (CheckIfBuildingMatchesFilter((ObjectFilterStruct *)&e.data[1], building, side_id))
+        if (CheckIfBuildingMatchesFilter(event_index, (ObjectFilterStruct *)&e.data[1], building, side_id))
         {
           if (skip)
             skip--;
@@ -601,7 +623,7 @@ void ExecuteEvent(int event_index)
       // Process all bullets
       for (Bullet *bullet = side->__FirstBulletPtr; bullet; bullet = bullet->Next)
       {
-        if (CheckIfBulletMatchesFilter((ObjectFilterStruct *)&e.data[1], bullet))
+        if (CheckIfBulletMatchesFilter(event_index, (ObjectFilterStruct *)&e.data[1], bullet))
         {
           if (skip)
             skip--;
@@ -640,7 +662,7 @@ void ExecuteEvent(int event_index)
       // Process all explosions
       for (Explosion *explosion = side->__FirstExplosionPtr; explosion; explosion = explosion->Next)
       {
-        if (CheckIfExplosionMatchesFilter((ObjectFilterStruct *)&e.data[1], explosion))
+        if (CheckIfExplosionMatchesFilter(event_index, (ObjectFilterStruct *)&e.data[1], explosion))
         {
           if (skip)
             skip--;
@@ -674,7 +696,7 @@ void ExecuteEvent(int event_index)
     // Process all crates
     for (int i = 0; i < MAX_CRATES; i++)
     {
-      if (CheckIfCrateMatchesFilter((ObjectFilterStruct *)&e.data[1], &gCrates[i]))
+      if (CheckIfCrateMatchesFilter(event_index, (ObjectFilterStruct *)&e.data[1], &gCrates[i]))
       {
         if (skip)
           skip--;
@@ -715,7 +737,7 @@ void ExecuteEvent(int event_index)
     for (int y = min_y; y <= max_y; y++)
       for (int x = min_x; x <= max_x; x++)
       {
-        if (CheckIfTileMatchesFilter((ObjectFilterStruct *)&e.data[1], &gGameMap.map[x + _CellNumbersWidthSpan[y]], x, y))
+        if (CheckIfTileMatchesFilter(event_index, (ObjectFilterStruct *)&e.data[1], &gGameMap.map[x + _CellNumbersWidthSpan[y]], x, y))
         {
           if (skip)
             skip--;
@@ -746,7 +768,7 @@ void ExecuteEvent(int event_index)
     // Process all sides
     for (int i = 0; i < MAX_SIDES; i++)
     {
-      if (CheckIfSideMatchesFilter((ObjectFilterStruct *)&e.data[1], i))
+      if (CheckIfSideMatchesFilter(event_index, (ObjectFilterStruct *)&e.data[1], i))
       {
         if (skip)
           skip--;

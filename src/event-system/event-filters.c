@@ -69,8 +69,10 @@ bool EvaluateFilterExpression(ObjectFilterStruct *filter, bool *p_criteria_resul
 
 bool CheckIfUnitMatchesCriteria(Unit *unit, eSideType side_id, eUnitFilterCriteriaType criteria_type, bool negation, bool comparison, int value);
 
-bool CheckIfUnitMatchesFilter(ObjectFilterStruct *filter, Unit *unit, eSideType side_id)
+bool CheckIfUnitMatchesFilter(int event_id, ObjectFilterStruct *filter, Unit *unit, eSideType side_id)
 {
+  profiler_filter_check_cur_tick++;
+  profiler_filter_check[event_id]++;
   // Check for position
   if (!EvaluateFilterPosition(filter, unit->__PosX >> 16, unit->__PosY >> 16))
     return false;
@@ -86,8 +88,10 @@ bool CheckIfUnitMatchesFilter(ObjectFilterStruct *filter, Unit *unit, eSideType 
 
 bool CheckIfBuildingMatchesCriteria(Building *building, eSideType side_id, eBuildingFilterCriteriaType criteria_type, bool negation, bool comparison, int value);
 
-bool CheckIfBuildingMatchesFilter(ObjectFilterStruct *filter, Building *building, eSideType side_id)
+bool CheckIfBuildingMatchesFilter(int event_id, ObjectFilterStruct *filter, Building *building, eSideType side_id)
 {
+  profiler_filter_check_cur_tick++;
+  profiler_filter_check[event_id]++;
   // Check for position
   int pos_x = (building->__PosX >> 16) + 16;
   int pos_y = (building->__PosY >> 16) - _templates_buildattribs[building->Type]._____ArtHeight + 16;
@@ -105,8 +109,10 @@ bool CheckIfBuildingMatchesFilter(ObjectFilterStruct *filter, Building *building
 
 bool CheckIfBulletMatchesCriteria(Bullet *bullet, eBulletFilterCriteriaType criteria_type, bool negation, bool comparison, int value);
 
-bool CheckIfBulletMatchesFilter(ObjectFilterStruct *filter, Bullet *bullet)
+bool CheckIfBulletMatchesFilter(int event_id, ObjectFilterStruct *filter, Bullet *bullet)
 {
+  profiler_filter_check_cur_tick++;
+  profiler_filter_check[event_id]++;
   // Check for position
   if (!EvaluateFilterPosition(filter, bullet->__PosX >> 16, bullet->__PosY >> 16))
     return false;
@@ -122,8 +128,10 @@ bool CheckIfBulletMatchesFilter(ObjectFilterStruct *filter, Bullet *bullet)
 
 bool CheckIfExplosionMatchesCriteria(Explosion *explosion, eExplosionFilterCriteriaType criteria_type, bool negation, bool comparison, int value);
 
-bool CheckIfExplosionMatchesFilter(ObjectFilterStruct *filter, Explosion *explosion)
+bool CheckIfExplosionMatchesFilter(int event_id, ObjectFilterStruct *filter, Explosion *explosion)
 {
+  profiler_filter_check_cur_tick++;
+  profiler_filter_check[event_id]++;
   // Check for position
   if (!EvaluateFilterPosition(filter, explosion->__PosX >> 16, explosion->__PosY >> 16))
     return false;
@@ -139,8 +147,10 @@ bool CheckIfExplosionMatchesFilter(ObjectFilterStruct *filter, Explosion *explos
 
 bool CheckIfCrateMatchesCriteria(CrateStruct *crate, eCrateFilterCriteriaType criteria_type, bool negation, bool comparison, int value);
 
-bool CheckIfCrateMatchesFilter(ObjectFilterStruct *filter, CrateStruct *crate)
+bool CheckIfCrateMatchesFilter(int event_id, ObjectFilterStruct *filter, CrateStruct *crate)
 {
+  profiler_filter_check_cur_tick++;
+  profiler_filter_check[event_id]++;
   if (!crate->__is_active)
     return false;
   // Check for position
@@ -158,8 +168,10 @@ bool CheckIfCrateMatchesFilter(ObjectFilterStruct *filter, CrateStruct *crate)
 
 bool CheckIfTileMatchesCriteria(GameMapTileStruct *tile, int pos_x, int pos_y, eTileFilterCriteriaType criteria_type, bool negation, bool comparison, int value);
 
-bool CheckIfTileMatchesFilter(ObjectFilterStruct *filter, GameMapTileStruct *tile, int pos_x, int pos_y)
+bool CheckIfTileMatchesFilter(int event_id, ObjectFilterStruct *filter, GameMapTileStruct *tile, int pos_x, int pos_y)
 {
+  profiler_filter_check_cur_tick++;
+  profiler_filter_check[event_id]++;
   // Check for position
   if (!EvaluateFilterPosition(filter, pos_x * 32 + 16, pos_y * 32 + 16))
     return false;
@@ -175,8 +187,10 @@ bool CheckIfTileMatchesFilter(ObjectFilterStruct *filter, GameMapTileStruct *til
 
 bool CheckIfSideMatchesCriteria(eSideType side_id, eSideFilterCriteriaType criteria_type, bool negation, bool comparison, int value);
 
-bool CheckIfSideMatchesFilter(ObjectFilterStruct *filter, int side_id)
+bool CheckIfSideMatchesFilter(int event_id, ObjectFilterStruct *filter, int side_id)
 {
+  profiler_filter_check_cur_tick++;
+  profiler_filter_check[event_id]++;
   // Check for criteria
   bool criteria_result[8];
   for (int i = 0; i < 8; i++)
@@ -189,8 +203,10 @@ bool CheckIfSideMatchesFilter(ObjectFilterStruct *filter, int side_id)
 
 bool CheckIfUnitTypeMatchesCriteria(int unit_type, eUnitTypeFilterCriteriaType criteria_type, bool negation, bool comparison, int value);
 
-bool CheckIfUnitTypeMatchesFilter(ObjectFilterStruct *filter, int unit_type)
+bool CheckIfUnitTypeMatchesFilter(int event_id, ObjectFilterStruct *filter, int unit_type)
 {
+  profiler_filter_check_cur_tick++;
+  profiler_filter_check[event_id]++;
   // Check for criteria
   bool criteria_result[8];
   for (int i = 0; i < 8; i++)
@@ -203,8 +219,10 @@ bool CheckIfUnitTypeMatchesFilter(ObjectFilterStruct *filter, int unit_type)
 
 bool CheckIfBuildingTypeMatchesCriteria(int building_type, eBuildingTypeFilterCriteriaType criteria_type, bool negation, bool comparison, int value);
 
-bool CheckIfBuildingTypeMatchesFilter(ObjectFilterStruct *filter, int building_type)
+bool CheckIfBuildingTypeMatchesFilter(int event_id, ObjectFilterStruct *filter, int building_type)
 {
+  profiler_filter_check_cur_tick++;
+  profiler_filter_check[event_id]++;
   // Check for criteria
   bool criteria_result[8];
   for (int i = 0; i < 8; i++)

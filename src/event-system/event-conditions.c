@@ -163,7 +163,7 @@ bool Cond_CheckUnits(ConditionData *condition)
     CSide *side = GetSide(side_id);
     for (Unit *unit = side->__FirstUnitPtr; unit; unit = unit->Next)
     {
-      if (CheckIfUnitMatchesFilter((ObjectFilterStruct *)condition, unit, side_id))
+      if (CheckIfUnitMatchesFilter(MAX_EVENTS, (ObjectFilterStruct *)condition, unit, side_id))
         matched++;
       // Already found enough matches, no need to search further
       if (!strict_equal && matched == amount)
@@ -190,7 +190,7 @@ bool Cond_CheckBuildings(ConditionData *condition)
     CSide *side = GetSide(side_id);
     for (Building *bld = side->__FirstBuildingPtr; bld; bld = bld->Next)
     {
-      if (CheckIfBuildingMatchesFilter((ObjectFilterStruct *)condition, bld, side_id))
+      if (CheckIfBuildingMatchesFilter(MAX_EVENTS, (ObjectFilterStruct *)condition, bld, side_id))
         matched++;
       // Already found enough matches, no need to search further
       if (!strict_equal && matched == amount)
@@ -214,7 +214,7 @@ bool Cond_CheckCrates(ConditionData *condition)
   {
     if (!gCrates[i].__is_active)
       continue;
-    if (CheckIfCrateMatchesFilter((ObjectFilterStruct *)condition, &gCrates[i]))
+    if (CheckIfCrateMatchesFilter(MAX_EVENTS, (ObjectFilterStruct *)condition, &gCrates[i]))
       matched++;
     // Already found enough matches, no need to search further
     if (!strict_equal && matched == amount)
@@ -241,7 +241,7 @@ bool Cond_CheckTiles(ConditionData *condition)
   for (int y = min_y; y <= max_y; y++)
     for (int x = min_x; x <= max_x; x++)
     {
-      if (CheckIfTileMatchesFilter((ObjectFilterStruct *)condition, &gGameMap.map[x + _CellNumbersWidthSpan[y]], x, y))
+      if (CheckIfTileMatchesFilter(MAX_EVENTS, (ObjectFilterStruct *)condition, &gGameMap.map[x + _CellNumbersWidthSpan[y]], x, y))
         matched++;
       // Already found enough matches, no need to search further
       if (!strict_equal && matched == amount)

@@ -458,6 +458,13 @@ extern int tick_random_value;
 extern int event_hooks[HOOK_TYPE_COUNT];
 extern int break_count;
 
+// Profiling variables
+
+extern int profiler_executed_events_cur_tick;
+extern int profiler_executed_events[MAX_EVENTS + 1];
+extern int profiler_filter_check_cur_tick;
+extern int profiler_filter_check[MAX_EVENTS + 1];
+
 // Functions
 
 bool EvaluateCondition(int condition_index);

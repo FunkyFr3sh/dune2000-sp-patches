@@ -493,14 +493,14 @@ typedef enum eObjectCheckType
   OBJECTCHECK_DIST
 } eObjectCheckType;
 
-bool CheckIfUnitMatchesFilter(ObjectFilterStruct *filter, Unit *unit, eSideType side_id);
-bool CheckIfBuildingMatchesFilter(ObjectFilterStruct *filter, Building *building, eSideType side_id);
-bool CheckIfBulletMatchesFilter(ObjectFilterStruct *filter, Bullet *bullet);
-bool CheckIfExplosionMatchesFilter(ObjectFilterStruct *filter, Explosion *explosion);
-bool CheckIfCrateMatchesFilter(ObjectFilterStruct *filter, CrateStruct *crate);
-bool CheckIfTileMatchesFilter(ObjectFilterStruct *filter, GameMapTileStruct *tile, int pos_x, int pos_y);
-bool CheckIfSideMatchesFilter(ObjectFilterStruct *filter, int side_id);
-bool CheckIfUnitTypeMatchesFilter(ObjectFilterStruct *filter, int unit_type);
-bool CheckIfBuildingTypeMatchesFilter(ObjectFilterStruct *filter, int building_type);
+bool CheckIfUnitMatchesFilter(int event_id, ObjectFilterStruct *filter, Unit *unit, eSideType side_id);
+bool CheckIfBuildingMatchesFilter(int event_id, ObjectFilterStruct *filter, Building *building, eSideType side_id);
+bool CheckIfBulletMatchesFilter(int event_id, ObjectFilterStruct *filter, Bullet *bullet);
+bool CheckIfExplosionMatchesFilter(int event_id, ObjectFilterStruct *filter, Explosion *explosion);
+bool CheckIfCrateMatchesFilter(int event_id, ObjectFilterStruct *filter, CrateStruct *crate);
+bool CheckIfTileMatchesFilter(int event_id, ObjectFilterStruct *filter, GameMapTileStruct *tile, int pos_x, int pos_y);
+bool CheckIfSideMatchesFilter(int event_id, ObjectFilterStruct *filter, int side_id);
+bool CheckIfUnitTypeMatchesFilter(int event_id, ObjectFilterStruct *filter, int unit_type);
+bool CheckIfBuildingTypeMatchesFilter(int event_id, ObjectFilterStruct *filter, int building_type);
 
 void GetBoundsForPosFilter(ObjectFilterStruct *filter, int *min_x, int *min_y, int *max_x, int *max_y);

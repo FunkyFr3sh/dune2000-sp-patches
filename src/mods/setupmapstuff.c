@@ -210,6 +210,15 @@ void Mod__setupmapstuff()
     }
   }
 
+  // Initialize profiler variables
+  profiler_executed_events_cur_tick = 0;
+  profiler_filter_check_cur_tick = 0;
+  for (int i = 0; i <= MAX_EVENTS; i++)
+  {
+    profiler_executed_events[i] = 0;
+    profiler_filter_check[i] = 0;
+  }
+
   // Handle event hooks
   for (int i = 0; i < HOOK_TYPE_COUNT; i++)
     event_hooks[i] = -1;

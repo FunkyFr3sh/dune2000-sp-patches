@@ -4,8 +4,10 @@
 #include "patch.h"
 #include "stats.h"
 #include "macros/patch.h"
+#include "../event-system/event-core.h"
 
 char StatsDmp[] = ".\\stats.dmp";
+char ProfilerDmp[] = ".\\event_profiler.txt";
 UnitTracker PlayersUnitsOwned[MAX_SIDES];
 BuildingTracker PlayersBuildingsOwned[MAX_SIDES];
 
@@ -45,6 +47,20 @@ void WriteStatsDmp(const void *buffer, int length)
         fwrite(&len, 1, 2, file);
         fwrite(StatsDmpBuffer, 1, StatsDmpLength, file);
         fclose(file);
+    }
+
+    if (DebugFeatures & DEBUGFEATURE_ENABLE_EVENT_PROFILING)
+    {
+      file = fopen(ProfilerDmp, "w");
+      if (file)
+      {
+        fprintf(file, "Ticks = %d\n\n", gGameTicks);
+        fprintf(file, "  ID    execs   filter\n");
+        fprintf(file, "----------------------\n");
+        for (int i = 0; i <= MAX_EVENTS; i++)
+          fprintf(file, "%4d %8d %8d\n", i, profiler_executed_events[i], profiler_filter_check[i]);
+        fclose(file);
+      }
     }
 }
 

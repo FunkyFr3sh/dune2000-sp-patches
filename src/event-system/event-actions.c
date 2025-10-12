@@ -1852,7 +1852,7 @@ void EvAct_GetUnitType(int event_id, int side_id, int target_var, bool my_versio
       for (int i = 0; i < _templates_UnitGroupCount; i++)
       {
         int my_version = CSide__MyVersionOfUnit(GetSide(side_id), i, 0);
-        if (CheckIfUnitTypeMatchesFilter(filter, my_version))
+        if (CheckIfUnitTypeMatchesFilter(event_id, filter, my_version))
           found_array[found++] = my_version;
       }
     }
@@ -1860,7 +1860,7 @@ void EvAct_GetUnitType(int event_id, int side_id, int target_var, bool my_versio
     {
       for (int i = 0; i < gUnitTypeNum; i++)
       {
-        if (CheckIfUnitTypeMatchesFilter(filter, i))
+        if (CheckIfUnitTypeMatchesFilter(event_id, filter, i))
           found_array[found++] = i;
       }
     }
@@ -1874,7 +1874,7 @@ void EvAct_GetUnitType(int event_id, int side_id, int target_var, bool my_versio
       for (int i = 0; i < _templates_UnitGroupCount; i++)
       {
         int my_version = CSide__MyVersionOfUnit(GetSide(side_id), i, 0);
-        if (CheckIfUnitTypeMatchesFilter(filter, my_version))
+        if (CheckIfUnitTypeMatchesFilter(event_id, filter, my_version))
         {
           result = my_version;
           break;
@@ -1885,7 +1885,7 @@ void EvAct_GetUnitType(int event_id, int side_id, int target_var, bool my_versio
     {
       for (int i = 0; i < gUnitTypeNum; i++)
       {
-        if (CheckIfUnitTypeMatchesFilter(filter, i))
+        if (CheckIfUnitTypeMatchesFilter(event_id, filter, i))
         {
           result = i;
           break;
@@ -1909,7 +1909,7 @@ void EvAct_GetBuildingType(int event_id, int side_id, int target_var, bool my_ve
       for (int i = 0; i < _templates_BuildingGroupCount; i++)
       {
         int my_version = CSide__MyVersionOfBuilding(GetSide(side_id), i, 0);
-        if (CheckIfBuildingTypeMatchesFilter(filter, my_version))
+        if (CheckIfBuildingTypeMatchesFilter(event_id, filter, my_version))
           found_array[found++] = my_version;
       }
     }
@@ -1917,7 +1917,7 @@ void EvAct_GetBuildingType(int event_id, int side_id, int target_var, bool my_ve
     {
       for (int i = 0; i < gBuildingTypeNum; i++)
       {
-        if (CheckIfBuildingTypeMatchesFilter(filter, i))
+        if (CheckIfBuildingTypeMatchesFilter(event_id, filter, i))
           found_array[found++] = i;
       }
     }
@@ -1931,7 +1931,7 @@ void EvAct_GetBuildingType(int event_id, int side_id, int target_var, bool my_ve
       for (int i = 0; i < _templates_BuildingGroupCount; i++)
       {
         int my_version = CSide__MyVersionOfBuilding(GetSide(side_id), i, 0);
-        if (CheckIfBuildingTypeMatchesFilter(filter, my_version))
+        if (CheckIfBuildingTypeMatchesFilter(event_id, filter, my_version))
         {
           result = my_version;
           break;
@@ -1942,7 +1942,7 @@ void EvAct_GetBuildingType(int event_id, int side_id, int target_var, bool my_ve
     {
       for (int i = 0; i < gBuildingTypeNum; i++)
       {
-        if (CheckIfBuildingTypeMatchesFilter(filter, i))
+        if (CheckIfBuildingTypeMatchesFilter(event_id, filter, i))
         {
           result = i;
           break;
@@ -2572,7 +2572,7 @@ void EvAct_If(int event_id, eIfConditionType condition_type, int side_var, int o
       int index = GetVariableValue(event_id, object_index_var);
       CHECK_SIDE_ID;
       CHECK_OBJECT_INDEX;
-      result = CheckIfUnitMatchesFilter((ObjectFilterStruct *)cond_expr, &(GetSide(side_id)->__ObjectArray[index]), side_id);
+      result = CheckIfUnitMatchesFilter(event_id, (ObjectFilterStruct *)cond_expr, &(GetSide(side_id)->__ObjectArray[index]), side_id);
       break;
     }
     case IFCONDTYPE_CHECK_BUILDING:
@@ -2581,7 +2581,7 @@ void EvAct_If(int event_id, eIfConditionType condition_type, int side_var, int o
       int index = GetVariableValue(event_id, object_index_var);
       CHECK_SIDE_ID;
       CHECK_OBJECT_INDEX;
-      result = CheckIfBuildingMatchesFilter((ObjectFilterStruct *)cond_expr, (Building *)&(GetSide(side_id)->__ObjectArray[index]), side_id);
+      result = CheckIfBuildingMatchesFilter(event_id, (ObjectFilterStruct *)cond_expr, (Building *)&(GetSide(side_id)->__ObjectArray[index]), side_id);
       break;
     }
     case IFCONDTYPE_CHECK_BULLET:
@@ -2590,7 +2590,7 @@ void EvAct_If(int event_id, eIfConditionType condition_type, int side_var, int o
       int index = GetVariableValue(event_id, object_index_var);
       CHECK_SIDE_ID;
       CHECK_OBJECT_INDEX;
-      result = CheckIfBulletMatchesFilter((ObjectFilterStruct *)cond_expr, (Bullet *)&(GetSide(side_id)->__ObjectArray[index]));
+      result = CheckIfBulletMatchesFilter(event_id, (ObjectFilterStruct *)cond_expr, (Bullet *)&(GetSide(side_id)->__ObjectArray[index]));
       break;
     }
     case IFCONDTYPE_CHECK_EXPLOSION:
@@ -2599,38 +2599,38 @@ void EvAct_If(int event_id, eIfConditionType condition_type, int side_var, int o
       int index = GetVariableValue(event_id, object_index_var);
       CHECK_SIDE_ID;
       CHECK_OBJECT_INDEX;
-      result = CheckIfExplosionMatchesFilter((ObjectFilterStruct *)cond_expr, (Explosion *)&(GetSide(side_id)->__ObjectArray[index]));
+      result = CheckIfExplosionMatchesFilter(event_id, (ObjectFilterStruct *)cond_expr, (Explosion *)&(GetSide(side_id)->__ObjectArray[index]));
       break;
     }
     case IFCONDTYPE_CHECK_CRATE:
     {
       int index = GetVariableValue(event_id, object_index_var);
-      result = CheckIfCrateMatchesFilter((ObjectFilterStruct *)cond_expr, &gCrates[index]);
+      result = CheckIfCrateMatchesFilter(event_id, (ObjectFilterStruct *)cond_expr, &gCrates[index]);
       break;
     }
     case IFCONDTYPE_CHECK_TILE:
     {
       int x = GetVariableValue(event_id, side_var);
       int y = GetVariableValue(event_id, object_index_var);
-      result = CheckIfTileMatchesFilter((ObjectFilterStruct *)cond_expr, &gGameMap.map[x + _CellNumbersWidthSpan[y]], x, y);
+      result = CheckIfTileMatchesFilter(event_id, (ObjectFilterStruct *)cond_expr, &gGameMap.map[x + _CellNumbersWidthSpan[y]], x, y);
       break;
     }
     case IFCONDTYPE_CHECK_SIDE:
     {
       int index = GetVariableValue(event_id, object_index_var);
-      result = CheckIfSideMatchesFilter((ObjectFilterStruct *)cond_expr, index);
+      result = CheckIfSideMatchesFilter(event_id, (ObjectFilterStruct *)cond_expr, index);
       break;
     }
     case IFCONDTYPE_CHECK_UNIT_TYPE:
     {
       int index = GetVariableValue(event_id, object_index_var);
-      result = CheckIfUnitTypeMatchesFilter((ObjectFilterStruct *)cond_expr, index);
+      result = CheckIfUnitTypeMatchesFilter(event_id, (ObjectFilterStruct *)cond_expr, index);
       break;
     }
     case IFCONDTYPE_CHECK_BUILDING_TYPE:
     {
       int index = GetVariableValue(event_id, object_index_var);
-      result = CheckIfBuildingTypeMatchesFilter((ObjectFilterStruct *)cond_expr, index);
+      result = CheckIfBuildingTypeMatchesFilter(event_id, (ObjectFilterStruct *)cond_expr, index);
       break;
     }
   }
