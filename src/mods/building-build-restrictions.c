@@ -3,6 +3,7 @@
 #include "macros/patch.h"
 #include "dune2000.h"
 #include "extended-tileset.h"
+#include "../event-system/event-core.h"
 
 // Custom implementation of function GetOwnershipStatusOfCell
 DETOUR(0x00428C30, 0x00428C91, _Mod__GetOwnershipStatusOfCell);
@@ -191,6 +192,12 @@ bool Mod__HandleBuildingPlacement(eSideType side_id, int tile_bitfield, int tile
       v22 = 1;
     }
   }
+
+  // New logic start
+  // Event hook
+  v22 = ExecuteEventHook(HOOK_HANDLEBUILDINGPLACEMENT, 5, v22, mouse_tile_x, mouse_tile_y, building_type, side_id);
+  // New logic end
+
   draw_at_y = v30;
   tile_bit = 1;
   tile_y_ = mouse_tile_y;
@@ -391,6 +398,12 @@ bool Mod__HandleConcretePlacement(int tile_bitfield1, int tile_bitfield2, TImage
       v22 = 1;
     }
   }
+
+  // New logic start
+  // Event hook
+  v22 = ExecuteEventHook(HOOK_HANDLEBUILDINGPLACEMENT, 5, v22, pos_x, pos_y, building_type, gSideId);
+  // New logic end
+
   draw_at_y = v31;
   img_ = img;
   v24 = 1;
