@@ -33,7 +33,7 @@ void DrawLiveStats(TImage *image)
         if (IsSpectator(i)) continue;
         int x = 112 + (column++ * 60);
         char buffer[16];
-        Side side = GetSide(i);
+        CSide *side = GetSide(i);
         row = 0;
         
         Graphlib__DrawTextWithBlackShadow(image, NetPlayerNamesArray[i], x, (rowHeight * row++) + y, 1, textColor);
@@ -46,29 +46,23 @@ void DrawLiveStats(TImage *image)
         
         sprintf(buffer, "%d", GetLightVehiclesOwned(i));
         Graphlib__DrawTextWithBlackShadow(image, buffer, x, (rowHeight * row++) + y, 1, textColor);
-        
-        int *buildingsOwned = (void *)side + HC_BUILDINGS_OWNED;
-        sprintf(buffer, "%d", *buildingsOwned);
+
+        sprintf(buffer, "%d", side->__BuildingsBuilt);
+        Graphlib__DrawTextWithBlackShadow(image, buffer, x, (rowHeight * row++) + y, 1, textColor);
+
+        sprintf(buffer, "%d", side->__UnitsKilled);
+        Graphlib__DrawTextWithBlackShadow(image, buffer, x, (rowHeight * row++) + y, 1, textColor);
+
+        sprintf(buffer, "%d", side->__BuildingsKilled);
+        Graphlib__DrawTextWithBlackShadow(image, buffer, x, (rowHeight * row++) + y, 1, textColor);
+
+        sprintf(buffer, "%d", side->__SpiceHarvested);
+        Graphlib__DrawTextWithBlackShadow(image, buffer, x, (rowHeight * row++) + y, 1, textColor);
+
+        sprintf(buffer, "%d", side->SpiceReal + side->CashReal);
         Graphlib__DrawTextWithBlackShadow(image, buffer, x, (rowHeight * row++) + y, 1, textColor);
         
-        int *unitskilled = (void *)side + HC_UNITS_KILLED;
-        sprintf(buffer, "%d", *unitskilled);
-        Graphlib__DrawTextWithBlackShadow(image, buffer, x, (rowHeight * row++) + y, 1, textColor);
-        
-        int *buildingsDestroyed = (void *)side + HC_BUILDINGS_DESTROYED;
-        sprintf(buffer, "%d", *buildingsDestroyed);
-        Graphlib__DrawTextWithBlackShadow(image, buffer, x, (rowHeight * row++) + y, 1, textColor);
-        
-        int *spiceHarvested = (void *)side + HC_SPICE_HARVESTED;
-        sprintf(buffer, "%d", *spiceHarvested);
-        Graphlib__DrawTextWithBlackShadow(image, buffer, x, (rowHeight * row++) + y, 1, textColor);
-        
-        int *siloCredits = (void *)side + HC_SILO_CREDITS;
-        int *credits = (void *)side + HC_CREDITS;
-        sprintf(buffer, "%d", *siloCredits + *credits);
-        Graphlib__DrawTextWithBlackShadow(image, buffer, x, (rowHeight * row++) + y, 1, textColor);
-        
-        sprintf(buffer, "%d", PlayersUnitsOwned[i].ChoamFrigate);
+        sprintf(buffer, "%d", side->__UnitsBuiltPerType[(int)_templates_GroupIDs.Frigate]);
         Graphlib__DrawTextWithBlackShadow(image, buffer, x, (rowHeight * row++) + y, 1, textColor);
     }
 }

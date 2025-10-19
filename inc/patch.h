@@ -197,7 +197,6 @@ void GenerateUIBB_r8(char *UIBBR8Name);
 void SetVQADisplayModeRes();
 void BlowUpEverything(uint8_t sideId);
 void InitMissionScript();
-void StatsClear();
 void SetSingleProcessorAffinity();
 void InitHighRes();
 void InitImports();

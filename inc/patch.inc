@@ -9,10 +9,6 @@
 %assign DDFLIP_DONOTWAIT 0x00000020
 %assign DDFLIP_WAIT 0x00000001
 
-;others
-%assign UnitTrackerSize 120
-%assign BuildingTrackerSize 248
-
 ; ### Variables ###
 
 cextern SpawnerMaxAhead
@@ -21,8 +17,6 @@ cextern StartWithMCV
 cextern ListenPort
 cextern InitHouses
 cextern MeIsSpectator
-cextern PlayersUnitsOwned
-cextern PlayersBuildingsOwned
 
 cextern HighResAddedWidth
 cextern HighResAddedHeight

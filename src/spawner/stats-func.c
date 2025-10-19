@@ -8,8 +8,6 @@
 
 char StatsDmp[] = ".\\stats.dmp";
 char ProfilerDmp[] = ".\\event_profiler.txt";
-UnitTracker PlayersUnitsOwned[MAX_SIDES];
-BuildingTracker PlayersBuildingsOwned[MAX_SIDES];
 
 static char StatsDmpBuffer[1024 * 20]; 
 static unsigned short StatsDmpLength = 0;
@@ -64,38 +62,55 @@ void WriteStatsDmp(const void *buffer, int length)
     }
 }
 
-void StatsClear() // We have to call this when a game was restarted in skirmish mode
+int GetInfantryOwned(int side_id)
 {
-    memset(&PlayersUnitsOwned, 0, sizeof(PlayersUnitsOwned));
-    memset(&PlayersBuildingsOwned, 0, sizeof(PlayersBuildingsOwned));
+  CSide *side = GetSide(side_id);
+  int result = 0;
+  for (int i = 0; i < gUnitTypeNum; i++)
+    if (_templates_unitattribs[i].__IsInfantry)
+      result += side->__UnitsBuiltPerType[i];
+  return result;
 }
 
-int GetInfantryOwned(int house)
+int GetHeavyVehiclesOwned(int side_id)
 {
-    return PlayersUnitsOwned[house].LightInfantry + PlayersUnitsOwned[house].Trooper + PlayersUnitsOwned[house].Engineer + 
-           PlayersUnitsOwned[house].ThumperInfantry + PlayersUnitsOwned[house].Sardaukar + 
-           PlayersUnitsOwned[house].StealthFremen + PlayersUnitsOwned[house].Fremen + PlayersUnitsOwned[house].Saboteur +
-           PlayersUnitsOwned[house].Sandworm + PlayersUnitsOwned[house].Grenadier + PlayersUnitsOwned[house].SardaukarMP;
+  CSide *side = GetSide(side_id);
+  int result = 0;
+  for (int i = 0; i < gUnitTypeNum; i++)
+  {
+    int behavior = _templates_unitattribs[i].__Behavior;
+    if (!_templates_unitattribs[i].__IsInfantry && _templates_unitattribs[i].__CanCrush &&
+        behavior != UnitBehavior_SANDWORM && behavior != UnitBehavior_CARRYALL && behavior != UnitBehavior_FRIGATE && behavior != UnitBehavior_ORNITHOPTER && behavior != UnitBehavior_DEATH_HAND)
+      result += side->__UnitsBuiltPerType[i];
+  }
+  return result;
 }
 
-int GetHeavyVehiclesOwned(int house)
+int GetLightVehiclesOwned(int side_id)
 {
-    return PlayersUnitsOwned[house].Harvester + PlayersUnitsOwned[house].CombatTankAtreides + PlayersUnitsOwned[house].CombatTankHarkonnen +
-           PlayersUnitsOwned[house].CombatTankOrdos + PlayersUnitsOwned[house].MCV + PlayersUnitsOwned[house].MissileTank + 
-           PlayersUnitsOwned[house].Deviator + PlayersUnitsOwned[house].SiegeTank + PlayersUnitsOwned[house].SonicTank + 
-           PlayersUnitsOwned[house].Devastator;
+  CSide *side = GetSide(side_id);
+  int result = 0;
+  for (int i = 0; i < gUnitTypeNum; i++)
+  {
+    int behavior = _templates_unitattribs[i].__Behavior;
+    if (!_templates_unitattribs[i].__IsInfantry && !_templates_unitattribs[i].__CanCrush &&
+        behavior != UnitBehavior_SANDWORM && behavior != UnitBehavior_CARRYALL && behavior != UnitBehavior_FRIGATE && behavior != UnitBehavior_ORNITHOPTER && behavior != UnitBehavior_DEATH_HAND)
+      result += side->__UnitsBuiltPerType[i];
+  }
+  return result;
 }
 
-int GetLightVehiclesOwned(int house)
+int GetAirUnitsOwned(int side_id)
 {
-    return PlayersUnitsOwned[house].Trike + PlayersUnitsOwned[house].Raider + PlayersUnitsOwned[house].Quad + 
-           PlayersUnitsOwned[house].StealthRaider;
-}
-
-int GetAirUnitsOwned(int house)
-{
-    return PlayersUnitsOwned[house].DeathHandRocket + PlayersUnitsOwned[house].ChoamFrigate + PlayersUnitsOwned[house].Carryall + 
-           PlayersUnitsOwned[house].Carryall2 + PlayersUnitsOwned[house].Ornithopter;
+  CSide *side = GetSide(side_id);
+  int result = 0;
+  for (int i = 0; i < gUnitTypeNum; i++)
+  {
+    int behavior = _templates_unitattribs[i].__Behavior;
+    if (behavior == UnitBehavior_CARRYALL || behavior == UnitBehavior_FRIGATE || behavior == UnitBehavior_ORNITHOPTER || behavior == UnitBehavior_DEATH_HAND)
+      result += side->__UnitsBuiltPerType[i];
+  }
+  return result;
 }
 
 static void WritePlayerCredits()
@@ -105,10 +120,8 @@ static void WritePlayerCredits()
     {
         char id[5];
         sprintf(id, "CRD%d", i);
-        Side side = GetSide(i);
-        uint32_t *siloCredits = (void *)side + HC_SILO_CREDITS;
-        uint32_t *credits = (void *)side + HC_CREDITS;
-        WriteUInt32(id, *siloCredits + *credits);
+        CSide *side = GetSide(i);
+        WriteUInt32(id, side->SpiceReal + side->CashReal);
     }
 }
 
@@ -129,7 +142,8 @@ static void WriteUnitsOwned()
     {
         char id[5];
         sprintf(id, "UNB%d", i);
-        WriteUInt32Array(id, &PlayersUnitsOwned[i], sizeof(UnitTracker));
+        CSide *side = GetSide(i);
+        WriteUInt32Array(id, &side->__UnitsBuiltPerType, sizeof(side->__UnitsBuiltPerType));
     }
 }
 
@@ -140,7 +154,8 @@ static void WriteBuildingsOwned()
     {
         char id[5];
         sprintf(id, "BLB%d", i);
-        WriteUInt32Array(id, &PlayersBuildingsOwned[i], sizeof(BuildingTracker));
+        CSide *side = GetSide(i);
+        WriteUInt32Array(id, &side->__BuildingsBuiltPerType, sizeof(side->__BuildingsBuiltPerType));
     }
 }
 

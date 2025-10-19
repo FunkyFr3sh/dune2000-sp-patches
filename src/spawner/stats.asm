@@ -252,33 +252,33 @@ hack 0x0045CD36 ; ConnectionLost
 ;    jmp 0x0045593E
 
 
-hack 0x004563E5, 0x004563EF ; SaveBuildingsOwnedStats
-%define house esp+0x38
-%define buildingId esp+0x3C
-
-    cmp byte[SpawnerActive], 1
-    jnz .out
-    mov ecx, dword[house]
-    mov eax, dword[buildingId]
-    cmp cl, 8
-    jge .out
-    cmp al, 62
-    jge .out
-    
-    pushad
-    and ecx, 0x000000FF
-    imul ecx, BuildingTrackerSize
-    
-    and eax, 0x000000FF
-    imul eax, 4
-    
-    inc dword[PlayersBuildingsOwned+eax+ecx]
-    popad
-
-.out:
-    mov ecx, dword[buildingId]
-    mov ebp, dword[edi+0x24784]
-    jmp 0x004563EF
+;hack 0x004563E5, 0x004563EF ; SaveBuildingsOwnedStats
+;%define house esp+0x38
+;%define buildingId esp+0x3C;
+;
+;    cmp byte[SpawnerActive], 1
+;    jnz .out
+;    mov ecx, dword[house]
+;    mov eax, dword[buildingId]
+;    cmp cl, 8
+;    jge .out
+;    cmp al, 62
+;    jge .out
+;
+;    pushad
+;    and ecx, 0x000000FF
+;    imul ecx, BuildingTrackerSize
+;
+;    and eax, 0x000000FF
+;    imul eax, 4
+;
+;    inc dword[PlayersBuildingsOwned+eax+ecx]
+;    popad
+;
+;.out:
+;    mov ecx, dword[buildingId]
+;    mov ebp, dword[edi+0x24784]
+;    jmp 0x004563EF
     
     
 hack 0x004412E6, 0x004412EC ; single player stats fix

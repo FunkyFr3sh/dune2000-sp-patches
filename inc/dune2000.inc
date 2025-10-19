@@ -34,14 +34,6 @@
 %assign NT_SERIAL 3
 %assign NT_IPXDIRECTPLAY 4
 
-; Side (HouseClass)
-%assign HC_CREDITS 0x2425C
-%assign HC_SILO_CREDITS 0x24254
-%assign HC_SPICE_HARVESTED 0x2477C
-%assign HC_BUILDINGS_DESTROYED 0x24C94
-%assign HC_UNITS_KILLED 0x24C90
-%assign HC_BUILDINGS_OWNED 0x24784
-
 ; ### Variables ###
 
 ;Network settings

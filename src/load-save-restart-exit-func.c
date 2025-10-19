@@ -15,7 +15,6 @@ void LoadSavedGame(const char *saveGamePath) // Skirmish/SinglePlayer load saved
     memset(&MCVDeployed, 0, sizeof(MCVDeployed));
     LoadRulesFromMap();
     InitMissionScript();
-    StatsClear();
 
     char saveGameIniPath[256];
     sprintf(saveGameIniPath, ".\\%s.ini", saveGamePath);
@@ -40,7 +39,6 @@ void WriteSaveGame(const char *saveGamePath, const char *saveGameName) // Skirmi
 void GamePlayRestart() // Skirmish/SinglePlayer restart game function
 {
     memset(&MCVDeployed, 0, sizeof(MCVDeployed));
-    StatsClear();
     Model__ResetVars();
 }
 

@@ -1,7 +1,6 @@
 #include "macros/patch.h"
 #include "dune2000.h"
 #include "patch.h"
-#include "stats.h"
 
 // Custom implementation of function ModelAddUnit
 DETOUR(0x00455870, 0x00455FBD, _Mod__ModelAddUnit);
@@ -72,17 +71,6 @@ short Mod__ModelAddUnit(eSideType side_id, unsigned char unit_type, unsigned cha
     QueueMessage(string, -1);
     return -1;
   }
-  // New logic start
-  // Spawner - save unit owned stats
-  if (SpawnerActive)
-  {
-    if (side_id < 8 && unit_type < 30)
-    {
-      int *ptr = (int *)&PlayersUnitsOwned[side_id];
-      ptr[unit_type]++;
-    }
-  }
-  // New logic end
   ++side->__UnitsBuilt;
   ++side->__UnitsBuiltPerType[unit_type];
   unit->Health = _templates_unitattribs[unit_type].__Strength;

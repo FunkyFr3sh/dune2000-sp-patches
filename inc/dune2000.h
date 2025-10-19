@@ -265,14 +265,6 @@ enum eDebugFeatures
   DEBUGFEATURE_ENABLE_EVENT_PROFILING = 0x400
 };
 
-// Side (HouseClass)
-#define HC_CREDITS 0x2425C
-#define HC_SILO_CREDITS 0x24254
-#define HC_SPICE_HARVESTED 0x2477C
-#define HC_BUILDINGS_DESTROYED 0x24C94
-#define HC_UNITS_KILLED 0x24C90
-#define HC_BUILDINGS_OWNED 0x24784
-
 // ### Variables ###
 
 //Network settings
