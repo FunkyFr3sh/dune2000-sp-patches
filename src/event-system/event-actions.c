@@ -1747,7 +1747,7 @@ void EvAct_GetObjectProperty(int event_id, int side_id, eDataType data_type, int
   CHECK_OBJECT_INDEX;
   Unit *obj = &GetSide(side_id)->__ObjectArray[index];
   if ((int)obj->ObjectType != (int)object_type)
-    DebugFatal(EVENT_ERROR, "Trying to get %s property of object %d, but the object type is %s (event %d)", object_type_names[object_type], index, object_type_names[obj->ObjectType], event_id);
+    DebugFatal(EVENT_ERROR, "Trying to get %s property of object %d side %d, but the object type is %s (event %d)", object_type_names[object_type], index, side_id, object_type_names[obj->ObjectType], event_id);
   SetVariableValue(event_id, target_var, GetDataValue((char *)obj, data_type, offset));
 }
 

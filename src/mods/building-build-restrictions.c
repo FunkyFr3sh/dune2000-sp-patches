@@ -5,6 +5,9 @@
 #include "extended-tileset.h"
 #include "../event-system/event-core.h"
 
+int place_building_at_x;
+int place_building_at_y;
+
 // Custom implementation of function GetOwnershipStatusOfCell
 DETOUR(0x00428C30, 0x00428C91, _Mod__GetOwnershipStatusOfCell);
 
@@ -113,6 +116,11 @@ bool Mod__HandleBuildingPlacement(eSideType side_id, int tile_bitfield, int tile
   v5 = _gMousePos.y - _OptionsBarHeight + _ViewportYPos;
   mouse_tile_x = (_ViewportXPos + _gMousePos.x) / 32;
   mouse_tile_y = v5 >> 5;
+  // New logic start
+  // Remember coordinates which were checked last time
+  place_building_at_x = mouse_tile_x;
+  place_building_at_y = mouse_tile_y;
+  // New logic end
   draw_at_x_base = _gMousePos.x
                  - (((((_ViewportXPos + _gMousePos.x) >> 31) ^ abs(_ViewportXPos + LOBYTE(_gMousePos.x))) & 0x1F)
                   - ((_ViewportXPos + _gMousePos.x) >> 31));
@@ -320,6 +328,11 @@ bool Mod__HandleConcretePlacement(int tile_bitfield1, int tile_bitfield2, TImage
   v5 = _gMousePos.y - _OptionsBarHeight + _ViewportYPos;
   pos_x = (_ViewportXPos + _gMousePos.x) / 32;
   pos_y = v5 >> 5;
+  // New logic start
+  // Remember coordinates which were checked last time
+  place_building_at_x = pos_x;
+  place_building_at_y = pos_y;
+  // New logic end
   a2 = _gMousePos.x
      - (((((_ViewportXPos + _gMousePos.x) >> 31) ^ abs(_ViewportXPos + LOBYTE(_gMousePos.x))) & 0x1F)
       - ((_ViewportXPos + _gMousePos.x) >> 31));

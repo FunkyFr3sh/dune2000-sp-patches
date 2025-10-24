@@ -87,7 +87,6 @@ void Mod__HandleGameLoopEvents()
   LONG mouse_x; // ebx
   char v62; // bl
   LONG mouse_y; // edx
-  unsigned char place_y; // al
   int atreides_sound_id; // eax MAPDST
   int unit_type_; // eax
   char is_ornithopter; // bl
@@ -1508,12 +1507,15 @@ LABEL_486:
         pixel_y = _ViewportYPos - _OptionsBarHeight + _MouseClickCoords.y;
         // Code removed
         // Make top row of map buildable
-        place_y = pixel_y >> 5;
         GenerateBuildPlaceBuildingOrder(
           gSideId,
           side->__BuildingBuildQueue.__type,
-          (_ViewportXPos + _MouseClickCoords.x) / 32,
-          place_y);
+          // New logic start
+          // Fix mispacement of building when clicked and moved mouse away very quickly
+          // Use coordinates which were last checked in HandleBuildingPlacement or HandleConcretePlacement
+          place_building_at_x,
+          place_building_at_y);
+          // New logic end
         side->__BuildingBuildQueue.c_field_11_cancel = 1;
         _TacticalData.__SidebarButtonMode = 0;
         goto LABEL_649;

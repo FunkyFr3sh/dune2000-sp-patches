@@ -176,6 +176,9 @@ extern HCURSOR HardwareCursors[40];
 extern LOADCURSORFROMFILEAPROC LoadCursorFromFileImpA;
 extern SETCURSORPROC SetCursorImp;
 
+extern int place_building_at_x;
+extern int place_building_at_y;
+
 // ### Functions ###
 
 void SetMouseHook();
