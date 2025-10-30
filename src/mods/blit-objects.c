@@ -1,6 +1,101 @@
 #include "macros/patch.h"
 #include "dune2000.h"
 
+#define MAX_SPRITES_ON_SCREEN 4000
+
+// New extended array for sorting sprites on screen
+DisplayListStruct _DisplayList[MAX_SPRITES_ON_SCREEN];
+
+// Increase the number of sprites that could be drawn on screen from 1000 to 4000
+
+// Custom implementation of function AddToDisplayList
+DETOUR(0x0042AA90, 0x0042ACD5, _Mod__AddToDisplayList);
+
+char Mod__AddToDisplayList(int xpos, int ypos, int flags, TImage *base_image, TImage *barrel_image, TImage *anim_image, _DWORD *list_pos_ptr, DisplayListStruct **list_item_ptr, RECT *viewport_rect, char side_id, char is_selected, char health_bar_size, int health, int max_health, char object_type, Building *object_ptr)
+{
+  int ypos_; // ecx
+  int sort_ypos; // ebp
+  DisplayListStruct *old_ptr; // ebx
+  DisplayListStruct *list_item; // edi
+  DisplayListStruct *i; // eax
+  _DWORD *v21; // esi
+
+  if ( xpos - 128 >= viewport_rect->right )
+  {
+    return 0;
+  }
+  if ( xpos + 128 <= viewport_rect->left )
+  {
+    return 0;
+  }
+  ypos_ = ypos;
+  if ( ypos - 128 >= viewport_rect->bottom || ypos + 128 <= viewport_rect->top )
+  {
+    return 0;
+  }
+  sort_ypos = ypos;
+  if ( object_ptr->ObjectType == OBJECT_BUILDING )
+  {
+    if ( _templates_buildattribs[object_ptr->Type]._____Flags & BFLAGS_200000_HAS_SKIRT )
+    {
+      sort_ypos = ypos - 32;
+    }
+  }
+  old_ptr = 0;
+  list_item = *list_item_ptr;
+  for ( i = *list_item_ptr; i; i = i->next )
+  {
+    if ( i->__sort_ypos >= sort_ypos )
+    {
+      break;
+    }
+    old_ptr = i;
+  }
+  if ( i == list_item )
+  {
+    v21 = list_pos_ptr;
+    *list_item_ptr = &_DisplayList[*list_pos_ptr];
+  }
+  else if ( i )
+  {
+    v21 = list_pos_ptr;
+    list_item = old_ptr->next;
+    old_ptr->next = &_DisplayList[*list_pos_ptr];
+  }
+  else
+  {
+    if ( !old_ptr )
+    {
+      DebugFatal("AddToDisplayList", "Old ptr is NULL");
+      ypos_ = ypos;
+    }
+    v21 = list_pos_ptr;
+    list_item = 0;
+    old_ptr->next = &_DisplayList[*list_pos_ptr];
+  }
+  if ( *v21 >= MAX_SPRITES_ON_SCREEN )
+  {
+    DebugFatal("SortSprites", "Sort list too large");
+    ypos_ = ypos;
+  }
+  _DisplayList[*v21].xpos = xpos;
+  _DisplayList[*v21].ypos = ypos_;
+  _DisplayList[*v21].__sort_ypos = sort_ypos;
+  _DisplayList[*v21].__base_image = base_image;
+  _DisplayList[*v21].__barrel_image = barrel_image;
+  _DisplayList[*v21].__anim_image = anim_image;
+  _DisplayList[*v21].__object_type = object_type;
+  _DisplayList[*v21].next = list_item;
+  _DisplayList[*v21].__side_id = side_id;
+  _DisplayList[*v21].__is_selected = is_selected;
+  _DisplayList[*v21].__healthbarsize = health_bar_size;
+  _DisplayList[*v21].__health = health;
+  _DisplayList[*v21].__max_health = max_health;
+  _DisplayList[*v21].__object_ptr = object_ptr;
+  _DisplayList[(*v21)++].__flags = flags;
+  return 1;
+}
+
 // Custom implementation of function BlitObjects
 DETOUR(0x00428E30, 0x0042A5C8, _Mod__BlitObjects);
 

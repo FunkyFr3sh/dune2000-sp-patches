@@ -213,6 +213,7 @@ setcglob 0x004F4118, _gAIArray
 setcglob 0x00502ED8, _crater_draw_offsets_y
 setcglob 0x00503F88, _crater_draw_offsets_x
 ;setcglob 0x00504030, _gMessageData ; Replaced by mod
+;setcglob 0x005042E8, _DisplayList ; Replaced by mod
 setcglob 0x00512D58, _selectedmaybe_dw_BlitVehicles_512D58
 setcglob 0x00513488, ResourcePath
 setcglob 0x00513488, gRES_PATH

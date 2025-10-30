@@ -403,6 +403,7 @@ extern CAI_                 _gAIArray[];
 extern int                  _crater_draw_offsets_y[16];
 extern int                  _crater_draw_offsets_x[16];
 // extern MessageData          _gMessageData; // Replaced by mod
+// extern DisplayListStruct    _DisplayList[1000]; // Replaced by mod
 extern DisplayListStruct *  _selectedmaybe_dw_BlitVehicles_512D58;
 extern char                 ResourcePath[];
 extern char                 gRES_PATH[152];
