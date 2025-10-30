@@ -245,11 +245,11 @@ void Mod__BlitTiles(TImage *img)
   RECT rect; // [esp+28h] [ebp-10h]
 
   rect.left = 0;
-  v1 = ((_ViewportXPos >> 31) ^ (abs((_BYTE)_ViewportXPos) & 0x1F)) - (_ViewportXPos >> 31);
+  v1 = _ViewportXPos % 32;
   rect.right = _ViewportWidth;
   rect.top = _OptionsBarHeight;
   rect.bottom = _ViewportHeight + _OptionsBarHeight;
-  v20 = ((_ViewportYPos >> 31) ^ (abs((_BYTE)_ViewportYPos) & 0x1F)) - (_ViewportYPos >> 31);
+  v20 = _ViewportYPos % 32;
   tile_start_y = (_ViewportYPos - v20) / 32;
   tile_start_x = (_ViewportXPos - v1) / 32;
   cell_index = tile_start_x + _CellNumbersWidthSpan[tile_start_y];
@@ -333,7 +333,10 @@ void Mod__BlitTiles(TImage *img)
       v14 = viewport_width / 32;
       tile_x_plus_y -= v14;
       tile += _CellNumbersWidthSpan[1] - v14 - 1;
-      if ( draw_y >= _ViewportHeight - v20 + 32 )
+      // The original condition does not seem to work properly
+      //if ( draw_y >= _ViewportHeight - v20 + 32 )
+      // Fix error when scrolling to the bottom of a 128 tiles height map
+      if ( draw_y >= _ViewportHeight )
       {
         break;
       }
