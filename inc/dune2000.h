@@ -392,6 +392,7 @@ extern int                  gScrollSize;
 extern POINT                _gMousePos;
 extern int                  MousePositionX;
 extern int                  MousePositionY;
+extern char                 _offsets_4EB2D8[3][4];
 extern int                  RandSeed;
 extern char                 _bool_shroud_4DFB04;
 extern char                 _Nullstring;

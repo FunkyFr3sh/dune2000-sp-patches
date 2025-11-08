@@ -202,6 +202,7 @@ setcglob 0x004EB030, gScrollSize
 setcglob 0x004EB048, _gMousePos
 setcglob 0x004EB048, MousePositionX
 setcglob 0x004EB04C, MousePositionY
+setcglob 0x004EB2D8, _offsets_4EB2D8
 setcglob 0x004ED870, RandSeed
 setcglob 0x004DFB04, _bool_shroud_4DFB04
 setcglob 0x004F0F18, _Nullstring

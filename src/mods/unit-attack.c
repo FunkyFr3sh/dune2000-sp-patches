@@ -1,6 +1,7 @@
 #include "macros/patch.h"
 #include "dune2000.h"
 #include "utils.h"
+#include "shooting-restrictions.h"
 
 // Added new unit shooting features:
 // - Bulk shots with customizable number of shots in bulk, short and long delay, for pri and sec weapon independently
@@ -9,6 +10,7 @@
 // - Customizable inaccuracy of weapons (0 = vanilla behavior, 1 = almost accurate, the higher value the less accurate)
 // - Fixed shoot offset for higher values
 // - Non-muzzle-flash explosions can be used as muzzle flash, they will be spawned at the origin of shot bullet
+// - Shooting restrictions
 
 bool CanUnitShoot(Unit *unit)
 {
@@ -40,6 +42,8 @@ bool Mod__CanUnitAttackTile(Unit *unit, int target_x, int target_y, bool air_tar
   int target_ypos;
   char secondary_weapon_antiaircraft;
   unsigned int secondary_weapon_range;
+  int primary_weapon_restriction_type;
+  int secondary_weapon_restriction_type;
 
   if ( unit->pos_steps )
   {
@@ -53,10 +57,12 @@ bool Mod__CanUnitAttackTile(Unit *unit, int target_x, int target_y, bool air_tar
   }
   primary_weapon_antiaircraft = _templates_bulletattribs[primary_weapon].AntiAircraft;
   primary_weapon_range = _templates_bulletattribs[primary_weapon].__Range;
+  primary_weapon_restriction_type = (_templates_bulletattribs[primary_weapon].Flags & BULFLAGS_1000_BLOCKED_BY_WALL)?1:2;
   if (unit->LastUsedWeapon == 2)
   {
     primary_weapon_antiaircraft = _templates_bulletattribs[secondary_weapon].AntiAircraft;
     primary_weapon_range = _templates_bulletattribs[secondary_weapon].__Range;
+    primary_weapon_restriction_type = (_templates_bulletattribs[secondary_weapon].Flags & BULFLAGS_1000_BLOCKED_BY_WALL)?1:2;
   }
   unit_xpos = 32 * unit->BlockFromX + 16;
   unit_ypos = 32 * unit->BlockFromY + 16;
@@ -66,11 +72,13 @@ bool Mod__CanUnitAttackTile(Unit *unit, int target_x, int target_y, bool air_tar
   {
     secondary_weapon_antiaircraft = 0;
     secondary_weapon_range = 0;
+    secondary_weapon_restriction_type = 0;
   }
   else
   {
     secondary_weapon_antiaircraft = _templates_bulletattribs[secondary_weapon].AntiAircraft;
     secondary_weapon_range = _templates_bulletattribs[secondary_weapon].__Range;
+    secondary_weapon_restriction_type = (_templates_bulletattribs[secondary_weapon].Flags & BULFLAGS_1000_BLOCKED_BY_WALL)?1:2;
   }
   if ( air_target )
   {
@@ -80,7 +88,7 @@ bool Mod__CanUnitAttackTile(Unit *unit, int target_x, int target_y, bool air_tar
       {
         return 0;
       }
-      goto LABEL_17;
+      return CheckDistance(unit_xpos, unit_ypos, target_xpos, target_ypos, secondary_weapon_range);
     }
     if ( secondary_weapon_antiaircraft )
     {
@@ -88,16 +96,16 @@ bool Mod__CanUnitAttackTile(Unit *unit, int target_x, int target_y, bool air_tar
       {
         return CheckDistance(unit_xpos, unit_ypos, target_xpos, target_ypos, primary_weapon_range);
       }
-      goto LABEL_17;
+      return CheckDistance(unit_xpos, unit_ypos, target_xpos, target_ypos, secondary_weapon_range);
     }
   }
   else if ( primary_weapon_range <= secondary_weapon_range )
   {
-LABEL_17:
     primary_weapon_range = secondary_weapon_range;
-    return CheckDistance(unit_xpos, unit_ypos, target_xpos, target_ypos, primary_weapon_range);
+    primary_weapon_restriction_type = secondary_weapon_restriction_type;
   }
-  return CheckDistance(unit_xpos, unit_ypos, target_xpos, target_ypos, primary_weapon_range);
+  // New logic - check shooting restrictions
+  return CheckDistance(unit_xpos, unit_ypos, target_xpos, target_ypos, primary_weapon_range) && CheckLineOfSight(unit_xpos, unit_ypos, target_xpos, target_ypos, primary_weapon_restriction_type);
 }
 
 // Custom implementation of function UnitAttack
