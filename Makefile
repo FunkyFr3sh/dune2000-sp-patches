@@ -77,7 +77,7 @@ OBJS            ?= callsites.o \
         src/mods/unit-attack.o \
         src/mods/building-update.o \
         src/mods/building-attack.o \
-        src/mods/bullet.o \
+        src/mods/bullet-add.o \
         src/mods/ai-calculate-side-to-attack.o \
         src/mods/ai-unstuck-units-attacking-unreachable-target.o \
         src/mods/unit-move.o \
@@ -90,6 +90,8 @@ OBJS            ?= callsites.o \
         src/mods/extended-tileset.o \
         src/mods/sight-restriction.o \
         src/mods/shooting-restrictions.o \
+        src/mods/bullet-update.o \
+        src/mods/blit-bullets.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \

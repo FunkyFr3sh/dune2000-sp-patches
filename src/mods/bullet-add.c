@@ -3,6 +3,7 @@
 #include "utils.h"
 
 // Add lightning bullet behavior
+// Add railgun bullet behavior
 
 void AddLightning(unsigned char side_id, unsigned char bullet_type, short firer_index, unsigned short source_xpos, unsigned short source_ypos, unsigned short target_xpos, unsigned short target_ypos)
 {
@@ -78,7 +79,7 @@ short Mod__ModelAddBullet(unsigned char side_id, unsigned char bulletype, int de
     return -1;
   }
   // New logic start
-  // Add lightning bullet behavior
+  // Implement lightning bullet behavior
   bullet_template = &_templates_bulletattribs[bulletype];
   if (bullet_template->Behavior == BulletBehavior_LIGHTNING)
   {
@@ -92,6 +93,16 @@ short Mod__ModelAddBullet(unsigned char side_id, unsigned char bulletype, int de
   {
     return -1;
   }
+  // New logic start
+  // Implement railgun bullet behavior
+  if (bullet_template->Behavior == BulletBehavior_RAILGUN)
+  {
+    if (bullet_template->__TrailExplosion == -1)
+      DebugFatal("ModelAddBullet", "Weapon %d has no trail explosion defined.", bulletype);
+    bullet->RailgunAnimationFrame = -1;
+    bullet->RailgunAnimationDelay = 0;
+  }
+  // New logic end
   bullet->__FirerIndex = firer;
   source_xpos_ = source_xpos;
   bullet->__PosX = source_xpos << 16;

@@ -528,6 +528,7 @@ extern char                 _MapName[200];
 extern char                 _templates_BuildingNameList[MAX_BUILDING_TYPES][450];
 extern int                  _cosValues[16384];
 extern char                 _templates_BuildupArtFrames[MAX_BUILDING_TYPES];
+extern TImage *             gBulletElements[64][32];
 extern TImage *             _BuildingAnimationImages[MAX_BUILDING_TYPES][42];
 extern TImage *             gUnitElements[90][35][32];
 extern SmokeDataStruct      _SmokeDataStructs[MAX_BUILDING_TYPES];

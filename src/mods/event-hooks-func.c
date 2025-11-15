@@ -48,19 +48,6 @@ bool Ext_UpdateBuilding(Building *bld, int side_id, short building_index)
   return ExecuteEventHook(HOOK_POSTUPDATEBUILDING, 3, result, side_id, building_index, 0, 0);
 }
 
-// Update bullet hooks
-// Extension wrapper for function UpdateBullet
-CALL(0x004590A9, _Ext_UpdateBullet); // ModelUpdates
-
-char Ext_UpdateBullet(Bullet *bul, int side_id)
-{
-  side_id &= 255;
-  if (ExecuteEventHook(HOOK_PREUPDATEBULLET, 3, 0, side_id, bul->MyIndex, 0, 0))
-    return 1;
-  int result = UpdateBullet(bul, side_id);
-  return ExecuteEventHook(HOOK_POSTUPDATEBULLET, 3, result, side_id, bul->MyIndex, 0, 0);
-}
-
 // Update explosion hooks
 // Extension wrapper for function UpdateExplosion
 CALL(0x004590EC, _Ext_UpdateExplosion); // ModelUpdates

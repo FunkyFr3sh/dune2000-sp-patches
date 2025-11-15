@@ -415,7 +415,8 @@ typedef enum BulletFlags
 typedef enum BulletBehaviorType
 {
   BulletBehaviorType_0 = 0,
-  BulletBehavior_LIGHTNING = 1
+  BulletBehavior_LIGHTNING = 1,
+  BulletBehavior_RAILGUN
 }BulletBehaviorType;
 
 typedef struct Bullet
@@ -438,8 +439,8 @@ typedef struct Bullet
   uint32_t __PosY;
   uint32_t __PosZHeight;
   uint8_t Tag;  // Additional field for extended functionality (mod)
-  char field_31;
-  char field_32;
+  uint8_t RailgunAnimationFrame; // Additional field for extended functionality (mod)
+  uint8_t RailgunAnimationDelay; // Additional field for extended functionality (mod)
   char field_33;
   int32_t __FallingSpeed;
   char field_38;
@@ -468,22 +469,10 @@ typedef struct Bullet
   uint32_t custom_dword_2; // Additional field for extended functionality (mod)
   uint32_t custom_dword_3; // Additional field for extended functionality (mod)
   uint32_t custom_dword_4; // Additional field for extended functionality (mod)
-  char field_60;
-  char field_61;
-  char field_62;
-  char field_63;
-  char field_64;
-  char field_65;
-  char field_66;
-  char field_67;
-  char field_68;
-  char field_69;
-  char field_6A;
-  char field_6B;
-  char field_6C;
-  char field_6D;
-  char field_6E;
-  char field_6F;
+  float RailgunStepX; // Additional field for extended functionality (mod)
+  float RailgunStepY; // Additional field for extended functionality (mod)
+  float RailgunBlockedX; // Additional field for extended functionality (mod)
+  float RailgunBlockedY; // Additional field for extended functionality (mod)
   char field_70;
   char field_71;
   char field_72;

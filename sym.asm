@@ -338,6 +338,7 @@ setcglob 0x006F9840, _MapName
 setcglob 0x006F9908, _templates_BuildingNameList
 setcglob 0x00704A98, _cosValues
 setcglob 0x00714A98, _templates_BuildupArtFrames
+setcglob 0x00714B00, gBulletElements
 setcglob 0x00716B00, _BuildingAnimationImages
 setcglob 0x0071ACA0, gUnitElements
 setcglob 0x0077D3A0, _SmokeDataStructs
