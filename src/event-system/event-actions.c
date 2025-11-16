@@ -2015,6 +2015,7 @@ void EvAct_GetRule(int event_id, int rule, int target_var)
     case 39: result = rulesExt__uncloakRemainingStealthUnit; break;
     case 40: result = rulesExt__maxChatMessages; break;
     case 41: result = rulesExt__showNeutralBecomeHostileMsg; break;
+    case 42: result = rulesExt__maxSameSoundsPlaying; break;
   }
   SetVariableValue(event_id, target_var, result);
 }

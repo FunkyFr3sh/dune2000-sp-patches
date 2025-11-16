@@ -22,7 +22,7 @@ typedef struct SampleData
   int position;
   int pan;
   int rate;
-  int field_10;
+  unsigned int added_at_ticks; // Additional field for extended functionality (mod)
   int field_14;
   int volume;
   int __sound_id;

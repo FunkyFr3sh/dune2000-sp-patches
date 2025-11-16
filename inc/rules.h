@@ -50,3 +50,4 @@ extern uint32_t rulesExt__buildSpeedPercentageHard;
 extern bool     rulesExt__uncloakRemainingStealthUnit;
 extern uint8_t  rulesExt__maxChatMessages;
 extern bool     rulesExt__showNeutralBecomeHostileMsg;
+extern uint8_t  rulesExt__maxSameSoundsPlaying;

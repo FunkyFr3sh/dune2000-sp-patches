@@ -1,5 +1,6 @@
 #include "macros/patch.h"
 #include "dune2000.h"
+#include "rules.h"
 
 // Increase number of sound channels from 6 to 15 and increase sound cache size from 16 to 40
 // Whole ISampleManager class needs to be re-implemented because the ISampleManager struct has
@@ -367,13 +368,17 @@ void __thiscall Mod__ISampleManager__SetSampleData(ISampleManager *this, int han
 {
   SampleData *handle; // eax
 
+  (void)a7;
   if ( (signed __int16)handle_id < NUM_HANDLES && (handle_id & 0x8000u) == 0 )
   {
     handle = &this->__handles[(signed __int16)handle_id];
     handle->position = position;
     handle->pan = pan;
     handle->rate = rate;
-    handle->field_10 = a7;
+    // New logic start
+    // Record ticks the sound was played at
+    handle->added_at_ticks = gGameTicks;
+    // New logic end
     handle->field_14 = a8;
     handle->volume = volume;
   }
@@ -708,15 +713,18 @@ void Mod__PlaySoundAt(int id, unsigned __int8 xpos, unsigned __int8 ypos)
     if ( id >= 0 )
     {
       // New logic start
-      // Allow no more than two simultaneously playing instances of same sound
+      // Allow no more than 2 simultaneously playing instances of same sound at same tick, and overally according to maxSameSoundsPlaying rule
       int count_playing = 0;
+      int count_playing_same_tick = 0;
       for (int i = 1; i < NUM_HANDLES; i++)
       {
-        if ( (AIL_sample_status(_gSampleMgr->__handles[i].sampleptr) & 4) && id == _gSampleMgr->__handles[i].__sound_id )
+        if ( (AIL_sample_status(_gSampleMgr->__handles[i].sampleptr) & 4) && (id == _gSampleMgr->__handles[i].__sound_id) )
         {
           count_playing++;
+          if (_gSampleMgr->__handles[i].added_at_ticks == gGameTicks)
+            count_playing_same_tick++;
         }
-        if (count_playing == 2)
+        if (count_playing == rulesExt__maxSameSoundsPlaying || count_playing_same_tick == 2)
           return;
       }
       // New logic end
