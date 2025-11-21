@@ -92,6 +92,7 @@ OBJS            ?= callsites.o \
         src/mods/shooting-restrictions.o \
         src/mods/bullet-update.o \
         src/mods/blit-bullets.o \
+        src/mods/building-storage-capacity.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \

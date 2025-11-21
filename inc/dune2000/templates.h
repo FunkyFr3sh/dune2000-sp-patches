@@ -136,7 +136,9 @@ typedef struct BuildingAtrbStruct
   uint8_t SecondaryWeaponShootOffset;
   uint8_t SecondaryWeaponShootAngle;
   uint8_t BuildRestrictionTerrain;
-  char field_8D[113];
+  uint8_t _Padding;
+  uint32_t StorageCapacity;
+  char field_8D[108];
 }BuildingAtrbStruct;
 
 typedef struct SmokeDataStruct
