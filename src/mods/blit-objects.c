@@ -621,7 +621,10 @@ LABEL_105:
           a3 = ypos;
           draw_y = ypos - bottom;
           unit = (Unit *)list_item_->__object_ptr;
-          if ( unit->LastFired < 1u )
+          // New logic start
+          // Fixed barrel will move when shooting only with primary weapon
+          if ( unit->LastFired < 1u && unit->LastUsedWeapon == 1 )
+          // New logic end
           {
             a5 = (unsigned char)list_item_->__object_ptr->custom_byte_2 << 11;
             draw_x += *(int *)((char *)&_sinValues[64] + a5) / -65536;
