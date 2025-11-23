@@ -1080,9 +1080,13 @@ LABEL_191:
           while ( (unsigned int)a3 < spice_blobs );
         }
         spice_blobs = (list_item_->__object_ptr->Flags >> 8) & 255;
-        if ( spice_blobs < 7 )
+        // New logic start
+        // Customizable Harvester storage capacity
+        unsigned int storage_capacity = _templates_unitattribs[unit->Type].StorageCapacity?_templates_unitattribs[unit->Type].StorageCapacity:7;
+        if ( spice_blobs < storage_capacity )
         {
-          a3 = 7 - spice_blobs;
+          a3 = storage_capacity - spice_blobs;
+        // New logic end
           do
           {
             blob_draw_x += 3;
@@ -1118,9 +1122,13 @@ LABEL_217:
           while ( a3 < cloak_units );
         }
         cloak_units_ = (unsigned int)((list_item_->__object_ptr->Flags >> 8) & 255) >> 5;
-        if ( cloak_units_ < 5 )
+        // New logic start
+        // Customizable Saboteur cloaking capacity
+        unsigned int storage_capacity = (_templates_unitattribs[unit->Type].StorageCapacity?_templates_unitattribs[unit->Type].StorageCapacity:160) >> 5;
+        if ( cloak_units_ < storage_capacity )
         {
-          a3 = 5 - cloak_units_;
+          a3 = storage_capacity - cloak_units_;
+        // New logic end
           do
           {
             blob_draw_y -= 3;

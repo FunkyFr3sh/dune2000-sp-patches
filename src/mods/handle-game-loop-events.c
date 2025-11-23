@@ -415,7 +415,10 @@ LABEL_41:
               }
               goto LABEL_41;
             case UnitBehavior_SABOTEUR:
-              if ( target->__SpecialPurpose >= 160u )
+              // New logic start
+              // Customizable Saboteur cloaking capacity
+              if ( target->__SpecialPurpose >= (_templates_unitattribs[target->Type].StorageCapacity?_templates_unitattribs[target->Type].StorageCapacity:160u) )
+              // New logic end
               {
                 SetMouseCursor(CURSOR_DEPLOY);
                 goto LABEL_164;
@@ -1801,7 +1804,11 @@ LABEL_580:
               }
               if ( unit_is_selected && _templates_unitattribs[unit->Type].__Behavior == UnitBehavior_SABOTEUR )
               {
-                if ( unit->__SpecialPurpose >= 160u )
+
+                // New logic start
+                // Customizable Saboteur cloaking capacity
+                if ( unit->__SpecialPurpose >= (_templates_unitattribs[unit->Type].StorageCapacity?_templates_unitattribs[unit->Type].StorageCapacity:160u) )
+                // New logic end
                 {
                   GenerateUnitDeployOrder(side_id, object_index);
                   PlayUnitResponse(0);
@@ -2148,7 +2155,7 @@ LABEL_665:
         if ( (behavior == UnitBehavior_MCV && CheckIfMCVCanBeDeployedOn(unit->BlockFromX, unit->BlockFromY))
           || (behavior == UnitBehavior_DEVASTATOR && unit->State != UNIT_STATE_31_SELFDESTRUCT)
           || (behavior == UnitBehavior_THUMPER && gGameMap.map[unit->BlockFromX + _CellNumbersWidthSpan[unit->BlockFromY]].__tile_bitflags & TileFlags_10000_SANDY)
-          || (behavior == UnitBehavior_SABOTEUR && unit->__SpecialPurpose >= 160u)
+          || (behavior == UnitBehavior_SABOTEUR && unit->__SpecialPurpose >= (_templates_unitattribs[unit->Type].StorageCapacity?_templates_unitattribs[unit->Type].StorageCapacity:160u))
           )
         {
           GenerateUnitDeployOrder(gSideId, unit->MyIndex);

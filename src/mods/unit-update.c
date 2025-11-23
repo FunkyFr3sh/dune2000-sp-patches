@@ -350,8 +350,11 @@ char Mod__UpdateUnit(Unit *unit, eSideType side_id, short myIndex)
     cloaking_points = unit->__SpecialPurpose;
     if ( !(unit_flags & UFLAGS_10_STEALTH) )
     {
-      if ( cloaking_points >= 160u )
+      // New logic start
+      // Customizable Saboteur cloaking capacity
+      if ( cloaking_points >= (_templates_unitattribs[unit->Type].StorageCapacity?_templates_unitattribs[unit->Type].StorageCapacity:160u) )
       {
+      // New logic end
         goto LABEL_27;
       }
       ++cloaking_points;
@@ -1160,7 +1163,10 @@ LABEL_285:
         unit->__CurrentAnimDelayCounter_SandwormSleepTimeCounter = v135 - 1;
         goto LABEL_612;
       }
-      if ( unit->__SpecialPurpose >= 7u )
+      // New logic start
+      // Customizable Harvester storage capacity
+      if ( unit->__SpecialPurpose >= (_templates_unitattribs[unit->Type].StorageCapacity?_templates_unitattribs[unit->Type].StorageCapacity:7u) )
+      // New logic end
       {
         UnitAdjustState(unit, UNIT_STATE_13_MOVING_TO_REFINERY);
         goto LABEL_612;

@@ -93,6 +93,8 @@ OBJS            ?= callsites.o \
         src/mods/bullet-update.o \
         src/mods/blit-bullets.o \
         src/mods/building-storage-capacity.o \
+        src/mods/ai-do-saboteur.o \
+        src/mods/customizable-saboteur-duration.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \

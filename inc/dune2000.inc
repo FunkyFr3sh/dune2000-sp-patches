@@ -147,6 +147,7 @@ cextern _IsMultiplayer
 cextern _gDiplomacy
 cextern WindowActivated
 cextern _IRValues
+cextern _templates_unitattribs
 
 
 ; ### Functions ###

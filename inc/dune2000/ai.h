@@ -24,6 +24,20 @@ typedef enum eTaskType
   TASK_COUNT = 0x13,
 }eTaskType;
 
+typedef enum eJobType
+{
+  JOB_NO_JOB = 0x0,
+  JOB_1_RepairBuildings = 0x1,
+  JOB_2_RepairUnits = 0x2,
+  JOB_3_BuildHarvesters = 0x3,
+  JOB_4_BuildCarryalls = 0x4,
+  JOB_5_BuildBuildings = 0x5,
+  JOB_6_BuildUnits = 0x6,
+  JOB_7 = 0x7,
+  JOB_8_BuyUnits = 0x8,
+  JOB_COUNT = 0x9,
+}eJobType;
+
 typedef struct AIGroup
 {
   char __side;
@@ -36,7 +50,7 @@ typedef struct AIGroup
   int32_t dw_field_14;
   int32_t dw_field_18_counter;
   char Task_1C; //eTaskType
-  char c_field_1D;
+  char c_field_1D_delivery_index;
   char field_1E;
   char field_1F;
   int32_t dw_field_20__flags;
@@ -109,7 +123,7 @@ typedef struct CAI_
   char field_23;
   int32_t __best_base_pos_x;
   int32_t __best_base_pos_y;
-  AIGroup __AIGroups_2C[32];
+  AIGroup __AIGroups[32];
   StructForCAI __InitialBuildingPositions[150];
   char __BuildingCount;
   char FreePercentage;

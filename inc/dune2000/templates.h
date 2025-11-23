@@ -62,7 +62,8 @@ typedef struct UnitAtribStruct
   uint8_t CustomDeathSoundNumber;
   int CustomDeathSound;
   bool NotEdible;
-  char ZeroBytes[63];
+  uint8_t StorageCapacity;
+  char ZeroBytes[62];
 }UnitAtribStruct;
 
 typedef struct BuildingAtrbStruct
