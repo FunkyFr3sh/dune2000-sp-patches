@@ -125,7 +125,6 @@ OBJS            ?= callsites.o \
 	src/fixes/ai-stuck-targeting-cloaked-unit-fix.o \
 	src/fixes/cancel-upgrade-when-lowered-tech.o \
 	src/fixes/unit-build-availability-check-fix.o \
-	src/fixes/dont-target-invulnerable-carryall.o \
 	src/fixes/ai-place-built-building-fix.o \
 	src/fixes/score-screen-volume-fix.o \
 	src/fixes/deactivate-ai-broken-orders-fix.o \

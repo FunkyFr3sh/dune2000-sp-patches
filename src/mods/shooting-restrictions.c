@@ -445,6 +445,10 @@ LABEL_57:
     }
   }
   while ( !(unit->Flags & UFLAGS_40_FLYING)
+       // New logic start
+       // Do not target invulnerable carryalls which bring a delivery
+       || unit->Flags & UFLAGS_8000000_INVULNERABLE
+       // New logic end
        || unit->Type == _templates_GroupIDs.Frigate
        || (unit->BlockToX != v16[0] && unit->BlockFromX != v16[0])
        || (unit->BlockFromY != v49 && unit->BlockToY != v49)
