@@ -1758,7 +1758,7 @@ LABEL_622:
                 if ( _gAIArray[side_id__].__IsAI == 1 )
                 {
                   ai_group = CAI__FindGroupForDelivery(&_gAIArray[side_id__], unit->LastMoved);
-                  *(int *)((char *)&_gAIArray[0].__AIGroups_2C[ai_group].dw_field_20__flags + side_id__ * 7608) |= 1u;
+                  *(int *)((char *)&_gAIArray[0].__AIGroups[ai_group].dw_field_20__flags + side_id__ * 7608) |= 1u;
                   myIndex = unit->LastMoved;
                   side_ = GetSide((eSideType)side_id_);
                   v63 = myIndex;
@@ -1766,7 +1766,7 @@ LABEL_622:
                   int i = (int)side_;
                   v66 = 7 * v65;
                   ai_group = CAI__FindGroupForDelivery(&_gAIArray[side_id__], v63);
-                  *(&_gAIArray[0].__AIGroups_2C[ai_group].field_27 + side_id__ * 7608) = *(_BYTE *)(i
+                  *(&_gAIArray[0].__AIGroups[ai_group].field_27 + side_id__ * 7608) = *(_BYTE *)(i
                                                                                                   + 8 * v66
                                                                                                   + 156450);
                 }
