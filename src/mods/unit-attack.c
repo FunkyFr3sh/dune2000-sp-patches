@@ -852,6 +852,16 @@ LABEL_12:
     else
     {
       TurnUnitInDirection(unit_, target_direction);
+      if (unit_template->__BarrelArt != -1)
+      {
+        unit->__TurretTurnDelayCounter = unit_->__UnitTurnDelayCounter;
+        TurnUnitBarrelInDirection(unit_, target_direction);
+      }
+    }
+    if ( unit_is_in_right_direction && !(use_barrel || fixed_barrel) && (unit_template->__BarrelArt != -1) )
+    {
+      unit->__TurretTurnDelayCounter = 0;
+      TurnUnitBarrelInDirection(unit_, target_direction);
     }
   }
 }
