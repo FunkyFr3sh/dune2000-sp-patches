@@ -11,6 +11,9 @@
 // - Fixed shoot offset for higher values
 // - Non-muzzle-flash explosions can be used as muzzle flash, they will be spawned at the origin of shot bullet
 // - Shooting restrictions
+// - Shoot y-offset for each weapon (pri/sec)
+// - Configurable whether specific weapon (pri/sec) uses barrel or not
+// - Primary/secondary weapon priority
 
 bool CanUnitShoot(Unit *unit)
 {
@@ -523,6 +526,95 @@ char Mod__UnitAttackTile(Unit *unit, char side, short index)
   return 1;
 }
 
+char NewBestBulletExt(UnitAtribStruct *unit_template, unsigned int distance_squared, char enemy_side_id, short enemy_index, char enemy_object_type)
+{
+  CSide *enemy_side; // eax
+  char result; // al
+  unsigned int primary_weapon_range; // edi
+  unsigned int secondary_weapon_range; // esi
+  char enemy_is_flying; // [esp+Fh] [ebp-5h]
+  unsigned char armour_type; // [esp+10h] [ebp-4h]
+
+  int primary_weapon = unit_template->__PrimaryWeapon;
+  int secondary_weapon = unit_template->__SecondaryWeapon;
+  armour_type = 0;
+  enemy_is_flying = 0;
+  if ( primary_weapon == -1 )
+  {
+    DebugFatal("NewBestBullet", "no primary weapon");
+  }
+  if ( enemy_index != -1 )
+  {
+    if ( enemy_object_type == OBJECT_UNIT )
+    {
+      enemy_side = GetSide(enemy_side_id);
+      armour_type = _templates_unitattribs[enemy_side->__ObjectArray[enemy_index].Type].__Armour;
+      if ( enemy_side->__ObjectArray[enemy_index].Flags & UFLAGS_40_FLYING )
+      {
+        enemy_is_flying = 1;
+      }
+    }
+    else if ( enemy_object_type == OBJECT_BUILDING )
+    {
+      armour_type = _templates_buildattribs[LOBYTE(GetSide(enemy_side_id)->__ObjectArray[enemy_index].__PosX)].Armour;
+    }
+  }
+  if ( enemy_is_flying )
+  {
+    if ( !_templates_bulletattribs[primary_weapon].AntiAircraft )
+    {
+      result = secondary_weapon;
+      if ( secondary_weapon < 0 || !_templates_bulletattribs[secondary_weapon].AntiAircraft )
+      {
+        DebugFatal("NewBestBullet", "Trying to shoot air unit with no AA weapon");
+        result = primary_weapon;
+      }
+      return result;
+    }
+    return primary_weapon;
+  }
+  result = secondary_weapon;
+  if ( secondary_weapon == -1 )
+  {
+    return primary_weapon;
+  }
+  primary_weapon_range = _templates_bulletattribs[primary_weapon].__Range;
+  secondary_weapon_range = _templates_bulletattribs[secondary_weapon].__Range;
+  if ( primary_weapon_range >= secondary_weapon_range )
+  {
+    if ( secondary_weapon_range * secondary_weapon_range < distance_squared )
+    {
+      return primary_weapon;
+    }
+    if (unit_template->WeaponPriority == 1)
+      return primary_weapon;
+    if (unit_template->WeaponPriority == 2)
+      return secondary_weapon;
+    if ( _templates_bulletattribs[primary_weapon].__Damage * ((unit_template->PrimaryWeaponDoubleShot)?2:1)
+       * (unsigned int)(unsigned __int8)_WarheadData[(unsigned __int8)_templates_bulletattribs[primary_weapon].Warhead].Verses[armour_type] >
+        _templates_bulletattribs[secondary_weapon].__Damage * ((unit_template->SecondaryWeaponDoubleShot)?2:1)
+       * (unsigned int)(unsigned __int8)_WarheadData[(unsigned __int8)_templates_bulletattribs[secondary_weapon].Warhead].Verses[armour_type] )
+    {
+      result = primary_weapon;
+    }
+  }
+  else if ( primary_weapon_range * primary_weapon_range >= distance_squared )
+  {
+    if (unit_template->WeaponPriority == 1)
+      return primary_weapon;
+    if (unit_template->WeaponPriority == 2)
+      return secondary_weapon;
+    if ( _templates_bulletattribs[primary_weapon].__Damage * ((unit_template->PrimaryWeaponDoubleShot)?2:1)
+       * (unsigned int)(unsigned __int8)_WarheadData[(unsigned __int8)_templates_bulletattribs[primary_weapon].Warhead].Verses[armour_type] >
+        _templates_bulletattribs[secondary_weapon].__Damage * ((unit_template->SecondaryWeaponDoubleShot)?2:1)
+       * (unsigned int)(unsigned __int8)_WarheadData[(unsigned __int8)_templates_bulletattribs[secondary_weapon].Warhead].Verses[armour_type] )
+    {
+      result = primary_weapon;
+    }
+  }
+  return result;
+}
+
 // Custom implementation of function UnitShootTarget
 DETOUR(0x00495B90, 0x0049602C, _Mod__UnitShootTarget);
 
@@ -534,7 +626,8 @@ void Mod__UnitShootTarget(Unit *unit, char side, unsigned short index, int targe
   int unit_ypos; // edi
   UnitAtribStruct *unit_template;
   char target_direction; // al MAPDST
-  char has_barrel; // cl
+  char use_barrel;
+  bool fixed_barrel;
   int muzzle_flash_explosion_type; // cl
   short explosion_index; // bx MAPDST
   int direction; // ecx
@@ -544,6 +637,7 @@ void Mod__UnitShootTarget(Unit *unit, char side, unsigned short index, int targe
   RECT rect; // [esp+10h] [ebp-10h]
   signed char bullet_type; // [esp+24h] [ebp+4h]
   int inaccuracy;
+  int shoot_yoffset;
   int shoot_offset;
   int shoot_angle;
   bool double_shot;
@@ -571,8 +665,30 @@ void Mod__UnitShootTarget(Unit *unit, char side, unsigned short index, int targe
   if ( unit_xpos != target_xpos || unit_ypos != target_ypos )
   {
     target_direction = GetFacing(unit_xpos, unit_ypos, target_xpos, target_ypos);
-    has_barrel = unit_template->__HasBarrel;
-    if ( has_barrel )
+    // Get distance
+    distance_squared = (unit_ypos - target_ypos) * (unit_ypos - target_ypos) + (unit_xpos - target_xpos) * (unit_xpos - target_xpos);
+    distance = sqrt((double)distance_squared);
+    // Get bullet type
+    if (unit->LastUsedWeapon == 1)
+      bullet_type = unit_template->__PrimaryWeapon;
+    else if (unit->LastUsedWeapon == 2)
+      bullet_type = unit_template->__SecondaryWeapon;
+    else
+    {
+      bullet_type = NewBestBulletExt(
+                      unit_template,
+                      distance_squared,
+                      enemySideId,
+                      enemyIndex,
+                      enemy_object_type);
+      if ( bullet_type < 0 )
+      {
+        DebugFatal("ShootTarget", "NewBestBullet failed to find weapon");
+      }
+    }
+    use_barrel = (bullet_type == unit_template->__PrimaryWeapon)?unit_template->PrimaryWeaponUseBarrel:unit_template->SecondaryWeaponUseBarrel;
+    fixed_barrel = unit_->Flags & UFLAGS_8000_FIXED_BARREL;
+    if ( use_barrel || fixed_barrel )
     {
       if ( unit_->__FacingTurret != target_direction )
       {
@@ -593,26 +709,6 @@ LABEL_12:
       }
       else
       {
-        // Get distance
-        distance_squared = (unit_ypos - target_ypos) * (unit_ypos - target_ypos) + (unit_xpos - target_xpos) * (unit_xpos - target_xpos);
-        distance = sqrt((double)distance_squared);
-        // Get bullet type
-        if (unit->LastUsedWeapon == 1)
-          bullet_type = unit_template->__PrimaryWeapon;
-        else if (unit->LastUsedWeapon == 2)
-          bullet_type = unit_template->__SecondaryWeapon;
-        else
-          bullet_type = NewBestBullet(
-                          unit_template->__PrimaryWeapon,
-                          unit_template->__SecondaryWeapon,
-                          distance_squared,
-                          enemySideId,
-                          enemyIndex,
-                          enemy_object_type);
-        if ( bullet_type < 0 )
-        {
-          DebugFatal("ShootTarget", "NewBestBullet failed to find weapon");
-        }
         // Play sound
         PlaySoundAt(_templates_bulletattribs[bullet_type].__FiringSound, unit_xpos >> 5, unit_ypos >> 5);
         // Reveal unit shooting player's unit
@@ -631,17 +727,19 @@ LABEL_12:
           _mapvisstate_548010 = GetMapVisState();
         }
         // Get stuff
-        direction = (unit_template->__BarrelArt == -1)?unit_->__Facing:unit_->__FacingTurret;
+        direction = use_barrel?unit_->__FacingTurret:unit_->__Facing;
         inaccuracy = ((_templates_bulletattribs[bullet_type].Inaccuracy?_templates_bulletattribs[bullet_type].Inaccuracy:16) * distance) / 128;
         if (bullet_type == unit_template->__PrimaryWeapon)
         {
           double_shot = unit_template->PrimaryWeaponDoubleShot;
+          shoot_yoffset = unit_template->PrimaryWeaponShootYOffset;
           shoot_offset = unit_template->PrimaryWeaponShootOffset;
           shoot_angle = unit_template->PrimaryWeaponShootAngle & 31;
         }
         else
         {
           double_shot = unit_template->SecondaryWeaponDoubleShot;
+          shoot_yoffset = unit_template->SecondaryWeaponShootYOffset;
           shoot_offset = unit_template->SecondaryWeaponShootOffset;
           shoot_angle = unit_template->SecondaryWeaponShootAngle & 31;
         }
@@ -653,7 +751,7 @@ LABEL_12:
         if ( !double_shot )
         {
           source_xpos = (_sinValues[shoot_offset + ((16 - direction) & 31) * 512] / 2048) + unit_xpos;
-          source_ypos = (_cosValues[shoot_offset + ((16 - direction) & 31) * 512] / 2048) + unit_ypos;
+          source_ypos = (_cosValues[shoot_offset + ((16 - direction) & 31) * 512] / 2048) + unit_ypos + shoot_yoffset;
           dest_xpos = target_xpos;
           dest_ypos = target_ypos;
           if ( inaccuracy )
@@ -676,7 +774,7 @@ LABEL_12:
         {
           // First shot
           source_xpos = (_sinValues[shoot_offset + ((16 - direction + shoot_angle) & 31) * 512] / 2048) + unit_xpos;
-          source_ypos = (_cosValues[shoot_offset + ((16 - direction + shoot_angle) & 31) * 512] / 2048) + unit_ypos;
+          source_ypos = (_cosValues[shoot_offset + ((16 - direction + shoot_angle) & 31) * 512] / 2048) + unit_ypos + shoot_yoffset;
           dest_xpos = target_xpos + (_sinValues[(shoot_angle * shoot_offset) / 8 + ((16 - direction + 8) & 31) * 512] / 2048);
           dest_ypos = target_ypos + (_cosValues[(shoot_angle * shoot_offset) / 8 + ((16 - direction + 8) & 31) * 512] / 2048);
           if ( inaccuracy )
@@ -695,7 +793,7 @@ LABEL_12:
           }
           // Second shot
           source_xpos = (_sinValues[shoot_offset + ((16 - direction - shoot_angle) & 31) * 512] / 2048) + unit_xpos;
-          source_ypos = (_cosValues[shoot_offset + ((16 - direction - shoot_angle) & 31) * 512] / 2048) + unit_ypos;
+          source_ypos = (_cosValues[shoot_offset + ((16 - direction - shoot_angle) & 31) * 512] / 2048) + unit_ypos + shoot_yoffset;
           dest_xpos = target_xpos + (_sinValues[(shoot_angle * shoot_offset) / 8 + ((16 - direction - 8) & 31) * 512] / 2048);
           dest_ypos = target_ypos + (_cosValues[(shoot_angle * shoot_offset) / 8 + ((16 - direction - 8) & 31) * 512] / 2048);
           if ( inaccuracy )
@@ -742,10 +840,10 @@ LABEL_12:
         }
       }
     }
-    else if ( unit_template->__HasBarrel )
+    else if ( use_barrel || fixed_barrel )
     {
       TurnUnitBarrelInDirection(unit_, target_direction);
-      if ( unit_->Flags & UFLAGS_8000_FIXED_BARREL )
+      if ( fixed_barrel )
       {
         unit_->__UnitTurnDelayCounter = 0;
         TurnUnitInDirection(unit_, target_direction);

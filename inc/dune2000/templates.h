@@ -22,7 +22,7 @@ typedef struct UnitAtribStruct
   int __BuildSpeed;
   char __TechReq;
   char __AvailableInStarport;
-  char __HasBarrel;
+  char PrimaryWeaponUseBarrel;
   char __UpgradesNeeded;
   int __PreReq1;
   char __SideNeeded;
@@ -63,7 +63,11 @@ typedef struct UnitAtribStruct
   int CustomDeathSound;
   bool NotEdible;
   uint8_t StorageCapacity;
-  char ZeroBytes[62];
+  char PrimaryWeaponShootYOffset;
+  char SecondaryWeaponShootYOffset;
+  bool SecondaryWeaponUseBarrel;
+  uint8_t WeaponPriority;
+  char ZeroBytes[58];
 }UnitAtribStruct;
 
 typedef struct BuildingAtrbStruct

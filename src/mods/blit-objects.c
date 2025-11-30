@@ -622,8 +622,9 @@ LABEL_105:
           draw_y = ypos - bottom;
           unit = (Unit *)list_item_->__object_ptr;
           // New logic start
-          // Fixed barrel will move when shooting only with primary weapon
-          if ( unit->LastFired < 1u && unit->LastUsedWeapon == 1 )
+          // Barrel will recoil only if the used weapon uses barrel
+          bool use_barrel = (unit->LastUsedWeapon == 1)?_templates_unitattribs[unit->Type].PrimaryWeaponUseBarrel:_templates_unitattribs[unit->Type].SecondaryWeaponUseBarrel;
+          if ( unit->LastFired < 1u && use_barrel )
           // New logic end
           {
             a5 = (unsigned char)list_item_->__object_ptr->custom_byte_2 << 11;
