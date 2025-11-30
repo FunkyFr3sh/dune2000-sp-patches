@@ -272,7 +272,7 @@ bool CheckIfUnitMatchesCriteria(Unit *unit, eSideType side_id, eUnitFilterCriter
     case UNITCATEGORY_SPECIAL:            result = is_special_unit; break;
     case UNITCATEGORY_HAS_PRI_WEAPON:     result = unit_template->__PrimaryWeapon != -1; break;
     case UNITCATEGORY_HAS_SEC_WEAPON:     result = unit_template->__SecondaryWeapon != -1; break;
-    case UNITCATEGORY_HAS_BARREL:         result = unit_template->__HasBarrel; break;
+    case UNITCATEGORY_HAS_BARREL:         result = unit_template->__BarrelArt != -1; break;
     case UNITCATEGORY_CAN_BE_UPGRADED:    result = unit_template->UnitUpgradeAllowed; break;
     case UNITCATEGORY_MY_SIDE:            result = side_id == gSideId; break;
     case UNITCATEGORY_ALLY_SIDE:          result = (_gDiplomacy[side_id][gSideId] == 0) && (side_id != gSideId); break;
@@ -687,7 +687,7 @@ bool CheckIfUnitTypeMatchesCriteria(int unit_type, eUnitTypeFilterCriteriaType c
     case UNITTYPECATEGORY_SPECIAL:            result = is_special_unit; break;
     case UNITTYPECATEGORY_HAS_PRI_WEAPON:     result = unit_template->__PrimaryWeapon != -1; break;
     case UNITTYPECATEGORY_HAS_SEC_WEAPON:     result = unit_template->__SecondaryWeapon != -1; break;
-    case UNITTYPECATEGORY_HAS_BARREL:         result = unit_template->__HasBarrel; break;
+    case UNITTYPECATEGORY_HAS_BARREL:         result = unit_template->__BarrelArt != -1; break;
     case UNITTYPECATEGORY_CAN_BE_UPGRADED:    result = unit_template->UnitUpgradeAllowed; break;
     }
     break;

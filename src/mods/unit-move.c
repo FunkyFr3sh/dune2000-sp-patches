@@ -170,7 +170,7 @@ LABEL_70:
       v30 = 1;
     }
     TurnUnitInDirection(unit_, v29);
-    if ( _templates_unitattribs[unit_->Type].__HasBarrel )
+    if ( _templates_unitattribs[unit_->Type].__BarrelArt != -1 )
     {
       if ( unit_->BlockFromX != unit_->TargetX || unit_->BlockFromY != unit_->TargetY )
       {
