@@ -8,6 +8,7 @@
 #include "radar.h"
 #include "rules.h"
 #include "extended-tileset.h"
+#include "build-queue.h"
 
 #define SETUP_MAP_ERROR "Setup map error"
 
@@ -153,6 +154,9 @@ void Mod__setupmapstuff()
   worm_count = 0;
   type = -1;
   _SpawnLocationCount = 0;
+
+  // Initialize build queues
+  InitBuildQueues();
 
   // Initialize font colors to default values upon restart
   if (gRestartGame)

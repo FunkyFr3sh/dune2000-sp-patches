@@ -2016,6 +2016,11 @@ void EvAct_GetRule(int event_id, int rule, int target_var)
     case 40: result = rulesExt__maxChatMessages; break;
     case 41: result = rulesExt__showNeutralBecomeHostileMsg; break;
     case 42: result = rulesExt__maxSameSoundsPlaying; break;
+    case 43: result = rulesExt__buildQueuesEnabled; break;
+    case 44: result = rulesExt__buildQueuesMaxPerFactory; break;
+    case 45: result = rulesExt__buildQueuesMaxPerUnitType; break;
+    case 46: result = rulesExt__buildQueuesBulkIncrement; break;
+    case 47: result = rulesExt__buildQueuesInfinityEnabled; break;
   }
   SetVariableValue(event_id, target_var, result);
 }

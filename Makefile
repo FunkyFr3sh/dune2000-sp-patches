@@ -95,6 +95,7 @@ OBJS            ?= callsites.o \
         src/mods/building-storage-capacity.o \
         src/mods/ai-do-saboteur.o \
         src/mods/customizable-saboteur-duration.o \
+        src/mods/build-queue.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \
@@ -153,8 +154,8 @@ OBJS            ?= callsites.o \
 	src/no-cd.o \
 	src/version.o \
 	src/oos-log.o \
-    src/oos-log-func.o \
-    src/imports.o \
+	src/oos-log-func.o \
+	src/imports.o \
 	src/ai-debug.o \
 	\
 	utils/crc32.o \
@@ -163,10 +164,10 @@ OBJS            ?= callsites.o \
 	utils/utils.o \
 	utils/ini.o \
 	res/dune2000.o \
-debug-func.o \
+	debug-func.o \
 	sym.o
 
-#        src/mission-editor.o \
+#	src/mission-editor.o \
 
 PURE_OBJS       ?= sym.o res/dune2000.o
 

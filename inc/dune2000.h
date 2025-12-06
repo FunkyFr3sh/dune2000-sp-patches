@@ -35,6 +35,7 @@ typedef struct dwXYStruct
 #define MAX_TILES 800
 
 #include "dune2000/side.h"
+#include "dune2000/side-extra-data.h"
 #include "dune2000/ai.h"
 #include "dune2000/templates.h"
 #include "dune2000/map.h"
@@ -881,6 +882,7 @@ void            GetBuildingOnConcreteCount(char side_id, unsigned char building_
 void            RemoveBuildingStuff(int building_type, int x, int y, eSideType side_id);
 void            RemoveUnitTileData(Unit *a1);
 void            RevealCircle(int x, int y, int size);
+void            InitCrates();
 char            GetFreeCrateIndex();
 void            PlaceCrate(int x, int y, int timing, eCrateType type, eCrateImage image, int respawn_count);
 eCrateType      GetCrateFromMap(int x, int y);
@@ -899,7 +901,7 @@ void            Mission__LoadVarsFile();
 // Model
 bool            EvaluateIfBuildingsOrUnitsExistForSide(eSideType side_id, char buildings_or_units);
 
-
+void            ModelBuildUnitPick(eSideType side_id, unsigned short unit_type);
 index           ModelAddUnit(unsigned char side, unsigned char type, unsigned char add_at_x, unsigned char add_at_y, unsigned char move_to_x, unsigned char move_to_y, int pixel_offset_x, int pixel_offset_y);
 
 void            ModelAddConcrete(eSideType side_id, char building_type, unsigned char xpos, int ypos, int a5, int tilebitmask);

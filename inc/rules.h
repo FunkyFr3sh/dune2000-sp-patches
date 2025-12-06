@@ -51,3 +51,8 @@ extern bool     rulesExt__uncloakRemainingStealthUnit;
 extern uint8_t  rulesExt__maxChatMessages;
 extern bool     rulesExt__showNeutralBecomeHostileMsg;
 extern uint8_t  rulesExt__maxSameSoundsPlaying;
+extern bool     rulesExt__buildQueuesEnabled;
+extern uint8_t  rulesExt__buildQueuesMaxPerFactory;
+extern uint8_t  rulesExt__buildQueuesMaxPerUnitType;
+extern uint8_t  rulesExt__buildQueuesBulkIncrement;
+extern bool     rulesExt__buildQueuesInfinityEnabled;

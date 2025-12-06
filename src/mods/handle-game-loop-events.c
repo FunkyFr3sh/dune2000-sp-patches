@@ -6,6 +6,7 @@
 #include "hotkeys.h"
 #include "rules.h"
 #include "patch.h"
+#include "build-queue.h"
 
 bool SlowSideBarScrolling;
 void SetMouseCursorForUnitMovementRestriction();
@@ -917,7 +918,19 @@ LABEL_339:
         && _templates_unitattribs[unit_type].__Behavior != UnitBehavior_SABOTEUR
         && _templates_unitattribs[unit_type].__Behavior != UnitBehavior_FREMEN )
       {
-        GenerateBuildUnitCancelOrder(gSideId, side->__UnitIcons[unit_icon_index]);
+        // New logic start
+        // Implement build queues
+        int unit_type = side->__UnitIcons[unit_icon_index];
+        if (rulesExt__buildQueuesEnabled)
+        {
+          if (IsUnitBuilt(gSideId, unit_type) && (!IsUnitOnHold(gSideId, unit_type) || gSideExtraData[gSideId].build_queue_unit_type_count[unit_type] == 0 || _KeyboardKeyState[VK_CONTROL]))
+            GenerateBuildUnitCancelOrder(gSideId, unit_type);
+          else
+            RemoveFromBuildQueue(gSideId, unit_type, _KeyboardKeyState[VK_SHIFT]);
+        }
+        else
+          GenerateBuildUnitCancelOrder(gSideId, unit_type);
+        // New logic end
       }
       goto LABEL_340;
     }
@@ -1433,7 +1446,18 @@ LABEL_544:
         }
         else
         {
-          GenerateBuildUnitPickOrder(gSideId, unit_type);
+          // New logic start
+          // Implement build queues
+          if (rulesExt__buildQueuesEnabled)
+          {
+            if (IsUnitOnHold(gSideId, unit_type))
+              GenerateBuildUnitPickOrder(gSideId, unit_type);
+            else
+              AddToBuildQueue(gSideId, unit_type, _KeyboardKeyState[VK_SHIFT], _KeyboardKeyState[VK_CONTROL]);
+          }
+          else
+            GenerateBuildUnitPickOrder(gSideId, unit_type);
+          // New logic end
         }
       }
     }

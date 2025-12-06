@@ -11,22 +11,27 @@ LPCTSTR rulesIni = ".\\rules.ini";
 LPCTSTR rulesSpawnIni = ".\\rules-spawn.ini";
 
 // Newly added rules
-bool      rulesExt__InfiniteSpice               = false;
-uint8_t   rulesExt__infantryReleaseLimit        = 4;
-uint8_t   rulesExt__infantryReleaseChance       = 5;
-bool      rulesExt__buildingsAlwaysNeedPrerequisites = false;
-bool      rulesExt__returnCreditsToSpiceStorage = false;
-bool      rulesExt__intervalsAreOffByOneTick    = true;
-uint32_t  rulesExt__guardModeRadius             = 192;
-bool      rulesExt__alwaysShowRadar             = false;
-uint32_t  rulesExt__costPercentageEasy          = 75;
-uint32_t  rulesExt__costPercentageHard          = 125;
-uint32_t  rulesExt__buildSpeedPercentageEasy    = 125;
-uint32_t  rulesExt__buildSpeedPercentageHard    = 75;
-bool      rulesExt__uncloakRemainingStealthUnit = true;
-uint8_t   rulesExt__maxChatMessages             = 5;
-bool      rulesExt__showNeutralBecomeHostileMsg = true;
-uint8_t   rulesExt__maxSameSoundsPlaying        = 3;
+bool     rulesExt__InfiniteSpice                    = false;
+uint8_t  rulesExt__infantryReleaseLimit             = 4;
+uint8_t  rulesExt__infantryReleaseChance            = 5;
+bool     rulesExt__buildingsAlwaysNeedPrerequisites = false;
+bool     rulesExt__returnCreditsToSpiceStorage      = false;
+bool     rulesExt__intervalsAreOffByOneTick         = true;
+uint32_t rulesExt__guardModeRadius                  = 192;
+bool     rulesExt__alwaysShowRadar                  = false;
+uint32_t rulesExt__costPercentageEasy               = 75;
+uint32_t rulesExt__costPercentageHard               = 125;
+uint32_t rulesExt__buildSpeedPercentageEasy         = 125;
+uint32_t rulesExt__buildSpeedPercentageHard         = 75;
+bool     rulesExt__uncloakRemainingStealthUnit      = true;
+uint8_t  rulesExt__maxChatMessages                  = 5;
+bool     rulesExt__showNeutralBecomeHostileMsg      = true;
+uint8_t  rulesExt__maxSameSoundsPlaying             = 3;
+bool     rulesExt__buildQueuesEnabled               = false;
+uint8_t  rulesExt__buildQueuesMaxPerFactory         = 100;
+uint8_t  rulesExt__buildQueuesMaxPerUnitType        = 10;
+uint8_t  rulesExt__buildQueuesBulkIncrement         = 5;
+bool     rulesExt__buildQueuesInfinityEnabled       = false;
 
 static void LoadVars(LPCTSTR fileName);
 static void LoadMultiPlayerSettings(LPCTSTR fileName);
@@ -102,4 +107,9 @@ static void LoadVars(LPCTSTR fileName)
     rulesExt__maxChatMessages = IniGetInt("Vars", "maxChatMessages", rulesExt__maxChatMessages, fileName);
     rulesExt__showNeutralBecomeHostileMsg = IniGetBool("Vars", "showNeutralBecomeHostileMsg", rulesExt__showNeutralBecomeHostileMsg, fileName);
     rulesExt__maxSameSoundsPlaying = IniGetInt("Vars", "maxSameSoundsPlaying", rulesExt__maxSameSoundsPlaying, fileName);
+    rulesExt__buildQueuesEnabled = IniGetBool("Vars", "buildQueuesEnabled", rulesExt__buildQueuesEnabled, fileName);
+    rulesExt__buildQueuesMaxPerFactory = IniGetInt("Vars", "buildQueuesMaxPerFactory", rulesExt__buildQueuesMaxPerFactory, fileName);
+    rulesExt__buildQueuesMaxPerUnitType = IniGetInt("Vars", "buildQueuesMaxPerUnitType", rulesExt__buildQueuesMaxPerUnitType, fileName);
+    rulesExt__buildQueuesBulkIncrement = IniGetInt("Vars", "buildQueuesBulkIncrement", rulesExt__buildQueuesBulkIncrement, fileName);
+    rulesExt__buildQueuesInfinityEnabled = IniGetBool("Vars", "buildQueuesInfinityEnabled", rulesExt__buildQueuesInfinityEnabled, fileName);
 }
