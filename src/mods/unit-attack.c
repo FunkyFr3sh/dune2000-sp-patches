@@ -750,8 +750,8 @@ LABEL_12:
         // Single shot
         if ( !double_shot )
         {
-          source_xpos = (_sinValues[shoot_offset + ((16 - direction) & 31) * 512] / 2048) + unit_xpos;
-          source_ypos = (_cosValues[shoot_offset + ((16 - direction) & 31) * 512] / 2048) + unit_ypos + shoot_yoffset;
+          source_xpos = (_sinValues[shoot_offset + ((16 - direction + shoot_angle) & 31) * 512] / 2048) + unit_xpos;
+          source_ypos = (_cosValues[shoot_offset + ((16 - direction + shoot_angle) & 31) * 512] / 2048) + unit_ypos + shoot_yoffset;
           dest_xpos = target_xpos;
           dest_ypos = target_ypos;
           if ( inaccuracy )
@@ -765,7 +765,7 @@ LABEL_12:
             if ((muzzle_flash_explosion_type != -1) && ((explosion_index = ModelAddExplosion(side, muzzle_flash_explosion_type, is_muzzle_flash_explosion?unit_xpos:source_xpos, is_muzzle_flash_explosion?unit_ypos:source_ypos, is_muzzle_flash_explosion?0:b->__PosZHeight, 0, 0, 0, 0)) != -1) && is_muzzle_flash_explosion)
             {
               Explosion *e = (Explosion *)&GetSide(side)->__ObjectArray[explosion_index];
-              e->__AnimationFrame = direction;
+              e->__AnimationFrame = (direction - shoot_angle) & 31;
             }
           }
         }

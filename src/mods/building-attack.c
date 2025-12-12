@@ -424,8 +424,8 @@ void Mod__BuildingShootTarget(Building *building, char side_id, short index, int
         // Single shot
         if ( !double_shot )
         {
-          source_xpos = (_sinValues[shoot_offset + ((16 - direction) & 31) * 512] / 2048) + building_xpos + building_template->_____ExitPoint2X;
-          source_ypos = (_cosValues[shoot_offset + ((16 - direction) & 31) * 512] / 2048) + building_ypos + building_template->_____ExitPoint2Y;
+          source_xpos = (_sinValues[shoot_offset + ((16 - direction + shoot_angle) & 31) * 512] / 2048) + building_xpos + building_template->_____ExitPoint2X;
+          source_ypos = (_cosValues[shoot_offset + ((16 - direction + shoot_angle) & 31) * 512] / 2048) + building_ypos + building_template->_____ExitPoint2Y;
           dest_xpos = target_xpos;
           dest_ypos = target_ypos;
           if ( inaccuracy )
@@ -439,7 +439,7 @@ void Mod__BuildingShootTarget(Building *building, char side_id, short index, int
             if ((muzzle_flash_explosion_type != -1) && ((explosion_index = ModelAddExplosion(side_id, muzzle_flash_explosion_type, is_muzzle_flash_explosion?building_xpos:source_xpos, is_muzzle_flash_explosion?(int)building->__PosY/0x10000-y_offset:source_ypos, is_muzzle_flash_explosion?0:b->__PosZHeight, 0, 0, 0, 0)) != -1) && is_muzzle_flash_explosion)
             {
               Explosion *e = (Explosion *)&GetSide(side_id)->__ObjectArray[explosion_index];
-              e->__AnimationFrame = direction;
+              e->__AnimationFrame = (direction - shoot_angle) & 31;
             }
           }
         }
