@@ -49,9 +49,7 @@ cextern _TileBitflags
 
 ; ### Extra rules ###
 
-cextern rulesExt__InfiniteSpice
 cextern rulesExt__buildingsAlwaysNeedPrerequisites
-cextern rulesExt__guardModeRadius
 cextern rulesExt__alwaysShowRadar
 cextern rulesExt__uncloakRemainingStealthUnit
 cextern rulesExt__showNeutralBecomeHostileMsg

@@ -13,7 +13,6 @@ CALL(0x004B28C1, _GameStart);
 void LoadSavedGame(const char *saveGamePath) // Skirmish/SinglePlayer load saved game function
 {
     memset(&MCVDeployed, 0, sizeof(MCVDeployed));
-    LoadRulesFromMap();
     InitMissionScript();
 
     char saveGameIniPath[256];

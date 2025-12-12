@@ -234,6 +234,14 @@ void EvAct_OrderBuildPlaceBuilding      (int event_id, int side_id, int xpos, in
 void EvAct_OrderBuildUnitCancel         (int event_id, int side_id, bool any_unit, int unit_type, int queue, bool force);
 void EvAct_OrderStarportPick            (int event_id, int side_id, int unit_type);
 void EvAct_OrderUpgradeCancel           (int event_id, int side_id, bool force);
+// Game modifications
+void EvAct_SetUnitTemplateProperty      (int event_id, eDataType data_type, int offset, int unit_type, eValueOperation operation, int value);
+void EvAct_SetBuildingTemplateProperty  (int event_id, eDataType data_type, int offset, int building_type, eValueOperation operation, int value);
+void EvAct_SetWeaponTemplateProperty    (int event_id, eDataType data_type, int offset, int weapon_type, eValueOperation operation, int value);
+void EvAct_SetExplosionTemplateProperty (int event_id, eDataType data_type, int offset, int explosion_type, eValueOperation operation, int value);
+void EvAct_SetArmourValue               (int event_id, int armour_type, int select_by, int weapon_type, int warhead_type, eValueOperation operation, int value);
+void EvAct_SetSpeedValue                (int event_id, int speed_type, int terrain_type, eValueOperation operation, int value);
+void EvAct_SetRule                      (int event_id, int rule, eValueOperation operation, int value);
 // Miscellaneous
 void EvAct_AddRadarMarker               (int event_id, int xpos, int ypos, int slot, int ref_id, int color, int thickness, int duration, int custom_color);
 // Variable operations
@@ -261,7 +269,7 @@ void EvAct_GetBuildingTemplateProperty  (int event_id, eDataType data_type, int 
 void EvAct_GetWeaponTemplateProperty    (int event_id, eDataType data_type, int offset, int weapon_type, int target_var);
 void EvAct_GetExplosionTemplateProperty (int event_id, eDataType data_type, int offset, int explosion_type, int target_var);
 void EvAct_GetArmourValue               (int event_id, int armour_type, int select_by, int weapon_type, int warhead_type, int target_var);
-void EvAct_GetSpeedValue                (int event_id, int vehicle_type, int terrain_type, int target_var);
+void EvAct_GetSpeedValue                (int event_id, int speed_type, int terrain_type, int target_var);
 void EvAct_GetGroupIDValue              (int event_id, int what, int target_var);
 void EvAct_GetUnitType                  (int event_id, int side_id, int target_var, bool my_version_only, bool random, ObjectFilterStruct *filter);
 void EvAct_GetBuildingType              (int event_id, int side_id, int target_var, bool my_version_only, bool random, ObjectFilterStruct *filter);

@@ -1550,6 +1550,107 @@ void EvAct_OrderUpgradeCancel(int event_id, int side_id, bool force)
   GenerateUpgradeCancelOrder(side_id, side->__BuildingUpgradeQueue.__type);
 }
 
+void EvAct_SetUnitTemplateProperty(int event_id, eDataType data_type, int offset, int unit_type, eValueOperation operation, int value)
+{
+  CHECK_UNIT_TYPE;
+  UnitAtribStruct *unit_template = &_templates_unitattribs[unit_type];
+  SetDataValue(event_id, (char *)unit_template, data_type, offset, operation, value);
+}
+
+void EvAct_SetBuildingTemplateProperty(int event_id, eDataType data_type, int offset, int building_type, eValueOperation operation, int value)
+{
+  CHECK_BUILDING_TYPE;
+  BuildingAtrbStruct *building_template = &_templates_buildattribs[building_type];
+  SetDataValue(event_id, (char *)building_template, data_type, offset, operation, value);
+}
+
+void EvAct_SetWeaponTemplateProperty(int event_id, eDataType data_type, int offset, int weapon_type, eValueOperation operation, int value)
+{
+  CHECK_WEAPON_TYPE;
+  BullAtrbStruct *weapon_template = &_templates_bulletattribs[weapon_type];
+  SetDataValue(event_id, (char *)weapon_template, data_type, offset, operation, value);
+}
+
+void EvAct_SetExplosionTemplateProperty(int event_id, eDataType data_type, int offset, int explosion_type, eValueOperation operation, int value)
+{
+  CHECK_EXPLOSION_TYPE;
+  ExploisonAtrbStruct *explosion_template = &_templates_explosionattribs[explosion_type];
+  SetDataValue(event_id, (char *)explosion_template, data_type, offset, operation, value);
+}
+
+void EvAct_SetArmourValue(int event_id, int armour_type, int select_by, int weapon_type, int warhead_type, eValueOperation operation, int value)
+{
+  CHECK_PARAMETER(armour_type, "armour type", MAX_ARMOUR_TYPES);
+  if (select_by == 0)
+    warhead_type = _templates_bulletattribs[weapon_type].Warhead;
+  CHECK_PARAMETER(warhead_type, "warhead type", MAX_WARHEAD_TYPES);
+  _WarheadData[warhead_type].Verses[armour_type] = ValueOperation(event_id, _WarheadData[warhead_type].Verses[armour_type], value, operation);
+}
+
+void EvAct_SetSpeedValue(int event_id, int speed_type, int terrain_type, eValueOperation operation, int value)
+{
+  CHECK_PARAMETER(terrain_type, "terrain type", MAX_TERRAIN_TYPES);
+  CHECK_PARAMETER(speed_type, "speed type", MAX_VEHICLE_TYPES);
+  int_or_float val;
+  val.int_val = value;
+  _speed_values[terrain_type][speed_type] = ValueOperationFloat(event_id, _speed_values[terrain_type][speed_type], val.float_val, operation);
+}
+
+void EvAct_SetRule(int event_id, int rule, eValueOperation operation, int value)
+{
+  switch(rule)
+  {
+    case 0: _gVariables.harvestUnloadDelay =              ValueOperation(event_id, _gVariables.harvestUnloadDelay, value, operation); break;
+    case 1: _gVariables.harvestBlobValue =                ValueOperation(event_id, _gVariables.harvestBlobValue, value, operation); break;
+    case 2: _gVariables.harvestLoadSpiceDelay =           ValueOperation(event_id, _gVariables.harvestLoadSpiceDelay, value, operation); break;
+    case 3: _gVariables.starportUpdateDelay =             ValueOperation(event_id, _gVariables.starportUpdateDelay, value, operation); break;
+    case 4: _gVariables.starportStockIncreaseDelay =      ValueOperation(event_id, _gVariables.starportStockIncreaseDelay, value, operation); break;
+    case 5: _gVariables.starportStockIncreaseProb =       ValueOperation(event_id, _gVariables.starportStockIncreaseProb, value, operation); break;
+    case 6: _gVariables.starportCostVariationPercent =    ValueOperation(event_id, _gVariables.starportCostVariationPercent, value, operation); break;
+    case 7: _gVariables.starportFrigateDelay =            ValueOperation(event_id, _gVariables.starportFrigateDelay, value, operation); break;
+    case 8: _gVariables.refineryExplosionOffsetX =        ValueOperation(event_id, _gVariables.refineryExplosionOffsetX, value, operation); break;
+    case 9: _gVariables.refineryExplosionOffsetY =        ValueOperation(event_id, _gVariables.refineryExplosionOffsetY, value, operation); break;
+    case 10: _gVariables.HarvesterDriveDistance =         ValueOperation(event_id, _gVariables.HarvesterDriveDistance, value, operation); break;
+    case 11: _gVariables.RepairDriveDistance =            ValueOperation(event_id, _gVariables.RepairDriveDistance, value, operation); break;
+    case 12: _gVariables.BuildingRepairValue =            ValueOperation(event_id, _gVariables.BuildingRepairValue, value, operation); break;
+    case 13: _gVariables.UnitRepairValue =                ValueOperation(event_id, _gVariables.UnitRepairValue, value, operation); break;
+    case 14: _gVariables.SinglePlayerDelay =              ValueOperation(event_id, _gVariables.SinglePlayerDelay, value, operation); break;
+    case 15: _gVariables.NumberOfFremen =                 ValueOperation(event_id, _gVariables.NumberOfFremen, value, operation); break;
+    case 16: _gVariables.SandWormAppetite =               ValueOperation(event_id, _gVariables.SandWormAppetite, value, operation); break;
+    case 17: _gVariables.SandWormInitialSleep =           ValueOperation(event_id, _gVariables.SandWormInitialSleep, value, operation); break;
+    case 18: _gVariables.SandWormFedSleep =               ValueOperation(event_id, _gVariables.SandWormFedSleep, value, operation); break;
+    case 19: _gVariables.SandWormShotSleep =              ValueOperation(event_id, _gVariables.SandWormShotSleep, value, operation); break;
+    case 20: _gVariables.NumberOfCrates =                 ValueOperation(event_id, _gVariables.NumberOfCrates, value, operation); break;
+    case 21: _gVariables.CratesPerPlayer =                ValueOperation(event_id, _gVariables.CratesPerPlayer, value, operation); break;
+    case 22: _gVariables.DevastatorExplodeDelay =         ValueOperation(event_id, _gVariables.DevastatorExplodeDelay, value, operation); break;
+    case 23: _gVariables.IgnoreDistance =                 ValueOperation(event_id, _gVariables.IgnoreDistance, value, operation); break;
+    case 24: _gVariables.CrateCash =                      ValueOperation(event_id, _gVariables.CrateCash, value, operation); break;
+    case 25: _gVariables.ShowWarnings =                   ValueOperation(event_id, _gVariables.ShowWarnings, value, operation); break;
+    case 26: _gVariables.DeathHandAccuracy =              ValueOperation(event_id, _gVariables.DeathHandAccuracy, value, operation); break;
+    case 27: rulesExt__InfiniteSpice =                    ValueOperation(event_id, rulesExt__InfiniteSpice, value, operation); break;
+    case 28: rulesExt__infantryReleaseLimit =             ValueOperation(event_id, rulesExt__infantryReleaseLimit, value, operation); break;
+    case 29: rulesExt__infantryReleaseChance =            ValueOperation(event_id, rulesExt__infantryReleaseChance, value, operation); break;
+    case 30: rulesExt__buildingsAlwaysNeedPrerequisites = ValueOperation(event_id, rulesExt__buildingsAlwaysNeedPrerequisites, value, operation); break;
+    case 31: rulesExt__returnCreditsToSpiceStorage =      ValueOperation(event_id, rulesExt__returnCreditsToSpiceStorage, value, operation); break;
+    case 32: rulesExt__intervalsAreOffByOneTick =         ValueOperation(event_id, rulesExt__intervalsAreOffByOneTick, value, operation); break;
+    case 33: rulesExt__guardModeRadius =                  ValueOperation(event_id, rulesExt__guardModeRadius, value, operation); break;
+    case 34: rulesExt__alwaysShowRadar =                  ValueOperation(event_id, rulesExt__alwaysShowRadar, value, operation); break;
+    case 35: rulesExt__costPercentageEasy =               ValueOperation(event_id, rulesExt__costPercentageEasy, value, operation); break;
+    case 36: rulesExt__costPercentageHard =               ValueOperation(event_id, rulesExt__costPercentageHard, value, operation); break;
+    case 37: rulesExt__buildSpeedPercentageEasy =         ValueOperation(event_id, rulesExt__buildSpeedPercentageEasy, value, operation); break;
+    case 38: rulesExt__buildSpeedPercentageHard =         ValueOperation(event_id, rulesExt__buildSpeedPercentageHard, value, operation); break;
+    case 39: rulesExt__uncloakRemainingStealthUnit =      ValueOperation(event_id, rulesExt__uncloakRemainingStealthUnit, value, operation); break;
+    case 40: rulesExt__maxChatMessages =                  ValueOperation(event_id, rulesExt__maxChatMessages, value, operation); break;
+    case 41: rulesExt__showNeutralBecomeHostileMsg =      ValueOperation(event_id, rulesExt__showNeutralBecomeHostileMsg, value, operation); break;
+    case 42: rulesExt__maxSameSoundsPlaying =             ValueOperation(event_id, rulesExt__maxSameSoundsPlaying, value, operation); break;
+    case 43: rulesExt__buildQueuesEnabled =               ValueOperation(event_id, rulesExt__buildQueuesEnabled, value, operation); break;
+    case 44: rulesExt__buildQueuesMaxPerFactory =         ValueOperation(event_id, rulesExt__buildQueuesMaxPerFactory, value, operation); break;
+    case 45: rulesExt__buildQueuesMaxPerUnitType =        ValueOperation(event_id, rulesExt__buildQueuesMaxPerUnitType, value, operation); break;
+    case 46: rulesExt__buildQueuesBulkIncrement =         ValueOperation(event_id, rulesExt__buildQueuesBulkIncrement, value, operation); break;
+    case 47: rulesExt__buildQueuesInfinityEnabled =       ValueOperation(event_id, rulesExt__buildQueuesInfinityEnabled, value, operation); break;
+  }
+}
+
 void EvAct_AddRadarMarker(int event_id, int xpos, int ypos, int slot, int ref_id, int color, int thickness, int duration, int custom_color)
 {
   CHECK_POSITION;
@@ -1825,12 +1926,12 @@ void EvAct_GetArmourValue(int event_id, int armour_type, int select_by, int weap
   SetVariableValue(event_id, target_var, _WarheadData[warhead_type].Verses[armour_type]);
 }
 
-void EvAct_GetSpeedValue(int event_id, int vehicle_type, int terrain_type, int target_var)
+void EvAct_GetSpeedValue(int event_id, int speed_type, int terrain_type, int target_var)
 {
   CHECK_PARAMETER(terrain_type, "terrain type", MAX_TERRAIN_TYPES);
-  CHECK_PARAMETER(vehicle_type, "vehicle type", MAX_VEHICLE_TYPES);
+  CHECK_PARAMETER(speed_type, "speed type", MAX_VEHICLE_TYPES);
   int_or_float val;
-  val.float_val = _speed_values[terrain_type][vehicle_type];
+  val.float_val = _speed_values[terrain_type][speed_type];
   SetVariableValue(event_id, target_var, val.int_val);
 }
 

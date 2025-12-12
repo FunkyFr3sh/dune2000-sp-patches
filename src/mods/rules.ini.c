@@ -10,35 +10,38 @@
 LPCTSTR rulesIni = ".\\rules.ini";
 LPCTSTR rulesSpawnIni = ".\\rules-spawn.ini";
 
-// Newly added rules
-bool     rulesExt__InfiniteSpice                    = false;
-uint8_t  rulesExt__infantryReleaseLimit             = 4;
-uint8_t  rulesExt__infantryReleaseChance            = 5;
-bool     rulesExt__buildingsAlwaysNeedPrerequisites = false;
-bool     rulesExt__returnCreditsToSpiceStorage      = false;
-bool     rulesExt__intervalsAreOffByOneTick         = true;
-uint32_t rulesExt__guardModeRadius                  = 192;
-bool     rulesExt__alwaysShowRadar                  = false;
-uint32_t rulesExt__costPercentageEasy               = 75;
-uint32_t rulesExt__costPercentageHard               = 125;
-uint32_t rulesExt__buildSpeedPercentageEasy         = 125;
-uint32_t rulesExt__buildSpeedPercentageHard         = 75;
-bool     rulesExt__uncloakRemainingStealthUnit      = true;
-uint8_t  rulesExt__maxChatMessages                  = 5;
-bool     rulesExt__showNeutralBecomeHostileMsg      = true;
-uint8_t  rulesExt__maxSameSoundsPlaying             = 3;
-bool     rulesExt__buildQueuesEnabled               = false;
-uint8_t  rulesExt__buildQueuesMaxPerFactory         = 100;
-uint8_t  rulesExt__buildQueuesMaxPerUnitType        = 10;
-uint8_t  rulesExt__buildQueuesBulkIncrement         = 5;
-bool     rulesExt__buildQueuesInfinityEnabled       = false;
+void InitExtraRules(void)
+{
+  rulesExt__InfiniteSpice                    = false;
+  rulesExt__infantryReleaseLimit             = 4;
+  rulesExt__infantryReleaseChance            = 5;
+  rulesExt__buildingsAlwaysNeedPrerequisites = false;
+  rulesExt__returnCreditsToSpiceStorage      = false;
+  rulesExt__intervalsAreOffByOneTick         = true;
+  rulesExt__guardModeRadius                  = 192;
+  rulesExt__alwaysShowRadar                  = false;
+  rulesExt__costPercentageEasy               = 75;
+  rulesExt__costPercentageHard               = 125;
+  rulesExt__buildSpeedPercentageEasy         = 125;
+  rulesExt__buildSpeedPercentageHard         = 75;
+  rulesExt__uncloakRemainingStealthUnit      = true;
+  rulesExt__maxChatMessages                  = 5;
+  rulesExt__showNeutralBecomeHostileMsg      = true;
+  rulesExt__maxSameSoundsPlaying             = 3;
+  rulesExt__buildQueuesEnabled               = false;
+  rulesExt__buildQueuesMaxPerFactory         = 100;
+  rulesExt__buildQueuesMaxPerUnitType        = 10;
+  rulesExt__buildQueuesBulkIncrement         = 5;
+  rulesExt__buildQueuesInfinityEnabled       = false;
+}
 
 static void LoadVars(LPCTSTR fileName);
 static void LoadMultiPlayerSettings(LPCTSTR fileName);
 
 void LoadRulesFromMap()
 {
-    Mission__LoadVarsFile();
+    ReadVariables();
+    InitExtraRules();
     LoadVars(SpawnerActive ? rulesSpawnIni : rulesIni);
     char mapIniPath[256];
     sprintf(mapIniPath, ".\\%s%s", gGameType == GAME_CAMPAIGN ? gMISSIONS_RES_PATH : gMAPS_RES_PATH, PathChangeExtension(MissionMap, ".ini"));

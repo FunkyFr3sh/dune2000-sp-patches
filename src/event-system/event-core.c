@@ -932,6 +932,14 @@ void ExecuteEventAction(EventContext *e)
   case ET_ORDER_UPGRADE_PICK:             GenerateUpgradePickOrder            (A0, A2);                                     break;
   case ET_ORDER_UPGRADE_CANCEL:           EvAct_OrderUpgradeCancel            (ID, A0, A4);                                 break;
   case ET_ORDER_SPECIAL_WEAPON:           GenerateSpecialWeaponOrder          (A0, A2, C0);                                 break;
+  // Game modifications
+  case ET_SET_UNIT_TEMPLATE_PROPERTY:     EvAct_SetUnitTemplateProperty       (ID, A1, A2, A3, A4, A5);                     break;
+  case ET_SET_BUILDING_TEMPLATE_PROPERTY: EvAct_SetBuildingTemplateProperty   (ID, A1, A2, A3, A4, A5);                     break;
+  case ET_SET_WEAPON_TEMPLATE_PROPERTY:   EvAct_SetWeaponTemplateProperty     (ID, A1, A2, A3, A4, A5);                     break;
+  case ET_SET_EXPLOSION_TEMPLATE_PROPERTY:EvAct_SetExplosionTemplateProperty  (ID, A1, A2, A3, A4, A5);                     break;
+  case ET_SET_ARMOUR_VALUE:               EvAct_SetArmourValue                (ID, A1, A2, A3, A4, A5, A6);                 break;
+  case ET_SET_SPEED_VALUE:                EvAct_SetSpeedValue                 (ID, A1, A2, A4, A5);                         break;
+  case ET_SET_RULE:                       EvAct_SetRule                       (ID, A2, A4, A5);                             break;
   // Miscellaneous
   case ET_ADD_RADAR_MARKER:               EvAct_AddRadarMarker                (ID, C0, A0, A1, A3, A4, A5, A6);             break;
   // Variable operations

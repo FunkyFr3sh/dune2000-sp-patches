@@ -539,6 +539,7 @@ extern ExploisonAtrbStruct  _templates_explosionattribs[MAX_EXPLOSION_TYPES];
 extern TImage *             _images_miscIcon[4];
 extern BullAtrbStruct       _templates_bulletattribs[MAX_WEAPON_TYPES];
 extern TImage *             _BlankRadarImage;
+extern int                  _templates_UnitArtAnimationFrames[90];
 extern char                 _FreeSpawnLocations[MAX_SIDES];
 extern TImage *             _BuildupAnimationImages[MAX_BUILDING_TYPES][42];
 extern uint16_t             _ColoursBinData[128];
@@ -561,11 +562,16 @@ extern char                 _templates_ExplosionNameList[MAX_EXPLOSION_TYPES][50
 extern float                _speed_values[MAX_TERRAIN_TYPES][MAX_VEHICLE_TYPES];
 extern TImage *             _images_crate[8];
 extern TImage *             _image_selection_tl;
+extern int                  _templates_UnitArtDirectionFrames[90];
 extern TImage *             _image_selection_tr;
 extern int                  _templates_ProjectileArtDirections[MAX_WEAPON_TYPES];
 extern TImage *             _image_placement_marker_nonbuildable;
 extern char                 _templates_BuildingAnimationFrames[MAX_BUILDING_TYPES];
 extern uint16_t             _radarcolor16_sidecolor[MAX_SIDES];
+extern int                  gNumUnitElements;
+extern int                  gNumBuildingElements;
+extern int                  gNumBulletElements;
+extern int                  gNumExplosionElements;
 extern unsigned char        gUnitTypeNum;
 extern unsigned char        gBuildingTypeNum;
 extern unsigned char        gBulletTypeNum;
@@ -896,7 +902,7 @@ void            Free(LPVOID pointer);
 // Mission
 
 void            Mission__CheckEvents();
-void            Mission__LoadVarsFile();
+void            ReadVariables();
 
 // Model
 bool            EvaluateIfBuildingsOrUnitsExistForSide(eSideType side_id, char buildings_or_units);
@@ -957,6 +963,8 @@ void            SetPixelOnRadar16(unsigned char x, unsigned char y, short color)
 void            SetupRadarMap();
 void            LoadTileset(char *tileset_name);
 
+void            ReadArmour();
+void            ReadSpeed();
 // CSide
 void __thiscall CSide__Init(CSide *this, unsigned char side_id, char house_id);
 void __thiscall CSide__InitCash(CSide *this);

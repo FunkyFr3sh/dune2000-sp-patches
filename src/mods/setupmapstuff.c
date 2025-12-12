@@ -53,6 +53,50 @@ void PlaceStaticCrate(uint8_t x, uint8_t y, eCrateType type, eCrateImage image, 
   }
 }
 
+void LoadTemplates(void)
+{
+  FILE *file = _OpenFile("bin\\Templates.bin", "rb", 0);
+  if ( file )
+  {
+    _ReadFile(_templates_unitattribs, 1u, 0x3C00u, file);
+    _ReadFile(_templates_buildattribs, 1u, 26800u, file);
+    _ReadFile(_templates_bulletattribs, 1u, 0x700u, file);
+    _ReadFile(_templates_explosionattribs, 1u, 512u, file);
+    _ReadFile(_templates_UnitArtAnimationFrames, 1u, 360u, file);
+    _ReadFile(_templates_UnitArtDirectionFrames, 1u, 360u, file);
+    _ReadFile(&gNumUnitElements, 1u, 4u, file);
+    _ReadFile(&gUnitTypeNum, 1u, 1u, file);
+    _ReadFile(&gNumExplosionElements, 1u, 4u, file);
+    _ReadFile(_templates_AnimationArtFrames, 1u, 0x100u, file);
+    _ReadFile(&gExplosionTypeNum, 1u, 1u, file);
+    _ReadFile(&gNumBulletElements, 1u, 4u, file);
+    _ReadFile(_templates_ProjectileArtDirections, 1u, 0x100u, file);
+    _ReadFile(&gBulletTypeNum, 1u, 1u, file);
+    _ReadFile(&gNumBuildingElements, 1u, 4u, file);
+    _ReadFile(_templates_BuildingArtDirections, 1u, 480u, file);
+    _ReadFile(&gBuildingTypeNum, 1u, 1u, file);
+    _ReadFile(_templates_BuildingNameList, 1u, 0xAFC8u, file);
+    _ReadFile(_templates_BulletNameList, 1u, 0xC80u, file);
+    _ReadFile(_templates_ExplosionNameList, 1u, 0xC80u, file);
+    _ReadFile(_templates_UnitNameList, 1u, 0x6978u, file);
+    _ReadFile(_templates_UnitGroupNameList, 1u, 0xBB8u, file);
+    _ReadFile(_templates_BuildingGroupNameList, 1u, 0x1388u, file);
+    _ReadFile(&_templates_GroupIDs, 1u, 86u, file);
+    _ReadFile(_templates_Explosiondata_AnimationArtFlags, 1u, 256u, file);
+    _ReadFile(_templates_BuildingAnimationFrames, 1u, 100u, file);
+    _ReadFile(_templates_BuildupArtFrames, 1u, 100u, file);
+    _ReadFile(&_templates_BuildingGroupCount, 1u, 1u, file);
+    _ReadFile(&_templates_UnitGroupCount, 1u, 1u, file);
+    CloseFile(file);
+  }
+  else
+  {
+    ReportFileError("bin\\Templates.bin", 0);
+  }
+  ReadArmour();
+  ReadSpeed();
+}
+
 // Custom implementation of function setupmapstuff
 DETOUR(0x00469790, 0x0046A299, _Mod__setupmapstuff);
 
@@ -154,6 +198,13 @@ void Mod__setupmapstuff()
   worm_count = 0;
   type = -1;
   _SpawnLocationCount = 0;
+
+  // Reload templates and rules
+  if (gRestartGame)
+  {
+    LoadTemplates();
+    LoadRulesFromMap();
+  }
 
   // Initialize build queues
   InitBuildQueues();

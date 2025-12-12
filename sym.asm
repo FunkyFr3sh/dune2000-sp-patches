@@ -348,6 +348,7 @@ setcglob 0x00781E58, _templates_explosionattribs
 setcglob 0x00782058, _images_miscIcon
 setcglob 0x00782068, _templates_bulletattribs
 setcglob 0x00782768, _BlankRadarImage
+setcglob 0x00782770, _templates_UnitArtAnimationFrames
 setcglob 0x00782AA0, _FreeSpawnLocations
 setcglob 0x00782AA8, _BuildupAnimationImages
 setcglob 0x00786C48, _ColoursBinData
@@ -370,11 +371,16 @@ setcglob 0x007943A8, _templates_ExplosionNameList
 setcglob 0x00795128, _speed_values
 setcglob 0x007951A8, _images_crate
 setcglob 0x007951C8, _image_selection_tl
+setcglob 0x007951D0, _templates_UnitArtDirectionFrames
 setcglob 0x00795338, _image_selection_tr
 setcglob 0x00795340, _templates_ProjectileArtDirections
 setcglob 0x00795440, _image_placement_marker_nonbuildable
 setcglob 0x007954B0, _templates_BuildingAnimationFrames
 setcglob 0x00795518, _radarcolor16_sidecolor
+setcglob 0x00795528, gNumUnitElements
+setcglob 0x0079552C, gNumBuildingElements
+setcglob 0x00795530, gNumBulletElements
+setcglob 0x00795534, gNumExplosionElements
 setcglob 0x00795538, gUnitTypeNum
 setcglob 0x0079553C, gBuildingTypeNum
 setcglob 0x00795540, gBulletTypeNum
@@ -731,7 +737,7 @@ setcglob 0x0044F630, Free
 ; Mission
 setcglob 0x0044F8E0, Mission__LoadObjectives
 setcglob 0x00453B90, Mission__CheckEvents
-setcglob 0x004544E0, Mission__LoadVarsFile
+setcglob 0x004544E0, ReadVariables
 setcglob 0x00454E00, Mission__LoadTechposFile
 ; Model
 setcglob 0x00455290, EvaluateIfBuildingsOrUnitsExistForSide
@@ -792,6 +798,8 @@ setcglob 0x004620B0, SetPixelOnRadar16
 setcglob 0x00462140, SetupRadarMap
 setcglob 0x00462D10, LoadTileset
 setcglob 0x00466140, Setup__LoadGraphicsFile
+setcglob 0x0046B0F0, ReadArmour
+setcglob 0x0046B690, ReadSpeed
 ; CSide
 setcglob 0x0046B990, CSide__Init
 setcglob 0x0046BD20, CSide__InitCash
