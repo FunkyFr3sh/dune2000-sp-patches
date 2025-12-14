@@ -20,7 +20,7 @@ bool IsUnitBuilt(int side_id, int unit_type)
   return false;
 }
 
-int GetQueueNumber(int unit_type)
+int GetBuildQueueNumber(int unit_type)
 {
   int prereq = _templates_unitattribs[unit_type].__PreReq1;
   if (prereq == _templates_GroupIDs.Barracks)
@@ -39,7 +39,7 @@ int GetQueueNumber(int unit_type)
 int GetUnitsQueuedCount(int side_id, int unit_type)
 {
   return gSideExtraData[side_id].build_queue_unit_type_count[unit_type] +
-      ((IsUnitBuilt(side_id, unit_type) || gSideExtraData[side_id].build_queues[GetQueueNumber(unit_type)].pending_ordered_unit_type == unit_type)?1:0);
+      ((IsUnitBuilt(side_id, unit_type) || gSideExtraData[side_id].build_queues[GetBuildQueueNumber(unit_type)].pending_ordered_unit_type == unit_type)?1:0);
 }
 
 void InitBuildQueues(void)
@@ -59,19 +59,21 @@ void InitBuildQueues(void)
       }
       q->entry_count = 0;
       q->front = -1;
-      q->back = -1;
       q->pending_ordered_unit_type = -1;
       q->last_built_unit_type = -1;
     }
     for (int i = 0; i < MAX_UNIT_TYPES; i++)
+    {
       sideext->build_queue_unit_type_count[i] = 0;
+      sideext->build_queue_unit_type_infinity[i] = false;
+    }
   }
 }
 
 void AddToBuildQueue(int side_id, int unit_type, bool bulk_increment, bool priority)
 {
   // Get the queue
-  int queue_num = GetQueueNumber(unit_type);
+  int queue_num = GetBuildQueueNumber(unit_type);
   if (queue_num == -1)
     return;
   BuildQueue *q = &gSideExtraData[side_id].build_queues[queue_num];
@@ -93,17 +95,14 @@ void AddToBuildQueue(int side_id, int unit_type, bool bulk_increment, bool prior
       // Add to front
       q->entries[search_pos].next = q->front;
       q->front = search_pos;
-      if (q->back == -1)
-        q->back = search_pos;
     }
     else
     {
       // Add to back
-      if (q->front == -1)
-        q->front = search_pos; // Add first entry into empty queue
-      else
-        q->entries[(int)q->back].next = search_pos; // Add entry to back of queue
-      q->back = search_pos;
+      char *next_ptr = &q->front;
+      while (*next_ptr != -1)
+        next_ptr = &q->entries[(int)*next_ptr].next;
+      *next_ptr = search_pos;
     }
     q->entries[search_pos].unit_type = unit_type;
     gSideExtraData[side_id].build_queue_unit_type_count[unit_type]++;
@@ -114,7 +113,7 @@ void AddToBuildQueue(int side_id, int unit_type, bool bulk_increment, bool prior
 void RemoveFromBuildQueue(int side_id, int unit_type, bool bulk_increment)
 {
   // Get the queue
-  int queue_num = GetQueueNumber(unit_type);
+  int queue_num = GetBuildQueueNumber(unit_type);
   if (queue_num == -1)
     return;
   BuildQueue *q = &gSideExtraData[side_id].build_queues[queue_num];
@@ -131,9 +130,9 @@ void RemoveFromBuildQueue(int side_id, int unit_type, bool bulk_increment)
       q->entries[pos].unit_type = -1;
       q->entries[pos].next = -1;
       gSideExtraData[side_id].build_queue_unit_type_count[unit_type]--;
+      if (gSideExtraData[side_id].build_queue_unit_type_count[unit_type] == 0 && !IsUnitBuilt(side_id, unit_type))
+        gSideExtraData[side_id].build_queue_unit_type_infinity[unit_type] = false;
       q->entry_count--;
-      if (q->entry_count == 0)
-        q->back = -1;
       amount--;
     }
     else
@@ -141,13 +140,6 @@ void RemoveFromBuildQueue(int side_id, int unit_type, bool bulk_increment)
       prev_ptr = &q->entries[pos].next;
     }
     pos = next;
-  }
-  // Fix pointer to last entry
-  pos = q->front;
-  while (pos != -1)
-  {
-    q->back = pos;
-    pos = q->entries[pos].next;
   }
 }
 
@@ -166,7 +158,6 @@ void ProcessBuildQueues(void)
     {
       BuildQueue *q = &gSideExtraData[side_id].build_queues[i];
       // Remove all unit types that cannot be built from queue
-      bool anything_removed = false;
       char *prev_ptr = &q->front;
       int pos = q->front;
       while (pos != -1)
@@ -180,10 +171,9 @@ void ProcessBuildQueues(void)
           q->entries[pos].unit_type = -1;
           q->entries[pos].next = -1;
           gSideExtraData[side_id].build_queue_unit_type_count[unit_type]--;
+          if (gSideExtraData[side_id].build_queue_unit_type_count[unit_type] == 0)
+            gSideExtraData[side_id].build_queue_unit_type_infinity[unit_type] = false;
           q->entry_count--;
-          if (q->entry_count == 0)
-            q->back = -1;
-          anything_removed = true;
         }
         else
         {
@@ -191,20 +181,16 @@ void ProcessBuildQueues(void)
         }
         pos = next;
       }
-      // Fix pointer to last entry
-      if (anything_removed)
-      {
-        pos = q->front;
-        while (pos != -1)
-        {
-          q->back = pos;
-          pos = q->entries[pos].next;
-        }
-      }
       // Wait for pending ordered unit to be started built
       if (q->pending_ordered_unit_type != -1 && !IsUnitBuilt(side_id, q->pending_ordered_unit_type))
         continue;
       q->pending_ordered_unit_type = -1;
+      // If infinity is enabled, requeue last built unit type
+      if (q->last_built_unit_type != -1 && gSideExtraData[side_id].build_queue_unit_type_infinity[(int)q->last_built_unit_type] && CanUnitBeBuilt(side_id, q->last_built_unit_type, 1))
+      {
+        AddToBuildQueue(side_id, q->last_built_unit_type, false, false);
+        q->last_built_unit_type = -1;
+      }
       // Handle unit in front of queue
       if (q->front != -1)
       {
@@ -220,31 +206,10 @@ void ProcessBuildQueues(void)
           q->front = q->entries[front].next;
           q->entries[front].unit_type = -1;
           q->entries[front].next = -1;
-          int queued_count = gSideExtraData[side_id].build_queue_unit_type_count[unit_type];
-          int total_count = q->entry_count;
           gSideExtraData[side_id].build_queue_unit_type_count[unit_type]--;
           q->entry_count--;
-          if (q->entry_count == 0)
-            q->back = -1;
-          // If infinity is enabled and maximum units of this type were queued, requeue it
-          if (rulesExt__buildQueuesInfinityEnabled)
-          {
-            if (queued_count + ((q->last_built_unit_type == unit_type)?1:0) == rulesExt__buildQueuesMaxPerUnitType)
-            {
-              AddToBuildQueue(side_id, unit_type, false, false);
-            }
-            if ((q->last_built_unit_type != -1 && q->last_built_unit_type != unit_type && gSideExtraData[side_id].build_queue_unit_type_count[(int)q->last_built_unit_type] + 1 == rulesExt__buildQueuesMaxPerUnitType) || (total_count + 1 == rulesExt__buildQueuesMaxPerFactory))
-            {
-              AddToBuildQueue(side_id, q->last_built_unit_type, false, false);
-            }
-          }
           q->last_built_unit_type = unit_type;
         }
-      }
-      else
-      {
-        if (!IsUnitBuilt(side_id, q->last_built_unit_type))
-          q->last_built_unit_type = -1;
       }
     }
   }
@@ -273,10 +238,7 @@ void Ext__BlitUIIcons(TImage *img, int strip_bld_scroll_pos, int strip_bld_scrol
         if (queued_count > 0)
         {
           char s[8];
-          if (rulesExt__buildQueuesInfinityEnabled && (queued_count == rulesExt__buildQueuesMaxPerUnitType || gSideExtraData[gSideId].build_queues[GetQueueNumber(unit_type)].entry_count + 1 == rulesExt__buildQueuesMaxPerFactory))
-            sprintf(s, "+");
-          else
-            sprintf(s, "%d", queued_count);
+          sprintf(s, gSideExtraData[gSideId].build_queue_unit_type_infinity[unit_type]?"%d+":"%d", queued_count);
           BlitFontChars(gBackBuf, s, SideBarPanelRightUIPosX + 6, SideBarPanelsPosY + i * SideBarIconHeight + 6, 0, 0x0, -1);
           BlitFontChars(gBackBuf, s, SideBarPanelRightUIPosX + 5, SideBarPanelsPosY + i * SideBarIconHeight + 5, 0, 0xFFFFFFFF, -1);
         }

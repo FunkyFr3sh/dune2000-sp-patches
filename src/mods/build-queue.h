@@ -1,7 +1,7 @@
 // Support functions
 bool IsUnitOnHold(int side_id, int unit_type);
 bool IsUnitBuilt(int side_id, int unit_type);
-int GetQueueNumber(int unit_type);
+int GetBuildQueueNumber(int unit_type);
 int GetUnitsQueuedCount(int side_id, int unit_type);
 // Action functions
 void InitBuildQueues(void);

@@ -923,8 +923,17 @@ LABEL_339:
         int unit_type = side->__UnitIcons[unit_icon_index];
         if (rulesExt__buildQueuesEnabled)
         {
-          if (IsUnitBuilt(gSideId, unit_type) && (!IsUnitOnHold(gSideId, unit_type) || gSideExtraData[gSideId].build_queue_unit_type_count[unit_type] == 0 || _KeyboardKeyState[VK_CONTROL]))
+          if (_KeyboardKeyState[VK_MENU] && rulesExt__buildQueuesInfinityEnabled)
+            gSideExtraData[gSideId].build_queue_unit_type_infinity[unit_type] = false;
+          else if (IsUnitBuilt(gSideId, unit_type) && (!IsUnitOnHold(gSideId, unit_type) || gSideExtraData[gSideId].build_queue_unit_type_count[unit_type] == 0 || _KeyboardKeyState[VK_CONTROL]))
+          {
             GenerateBuildUnitCancelOrder(gSideId, unit_type);
+            if (gSideExtraData[gSideId].build_queues[GetBuildQueueNumber(unit_type)].entry_count == 0 && IsUnitOnHold(gSideId, unit_type))
+            {
+              gSideExtraData[gSideId].build_queue_unit_type_infinity[unit_type] = false;
+              gSideExtraData[gSideId].build_queues[GetBuildQueueNumber(unit_type)].last_built_unit_type = -1;
+            }
+          }
           else
             RemoveFromBuildQueue(gSideId, unit_type, _KeyboardKeyState[VK_SHIFT]);
         }
@@ -1450,6 +1459,8 @@ LABEL_544:
           // Implement build queues
           if (rulesExt__buildQueuesEnabled)
           {
+            if (_KeyboardKeyState[VK_MENU] && rulesExt__buildQueuesInfinityEnabled)
+              gSideExtraData[gSideId].build_queue_unit_type_infinity[unit_type] = true;
             if (IsUnitOnHold(gSideId, unit_type))
               GenerateBuildUnitPickOrder(gSideId, unit_type);
             else
