@@ -153,10 +153,19 @@ void ProcessBuildQueues(void)
     for (unsigned int i = 0; i < side->__UnitIconCount; i++)
       if (side->__UnitIcons[i] != -1)
         can_build_unit_type[side->__UnitIcons[i]] = true;
+    // Cancel infinity on unit types that cannot be built
+    for (int i = 0; i < MAX_UNIT_TYPES; i++)
+      if (!can_build_unit_type[i])
+        gSideExtraData[side_id].build_queue_unit_type_infinity[i] = false;
     // Process all build queues
     for (int i = 0; i < NUM_BUILD_QUEUES; i++)
     {
       BuildQueue *q = &gSideExtraData[side_id].build_queues[i];
+      // Clear last built unit type if that one cannot be built
+      if (q->last_built_unit_type != -1 && !can_build_unit_type[(int)q->last_built_unit_type])
+        q->last_built_unit_type = -1;
+      if (q->pending_ordered_unit_type != -1 && !can_build_unit_type[(int)q->pending_ordered_unit_type])
+        q->pending_ordered_unit_type = -1;
       // Remove all unit types that cannot be built from queue
       char *prev_ptr = &q->front;
       int pos = q->front;
@@ -171,8 +180,6 @@ void ProcessBuildQueues(void)
           q->entries[pos].unit_type = -1;
           q->entries[pos].next = -1;
           gSideExtraData[side_id].build_queue_unit_type_count[unit_type]--;
-          if (gSideExtraData[side_id].build_queue_unit_type_count[unit_type] == 0)
-            gSideExtraData[side_id].build_queue_unit_type_infinity[unit_type] = false;
           q->entry_count--;
         }
         else
@@ -220,9 +227,6 @@ CALL(0x004491B0, _Ext__BlitUIIcons); // GameLoop
 
 void Ext__BlitUIIcons(TImage *img, int strip_bld_scroll_pos, int strip_bld_scroll_pos_prev, int strip_unit_scroll_pos, int strip_unit_scroll_pos_prev, bool full_redraw)
 {
-  if (rulesExt__buildQueuesEnabled)
-    ProcessBuildQueues();
-
   BlitUIIcons(img, strip_bld_scroll_pos, strip_bld_scroll_pos_prev, strip_unit_scroll_pos, strip_unit_scroll_pos_prev, full_redraw);
 
   // Draw number of queued units in unit icons

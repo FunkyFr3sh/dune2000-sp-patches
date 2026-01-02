@@ -3,11 +3,13 @@
 #include "patch.h"
 #include "ini.h"
 #include "utils.h"
+#include "rules.h"
 #include "event-utils.h"
 #include "event-core.h"
 #include "event-actions.h"
 #include "event-conditions.h"
 #include "../spawner/short-game.h"
+#include "../mods/build-queue.h"
 
 // New extended arrays for event and condition data
 
@@ -88,6 +90,10 @@ void Mod__HandleConditionsAndEvents()
           break;
         }
   }
+
+  // Build queues
+  if (rulesExt__buildQueuesEnabled)
+    ProcessBuildQueues();
 
   if (!MapScriptExists && (_IsMultiplayer || gGameType == GAME_SKIRMISH))
   {
