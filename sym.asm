@@ -225,6 +225,7 @@ setcglob 0x005136E8, gMAPS_RES_PATH
 setcglob 0x00513A20, _FontBinData
 setcglob 0x00513B20, _FontData
 setcglob 0x00515B60, _FontPals
+setcglob 0x00515BB0, _isnot8bit_byte_515BB0
 setcglob 0x00515BB8, gHighScores
 setcglob 0x005162B4, _GreenColor8
 setcglob 0x005162B8, _GreyColor16
@@ -306,7 +307,7 @@ setcglob 0x006B8868, _TechPosdata
 setcglob 0x006B91F8, _OrderData
 setcglob 0x006B9518, NetMessageString
 setcglob 0x006B9864, LimitedModelRate
-setcglob 0x006D5FD0, _templates_AnimationArtFrames
+;setcglob 0x006D5FD0, _templates_AnimationArtFrames ; Replaced by mod
 setcglob 0x006D60D8, _templates_GroupIDs
 setcglob 0x006D6130, _SideBarPowerImages
 setcglob 0x006D7BA0, _RadarMap1
@@ -315,6 +316,8 @@ setcglob 0x006D7BE8, _images_crater
 setcglob 0x006D7DE8, _tiledata
 setcglob 0x006D8D88, _images_blobs
 setcglob 0x006D8D98, _RadarHouseImages
+setcglob 0x006D8DA8, _blitarray_6D8DA8
+setcglob 0x006D91A8, _tangentValues
 setcglob 0x006D9350, _palettes_6D9350
 setcglob 0x006D9B50, _templates_UnitGroupCount
 ;setcglob 0x006D9B58, _images_tiles ; Replaced by mod
@@ -326,8 +329,8 @@ setcglob 0x006DC470, MissionMapData
 setcglob 0x006DC538, _ViewportHeight
 setcglob 0x006DC540, _templates_buildattribs
 setcglob 0x006E2DF0, _images_small_numbers
-setcglob 0x006E2E20, gExplosionElements
-setcglob 0x006E5750, _templates_Explosiondata_AnimationArtFlags
+;setcglob 0x006E2E20, gExplosionElements ; Replaced by mod
+;setcglob 0x006E5750, _templates_Explosiondata_AnimationArtFlags ; Replaced by mod
 setcglob 0x006E5850, _templates_BuildingGroupCount
 setcglob 0x006E5854, _image_placement_marker_buildable_concrete
 setcglob 0x006E5880, dataimage
@@ -344,7 +347,7 @@ setcglob 0x0071ACA0, gUnitElements
 setcglob 0x0077D3A0, _SmokeDataStructs
 setcglob 0x0077E250, _templates_unitattribs
 setcglob 0x00781E54, _RadarMap2
-setcglob 0x00781E58, _templates_explosionattribs
+;setcglob 0x00781E58, _templates_explosionattribs ; Replaced by mod
 setcglob 0x00782058, _images_miscIcon
 setcglob 0x00782068, _templates_bulletattribs
 setcglob 0x00782768, _BlankRadarImage
@@ -365,9 +368,11 @@ setcglob 0x007891B0, _templates_UnitNameList
 setcglob 0x0078FB28, _image_selection_bl
 setcglob 0x0078FB2C, _image_selection_br
 setcglob 0x0078FB30, _WarheadNames
+setcglob 0x00790110, _blitarray_790110
+setcglob 0x00790510, _DenseSpiceTileMapping
 setcglob 0x00790550, _WarheadData
 setcglob 0x007907A8, _gBuildingElementsDamaged
-setcglob 0x007943A8, _templates_ExplosionNameList
+;setcglob 0x007943A8, _templates_ExplosionNameList ; Replaced by mod
 setcglob 0x00795128, _speed_values
 setcglob 0x007951A8, _images_crate
 setcglob 0x007951C8, _image_selection_tl
@@ -723,6 +728,7 @@ setcglob 0x0044DAC0, GetBuildingOnConcreteCount
 setcglob 0x0044DEE0, RemoveBuildingStuff
 setcglob 0x0044E120, RemoveUnitTileData
 setcglob 0x0044E3B0, RevealCircle
+setcglob 0x0044E4D0, TileHasSpice
 setcglob 0x0044E770, InitCrates
 setcglob 0x0044E790, GetFreeCrateIndex
 setcglob 0x0044E8E0, PlaceCrate
@@ -791,13 +797,16 @@ setcglob 0x0045DFE0, GetFacing
 setcglob 0x0045E020, GetFacing_and_252
 ; Setup
 setcglob 0x00460550, SetTImageToResource
+setcglob 0x00460BE0, LoadDataResourceFile
 setcglob 0x00460C80, Setup__LoadUIBBFile
 setcglob 0x00460EC0, Setup__LoadUI_LanguageFile
 setcglob 0x00462010, SetPixelOnRadar8
 setcglob 0x004620B0, SetPixelOnRadar16
 setcglob 0x00462140, SetupRadarMap
 setcglob 0x00462D10, LoadTileset
+setcglob 0x00465E60, ReadDataTypes
 setcglob 0x00466140, Setup__LoadGraphicsFile
+setcglob 0x0046AD80, ReadSmokeData
 setcglob 0x0046B0F0, ReadArmour
 setcglob 0x0046B690, ReadSpeed
 ; CSide

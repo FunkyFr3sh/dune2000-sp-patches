@@ -96,6 +96,10 @@ OBJS            ?= callsites.o \
         src/mods/ai-do-saboteur.o \
         src/mods/customizable-saboteur-duration.o \
         src/mods/build-queue.o \
+        src/mods/explosion-update.o \
+        src/mods/building-destroy.o \
+        src/mods/explosion-add.o \
+        src/mods/extended-templates.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \

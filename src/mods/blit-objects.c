@@ -1,5 +1,6 @@
 #include "macros/patch.h"
 #include "dune2000.h"
+#include "extended-templates.h"
 
 #define MAX_SPRITES_ON_SCREEN 4000
 

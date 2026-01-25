@@ -2,6 +2,7 @@
 #include "dune2000.h"
 #include "utils.h"
 #include "shooting-restrictions.h"
+#include "extended-templates.h"
 
 // Added new unit shooting features:
 // - Bulk shots with customizable number of shots in bulk, short and long delay, for pri and sec weapon independently

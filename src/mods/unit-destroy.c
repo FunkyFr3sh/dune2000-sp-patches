@@ -1,5 +1,6 @@
 #include "macros/patch.h"
 #include "dune2000.h"
+#include "extended-templates.h"
 
 // Custom implementation of function DestroyUnit
 DETOUR(0x0049CDE0, 0x0049D162, _Mod__DestroyUnit);

@@ -2,6 +2,7 @@
 #include "dune2000.h"
 #include "rules.h"
 #include "extended-tileset.h"
+#include "extended-templates.h"
 
 bool CanUnitShoot(Unit *unit);
 

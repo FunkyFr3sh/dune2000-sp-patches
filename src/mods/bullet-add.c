@@ -1,6 +1,7 @@
 #include "macros/patch.h"
 #include "dune2000.h"
 #include "utils.h"
+#include "extended-templates.h"
 
 // Add lightning bullet behavior
 // Add railgun bullet behavior

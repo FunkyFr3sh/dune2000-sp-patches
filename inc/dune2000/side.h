@@ -429,7 +429,7 @@ typedef struct Bullet
   int16_t __FirerIndex;
   int16_t __HomingIndex;
   uint8_t Type;
-  uint8_t __HomingSideId;
+  char __HomingSideId;
   uint8_t __MySideId;
   char c_field_1B_template_c_field_13;
   int16_t __TargetXpos;

@@ -26,7 +26,7 @@ typedef struct dwXYStruct
 #define MAX_UNIT_TYPES 60
 #define MAX_BUILDING_TYPES 100
 #define MAX_WEAPON_TYPES 64
-#define MAX_EXPLOSION_TYPES 64
+//#define MAX_EXPLOSION_TYPES 64
 #define MAX_WARHEAD_TYPES 30
 #define MAX_ARMOUR_TYPES 12
 #define MAX_TERRAIN_TYPES 8
@@ -416,6 +416,7 @@ extern char                 gMAPS_RES_PATH[152];
 extern char                 _FontBinData[256];
 extern FontHeader           _FontData[8];
 extern int *                _FontPals[16];
+extern char                 _isnot8bit_byte_515BB0;
 extern HighScoreStruct      gHighScores[6];
 extern char                 _GreenColor8;
 extern short                _GreyColor16;
@@ -497,7 +498,7 @@ extern TechPosEntry         _TechPosdata[10][10];
 extern OrderStruct          _OrderData[8];
 
 
-extern int                  _templates_AnimationArtFrames[MAX_EXPLOSION_TYPES];
+// extern int                  _templates_AnimationArtFrames[MAX_EXPLOSION_TYPES]; // Replaced by mod
 extern GroupIDsStruct       _templates_GroupIDs;
 extern TImage *             _SideBarPowerImages[4];
 extern TImage *             _RadarMap1;
@@ -506,6 +507,8 @@ extern TImage *             _images_crater[64][2];
 extern int                  _tiledata[1000];
 extern TImage *             _images_blobs[2];
 extern TImage *             _RadarHouseImages[3];
+extern short                _blitarray_6D8DA8[512];
+extern unsigned short       _tangentValues[89];
 extern char                 _palettes_6D9350[2048];
 extern char                 _templates_UnitGroupCount;
 // extern TImage *             _images_tiles[MAX_TILES]; // Replaced by mod
@@ -517,8 +520,8 @@ extern TImage *             _image_spanner;
 extern int                  _ViewportHeight;
 extern BuildingAtrbStruct   _templates_buildattribs[MAX_BUILDING_TYPES];
 extern TImage *             _images_small_numbers[10];
-extern TImage *             gExplosionElements[MAX_EXPLOSION_TYPES][40];
-extern int                  _templates_Explosiondata_AnimationArtFlags[MAX_EXPLOSION_TYPES];
+// extern TImage *             gExplosionElements[MAX_EXPLOSION_TYPES][40]; // Replaced by mod
+// extern int                  _templates_Explosiondata_AnimationArtFlags[MAX_EXPLOSION_TYPES]; // Replaced by mod
 extern char                 _templates_BuildingGroupCount;
 extern TImage *             _image_placement_marker_buildable_concrete;
 extern TImage *             dataimage[480];
@@ -535,7 +538,7 @@ extern TImage *             gUnitElements[90][35][32];
 extern SmokeDataStruct      _SmokeDataStructs[MAX_BUILDING_TYPES];
 extern UnitAtribStruct      _templates_unitattribs[MAX_UNIT_TYPES];
 extern TImage *             _RadarMap2;
-extern ExploisonAtrbStruct  _templates_explosionattribs[MAX_EXPLOSION_TYPES];
+// extern ExploisonAtrbStruct  _templates_explosionattribs[MAX_EXPLOSION_TYPES]; // Replaced by mod
 extern TImage *             _images_miscIcon[4];
 extern BullAtrbStruct       _templates_bulletattribs[MAX_WEAPON_TYPES];
 extern TImage *             _BlankRadarImage;
@@ -556,9 +559,11 @@ extern char                 _templates_UnitNameList[MAX_UNIT_TYPES][450];
 extern TImage *             _image_selection_bl;
 extern TImage *             _image_selection_br;
 extern char                 _WarheadNames[MAX_WARHEAD_TYPES][50];
+extern char                 _blitarray_790110[1024];
+extern char                 _DenseSpiceTileMapping[8][8];
 extern WarheadStruct        _WarheadData[MAX_WARHEAD_TYPES];
 extern TImage *             _gBuildingElementsDamaged[120][32];
-extern char                 _templates_ExplosionNameList[MAX_EXPLOSION_TYPES][50];
+// extern char                 _templates_ExplosionNameList[MAX_EXPLOSION_TYPES][50]; // Replaced by mod
 extern float                _speed_values[MAX_TERRAIN_TYPES][MAX_VEHICLE_TYPES];
 extern TImage *             _images_crate[8];
 extern TImage *             _image_selection_tl;
@@ -888,6 +893,7 @@ void            GetBuildingOnConcreteCount(char side_id, unsigned char building_
 void            RemoveBuildingStuff(int building_type, int x, int y, eSideType side_id);
 void            RemoveUnitTileData(Unit *a1);
 void            RevealCircle(int x, int y, int size);
+bool            TileHasSpice(int x, int y);
 void            InitCrates();
 char            GetFreeCrateIndex();
 void            PlaceCrate(int x, int y, int timing, eCrateType type, eCrateImage image, int respawn_count);
@@ -956,13 +962,16 @@ char            GetFacing(int x1, int y1, int x2, int y2);
 char            GetFacing_and_252(int x1, int y1, int x2, int y2);
 // Setup
 TImage *        SetTImageToResource(ResourceInfo *resource);
+void            LoadDataResourceFile(char *filename);
 void            Setup__LoadUIBBFile();
 
 void            SetPixelOnRadar8(unsigned char x, unsigned char y, char color);
 void            SetPixelOnRadar16(unsigned char x, unsigned char y, short color);
 void            SetupRadarMap();
 void            LoadTileset(char *tileset_name);
+void            ReadDataTypes();
 
+void            ReadSmokeData();
 void            ReadArmour();
 void            ReadSpeed();
 // CSide

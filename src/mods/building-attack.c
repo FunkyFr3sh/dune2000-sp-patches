@@ -1,6 +1,7 @@
 #include "macros/patch.h"
 #include "dune2000.h"
 #include "utils.h"
+#include "extended-templates.h"
 
 // Added new building shooting features:
 // - Bulk shots with customizable number of shots in bulk, short and long delay, for pri and sec weapon independently

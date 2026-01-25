@@ -4,6 +4,7 @@
 #include "shooting-restrictions.h"
 #include "extended-tileset.h"
 #include "../event-system/event-core.h"
+#include "extended-templates.h"
 
 // Implement railgun bullet behavior
 

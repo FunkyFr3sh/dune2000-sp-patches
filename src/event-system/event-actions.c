@@ -11,6 +11,7 @@
 #include "../mods/tooltips.h"
 #include "../mods/extended-tileset.h"
 #include "../mods/radar.h"
+#include "../mods/extended-templates.h"
 #include "rules.h"
 
 uint32_t MapScrollLockTicks = 0;

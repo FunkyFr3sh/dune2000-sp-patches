@@ -9,6 +9,7 @@
 #include "../event-system/event-core.h"
 #include "../event-system/event-actions.h"
 #include "crates-func.h"
+#include "extended-templates.h"
 
 void HandleExplosionCrate(CrateStruct *crate, Unit *unit, unsigned char side_id);
 void HandleSpiceBloomCrate(CrateStruct *crate, int crate_type, Unit *unit, unsigned char side_id);

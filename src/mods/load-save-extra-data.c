@@ -5,6 +5,7 @@
 #include "../event-system/event-core.h"
 #include "radar.h"
 #include "rules.h"
+#include "extended-templates.h"
 #include <patch.h>
 
 CALL(0x00441836, _SaveGameExtraData); // SaveGame
