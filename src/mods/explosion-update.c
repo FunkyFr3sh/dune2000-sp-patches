@@ -15,19 +15,26 @@ bool Mod__UpdateExplosion(Explosion *explosion, eSideType side_id)
   int explosion_type; // ecx
   unsigned char animation_frame; // al
 
-  if ( explosion->w_field_8 != -1 )
+  ExploisonAtrbStruct *explosion_template = &_templates_explosionattribs[explosion->Type];
+  if ( explosion->__AssociatedUnitIndex != -1 )
   {
-    if ( GetSide(side_id)->__ObjectArray[(unsigned short)explosion->w_field_8].ObjectType == 1 )
+    // New logic start
+    // Move explosion along with its associated unit
+    Unit *associated_unit = &GetSide(side_id)->__ObjectArray[(unsigned short)explosion->__AssociatedUnitIndex];
+    if ( associated_unit->ObjectType == OBJECT_UNIT )
     {
-      if ( GetSide(side_id)->__ObjectArray[(unsigned short)explosion->w_field_8].State == BLD_STATE_17_DEAD )
+      if ( associated_unit->State == UNIT_STATE_17_DEAD )
       {
         return 0;
       }
     }
     else
     {
-      explosion->w_field_8 = -1;
+      return 0;
     }
+    explosion->__PosX = associated_unit->__PosX + (explosion->AssocUnitOffsetX << 16);
+    explosion->__PosY = associated_unit->__PosY + (explosion->AssocUnitOffsetY << 16);
+    // New logic end
   }
   flags = explosion->Flags;
   if ( flags & EXPFLAGS_1000 )
@@ -42,7 +49,7 @@ bool Mod__UpdateExplosion(Explosion *explosion, eSideType side_id)
   animation_delay = explosion->__AnimationDelay;
   if ( flags & EXPFLAGS_400_MUZZLE_FLASH )
   {
-    if ( (unsigned char)(1 << animation_delay) & _templates_explosionattribs[explosion->Type].__FiringPattern )
+    if ( (unsigned char)(1 << animation_delay) & explosion_template->__FiringPattern )
     {
       flags &= ~EXPFLAGS_800_INVISIBLE;
     }
@@ -66,12 +73,24 @@ bool Mod__UpdateExplosion(Explosion *explosion, eSideType side_id)
       explosion_type = explosion->Type;
       explosion->Flags = flags;
       animation_frame = explosion->__AnimationFrame;
-      explosion->__AnimationDelay = 2;
+      // New logic start
+      // Implement explosion animation delay template property
+      explosion->__AnimationDelay = 2 + explosion_template->AnimationDelay;
+      // New logic end
       explosion->__AnimationFrame = ++animation_frame;
       if ( animation_frame >= _templates_AnimationArtFrames[explosion_type] )
       {
         explosion->__AnimationFrame = 0;
-        return 0;
+        // New logic start
+        // Implement explosion repeat count template property
+        if (explosion->RepeatCount < explosion_template->RepeatCount)
+        {
+          if (explosion_template->RepeatCount != 255)
+            explosion->RepeatCount++;
+        }
+        else
+          return 0;
+        // New logic end
       }
     }
     result = 1;

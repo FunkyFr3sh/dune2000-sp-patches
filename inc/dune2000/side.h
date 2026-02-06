@@ -441,7 +441,7 @@ typedef struct Bullet
   uint8_t Tag;  // Additional field for extended functionality (mod)
   uint8_t RailgunAnimationFrame; // Additional field for extended functionality (mod)
   uint8_t RailgunAnimationDelay; // Additional field for extended functionality (mod)
-  char field_33;
+  uint8_t RailgunRepeatCount; // Additional field for extended functionality (mod)
   int32_t __FallingSpeed;
   char field_38;
   char field_39;
@@ -519,9 +519,9 @@ typedef struct Explosion
   uint8_t Type;
   uint8_t __AnimationFrame;
   uint8_t __AnimationDelay;
-  char field_3;
+  uint8_t RepeatCount; // Additional field for extended functionality (mod)
   int32_t Flags;
-  int16_t w_field_8;
+  int16_t __AssociatedUnitIndex;
   uint8_t Tag; // Additional field for extended functionality (mod)
   char field_B;
   uint32_t __PosX;
@@ -539,7 +539,9 @@ typedef struct Explosion
   uint32_t custom_dword_4; // Additional field for extended functionality (mod)
   uint32_t dw_field_30;
   uint32_t dw_field_34;
-  uint8_t gap_38[68];
+  int32_t AssocUnitOffsetX; // Additional field for extended functionality (mod)
+  int32_t AssocUnitOffsetY; // Additional field for extended functionality (mod)
+  uint8_t gap_38[60];
   struct Explosion *Next;
   int32_t dw_field_80_ptr;
   int32_t dw_field_84_ptr;

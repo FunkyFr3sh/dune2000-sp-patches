@@ -15,7 +15,7 @@ int UpdateBullet_Railgun(Bullet *bul, int side_id)
   if (bul->RailgunAnimationDelay == 0)
   {
     bul->RailgunAnimationFrame++;
-    bul->RailgunAnimationDelay = 2;
+    bul->RailgunAnimationDelay = 2 + _templates_explosionattribs[(int)bullet_template->__TrailExplosion].AnimationDelay;
   }
   else
   {
@@ -23,8 +23,16 @@ int UpdateBullet_Railgun(Bullet *bul, int side_id)
     return 1;
   }
   if (bul->RailgunAnimationFrame == _templates_AnimationArtFrames[(int)bullet_template->__TrailExplosion])
+  {
+    if (bul->RailgunRepeatCount < _templates_explosionattribs[(int)bullet_template->__TrailExplosion].RepeatCount)
+    {
+      bul->RailgunAnimationFrame = 0;
+      bul->RailgunRepeatCount++;
+      return 1;
+    }
     return 0;
-  if (bul->RailgunAnimationFrame > 0)
+  }
+  if (bul->RailgunAnimationFrame > 0 || bul->RailgunRepeatCount > 0)
     return 1;
   // Get firing direction
   int source_xpos = bul->__PosX >> 16;

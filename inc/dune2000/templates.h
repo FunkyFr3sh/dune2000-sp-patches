@@ -176,8 +176,8 @@ typedef struct ExploisonAtrbStruct
 {
   char __Type;
   char __FiringPattern;
-  char field_2;
-  char field_3;
+  uint8_t RepeatCount; // Additional field for extended functionality (mod)
+  uint8_t AnimationDelay; // Additional field for extended functionality (mod)
   int __Sound;
 }ExploisonAtrbStruct;
 

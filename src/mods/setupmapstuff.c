@@ -436,6 +436,24 @@ void Mod__setupmapstuff()
             }
             break;
           }
+          // Generic explosion: 0001-TSSSEEEEEEE
+          // T = tagged
+          // S = side (0-7)
+          // E = explosion (0-127)
+          if (special_value & 0x1000)
+          {
+            int explosion_type = special_value & 127;
+            int side_id = (special_value >> 7) & 7;
+            bool tagged = (special_value & 1024) != 0;
+            int explosion_index = ModelAddExplosion(side_id, explosion_type, xpos * 32 + 16, ypos * 32 + 16, 0, 0, 0, 0, 0);
+            if (explosion_index != -1)
+            {
+              Explosion *explosion = (Explosion *)&GetSide(side_id)->__ObjectArray[explosion_index];
+              if (tagged)
+                explosion->Tag = 1;
+            }
+            break;
+          }
           // Default behavior: Tiledata entry
           object_type = _tiledata[special_value];
           if ( object_type != -1 )

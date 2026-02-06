@@ -28,7 +28,7 @@ short Mod__ModelAddExplosion(eSideType side_id, unsigned char explosionType, uns
       exp->__PosY = y << 16;
       exp->__PosZHeight = z;
       exp->__AnimationFrame = 0;
-      exp->w_field_8 = -1;
+      exp->__AssociatedUnitIndex = -1;
       exp->Flags = _templates_Explosiondata_AnimationArtFlags[explosionType];
       if ( extraFlags & EXPFLAGS_20 )
       {
@@ -42,6 +42,22 @@ short Mod__ModelAddExplosion(eSideType side_id, unsigned char explosionType, uns
         exp->dw_field_30 = a8;
         exp->dw_field_34 = a9;
       }
+      // New logic start
+      // Extra explosion properties
+      exp->RepeatCount = 0;
+      exp->AssocUnitOffsetX = 0;
+      exp->AssocUnitOffsetY = 0;
+      exp->custom_byte_1 = 0;
+      exp->custom_byte_2 = 0;
+      exp->custom_byte_3 = 0;
+      exp->custom_byte_4 = 0;
+      exp->custom_word_1 = 0;
+      exp->custom_word_2 = 0;
+      exp->custom_dword_1 = 0;
+      exp->custom_dword_2 = 0;
+      exp->custom_dword_3 = 0;
+      exp->custom_dword_4 = 0;
+      // New logic end
       exp->dw_field_84_ptr = (int)&side->__FirstExplosionPtr;
       exp->dw_field_88_ptr = (int)&side->__LastExplosionPtr;
       CSide__SetupObject(side, (Unit *)exp, OBJECT_EXPLOSION);
