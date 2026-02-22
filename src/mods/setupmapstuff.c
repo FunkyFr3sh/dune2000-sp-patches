@@ -54,6 +54,11 @@ void PlaceStaticCrate(uint8_t x, uint8_t y, eCrateType type, eCrateImage image, 
   }
 }
 
+// Increase limit of total pre-placed structures on map from 1000 to 4000
+char object_array_xpos[4000]; // [esp+68h] [ebp-1770h]   // Array size changed from 1000 to 4000 items (mod)
+char object_array_ypos[4000]; // [esp+450h] [ebp-1388h]  // Array size changed from 1000 to 4000 items (mod)
+int object_array[4000]; // [esp+838h] [ebp-FA0h]         // Array size changed from 1000 to 4000 items (mod)
+
 // Custom implementation of function setupmapstuff
 DETOUR(0x00469790, 0x0046A299, _Mod__setupmapstuff);
 
@@ -145,10 +150,6 @@ void Mod__setupmapstuff()
   unsigned char v121; // [esp+50h] [ebp-1788h]
   char v122; // [esp+54h] [ebp-1784h]
   RECT v123; // [esp+58h] [ebp-1780h]
-  // Increase limit of total pre-placed structures on map from 1000 to 4000
-  char object_array_xpos[4000]; // [esp+68h] [ebp-1770h]   // Array size changed from 1000 to 4000 items (mod)
-  char object_array_ypos[4000]; // [esp+450h] [ebp-1388h]  // Array size changed from 1000 to 4000 items (mod)
-  int object_array[4000]; // [esp+838h] [ebp-FA0h]         // Array size changed from 1000 to 4000 items (mod)
 
   spawn_location = -1;
   objects_on_map = 0;

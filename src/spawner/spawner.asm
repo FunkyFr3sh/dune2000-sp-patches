@@ -199,15 +199,9 @@ hack 0x004486AE ; CallInitHouses
     push 0x004DF02C
     jmp 0x004486B3
 
-hack 0x0044A8CE, 0x0044A8D3 ; Load custom string table for add-on campaigns
+; Load CampaignFolder, ModsFolder, ColoursFile from spawn.ini before any file is open
+hack 0x0044A8CE, 0x0044A8D3 ; loadresources
     pushad
-    push 256
-    push TextUib
-    push TextUib
-    push TextUibKey
-    push SettingsSection
-    call SpawnIniGetString
-    add esp, 20
     push 256
     push CampaignFolder
     push CampaignFolder
@@ -232,6 +226,22 @@ hack 0x0044A8CE, 0x0044A8D3 ; Load custom string table for add-on campaigns
     popad
     call GAME_SET_RES_PATH
     jmp hackend
+
+; Load custom string table for add-on campaigns
+hack 0x00481E23, 0x00481E29 ; CUIManager::LoadBinaryUIData
+    jne 0x00481F76
+    cmp byte[SpawnerActive], 1
+    jnz 0x00481E29
+    pushad
+    push 256
+    push TextUib
+    push TextUib
+    push TextUibKey
+    push SettingsSection
+    call SpawnIniGetString
+    add esp, 20
+    popad
+    jmp 0x00481E29
 
 ;clean up game the StartINetGame functions, keep only the stuff we need for the spawner (this prolly breaks WOL, but who cares!)
 ;Guest function
