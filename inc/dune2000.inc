@@ -130,7 +130,7 @@ cextern MissionMap
 cextern LimitedModelRate
 cextern gMAPS_RES_PATH
 cextern ResourcePath
-cextern MoviesResourcePath
+cextern gMOVIES_RES_PATH
 cextern gGameMapWidth
 cextern gGameMapHeight
 cextern CurrentSoundTrack

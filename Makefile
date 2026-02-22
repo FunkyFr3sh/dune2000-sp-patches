@@ -100,6 +100,7 @@ OBJS            ?= callsites.o \
         src/mods/building-destroy.o \
         src/mods/explosion-add.o \
         src/mods/extended-templates.o \
+        src/mods/open-file.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \

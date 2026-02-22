@@ -7,6 +7,7 @@
 // This header will be split up as it becomes larger
 
 typedef void *LPDIRECTDRAWSURFACE;
+typedef void CMovie;
 typedef char eBuildingGroupType;
 typedef unsigned char eSideType;
 typedef int32_t _DWORD;
@@ -409,10 +410,13 @@ extern int                  _crater_draw_offsets_x[16];
 extern DisplayListStruct *  _selectedmaybe_dw_BlitVehicles_512D58;
 extern char                 ResourcePath[];
 extern char                 gRES_PATH[152];
-extern char                 MoviesResourcePath[];
+extern char                 gMOVIES_RES_PATH[152];
 extern char                 gMUSIC_RES_PATH[152];
 extern char                 gMISSIONS_RES_PATH[152];
 extern char                 gMAPS_RES_PATH[152];
+extern int                  _gFilesOpen;
+extern int                  _gFilesOpen2;
+extern int                  _gFilesOpen2_0;
 extern char                 _FontBinData[256];
 extern FontHeader           _FontData[8];
 extern int *                _FontPals[16];
@@ -805,6 +809,8 @@ void            BlitInfantryBehindObjects(TImage *img);
 void            DebugFatal(char *caption, char *format, ...);
 void            AbortGame();
 void            ReportFileError(char *message, bool no_fail_message);
+bool            DoesFileExist(char *filename);
+void            GAME_SET_RES_PATH(char *filename);
 FILE *          _OpenFile(char * filename, char *mode, char *path);
 void            CloseFile(FILE *Stream);
 size_t          _ReadFile(void *buffer, size_t size, size_t count, FILE *file);
@@ -965,6 +971,7 @@ TImage *        SetTImageToResource(ResourceInfo *resource);
 void            LoadDataResourceFile(char *filename);
 void            Setup__LoadUIBBFile();
 
+void            GetColourTables();
 void            SetPixelOnRadar8(unsigned char x, unsigned char y, char color);
 void            SetPixelOnRadar16(unsigned char x, unsigned char y, short color);
 void            SetupRadarMap();
@@ -1070,6 +1077,7 @@ char *          GetTextString(int stringId, bool showError);
 int             GetSoundTableID(const char *key);
 char *          GetSampleFilename(int id);
 // Other
+char            CheckForCD(CMovie *uiobj, char set_state_to_5);
 void            GetNextSquare(Unit *unit, eSideType side, char flags);
 bool            TurnUnitInDirection(Unit *unit, unsigned char target_facing);
 void            TurnUnitBarrelInDirection(Unit *unit, char facing);

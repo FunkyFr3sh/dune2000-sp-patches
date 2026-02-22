@@ -56,7 +56,7 @@ void InitLanguage()
     
     char moviePath[256];
     sprintf(moviePath, ".\\%sMovies%s", ResourcePath, GameLanguage);
-    if (DirectoryExists(moviePath)) sprintf(MoviesResourcePath, "%sMovies%s\\", ResourcePath, GameLanguage);
+    if (DirectoryExists(moviePath)) sprintf(gMOVIES_RES_PATH, "%sMovies%s\\", ResourcePath, GameLanguage);
     
     Graphlib__LoadFontFile();
 }

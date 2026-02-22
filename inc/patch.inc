@@ -80,3 +80,4 @@ cextern InitFontColors
 cextern DebugUnitCrash
 cextern ExecuteEventHook
 cextern HandleSpiceBloomCrate
+cextern GAME_SET_RES_PATH

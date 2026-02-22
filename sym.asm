@@ -218,10 +218,13 @@ setcglob 0x00503F88, _crater_draw_offsets_x
 setcglob 0x00512D58, _selectedmaybe_dw_BlitVehicles_512D58
 setcglob 0x00513488, ResourcePath
 setcglob 0x00513488, gRES_PATH
-setcglob 0x00513520, MoviesResourcePath
+setcglob 0x00513520, gMOVIES_RES_PATH
 setcglob 0x005135B8, gMUSIC_RES_PATH
 setcglob 0x00513650, gMISSIONS_RES_PATH
 setcglob 0x005136E8, gMAPS_RES_PATH
+setcglob 0x00513780, _gFilesOpen
+setcglob 0x00513784, _gFilesOpen2
+setcglob 0x00513788, _gFilesOpen2_0
 setcglob 0x00513A20, _FontBinData
 setcglob 0x00513B20, _FontData
 setcglob 0x00515B60, _FontPals
@@ -640,6 +643,8 @@ setcglob 0x0042AF00, BlitInfantryBehindObjects
 setcglob 0x0042B590, DebugFatal ; Game_ShowErrorAndExit
 setcglob 0x00492EB0, AbortGame
 setcglob 0x0042B730, ReportFileError
+setcglob 0x0042B800, DoesFileExist
+setcglob 0x0042B8D0, GAME_SET_RES_PATH
 setcglob 0x0042BA50, _OpenFile
 setcglob 0x0042BB40, CloseFile
 setcglob 0x0042BB60, _ReadFile
@@ -800,6 +805,7 @@ setcglob 0x00460550, SetTImageToResource
 setcglob 0x00460BE0, LoadDataResourceFile
 setcglob 0x00460C80, Setup__LoadUIBBFile
 setcglob 0x00460EC0, Setup__LoadUI_LanguageFile
+setcglob 0x00461D10, GetColourTables
 setcglob 0x00462010, SetPixelOnRadar8
 setcglob 0x004620B0, SetPixelOnRadar16
 setcglob 0x00462140, SetupRadarMap
@@ -905,6 +911,7 @@ setcglob 0x0048DCC0, GetTextString			; (int id, int unk)
 setcglob 0x0048DD90, GetSoundTableID
 setcglob 0x0048DE10, GetSampleFilename
 ; Other
+setcglob 0x00492C40, CheckForCD
 setcglob 0x004936A0, GetNextSquare
 setcglob 0x00493EB0, TurnUnitInDirection
 setcglob 0x00493F40, TurnUnitBarrelInDirection

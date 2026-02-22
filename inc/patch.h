@@ -74,6 +74,9 @@ extern uint32_t P2Pheader;
 extern unsigned char gOldSideId;
 extern uint32_t MapScrollLockTicks;
 extern unsigned int DebugFeatures;
+extern char CampaignFolder[256];
+extern char ModsFolder[256];
+extern char ColoursFile[256];
 
 extern const char Cursor0Data[];
 extern const unsigned int Cursor0DataLength;

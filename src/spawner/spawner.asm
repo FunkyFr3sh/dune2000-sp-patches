@@ -6,8 +6,15 @@
 
 sstring ButtonDebug, "BUTTON Debug"
 sstring TextUibKey, "TextUib"
+sstring CampaignFolderKey, "CampaignFolder"
+sstring ModsFolderKey, "ModsFolder"
+sstring ColoursFileKey, "ColoursFile"
 sstring SettingsSection, "Settings"
 sstring SpawnerMapsResourcePath, "data\maps\"
+
+gstring CampaignFolder, "", 256
+gstring ModsFolder, "", 256
+gstring ColoursFile, "COLOURS.BIN", 256
 
 hack 0x0042BA0B, 0x0042BA13 ; force map resource path when the spawner is active
     call 0x0042BBE0
@@ -192,10 +199,7 @@ hack 0x004486AE ; CallInitHouses
     push 0x004DF02C
     jmp 0x004486B3
 
-hack 0x00481E23, 0x00481E29 ; Load custom string table for add-on campaigns
-    jne 0x00481F76
-    cmp byte[SpawnerActive], 1
-    jnz 0x00481E29
+hack 0x0044A8CE, 0x0044A8D3 ; Load custom string table for add-on campaigns
     pushad
     push 256
     push TextUib
@@ -204,8 +208,30 @@ hack 0x00481E23, 0x00481E29 ; Load custom string table for add-on campaigns
     push SettingsSection
     call SpawnIniGetString
     add esp, 20
+    push 256
+    push CampaignFolder
+    push CampaignFolder
+    push CampaignFolderKey
+    push SettingsSection
+    call SpawnIniGetString
+    add esp, 20
+    push 256
+    push ModsFolder
+    push ModsFolder
+    push ModsFolderKey
+    push SettingsSection
+    call SpawnIniGetString
+    add esp, 20
+    push 256
+    push ColoursFile
+    push ColoursFile
+    push ColoursFileKey
+    push SettingsSection
+    call SpawnIniGetString
+    add esp, 20
     popad
-    jmp 0x00481E29
+    call GAME_SET_RES_PATH
+    jmp hackend
 
 ;clean up game the StartINetGame functions, keep only the stuff we need for the spawner (this prolly breaks WOL, but who cares!)
 ;Guest function
