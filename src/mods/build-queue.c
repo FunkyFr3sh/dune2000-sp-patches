@@ -42,6 +42,25 @@ int GetUnitsQueuedCount(int side_id, int unit_type)
       ((IsUnitBuilt(side_id, unit_type) || gSideExtraData[side_id].build_queues[GetBuildQueueNumber(unit_type)].pending_ordered_unit_type == unit_type)?1:0);
 }
 
+int GetFactoryQueuedCount(int side_id, int queue_num)
+{
+  int in_queue = gSideExtraData[side_id].build_queues[queue_num].entry_count;
+  int built = 0;
+  if (gSideExtraData[side_id].build_queues[queue_num].pending_ordered_unit_type != -1)
+    built = 1;
+  else
+  {
+    CSide *side = GetSide(side_id);
+    for (int i = 0; i < 10; i++)
+      if (GetBuildQueueNumber(side->__UnitBuildQueue[i].__type) == queue_num)
+      {
+        built = 1;
+        break;
+      }
+  }
+  return in_queue + built;
+}
+
 void InitBuildQueues(void)
 {
   if (rulesExt__buildQueuesMaxPerFactory > MAX_BUILD_QUEUE_ENTRIES || rulesExt__buildQueuesMaxPerUnitType > MAX_BUILD_QUEUE_ENTRIES)
@@ -83,8 +102,9 @@ void AddToBuildQueue(int side_id, int unit_type, bool bulk_increment, bool prior
   for (int i = 0; i < amount; i++)
   {
     // Check if queue is full
-    int queued_count = GetUnitsQueuedCount(side_id, unit_type);
-    if (q->entry_count + 1 == rulesExt__buildQueuesMaxPerFactory || queued_count == rulesExt__buildQueuesMaxPerUnitType)
+    int units_queued_count = GetUnitsQueuedCount(side_id, unit_type);
+    int factory_queued_count = GetFactoryQueuedCount(side_id, queue_num);
+    if (factory_queued_count == rulesExt__buildQueuesMaxPerFactory || units_queued_count == rulesExt__buildQueuesMaxPerUnitType)
       break;
     // Find free entry
     while (q->entries[search_pos].unit_type != -1)
