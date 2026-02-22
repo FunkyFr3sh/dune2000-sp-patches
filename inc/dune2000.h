@@ -78,7 +78,7 @@ typedef struct TacticalStruct
   int __SidebarButtonMode;
   char __RadarScoreView;
   char __CanPlace;
-  char field_E;
+  char LastBuiltBuilding; // Additional field for extended functionality (mod)
   char field_F;
   int __Strip1ScrollPos1;
   int __Strip2ScrollPos1;

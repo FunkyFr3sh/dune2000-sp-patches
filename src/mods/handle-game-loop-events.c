@@ -2244,6 +2244,25 @@ LABEL_665:
   }
   // New logic end
   // New logic start
+  // Place building or rebuild last built building with B key
+  if ( _KeyboardKeyDown[VK_B] )
+  {
+    side = GetSide(gSideId);
+    if (side->__BuildingBuildQueue.__type != -1 && side->__BuildingBuildQueue.__build_progress == 0x5A00)
+      _TacticalData.__SidebarButtonMode = 1;
+    else if (side->__BuildingBuildQueue.__type == -1)
+    {
+      for (int i = 0; i < 60; i++)
+        if (side->__BuildingIcons[i] == _TacticalData.LastBuiltBuilding)
+        {
+          GenerateBuildBuildingPickOrder(gSideId, _TacticalData.LastBuiltBuilding);
+          break;
+        }
+    }
+    _KeyboardKeyDown[VK_B] = 0;
+  }
+  // New logic end
+  // New logic start
   // Quick switch side debug feature
   if (DebugFeatures & DEBUGFEATURE_QUICK_SWITCH_SIDE)
   {

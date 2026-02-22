@@ -178,6 +178,9 @@ void Mod__setupmapstuff()
   // Reset MapScrollLockTicks
   MapScrollLockTicks = 0;
 
+  // Reset LastBuiltBuilding
+  _TacticalData.LastBuiltBuilding = 0;
+
   // Reset Radar Markers
   for (int i = 0; i < MAX_RADAR_MARKERS; i++)
   {

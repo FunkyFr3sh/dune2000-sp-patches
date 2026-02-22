@@ -112,6 +112,10 @@ bool Mod__HandleBuildingPlacement(eSideType side_id, int tile_bitfield, int tile
   int build_restriction_terrain = building_template->BuildRestrictionTerrain;
   int max_build_distance = building_template->BuildMaxDistance?building_template->BuildMaxDistance:2;
   // New logic end
+  // New logic start
+  // Remember the last built building so that it can be rebuilt with B key
+  _TacticalData.LastBuiltBuilding = building_type;
+  // New logic end
 
   v5 = _gMousePos.y - _OptionsBarHeight + _ViewportYPos;
   mouse_tile_x = (_ViewportXPos + _gMousePos.x) / 32;
@@ -323,6 +327,10 @@ bool Mod__HandleConcretePlacement(int tile_bitfield1, int tile_bitfield2, TImage
   int build_restriction = building_template->BuildRestriction;
   int build_restriction_terrain = building_template->BuildRestrictionTerrain;
   int max_build_distance = building_template->BuildMaxDistance?building_template->BuildMaxDistance:2;
+  // New logic end
+  // New logic start
+  // Remember the last built building so that it can be rebuilt with B key
+  _TacticalData.LastBuiltBuilding = building_type;
   // New logic end
 
   v5 = _gMousePos.y - _OptionsBarHeight + _ViewportYPos;
