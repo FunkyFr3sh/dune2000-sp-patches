@@ -95,6 +95,21 @@ void Mod__HandleConditionsAndEvents()
   if (rulesExt__buildQueuesEnabled)
     ProcessBuildQueues();
 
+  // Disable carryall from starport menu according to NoCarryall spawn.ini setting
+  if (NoCarryall)
+  {
+    for (int i = 0; i < 8; i++)
+    {
+      CSide *side = GetSide(i);
+      for (int j = 0; j < 8; j++)
+      {
+        int unit_type = side->__StarportIcons[j];
+        if (_templates_unitattribs[unit_type].__Behavior == UnitBehavior_CARRYALL)
+          side->__StarportUnitTypeStock[unit_type] = 0;
+      }
+    }
+  }
+
   if (!MapScriptExists && (_IsMultiplayer || gGameType == GAME_SKIRMISH))
   {
 DEFAULT_WIN_LOSE_EVENTS:

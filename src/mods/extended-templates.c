@@ -3,6 +3,7 @@
 #include "extended-templates.h"
 
 // Extend number of explosion types to 128
+// Disable chosen buildings or units according to spawn.ini settings
 
 // Templates data
 ExploisonAtrbStruct  _templates_explosionattribs[MAX_EXPLOSION_TYPES]; // Extended array
@@ -10,6 +11,11 @@ char                 _templates_ExplosionNameList[MAX_EXPLOSION_TYPES][50]; // E
 int                  _templates_AnimationArtFrames[MAX_EXPLOSION_TYPES]; // Extended array
 int                  _templates_Explosiondata_AnimationArtFlags[MAX_EXPLOSION_TYPES]; // Extended array
 TImage *             gExplosionElements[MAX_EXPLOSION_TYPES][40]; // Extended array
+
+// Multiplayer settings to disable chosen buildings or units
+bool DisableEngineer = false;
+bool DisableTurrets = false;
+bool NoCarryall = false;
 
 // Change address of arrays
 SETDWORD(0x0049C005, __templates_explosionattribs + 4); // UpdateBullet
@@ -61,12 +67,29 @@ void ReadTemplates()
     _ReadFile(_templates_BuildupArtFrames, 1u, 100u, file);
     _ReadFile(&_templates_BuildingGroupCount, 1u, 1u, file);
     _ReadFile(&_templates_UnitGroupCount, 1u, 1u, file);
-    // Extra data
+    // New logic start
+    // Load extra data for explosion types up to 128
     _ReadFile(&_templates_explosionattribs[MAX_ORIG_EXPLOSION_TYPES], 1, sizeof(ExploisonAtrbStruct) * (MAX_EXPLOSION_TYPES - MAX_ORIG_EXPLOSION_TYPES), file);
     _ReadFile(&_templates_ExplosionNameList[MAX_ORIG_EXPLOSION_TYPES], 1, 50 * (MAX_EXPLOSION_TYPES - MAX_ORIG_EXPLOSION_TYPES), file);
     _ReadFile(&_templates_AnimationArtFrames[MAX_ORIG_EXPLOSION_TYPES], 1, sizeof(int) * (MAX_EXPLOSION_TYPES - MAX_ORIG_EXPLOSION_TYPES), file);
     _ReadFile(&_templates_Explosiondata_AnimationArtFlags[MAX_ORIG_EXPLOSION_TYPES], 1, sizeof(int) * (MAX_EXPLOSION_TYPES - MAX_ORIG_EXPLOSION_TYPES), file);
+    // New logic end
     CloseFile(file);
+    // New logic start
+    // Disable chosen buildings or units according to spawn.ini settings
+    for (int i = 0; i < gUnitTypeNum; i++)
+    {
+      if (DisableEngineer && _templates_unitattribs[i].__Behavior == UnitBehavior_ENGINEER)
+        _templates_unitattribs[i].__TechReq = 255;
+      if (NoCarryall && _templates_unitattribs[i].__Behavior == UnitBehavior_CARRYALL)
+        _templates_unitattribs[i].__TechReq = 255;
+    }
+    for (int i = 0; i < gBuildingTypeNum; i++)
+    {
+      if (DisableTurrets && _templates_buildattribs[i].__Behavior == BuildingBehavior_TURRET)
+        _templates_buildattribs[i]._____TechLevelBuild = 255;
+    }
+    // New logic end
   }
   else
   {
