@@ -44,8 +44,14 @@ bool Mod__PickupCrate(Unit *unit, unsigned char side_id)
 {
   int xpos = unit->BlockToX;
   int ypos = unit->BlockToY;
-  // Sandworm cannot pickup crates
-  if ( _templates_unitattribs[unit->Type].__Behavior == UnitBehavior_SANDWORM )
+  // Check if unit is not outside of map
+  if (xpos >= gGameMapWidth || ypos >= gGameMapHeight)
+  {
+    return 0;
+  }
+  // Sandworm and flying units cannot pickup crates
+  int behavior = _templates_unitattribs[unit->Type].__Behavior;
+  if ( behavior == UnitBehavior_SANDWORM || behavior == UnitBehavior_CARRYALL || behavior == UnitBehavior_FRIGATE || behavior == UnitBehavior_ORNITHOPTER || behavior == UnitBehavior_DEATH_HAND )
   {
     return 0;
   }
