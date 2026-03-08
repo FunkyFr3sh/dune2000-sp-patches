@@ -1,6 +1,7 @@
 #include "macros/patch.h"
 #include "dune2000.h"
 #include "rules.h"
+#include "patch.h"
 
 // Increase number of sound channels from 6 to 15 and increase sound cache size from 16 to 40
 // Whole ISampleManager class needs to be re-implemented because the ISampleManager struct has
@@ -596,6 +597,14 @@ void __thiscall Mod__ISampleManager__StreamLoop(ISampleManager *this)
                                                                                32768);
             if ( !this->__musicfilesamplesizes_1B4[this->__musicsampleindex_1A8] )
             {
+              // New logic start
+              // Do not repeat the same song over and over
+              if (RandomMusicEnabled && gGameState == GS_MAINLOOP)
+              {
+                this->__musicsampleindex_1A8 = (this->__musicsampleindex_1A8 + 1) % 3;
+                PlayRandomMusic();
+              }
+              // New logic end
               SeekFile(this->__musicfilehandle_1AC, 0xC, 0);
               this->__musicfilesamplesizes_1B4[this->__musicsampleindex_1A8] = ISampleManager__CopyStreamSample(
                                                                                  this,

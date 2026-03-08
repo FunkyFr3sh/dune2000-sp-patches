@@ -10,27 +10,28 @@
 @CLEAR 0x00476630, 0x90, 0x00476634 ; Show all tracks in the music player listbox - FindFirst - do not exit if music name is not in string table
 @CLEAR 0x004766C6, 0x90, 0x004766CA ; Show all tracks in the music player listbox - FindNext - do not exit if music name is not in string table
 
-hack 0x0046FFE4, 0x0046FFEA ; Do not repeat the same song over and over
-    cmp byte[RandomMusicEnabled], 1
-    jnz .out
-    cmp dword[gGameState], GS_MAINLOOP ; Use random songs only in-game, never in the menus
-    jnz .out
-    
-    mov eax, dword[esi+0x1A8]
-    xor edx, edx
-    inc eax
-    mov ecx, 3
-    div ecx
-    mov dword[esi+0x1A8], edx
-    pop esi
-    pushad
-    call PlayRandomMusic
-    popad
-    retn
-
-.out:
-    mov eax, dword[esi+0x1AC]
-    jmp 0x0046FFEA
+; Superseded by Mod__ISampleManager__StreamLoop
+;hack 0x0046FFE4, 0x0046FFEA ; Do not repeat the same song over and over
+;    cmp byte[RandomMusicEnabled], 1
+;    jnz .out
+;    cmp dword[gGameState], GS_MAINLOOP ; Use random songs only in-game, never in the menus
+;    jnz .out
+;
+;    mov eax, dword[esi+0x1A8]
+;    xor edx, edx
+;    inc eax
+;    mov ecx, 3
+;    div ecx
+;    mov dword[esi+0x1A8], edx
+;    pop esi
+;    pushad
+;    call PlayRandomMusic
+;    popad
+;    retn
+;
+;.out:
+;    mov eax, dword[esi+0x1AC]
+;    jmp 0x0046FFEA
 
     
 hack 0x004700FC, 0x00470102 ; OpenAudioStream() - Save current soundtrack

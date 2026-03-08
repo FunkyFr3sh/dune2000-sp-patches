@@ -77,6 +77,7 @@ extern unsigned int DebugFeatures;
 extern char CampaignFolder[256];
 extern char ModsFolder[256];
 extern char ColoursFile[256];
+extern bool RandomMusicEnabled;
 
 extern const char Cursor0Data[];
 extern const unsigned int Cursor0DataLength;
