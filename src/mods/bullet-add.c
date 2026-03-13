@@ -58,7 +58,7 @@ short Mod__ModelAddBullet(unsigned char side_id, unsigned char bulletype, int de
   int posx; // eax
   int target_distance_x; // edi
   int target_distance_y; // ebp
-  int target_distance; // rax
+  long long target_distance; // rax
   int target_distance_; // ebx
   int bullet_type__; // ecx
   int v19; // eax
@@ -130,7 +130,7 @@ short Mod__ModelAddBullet(unsigned char side_id, unsigned char bulletype, int de
   target_distance_x = (unsigned short)bullet->__TargetXpos - posx / 0x10000;
   target_distance_y = (unsigned short)bullet->__TargetYpos - bullet->__PosY / 0x10000;
   bullet->__HomingSideId = homing_side;
-  target_distance = sqrt((double)(target_distance_y * target_distance_y + target_distance_x * target_distance_x));
+  target_distance = (long long)sqrt((double)(target_distance_y * target_distance_y + target_distance_x * target_distance_x));
   target_distance_ = target_distance;
   bullet_type__ = bullet->Type;
   projectile_speed = _templates_bulletattribs[bullet_type__].__ProjectileSpeed;

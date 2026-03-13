@@ -59,6 +59,8 @@ bool Mod__CanUnitAttackTile(Unit *unit, int target_x, int target_y, bool air_tar
   {
     return 0;
   }
+  target_x = (unsigned char)target_x;
+  target_y = (unsigned char)target_y;
   primary_weapon_antiaircraft = _templates_bulletattribs[primary_weapon].AntiAircraft;
   primary_weapon_range = _templates_bulletattribs[primary_weapon].__Range;
   primary_weapon_restriction_type = (_templates_bulletattribs[primary_weapon].Flags & BULFLAGS_1000_BLOCKED_BY_WALL)?1:2;
