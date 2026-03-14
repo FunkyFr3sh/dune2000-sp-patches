@@ -1,10 +1,6 @@
 #include "macros/patch.h"
 #include "dune2000.h"
-
-void DebugUnitCrash(Unit *unit)
-{
-  DebugFatal("MoveUnitExtraDebug", "speed: %x (%d) posx: %x (%d) posx2: %x (%d) posy: %x (%d) posy2: %x (%d)", unit->Speed, unit->Speed >> 12, unit->__PosX, unit->__PosX >> 21, unit->__posx2, unit->__posx2 >> 21, unit->__PosY, unit->__PosY >> 21, unit->__posy2, unit->__posy2 >> 21);
-}
+#include "utils.h"
 
 // Custom implementation of function MoveUnit
 DETOUR(0x00494260, 0x00494CC8, _Mod__MoveUnit);
@@ -340,7 +336,15 @@ LABEL_64:
           {
             // New logic start
             // Add more debug information to investigate "unit->pos.steps > 255" error
-            DebugUnitCrash(unit);
+            DebugFatal("MoveUnitExtraDebug",
+                       "type: %s health: %d / %d\npos_steps: %d speed: %x (%d)\nfrom: %d , %d (%d , %d)\nto: %d , %d (%d , %d)\ndist: %d",
+                       _templates_UnitNameList[unit->Type], unit->Health, _templates_unitattribs[unit->Type].__Strength,
+                       pos_steps,
+                       speed, speed >> 12,
+                       unit->__PosX >> 16, unit->__PosY >> 16, unit->__PosX >> 21, unit->__PosY >> 21,
+                       unit->__posx2 >> 16, unit->__posy2 >> 16, unit->__posx2 >> 21, unit->__posy2 >> 21,
+                       (int)sqrt(((unit->__PosX >> 16) - (unit->__posx2 >> 16)) * ((unit->__PosX >> 16) - (unit->__posx2 >> 16)) + ((unit->__PosY >> 16) - (unit->__posy2 >> 16)) * ((unit->__PosY >> 16) - (unit->__posy2 >> 16)))
+                      );
             // New logic end
             DebugFatal("MoveUnit", "unit->pos.steps > 255");
           }
