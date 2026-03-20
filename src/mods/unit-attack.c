@@ -775,16 +775,19 @@ LABEL_12:
         // Double shot
         else
         {
+          int inaccuracy_x = 0;
+          int inaccuracy_y = 0;
+          bool synchronized_inaccuracy = (_templates_bulletattribs[bullet_type].Flags & BULFLAGS_1000000_SYNCHRONIZED_INACCURACY) != 0;
           // First shot
-          source_xpos = (_sinValues[shoot_offset + ((16 - direction + shoot_angle) & 31) * 512] / 2048) + unit_xpos;
-          source_ypos = (_cosValues[shoot_offset + ((16 - direction + shoot_angle) & 31) * 512] / 2048) + unit_ypos + shoot_yoffset;
-          dest_xpos = target_xpos + (_sinValues[(shoot_angle * shoot_offset) / 8 + ((16 - direction + 8) & 31) * 512] / 2048);
-          dest_ypos = target_ypos + (_cosValues[(shoot_angle * shoot_offset) / 8 + ((16 - direction + 8) & 31) * 512] / 2048);
           if ( inaccuracy )
           {
-            dest_xpos += rand() % (2 * inaccuracy) - inaccuracy;
-            dest_ypos += rand() % (2 * inaccuracy) - inaccuracy;
+            inaccuracy_x = rand() % (2 * inaccuracy) - inaccuracy;
+            inaccuracy_y = rand() % (2 * inaccuracy) - inaccuracy;
           }
+          source_xpos = (_sinValues[shoot_offset + ((16 - direction + shoot_angle) & 31) * 512] / 2048) + unit_xpos;
+          source_ypos = (_cosValues[shoot_offset + ((16 - direction + shoot_angle) & 31) * 512] / 2048) + unit_ypos + shoot_yoffset;
+          dest_xpos = target_xpos + (_sinValues[(shoot_angle * shoot_offset) / 8 + ((16 - direction + 8) & 31) * 512] / 2048) + inaccuracy_x;
+          dest_ypos = target_ypos + (_cosValues[(shoot_angle * shoot_offset) / 8 + ((16 - direction + 8) & 31) * 512] / 2048) + inaccuracy_y;
           if ((bullet_index = ModelAddBullet(side, bullet_type, 0, index, source_xpos, source_ypos, dest_xpos, dest_ypos, homing_index, homing_side)) != -1)
           {
             Bullet *b = (Bullet *)&GetSide(side)->__ObjectArray[bullet_index];
@@ -795,15 +798,15 @@ LABEL_12:
             }
           }
           // Second shot
+          if ( inaccuracy && !synchronized_inaccuracy )
+          {
+            inaccuracy_x = rand() % (2 * inaccuracy) - inaccuracy;
+            inaccuracy_y = rand() % (2 * inaccuracy) - inaccuracy;
+          }
           source_xpos = (_sinValues[shoot_offset + ((16 - direction - shoot_angle) & 31) * 512] / 2048) + unit_xpos;
           source_ypos = (_cosValues[shoot_offset + ((16 - direction - shoot_angle) & 31) * 512] / 2048) + unit_ypos + shoot_yoffset;
-          dest_xpos = target_xpos + (_sinValues[(shoot_angle * shoot_offset) / 8 + ((16 - direction - 8) & 31) * 512] / 2048);
-          dest_ypos = target_ypos + (_cosValues[(shoot_angle * shoot_offset) / 8 + ((16 - direction - 8) & 31) * 512] / 2048);
-          if ( inaccuracy )
-          {
-            dest_xpos += rand() % (2 * inaccuracy) - inaccuracy;
-            dest_ypos += rand() % (2 * inaccuracy) - inaccuracy;
-          }
+          dest_xpos = target_xpos + (_sinValues[(shoot_angle * shoot_offset) / 8 + ((16 - direction - 8) & 31) * 512] / 2048) + inaccuracy_x;
+          dest_ypos = target_ypos + (_cosValues[(shoot_angle * shoot_offset) / 8 + ((16 - direction - 8) & 31) * 512] / 2048) + inaccuracy_y;
           if ((bullet_index = ModelAddBullet(side, bullet_type, 0, index, source_xpos, source_ypos, dest_xpos, dest_ypos, homing_index, homing_side)) != -1)
           {
             Bullet *b = (Bullet *)&GetSide(side)->__ObjectArray[bullet_index];

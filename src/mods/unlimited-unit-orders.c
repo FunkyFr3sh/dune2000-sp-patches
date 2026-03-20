@@ -142,7 +142,8 @@ void Mod__GenerateUnitAttackUnitOrder(eSideType side_id, eSideType target_side_i
   if ( unit->Flags & (UFLAGS_400000|UFLAGS_100_CARRYING|UFLAGS_40_FLYING) )
   {
     DebugFatal("GenerateUnitAttackUnitOrder",
-               "Enemy is not a valid target unit\nType: %s State: %d Flags: %08x\nPosX: %d (%d) PosY: %d (%d)",
+               "Enemy is not a valid target unit\nSide: %d Target side: %d\nType: %s State: %d Flags: %08x\nPosX: %d (%d) PosY: %d (%d)",
+               side_id, target_side_id,
                _templates_UnitNameList[unit->Type], unit->State, unit->Flags,
                unit->__PosX >> 16, unit->__PosX >> 21, unit->__PosY >> 16, unit->__PosY >> 21
               );
