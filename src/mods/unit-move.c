@@ -374,7 +374,7 @@ LABEL_64:
             tile_flags = gGameMap.map[block_to_x_ + _CellNumbersWidthSpan[unit_->BlockToY]].__tile_bitflags;
             if ( tile_flags & (TileFlags_200_CSPOT_TL|TileFlags_100_CSPOT_DL|TileFlags_80_CSPOT_DR|TileFlags_40_CSPOT_TR|TileFlags_20_CSPOT_MID) )
             {
-              if ( (tile_flags & 7) == side_id )
+              if ( (int)(tile_flags & 7) == side_id )
               {
                 DebugFatal("MoveUnit", "Invalid blockTo, since already occupied by infantry of same side");
               }

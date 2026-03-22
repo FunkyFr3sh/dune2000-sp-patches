@@ -53,7 +53,6 @@ OBJS            ?= callsites.o \
         src/mods/setupmapstuff.o \
         src/mods/ai-do-unit-facings.o \
         src/mods/always-show-radar.o \
-        src/mods/tile-damage.o \
         src/mods/buildable-top-row-of-map.o \
         src/mods/difficulty-cost-buildspeed-rules.o \
         src/mods/sound-size-limit.o \
@@ -100,6 +99,7 @@ OBJS            ?= callsites.o \
         src/mods/explosion-add.o \
         src/mods/extended-templates.o \
         src/mods/open-file.o \
+        src/mods/damage-tiles.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \
@@ -120,13 +120,11 @@ OBJS            ?= callsites.o \
 	src/fixes/gettickcount-fix-func.o \
 	src/fixes/gettickcount-fix.o \
 	src/fixes/resolution-fix.o \
-	src/fixes/invulnerable-infantry-fix.o \
 	src/fixes/ai-build-concrete-fix.o \
 	src/fixes/ai-upgrade-buildings-fix.o \
 	src/fixes/ai-starport-bug-fix.o \
 	src/fixes/starport-sell-refund-fix.o \
 	src/fixes/upgrade-cancel-refund-fix.o \
-	src/fixes/sandworm-fixes.o \
 	src/fixes/ai-stuck-targeting-cloaked-unit-fix.o \
 	src/fixes/cancel-upgrade-when-lowered-tech.o \
 	src/fixes/unit-build-availability-check-fix.o \

@@ -365,6 +365,7 @@ extern unsigned char        MissionNumber;
 
 
 extern int                  gGameState;
+extern short                _RockTileIDs[8];
 extern int                  _firgcrap_dword_4E3AE8;
 
 extern unsigned char        _healthbar_heights[8];
@@ -903,6 +904,7 @@ bool            TileHasSpice(int x, int y);
 void            InitCrates();
 char            GetFreeCrateIndex();
 void            PlaceCrate(int x, int y, int timing, eCrateType type, eCrateImage image, int respawn_count);
+eCrateType      CheckCrateAt(int x, int y, char *crate_index);
 eCrateType      GetCrateFromMap(int x, int y);
 void            UpdateSpiceInRegion(RECT *a1);
 void            SpiceMound(unsigned char xpos, unsigned char ypos, int range);

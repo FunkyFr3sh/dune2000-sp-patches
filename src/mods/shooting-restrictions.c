@@ -229,7 +229,7 @@ char Mod__EnemyUnitInRange(int xpos, int ypos, eSideType side_id, int radius, in
         tile_flags = gGameMap.map[v53 + _CellNumbersWidthSpan[v49]].__tile_bitflags;
         if ( tile_flags & (TileFlags_200_CSPOT_TL|TileFlags_100_CSPOT_DL|TileFlags_80_CSPOT_DR|TileFlags_40_CSPOT_TR|TileFlags_20_CSPOT_MID|TileFlags_8_OCC_UNIT) )
         {
-          if ( _gDiplomacy[side_id][gGameMap.map[v53 + _CellNumbersWidthSpan[v49]].__tile_bitflags & 7] == 1 )
+          if ( _gDiplomacy[(int)side_id][gGameMap.map[v53 + _CellNumbersWidthSpan[v49]].__tile_bitflags & 7] == 1 )
           {
             v13 = v49;
             v17 = v16[0];
@@ -429,7 +429,7 @@ LABEL_59:
   enemy_side_id = 0;
   while ( 1 )
   {
-    if ( _gDiplomacy[side_id][enemy_side_id] == 1 )
+    if ( _gDiplomacy[(int)side_id][enemy_side_id] == 1 )
     {
       unit = GetSide(enemy_side_id)->__FirstUnitPtr;
       if ( unit )
@@ -534,7 +534,7 @@ char Mod__EnemyBuildingInRange(int xpos, int ypos, eSideType side_id, _DWORD *ta
         tile_flags = gGameMap.map[tile_x[0] + _CellNumbersWidthSpan[tile_y[0]]].__tile_bitflags;
         if ( tile_flags & TileFlags_10_OCC_BUILDING )
         {
-          if ( _gDiplomacy[side_id][gGameMap.map[tile_x[0] + _CellNumbersWidthSpan[tile_y[0]]].__tile_bitflags & 7] == 1
+          if ( _gDiplomacy[(int)side_id][gGameMap.map[tile_x[0] + _CellNumbersWidthSpan[tile_y[0]]].__tile_bitflags & 7] == 1
             && GetBuildingOnTile_0(
                  tile_x[0],
                  tile_y[0],

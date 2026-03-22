@@ -173,6 +173,7 @@ setcglob 0x004DEDB8, CreditsScreenWidth
 setcglob 0x004DEDB4, CreditsScreenTop
 setcglob 0x004DEDBC, CreditsScreenBottom
 setcglob 0x004DFB08, gGameState
+setcglob 0x004E0AF0, _RockTileIDs
 setcglob 0x004E3AE8, _firgcrap_dword_4E3AE8
 setcglob 0x004E3B14, MyCurrentFrameRate
 setcglob 0x004E3E48, _healthbar_heights
@@ -737,6 +738,7 @@ setcglob 0x0044E4D0, TileHasSpice
 setcglob 0x0044E770, InitCrates
 setcglob 0x0044E790, GetFreeCrateIndex
 setcglob 0x0044E8E0, PlaceCrate
+setcglob 0x0044E970, CheckCrateAt
 setcglob 0x0044E9D0, GetCrateFromMap
 setcglob 0x0044EC50, UpdateSpiceInRegion
 setcglob 0x0044EF10, SpiceMound

@@ -74,7 +74,6 @@ cextern WriteSaveGame
 cextern GamePlayStart
 cextern fake_GetTickCount
 cextern HandleSpecialValue
-cextern HitCrate
 cextern Mod__PickupCrate
 cextern InitFontColors
 cextern DebugUnitCrash

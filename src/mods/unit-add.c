@@ -52,7 +52,7 @@ short Mod__ModelAddUnit(eSideType side_id, unsigned char unit_type, unsigned cha
     tile_flags = gGameMap.map[add_at_x + _CellNumbersWidthSpan[add_at_y_]].__tile_bitflags;
     if ( tile_flags & TileFlags_10_OCC_BUILDING )
     {
-      if ( (tile_flags & (TileFlags_4_OWNER|TileFlags_2_OWNER|TileFlags_1_OWNER)) != side_id )
+      if ( (int)(tile_flags & (TileFlags_4_OWNER|TileFlags_2_OWNER|TileFlags_1_OWNER)) != side_id )
       {
         return -1;
       }

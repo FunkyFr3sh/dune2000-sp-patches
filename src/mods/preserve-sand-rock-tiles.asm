@@ -11,11 +11,12 @@
 ;    jmp hackend
 
 ; Restore back-up tile index when concrete is destroyed
-@PATCH 0x0049DD4D ; DamageTiles
-    mov cx, [esi+0x517DF2]
-    mov [esi+0x517DF0], cx
-    nop
-@ENDPATCH
+; Superseded by Mod__DamageTiles
+;@PATCH 0x0049DD4D ; DamageTiles
+;    mov cx, [esi+0x517DF2]
+;    mov [esi+0x517DF0], cx
+;    nop
+;@ENDPATCH
 
 ; Restore back-up tile index when building skirt is removed
 @PATCH 0x0044F402 ; RemoveSkirt

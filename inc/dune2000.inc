@@ -176,7 +176,6 @@ cextern ModelAddExplosion
 cextern ModelStarportCancel
 cextern PlaySoundAt
 cextern CreateGlobe
-cextern UnitTileOccupiedByBuilding
 cextern IsAnyInfantrySelected
 cextern CSide__ReturnMoneyFromStarportOrder
 cextern _ReadFile

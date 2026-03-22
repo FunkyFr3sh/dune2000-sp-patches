@@ -45,10 +45,11 @@ hack 0x0044E07E, 0x0044E084 ; RemoveBuildingTileDataAndRadar
     
 ; When tile a is damaged, concrete flag is removed.
 ; Do not remove concrete flag if the tile underneath has pre-set concrete flag (indestructible concrete)
-hack 0x0049DD3C, 0x0049DD42 ; DamageTiles
-    movzx ebx, word [esi+0x517DF2] ; Get backup_tile_index into ebx
-    mov ebx, [ebx*4+_TileBitflags] ; Get tile attributes for tile into ebx
-    or ebx, 0xFFFFF7FF
-    and ebx, [esi+0x517DF4] ; Remove concrete flag from existing tile flags
-    mov [esi+0x517DF4], ebx
-    jmp hackend
+; Superseded by Mod__DamageTiles
+;hack 0x0049DD3C, 0x0049DD42 ; DamageTiles
+;    movzx ebx, word [esi+0x517DF2] ; Get backup_tile_index into ebx
+;    mov ebx, [ebx*4+_TileBitflags] ; Get tile attributes for tile into ebx
+;    or ebx, 0xFFFFF7FF
+;    and ebx, [esi+0x517DF4] ; Remove concrete flag from existing tile flags
+;    mov [esi+0x517DF4], ebx
+;    jmp hackend

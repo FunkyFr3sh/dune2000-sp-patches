@@ -1776,7 +1776,7 @@ LABEL_618:
     {
       my_side_id = gSideId;
 LABEL_559:
-      if ( (unsigned int)side_id == my_side_id && !_KeyboardKeyState[VK_CONTROL] )
+      if ( side_id == my_side_id && !_KeyboardKeyState[VK_CONTROL] )
       {
         // New logic start
         // Allow infantry to move on tile where some infantry is already standing (with Alt key)
