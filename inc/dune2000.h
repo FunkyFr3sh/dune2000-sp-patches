@@ -27,9 +27,12 @@ typedef struct dwXYStruct
 #define MAX_UNIT_TYPES 60
 #define MAX_BUILDING_TYPES 100
 #define MAX_WEAPON_TYPES 64
-//#define MAX_EXPLOSION_TYPES 64
-#define MAX_WARHEAD_TYPES 30
-#define MAX_ARMOUR_TYPES 12
+#define MAX_EXPLOSION_TYPES 128 // Extended value
+#define MAX_ORIG_EXPLOSION_TYPES 64 // Original value
+#define MAX_WARHEAD_TYPES 64 // Extended value
+#define MAX_ORIG_WARHEAD_TYPES 30 // Original value
+#define MAX_ARMOUR_TYPES 64 // Extended value
+#define MAX_ORIG_ARMOUR_TYPES 12 // Original value
 #define MAX_TERRAIN_TYPES 8
 #define MAX_VEHICLE_TYPES 4
 #define MAX_CRATES 30
@@ -525,6 +528,7 @@ extern TImage *             _image_spanner;
 extern int                  _ViewportHeight;
 extern BuildingAtrbStruct   _templates_buildattribs[MAX_BUILDING_TYPES];
 extern TImage *             _images_small_numbers[10];
+extern char                 _WarheadCount;
 // extern TImage *             gExplosionElements[MAX_EXPLOSION_TYPES][40]; // Replaced by mod
 // extern int                  _templates_Explosiondata_AnimationArtFlags[MAX_EXPLOSION_TYPES]; // Replaced by mod
 extern char                 _templates_BuildingGroupCount;
@@ -553,20 +557,21 @@ extern TImage *             _BuildupAnimationImages[MAX_BUILDING_TYPES][42];
 extern uint16_t             _ColoursBinData[128];
 extern int                  _ViewportWidth;
 extern TImage *             _images_stealths[16];
-extern char                 _ArmourNames[MAX_ARMOUR_TYPES][50];
+// extern char                 _ArmourNames[MAX_ARMOUR_TYPES][50]; // Replaced by mod
 extern TImage *             _image_placement_marker_buildable;
 extern char                 _SpawnLocationCount;
 extern char                 _radarcolor8_sidecolor[MAX_SIDES];
 // extern unsigned int         _TileBitflags[MAX_TILES]; // Replaced by mod
 extern char                 _templates_BuildingGroupNameList[MAX_BUILDING_TYPES][50];
+extern char                 _ArmourCount;
 extern TImage *             _images_healthbars[6];
 extern char                 _templates_UnitNameList[MAX_UNIT_TYPES][450];
 extern TImage *             _image_selection_bl;
 extern TImage *             _image_selection_br;
-extern char                 _WarheadNames[MAX_WARHEAD_TYPES][50];
+// extern char                 _WarheadNames[MAX_WARHEAD_TYPES][50]; // Replaced by mod
 extern char                 _blitarray_790110[1024];
 extern char                 _DenseSpiceTileMapping[8][8];
-extern WarheadStruct        _WarheadData[MAX_WARHEAD_TYPES];
+// extern WarheadStruct        _WarheadData[MAX_WARHEAD_TYPES]; // Replaced by mod
 extern TImage *             _gBuildingElementsDamaged[120][32];
 // extern char                 _templates_ExplosionNameList[MAX_EXPLOSION_TYPES][50]; // Replaced by mod
 extern float                _speed_values[MAX_TERRAIN_TYPES][MAX_VEHICLE_TYPES];

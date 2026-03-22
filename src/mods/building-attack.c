@@ -313,6 +313,86 @@ char Mod__BuildingAttackTile(Building *building, eSideType side_id, short buildi
   return 1;
 }
 
+// Custom implementation of function NewBestBullet
+DETOUR(0x0049E9D0, 0x0049EBE3, _Mod__NewBestBullet);
+
+char Mod__NewBestBullet(char primary_weapon, char secondary_weapon, unsigned int check, char enemy_side_id, short enemy_index, char enemy_object_type)
+{
+  CSide *enemy_side; // eax
+  char result; // al
+  int primary_weapon_; // ecx
+  int secondary_weapon_; // edx
+  unsigned int primary_weapon_range; // edi
+  unsigned int secondary_weapon_range; // esi
+  char enemy_is_flying; // [esp+Fh] [ebp-5h]
+  unsigned char armour_type; // [esp+10h] [ebp-4h]
+
+  armour_type = 0;
+  enemy_is_flying = 0;
+  if ( primary_weapon == -1 )
+  {
+    DebugFatal("NewBestBullet", "no primary weapon");
+  }
+  if ( enemy_index != -1 )
+  {
+    if ( enemy_object_type == OBJECT_UNIT )
+    {
+      enemy_side = GetSide(enemy_side_id);
+      armour_type = _templates_unitattribs[enemy_side->__ObjectArray[enemy_index].Type].__Armour;
+      if ( enemy_side->__ObjectArray[enemy_index].Flags & UFLAGS_40_FLYING )
+      {
+        enemy_is_flying = 1;
+      }
+    }
+    else if ( enemy_object_type == OBJECT_BUILDING )
+    {
+      armour_type = _templates_buildattribs[LOBYTE(GetSide(enemy_side_id)->__ObjectArray[enemy_index].__PosX)].Armour;
+    }
+  }
+  if ( enemy_is_flying )
+  {
+    if ( !_templates_bulletattribs[(int)primary_weapon].AntiAircraft )
+    {
+      result = secondary_weapon;
+      if ( secondary_weapon < 0 || !_templates_bulletattribs[(int)secondary_weapon].AntiAircraft )
+      {
+        DebugFatal("NewBestBullet", "Trying to shoot air unit with no AA weapon");
+        result = primary_weapon;
+      }
+      return result;
+    }
+    return primary_weapon;
+  }
+  result = secondary_weapon;
+  if ( secondary_weapon == -1 )
+  {
+    return primary_weapon;
+  }
+  primary_weapon_ = primary_weapon;
+  secondary_weapon_ = secondary_weapon;
+  primary_weapon_range = _templates_bulletattribs[primary_weapon_].__Range;
+  secondary_weapon_range = _templates_bulletattribs[secondary_weapon_].__Range;
+  if ( primary_weapon_range >= secondary_weapon_range )
+  {
+    if ( secondary_weapon_range * secondary_weapon_range < check )
+    {
+      return primary_weapon;
+    }
+    if ( _templates_bulletattribs[primary_weapon_].__Damage
+       * (unsigned int)(unsigned char)_WarheadData[(unsigned char)_templates_bulletattribs[primary_weapon_].Warhead].Verses[armour_type] > _templates_bulletattribs[secondary_weapon_].__Damage * (unsigned int)(unsigned char)_WarheadData[(unsigned char)_templates_bulletattribs[secondary_weapon_].Warhead].Verses[armour_type] )
+    {
+      result = primary_weapon;
+    }
+  }
+  else if ( primary_weapon_range * primary_weapon_range >= check
+         && _templates_bulletattribs[primary_weapon_].__Damage
+          * (unsigned int)(unsigned char)_WarheadData[(unsigned char)_templates_bulletattribs[primary_weapon_].Warhead].Verses[armour_type] > _templates_bulletattribs[secondary_weapon_].__Damage * (unsigned int)(unsigned char)_WarheadData[(unsigned char)_templates_bulletattribs[secondary_weapon_].Warhead].Verses[armour_type] )
+  {
+    result = primary_weapon;
+  }
+  return result;
+}
+
 // Custom implementation of function BuildingShootTarget
 DETOUR(0x00496030, 0x0049647A, _Mod__BuildingShootTarget);
 

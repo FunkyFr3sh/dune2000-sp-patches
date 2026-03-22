@@ -3,6 +3,7 @@
 #include "utils.h"
 #include "crates-func.h"
 #include "extended-tileset.h"
+#include "extended-templates.h"
 
 // Custom implementation of function DamageTiles
 DETOUR(0x0049D2E0, 0x0049DD73, _Mod__DamageTiles);

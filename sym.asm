@@ -333,6 +333,7 @@ setcglob 0x006DC470, MissionMapData
 setcglob 0x006DC538, _ViewportHeight
 setcglob 0x006DC540, _templates_buildattribs
 setcglob 0x006E2DF0, _images_small_numbers
+setcglob 0x006E2E18, _WarheadCount
 ;setcglob 0x006E2E20, gExplosionElements ; Replaced by mod
 ;setcglob 0x006E5750, _templates_Explosiondata_AnimationArtFlags ; Replaced by mod
 setcglob 0x006E5850, _templates_BuildingGroupCount
@@ -361,20 +362,21 @@ setcglob 0x00782AA8, _BuildupAnimationImages
 setcglob 0x00786C48, _ColoursBinData
 setcglob 0x00786D48, _ViewportWidth
 setcglob 0x00786D50, _images_stealths
-setcglob 0x00786D90, _ArmourNames
+;setcglob 0x00786D90, _ArmourNames ; Replaced by mod
 setcglob 0x00786FE8, _image_placement_marker_buildable
 setcglob 0x00786FEC, _SpawnLocationCount
 setcglob 0x00786FF0, _radarcolor8_sidecolor
 ;setcglob 0x00786FF8, _TileBitflags ; Replaced by mod
 setcglob 0x00787E08, _templates_BuildingGroupNameList
+setcglob 0x00789190, _ArmourCount
 setcglob 0x00789198, _images_healthbars
 setcglob 0x007891B0, _templates_UnitNameList
 setcglob 0x0078FB28, _image_selection_bl
 setcglob 0x0078FB2C, _image_selection_br
-setcglob 0x0078FB30, _WarheadNames
+;setcglob 0x0078FB30, _WarheadNames ; Replaced by mod
 setcglob 0x00790110, _blitarray_790110
 setcglob 0x00790510, _DenseSpiceTileMapping
-setcglob 0x00790550, _WarheadData
+;setcglob 0x00790550, _WarheadData ; Replaced by mod
 setcglob 0x007907A8, _gBuildingElementsDamaged
 ;setcglob 0x007943A8, _templates_ExplosionNameList ; Replaced by mod
 setcglob 0x00795128, _speed_values

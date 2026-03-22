@@ -12,6 +12,11 @@ int                  _templates_AnimationArtFrames[MAX_EXPLOSION_TYPES]; // Exte
 int                  _templates_Explosiondata_AnimationArtFlags[MAX_EXPLOSION_TYPES]; // Extended array
 TImage *             gExplosionElements[MAX_EXPLOSION_TYPES][40]; // Extended array
 
+// Armour data
+WarheadStruct        _WarheadData[MAX_WARHEAD_TYPES];
+char                 _WarheadNames[MAX_WARHEAD_TYPES][50];
+char                 _ArmourNames[MAX_ARMOUR_TYPES][50];
+
 // Multiplayer settings to disable chosen buildings or units
 bool DisableEngineer = false;
 bool DisableTurrets = false;
@@ -97,6 +102,50 @@ void ReadTemplates()
   }
 }
 
+// Custom implementation of function ReadArmour
+DETOUR(0x0046B0F0, 0x0046B68B, _Mod__ReadArmour);
+
+void Mod__ReadArmour()
+{
+  FILE *file; // eax MAPDST
+  char Buffer[80]; // [esp+20h] [ebp-3D8h]
+
+  _ArmourCount = 0;
+  _WarheadCount = 0;
+  if ( _ReadBinaries )
+  {
+    sprintf(Buffer, "bin\\%s.bin", "armour");
+    file = _OpenFile(Buffer, "rb", 0);
+    if ( !file )
+    {
+      ReportFileError(Buffer, 0);
+      return;
+    }
+    /*_ReadFile(_WarheadData, 1u, 0x258u, file);
+    _ReadFile(_WarheadNames, 1u, 1500u, file);
+    _ReadFile(_ArmourNames, 1u, 600u, file);
+    _ReadFile(&_WarheadCount, 1u, 1u, file);
+    _ReadFile(&_ArmourCount, 1u, 1u, file);*/
+    for (int i = 0; i < MAX_ORIG_WARHEAD_TYPES; i++)
+    {
+      _ReadFile(&_WarheadData[i].Verses[0], 1, sizeof(_WarheadData[i].Verses[0]) * MAX_ORIG_ARMOUR_TYPES, file);
+      _ReadFile(&_WarheadData[i].Radius, 1, sizeof(_WarheadData[i].Radius), file);
+      _ReadFile(&_WarheadData[i].InfDeath, 1, 4, file);
+    }
+    _ReadFile(_WarheadNames[0], 1, sizeof(_WarheadNames[0]) * MAX_ORIG_WARHEAD_TYPES, file);
+    _ReadFile(_ArmourNames[0], 1, sizeof(_ArmourNames[0]) * MAX_ORIG_ARMOUR_TYPES, file);
+    _ReadFile(&_WarheadCount, 1, sizeof(_WarheadCount), file);
+    _ReadFile(&_ArmourCount, 1, sizeof(_ArmourCount), file);
+    // Extended data
+    for (int i = 0; i < MAX_ORIG_WARHEAD_TYPES; i++)
+      _ReadFile(&_WarheadData[i].Verses[MAX_ORIG_ARMOUR_TYPES], 1, sizeof(_WarheadData[i].Verses[MAX_ORIG_ARMOUR_TYPES]) * (MAX_ARMOUR_TYPES - MAX_ORIG_ARMOUR_TYPES), file);
+    _ReadFile(&_WarheadData[MAX_ORIG_WARHEAD_TYPES], 1, sizeof(_WarheadData[MAX_ORIG_WARHEAD_TYPES]) * (MAX_WARHEAD_TYPES - MAX_ORIG_WARHEAD_TYPES), file);
+    _ReadFile(_WarheadNames[MAX_ORIG_WARHEAD_TYPES], 1, sizeof(_WarheadNames[MAX_ORIG_WARHEAD_TYPES]) * (MAX_WARHEAD_TYPES - MAX_ORIG_WARHEAD_TYPES), file);
+    _ReadFile(_ArmourNames[MAX_ORIG_ARMOUR_TYPES], 1, sizeof(_ArmourNames[MAX_ORIG_ARMOUR_TYPES]) * (MAX_ARMOUR_TYPES - MAX_ORIG_ARMOUR_TYPES), file);
+    CloseFile(file);
+  }
+}
+
 // Custom implementation of function LoadData
 DETOUR(0x00466140, 0x00469785, _Mod__LoadData);
 
@@ -146,7 +195,7 @@ void Mod__LoadData()
     while ( x < 8 );
     ++dense_spice_tile_mapping_ptr;
   }
-  while ( dense_spice_tile_mapping_ptr < (char (*)[8])_WarheadData );
+  while ( dense_spice_tile_mapping_ptr < (char (*)[8])0x00790550 );
   i = 0;
   do
   {
