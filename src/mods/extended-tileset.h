@@ -35,5 +35,6 @@ extern uint32_t       extra_tileflags[4000];
 extern int            _TileTooltips[4000];
 extern uint32_t       tile_restrictions[4000];
 extern uint8_t        tile_armour_types[4000];
+extern char           tile_hint_custom_strings[32][32];
 extern int            radar_color_rules_used;
 extern RadarColorRule radar_color_rules[32];

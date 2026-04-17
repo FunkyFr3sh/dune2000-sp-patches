@@ -13,6 +13,7 @@ uint32_t        extra_tileflags[4000];
 int             _TileTooltips[4000]; // Extended array
 uint32_t        tile_restrictions[4000];
 uint8_t         tile_armour_types[4000];
+char            tile_hint_custom_strings[32][32];
 int             radar_color_rules_used;
 RadarColorRule  radar_color_rules[32];
 
@@ -141,15 +142,16 @@ void Mod__LoadMapData(char *map_name, char initial_load)
     FILE *tls_file = _OpenFile(path, "rb", NULL);
     if (tls_file)
     {
-      _ReadFile(&tileset_header,          sizeof(tileset_header),         1, tls_file);
-      _ReadFile(_TileBitflags,            sizeof(_TileBitflags),          1, tls_file);
-      _ReadFile(extra_tileflags,          sizeof(extra_tileflags),        1, tls_file);
-      _ReadFile(_TileTooltips,            sizeof(_TileTooltips),          1, tls_file);
-      _ReadFile(tile_restrictions,        sizeof(tile_restrictions),      1, tls_file);
-      _ReadFile(tile_armour_types,        sizeof(tile_armour_types),      1, tls_file);
+      _ReadFile(&tileset_header,          sizeof(tileset_header),           1, tls_file);
+      _ReadFile(_TileBitflags,            sizeof(_TileBitflags),            1, tls_file);
+      _ReadFile(extra_tileflags,          sizeof(extra_tileflags),          1, tls_file);
+      _ReadFile(_TileTooltips,            sizeof(_TileTooltips),            1, tls_file);
+      _ReadFile(tile_restrictions,        sizeof(tile_restrictions),        1, tls_file);
+      _ReadFile(tile_armour_types,        sizeof(tile_armour_types),        1, tls_file);
       fseek(tls_file, 8*32, SEEK_CUR);
-      _ReadFile(&radar_color_rules_used,  sizeof(radar_color_rules_used), 1, tls_file);
-      _ReadFile(radar_color_rules,        sizeof(radar_color_rules),      1, tls_file);
+      _ReadFile(tile_hint_custom_strings, sizeof(tile_hint_custom_strings), 1, tls_file);
+      _ReadFile(&radar_color_rules_used,  sizeof(radar_color_rules_used),   1, tls_file);
+      _ReadFile(radar_color_rules,        sizeof(radar_color_rules),        1, tls_file);
       CloseFile(tls_file);
       tls_loaded = true;
       if (tileset_header.custom_minimap_colors_allowed)

@@ -201,9 +201,11 @@ void Mod__HandleTooltips()
               {
                 DebugFatal("MAIN.CPP", "TT: INVALID TILE");
               }
-              tooltip_string = GetTextString(
-                                 _TileTooltips[(unsigned short)gGameMap.map[_CellNumbersWidthSpan[tile_y] + tile_x].__tile_index],
-                                 0);
+              int tile_tooltip_index = _TileTooltips[(unsigned short)gGameMap.map[_CellNumbersWidthSpan[tile_y] + tile_x].__tile_index];
+              if (tile_tooltip_index >= -1)
+                tooltip_string = GetTextString(tile_tooltip_index, 0);
+              else
+                tooltip_string = tile_hint_custom_strings[tile_tooltip_index * -1 - 2];
               tooltip_type = TOOLTIPTYPE_EMPTY_TILE;
               tooltip_arg1 = tile_x;
               tooltip_arg2 = tile_y;
