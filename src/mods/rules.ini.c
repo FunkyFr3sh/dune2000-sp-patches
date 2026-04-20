@@ -33,6 +33,8 @@ void InitExtraRules(void)
   rulesExt__buildQueuesMaxPerUnitType        = 10;
   rulesExt__buildQueuesBulkIncrement         = 5;
   rulesExt__buildQueuesInfinityEnabled       = false;
+  rulesExt__showEnemyStructureNames          = false;
+  rulesExt__showNeutralStructureNames        = false;
 }
 
 static void LoadVars(LPCTSTR fileName);
@@ -115,4 +117,6 @@ static void LoadVars(LPCTSTR fileName)
     rulesExt__buildQueuesMaxPerUnitType = IniGetInt("Vars", "buildQueuesMaxPerUnitType", rulesExt__buildQueuesMaxPerUnitType, fileName);
     rulesExt__buildQueuesBulkIncrement = IniGetInt("Vars", "buildQueuesBulkIncrement", rulesExt__buildQueuesBulkIncrement, fileName);
     rulesExt__buildQueuesInfinityEnabled = IniGetBool("Vars", "buildQueuesInfinityEnabled", rulesExt__buildQueuesInfinityEnabled, fileName);
+    rulesExt__showEnemyStructureNames = IniGetBool("Vars", "showEnemyStructureNames", rulesExt__showEnemyStructureNames, fileName);
+    rulesExt__showNeutralStructureNames = IniGetBool("Vars", "showNeutralStructureNames", rulesExt__showNeutralStructureNames, fileName);
 }

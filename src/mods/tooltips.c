@@ -4,12 +4,41 @@
 #include "tooltips.h"
 #include "../event-system/event-core.h"
 #include "extended-tileset.h"
+#include "rules.h"
 
 TooltipExtraData gTooltipExtraData[MAX_TOOLTIP_LINES];
 int tooltip_used_lines;
 
 // Custom implementation of function HandleTooltips
 DETOUR(0x0044B5C0, 0x0044C416, _Mod__HandleTooltips);
+
+char *GetUnitName(int unit_type)
+{
+  if (_templates_unitattribs[unit_type].UseName)
+  {
+    return _templates_UnitNameList[unit_type];
+  }
+  else
+  {
+    int unit_group = _templates_unitattribs[unit_type].__UnitType;
+    int string_id = _UnitGroupTextIds[unit_group];
+    return (string_id != -1)?GetTextString(string_id, 0):_templates_UnitGroupNameList[unit_group];
+  }
+}
+
+char *GetBuildingName(int building_type)
+{
+  if (_templates_buildattribs[building_type].UseName)
+  {
+    return _templates_BuildingNameList[building_type];
+  }
+  else
+  {
+    int building_group = _templates_buildattribs[building_type].GroupType;
+    int string_id = _BuildingGroupTextIds[building_group];
+    return (string_id != -1)?GetTextString(string_id, 0):_templates_BuildingGroupNameList[building_group];
+  }
+}
 
 void Mod__HandleTooltips()
 {
@@ -32,7 +61,6 @@ void Mod__HandleTooltips()
   unsigned int upgrade_icon_index; // eax MAPDST
   int building_type; // eax MAPDST
   int building_group; // eax
-  int unit_group;
   bool v26; // zf
   int starport_icon_index; // eax MAPDST
   int unit_type; // eax MAPDST
@@ -107,12 +135,18 @@ void Mod__HandleTooltips()
                     clip_right = _ViewportWidth;
                     if ( diplomacy == 2 )
                     {
-                      tooltip_string = GetTextString(_NeutralUnitText, 1);
+                      if (rulesExt__showNeutralStructureNames)
+                        tooltip_string = GetUnitName(unit->Type);
+                      else
+                        tooltip_string = GetTextString(_NeutralUnitText, 1);
                       tooltip_type = TOOLTIPTYPE_NEUTRAL_UNIT;
                     }
                     else
                     {
-                      tooltip_string = GetTextString(_EnemyUnitText, 1);
+                      if (rulesExt__showEnemyStructureNames)
+                        tooltip_string = GetUnitName(unit->Type);
+                      else
+                        tooltip_string = GetTextString(_EnemyUnitText, 1);
                       tooltip_type = TOOLTIPTYPE_ENEMY_UNIT;
                     }
                   }
@@ -120,9 +154,7 @@ void Mod__HandleTooltips()
                 else
                 {
                   clip_right = _ViewportWidth;
-                  unit_group = _templates_unitattribs[unit->Type].__UnitType;
-                  string_id = _UnitGroupTextIds[unit_group];
-                  tooltip_string = (string_id != -1)?GetTextString(string_id, 0):_templates_UnitGroupNameList[unit_group];
+                  tooltip_string = GetUnitName(unit->Type);
                   tooltip_type = TOOLTIPTYPE_UNIT;
                 }
               }
@@ -133,10 +165,7 @@ void Mod__HandleTooltips()
                 index_ = (unsigned short)index;
                 clip_right = _ViewportWidth;
                 side_id_ = (unsigned char)side_id;
-
-                unit_group = _templates_unitattribs[unit->Type].__UnitType;
-                string_id = _UnitGroupTextIds[unit_group];
-                string_text = (string_id != -1)?GetTextString(string_id, 0):_templates_UnitGroupNameList[unit_group];
+                string_text = GetUnitName(unit->Type);
                 sprintf(
                   &tmp_string,
                   "%s, Side %d, Index %d, State %d RMode %d",
@@ -159,27 +188,31 @@ void Mod__HandleTooltips()
             {
               if ( !_IsMultiplayer || _gFullscreen_DebugModes_pathfinddebug )
               {
+                Building *bld = GetBuilding(side_id, index);
                 clip_right = _ViewportWidth;
                 diplomacy = _gDiplomacy[(unsigned char)gSideId][(unsigned char)side_id];
                 if ( diplomacy )
                 {
                   if ( diplomacy == 2 )
                   {
-                    tooltip_string = GetTextString(_NeutralStructureText, 1);
+                    if (rulesExt__showNeutralStructureNames)
+                      tooltip_string = GetBuildingName(bld->Type);
+                    else
+                      tooltip_string = GetTextString(_NeutralStructureText, 1);
                     tooltip_type = TOOLTIPTYPE_NEUTRAL_BUILDING;
                   }
                   else
                   {
-                    tooltip_string = GetTextString(_EnemyStructureText, 1);
+                    if (rulesExt__showEnemyStructureNames)
+                      tooltip_string = GetBuildingName(bld->Type);
+                    else
+                      tooltip_string = GetTextString(_EnemyStructureText, 1);
                     tooltip_type = TOOLTIPTYPE_ENEMY_BUILDING;
                   }
                 }
                 else
                 {
-                  side_ = GetSide((eSideType)side_id);
-                  building_group = _templates_buildattribs[LOBYTE(side_->__ObjectArray[(unsigned short)index].__PosX)].GroupType;
-                  string_id = _BuildingGroupTextIds[building_group];
-                  tooltip_string = (string_id != -1)?GetTextString(string_id, 0):_templates_BuildingGroupNameList[building_group];
+                  tooltip_string = GetBuildingName(bld->Type);
                   tooltip_type = TOOLTIPTYPE_BUILDING;
                 }
               }
@@ -368,9 +401,7 @@ void Mod__HandleTooltips()
       {
         goto LABEL_87;
       }
-      unit_group = _templates_unitattribs[unit_type].__UnitType;
-      string_id = _UnitGroupTextIds[unit_group];
-      tooltip_string = (string_id != -1)?GetTextString(string_id, 0):_templates_UnitGroupNameList[unit_group];
+      tooltip_string = GetUnitName(unit_type);
       v26 = (starport_icon_index & 1) == 0;
       unit_cost = side_->__StarportUnitTypeCost[side_->__StarportIcons[starport_icon_index]];
       strcpy(gTooltipExtraData[0].text, tooltip_string);
@@ -398,9 +429,7 @@ LABEL_64:
           unit_type = side_->__UnitIcons[unit_icon_index];
           if ( unit_type != -1 )
           {
-            unit_group = _templates_unitattribs[unit_type].__UnitType;
-            string_id = _UnitGroupTextIds[unit_group];
-            tooltip_string = (string_id != -1)?GetTextString(string_id, 0):_templates_UnitGroupNameList[unit_group];
+            tooltip_string = GetUnitName(unit_type);
             unit_cost = GetUnitCost(side_->__UnitIcons[unit_icon_index], gSideId);
             clip_right = _SidebarStrip2XPos;
             strcpy(gTooltipExtraData[0].text, tooltip_string);
@@ -417,9 +446,7 @@ LABEL_64:
         building_type = side_->__BuildingIcons[building_icon_index];
         if ( building_type != -1 )
         {
-          building_group = _templates_buildattribs[building_type].GroupType;
-          string_id = _BuildingGroupTextIds[building_group];
-          tooltip_string = (string_id != -1)?GetTextString(string_id, 0):_templates_BuildingGroupNameList[building_group];
+          tooltip_string = GetBuildingName(building_type);
           building_cost = GetBuildingCost(side_->__BuildingIcons[building_icon_index], 0, gSideId);
           clip_right = _SidebarStrip1XPos;
           strcpy(gTooltipExtraData[0].text, tooltip_string);
@@ -446,8 +473,7 @@ LABEL_64:
       building_group = (unsigned char)_templates_buildattribs[building_type].GroupType;
       if ( side_->__BuildingsExistPerGroup[building_group] )
       {
-        string_id = _BuildingGroupTextIds[building_group];
-        tooltip_string = (string_id != -1)?GetTextString(string_id, 0):_templates_BuildingGroupNameList[building_group];
+        tooltip_string = GetBuildingName(building_type);
         if ( CanSideUpgradeBuildingGroup(
                gSideId,
                (eBuildingGroupType)_templates_buildattribs[side_->__UpgradeIcons[upgrade_icon_index]].GroupType) )

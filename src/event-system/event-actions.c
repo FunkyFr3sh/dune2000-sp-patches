@@ -1649,6 +1649,8 @@ void EvAct_SetRule(int event_id, int rule, eValueOperation operation, int value)
     case 45: rulesExt__buildQueuesMaxPerUnitType =        ValueOperation(event_id, rulesExt__buildQueuesMaxPerUnitType, value, operation); break;
     case 46: rulesExt__buildQueuesBulkIncrement =         ValueOperation(event_id, rulesExt__buildQueuesBulkIncrement, value, operation); break;
     case 47: rulesExt__buildQueuesInfinityEnabled =       ValueOperation(event_id, rulesExt__buildQueuesInfinityEnabled, value, operation); break;
+    case 48: rulesExt__showEnemyStructureNames =          ValueOperation(event_id, rulesExt__showEnemyStructureNames, value, operation); break;
+    case 49: rulesExt__showNeutralStructureNames =        ValueOperation(event_id, rulesExt__showNeutralStructureNames, value, operation); break;
   }
 }
 
@@ -2123,6 +2125,8 @@ void EvAct_GetRule(int event_id, int rule, int target_var)
     case 45: result = rulesExt__buildQueuesMaxPerUnitType; break;
     case 46: result = rulesExt__buildQueuesBulkIncrement; break;
     case 47: result = rulesExt__buildQueuesInfinityEnabled; break;
+    case 48: result = rulesExt__showEnemyStructureNames; break;
+    case 49: result = rulesExt__showNeutralStructureNames; break;
   }
   SetVariableValue(event_id, target_var, result);
 }

@@ -56,3 +56,5 @@ uint8_t  rulesExt__buildQueuesMaxPerFactory;
 uint8_t  rulesExt__buildQueuesMaxPerUnitType;
 uint8_t  rulesExt__buildQueuesBulkIncrement;
 bool     rulesExt__buildQueuesInfinityEnabled;
+bool     rulesExt__showEnemyStructureNames;
+bool     rulesExt__showNeutralStructureNames;

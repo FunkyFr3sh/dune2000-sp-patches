@@ -60,6 +60,11 @@ void SaveGameExtraData(void *buffer, size_t size, size_t count, FILE *file)
   _WriteFile(&rulesExt__buildQueuesMaxPerUnitType, sizeof(rulesExt__buildQueuesMaxPerUnitType), 1, file);
   _WriteFile(&rulesExt__buildQueuesBulkIncrement, sizeof(rulesExt__buildQueuesBulkIncrement), 1, file);
   _WriteFile(&rulesExt__buildQueuesInfinityEnabled, sizeof(rulesExt__buildQueuesInfinityEnabled), 1, file);
+  _WriteFile(&rulesExt__showEnemyStructureNames, sizeof(rulesExt__showEnemyStructureNames), 1, file);
+  _WriteFile(&rulesExt__showNeutralStructureNames, sizeof(rulesExt__showNeutralStructureNames), 1, file);
+  // Extra dummy bytes, to be replaced by new rules in future
+  char dummy[32] = {0};
+  _WriteFile(dummy, sizeof(dummy), 1, file);
 }
 
 CALL(0x00441C79, _LoadGameExtraData); // LoadGame
@@ -114,6 +119,11 @@ void LoadGameExtraData(void *buffer, size_t size, size_t count, FILE *file)
   _ReadFile(&rulesExt__buildQueuesMaxPerUnitType, sizeof(rulesExt__buildQueuesMaxPerUnitType), 1, file);
   _ReadFile(&rulesExt__buildQueuesBulkIncrement, sizeof(rulesExt__buildQueuesBulkIncrement), 1, file);
   _ReadFile(&rulesExt__buildQueuesInfinityEnabled, sizeof(rulesExt__buildQueuesInfinityEnabled), 1, file);
+  _ReadFile(&rulesExt__showEnemyStructureNames, sizeof(rulesExt__showEnemyStructureNames), 1, file);
+  _ReadFile(&rulesExt__showNeutralStructureNames, sizeof(rulesExt__showNeutralStructureNames), 1, file);
+  // Extra dummy bytes, to be replaced by new rules in future
+  char dummy[32];
+  _ReadFile(dummy, sizeof(dummy), 1, file);
 
   // Reset MapScrollLockTicks
   MapScrollLockTicks = 0;

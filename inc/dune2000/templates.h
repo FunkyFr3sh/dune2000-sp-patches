@@ -14,7 +14,7 @@ typedef struct UnitAtribStruct
   char __BarrelTurnSpeed;
   char __ViewDistance;
   char __IsInfantry;
-  char field_12;
+  char UseName; // Additional field for extended functionality (mod)
   char field_13;
   int __UnitArt;
   int __BarrelArt;
@@ -98,7 +98,7 @@ typedef struct BuildingAtrbStruct
   int _____Prereq1BuildingType;
   char __Prereq1OwnerSide;
   char __Prereq1UpgradesNeeded;
-  char field_46;
+  char UseName; // Additional field for extended functionality (mod);
   char field_47;
   int _____Prereq2BuildingType;
   char _____Prereq2OwnerSide;
