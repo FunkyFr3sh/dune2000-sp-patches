@@ -38,8 +38,14 @@ int GetBuildQueueNumber(int unit_type)
 
 int GetUnitsQueuedCount(int side_id, int unit_type)
 {
+  int queue_number = GetBuildQueueNumber(unit_type);
+  if (queue_number == -1)
+    return 0;
+  int behavior = _templates_unitattribs[unit_type].__Behavior;
+  if (behavior == UnitBehavior_SABOTEUR || behavior == UnitBehavior_ORNITHOPTER || behavior == UnitBehavior_DEATH_HAND || behavior == UnitBehavior_FREMEN)
+    return 0;
   return gSideExtraData[side_id].build_queue_unit_type_count[unit_type] +
-      ((IsUnitBuilt(side_id, unit_type) || gSideExtraData[side_id].build_queues[GetBuildQueueNumber(unit_type)].pending_ordered_unit_type == unit_type)?1:0);
+      ((IsUnitBuilt(side_id, unit_type) || gSideExtraData[side_id].build_queues[queue_number].pending_ordered_unit_type == unit_type)?1:0);
 }
 
 int GetFactoryQueuedCount(int side_id, int queue_num)
