@@ -72,7 +72,6 @@ extern bool ShortGame;
 extern uint32_t NetKey;
 extern uint32_t P2Pheader;
 extern unsigned char gOldSideId;
-extern uint32_t MapScrollLockTicks;
 extern unsigned int DebugFeatures;
 extern char CampaignFolder[256];
 extern char ModsFolder[256];

@@ -14,8 +14,6 @@
 #include "../mods/extended-templates.h"
 #include "rules.h"
 
-uint32_t MapScrollLockTicks = 0;
-
 char *object_type_names[5] = {
   "None",
   "Unit",
@@ -695,7 +693,7 @@ void EvAct_SpiceBloom(int event_id, int xpos, int ypos, int range, eSpiceBloomMo
   }
 }
 
-void EvAct_ChangeViewport(int xpos, int ypos, int mode, int units)
+void EvAct_ChangeViewport(int xpos, int ypos, int scroll_speed, int mode, int units, int lock_duration)
 {
   if (!units)
   {
@@ -707,9 +705,20 @@ void EvAct_ChangeViewport(int xpos, int ypos, int mode, int units)
     xpos = xpos - (_ViewportWidth / 2);
     ypos = ypos - (_ViewportHeight / 2);
   }
-  _ViewportXPos = LIMIT(xpos, 0, gGameMapWidth * 32 - _ViewportWidth);
-  _ViewportYPos = LIMIT(ypos, 0, gGameMapHeight * 32 - _ViewportHeight);
-  MapScrollLockTicks = gGameTicks;
+  xpos = LIMIT(xpos, 0, gGameMapWidth * 32 - _ViewportWidth);
+  ypos = LIMIT(ypos, 0, gGameMapHeight * 32 - _ViewportHeight);
+  if (scroll_speed == 0)
+  {
+    _ViewportXPos = xpos;
+    _ViewportYPos = ypos;
+  }
+  else
+  {
+    map_scroll_data.target_xpos = xpos;
+    map_scroll_data.target_ypos = ypos;
+    map_scroll_data.scroll_speed = scroll_speed;
+  }
+  map_scroll_data.lock_ticks = gGameTicks + lock_duration;
 }
 
 void ChangeMapTile(int xpos, int ypos, int new_tile_index, eChangeTileMode mode)

@@ -585,9 +585,9 @@ LABEL_94:
 LABEL_164:
   // New logic start
   // Allows scrolling the map with hotkeys, normally this feature is only available in debug window mode and the hotkeys are hardcoded by default
-  if ( !((_KeyboardKeyState[Hotkey_ScrollDown] || _gMousePos.y >= _ScreenClipHeight - 1) && gGameTicks > MapScrollLockTicks) )
+  if ( !((_KeyboardKeyState[Hotkey_ScrollDown] || _gMousePos.y >= _ScreenClipHeight - 1) && gGameTicks > map_scroll_data.lock_ticks) )
   {
-    if ( (_KeyboardKeyState[Hotkey_ScrollUp] || _gMousePos.y < 1) && gGameTicks > MapScrollLockTicks )
+    if ( (_KeyboardKeyState[Hotkey_ScrollUp] || _gMousePos.y < 1) && gGameTicks > map_scroll_data.lock_ticks )
     // New logic end
     {
       if ( _ViewportYPos - gScrollSize < 0 )
@@ -626,7 +626,7 @@ LABEL_164:
   }
   // New logic start
   // Allows scrolling the map with hotkeys, normally this feature is only available in debug window mode and the hotkeys are hardcoded by default
-  if ( (_KeyboardKeyState[Hotkey_ScrollRight] || _gMousePos.x >= _ScreenClipWidth - 1) && gGameTicks > MapScrollLockTicks )
+  if ( (_KeyboardKeyState[Hotkey_ScrollRight] || _gMousePos.x >= _ScreenClipWidth - 1) && gGameTicks > map_scroll_data.lock_ticks )
   // New logic end
   {
     dragging_bandbox = _TacticalData.__DraggingBandbox;
@@ -638,7 +638,7 @@ LABEL_164:
     {
       // New logic start
       // Allows scrolling the map with hotkeys, normally this feature is only available in debug window mode and the hotkeys are hardcoded by default
-      if ( (_KeyboardKeyState[Hotkey_ScrollLeft] || _gMousePos.x < 1) && gGameTicks > MapScrollLockTicks )
+      if ( (_KeyboardKeyState[Hotkey_ScrollLeft] || _gMousePos.x < 1) && gGameTicks > map_scroll_data.lock_ticks )
       // New logic end
       {
         if ( _ViewportXPos - gScrollSize < 0 )
@@ -793,7 +793,7 @@ LABEL_241:
           if ( (IsBuildingWithBehaviorBuilt(gSideId, BuildingBehavior_OUTPOST) && my_side->__PowerPercent >= 100u) || rulesExt__alwaysShowRadar || (SpawnerActive && gLose && gGameType) )
           // New logic end
           {
-            if ( !IsAnyUnitSelected() && gGameTicks > MapScrollLockTicks )
+            if ( !IsAnyUnitSelected() && gGameTicks > map_scroll_data.lock_ticks )
             {
               pixel_x_ = 32 * (_gMousePos.x - radar_image_left - _RadarLocationX) - _ViewportWidth / 2;
               _ViewportXPos = pixel_x_;
@@ -2142,7 +2142,7 @@ LABEL_665:
     }
     _KeyboardKeyDown[Hotkey_Retreat] = 0;
   }
-  if ( _KeyboardKeyDown[Hotkey_CenterBase] && gGameTicks > MapScrollLockTicks )
+  if ( _KeyboardKeyDown[Hotkey_CenterBase] && gGameTicks > map_scroll_data.lock_ticks )
   {
     side = GetSide(gSideId);
     CSide__46CF10_HKEY_BattleFieldPos(side, &_ViewportXPos, &_ViewportYPos, 1);
@@ -2288,7 +2288,7 @@ LABEL_665:
         _TacticalData.__Bookmarks[i].x = _ViewportXPos;
         _TacticalData.__Bookmarks[i].y = _ViewportYPos;
       }
-      else if ( gGameTicks > MapScrollLockTicks )
+      else if ( gGameTicks > map_scroll_data.lock_ticks )
       {
         _ViewportXPos = _TacticalData.__Bookmarks[i].x;
         _ViewportYPos = _TacticalData.__Bookmarks[i].y;

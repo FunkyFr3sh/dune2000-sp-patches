@@ -35,6 +35,14 @@ typedef struct EventContext
   int object_index;
 } EventContext;
 
+typedef struct MapScrollData
+{
+  unsigned int lock_ticks;
+  int target_xpos;
+  int target_ypos;
+  int scroll_speed;
+} MapScrollData;
+
 typedef enum eEventBlockType
 {
   EBT_GLOBAL,
@@ -458,6 +466,7 @@ extern EventVariable gEventVariableArray[MAX_EVENT_VARIABLES];
 extern int tick_random_value;
 extern int event_hooks[HOOK_TYPE_COUNT];
 extern int break_count;
+extern MapScrollData map_scroll_data;
 
 // Profiling variables
 

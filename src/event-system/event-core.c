@@ -26,6 +26,7 @@ int event_hooks[HOOK_TYPE_COUNT];
 int exit_count;
 int break_count;
 int continue_count;
+MapScrollData map_scroll_data;
 
 // Profiling variables
 
@@ -107,6 +108,31 @@ void Mod__HandleConditionsAndEvents()
         if (_templates_unitattribs[unit_type].__Behavior == UnitBehavior_CARRYALL)
           side->__StarportUnitTypeStock[unit_type] = 0;
       }
+    }
+  }
+
+  // Handle map scrolling
+  if (map_scroll_data.target_xpos != -1 && map_scroll_data.target_ypos != -1)
+  {
+    if (_ViewportXPos == map_scroll_data.target_xpos && _ViewportYPos == map_scroll_data.target_ypos)
+    {
+      map_scroll_data.target_xpos = -1;
+      map_scroll_data.target_ypos = -1;
+      map_scroll_data.scroll_speed = 0;
+    }
+    else
+    {
+      int xdiff = map_scroll_data.target_xpos - _ViewportXPos;
+      if (xdiff > 0)
+        _ViewportXPos += HLIMIT(map_scroll_data.scroll_speed, xdiff);
+      else if (xdiff < 0)
+        _ViewportXPos += LLIMIT(map_scroll_data.scroll_speed * -1, xdiff);
+      int ydiff = map_scroll_data.target_ypos - _ViewportYPos;
+      if (ydiff > 0)
+        _ViewportYPos += HLIMIT(map_scroll_data.scroll_speed, ydiff);
+      else if (ydiff < 0)
+        _ViewportYPos += LLIMIT(map_scroll_data.scroll_speed * -1, ydiff);
+      map_scroll_data.lock_ticks = LLIMIT(gGameTicks, map_scroll_data.lock_ticks);
     }
   }
 
@@ -866,7 +892,7 @@ void ExecuteEventAction(EventContext *e)
   case ET_ADD_CONCRETE:                   EvAct_AddConcrete                   (ID, C0, C1, A0, A5);                         break;
   case ET_SPICE_BLOOM:                    EvAct_SpiceBloom                    (ID, C0, A1, A3, A4);                         break;
   case ET_SHAKE_SCREEN:                   _ScreenShakes = A5;                                                               break;
-  case ET_CHANGE_VIEWPORT:                EvAct_ChangeViewport                (C0, A3, A4);                                 break;
+  case ET_CHANGE_VIEWPORT:                EvAct_ChangeViewport                (C0, A2, A3, A4, A5);                         break;
   case ET_CHANGE_MAP_BLOCK:               EvAct_ChangeMapBlock                (ID, C0, C1, A3, (uint16_t *)&e->data[1]);    break;
   case ET_TRANSFORM_TILES:                EvAct_TransformTiles                (ID, A1, A3, (uint16_t *)&e->data[1]);        break;
   case ET_ADD_BUILDING_DESTRUCT:          EvAct_AddBuildingDestruct           (ID, C0, A0, A2);                             break;

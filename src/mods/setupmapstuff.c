@@ -176,8 +176,11 @@ void Mod__setupmapstuff()
   // Store the original side ID upon starting a map
   gOldSideId = gSideId;
 
-  // Reset MapScrollLockTicks
-  MapScrollLockTicks = 0;
+  // Reset map_scroll_data
+  map_scroll_data.lock_ticks = 0;
+  map_scroll_data.target_xpos = -1;
+  map_scroll_data.target_ypos = -1;
+  map_scroll_data.scroll_speed = 0;
 
   // Reset LastBuiltBuilding
   _TacticalData.LastBuiltBuilding = 0;

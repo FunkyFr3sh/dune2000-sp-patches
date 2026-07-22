@@ -172,7 +172,7 @@ void EvAct_AddExplosion                 (int event_id, int xpos, int ypos, int p
 int  EvAct_AddCrate                     (int event_id, int xpos, int ypos, int crate_type, int image, int ext_data, int respawns, int expiration);
 void EvAct_AddConcrete                  (int event_id, int min_x, int min_y, int max_x, int max_y, int side_id, int tilebitmask);
 void EvAct_SpiceBloom                   (int event_id, int xpos, int ypos, int range, eSpiceBloomMode mode, bool randomizer);
-void EvAct_ChangeViewport               (int xpos, int ypos, int mode, int units);
+void EvAct_ChangeViewport               (int xpos, int ypos, int scroll_speed, int mode, int units, int lock_duration);
 void EvAct_ChangeMapBlock               (int event_id, int xpos, int ypos, int width, int height, eChangeTileMode mode, uint16_t *tiles);
 void EvAct_TransformTiles               (int event_id, int amount, eChangeTileMode mode, uint16_t *tiles);
 void EvAct_AddBuildingDestruct          (int event_id, int xpos, int ypos, int side_id, int building_type);

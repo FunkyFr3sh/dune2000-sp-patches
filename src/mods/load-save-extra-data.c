@@ -26,6 +26,8 @@ void SaveGameExtraData(void *buffer, size_t size, size_t count, FILE *file)
   _WriteFile(gEventExtraData, sizeof(gEventExtraData), 1, file);
   // Write event hooks
   _WriteFile(event_hooks, sizeof(event_hooks), 1, file);
+  // Write map scroll data
+  _WriteFile(&map_scroll_data, sizeof(map_scroll_data), 1, file);
   // Write radar markers
   _WriteFile(gRadarMarkers, sizeof(gRadarMarkers), 1, file);
   // Write side extra data
@@ -85,6 +87,8 @@ void LoadGameExtraData(void *buffer, size_t size, size_t count, FILE *file)
   _ReadFile(gEventExtraData, sizeof(gEventExtraData), 1, file);
   // Read event hooks
   _ReadFile(event_hooks, sizeof(event_hooks), 1, file);
+  // Read map scroll data
+  _ReadFile(&map_scroll_data, sizeof(map_scroll_data), 1, file);
   // Read radar markers
   _ReadFile(gRadarMarkers, sizeof(gRadarMarkers), 1, file);
   // Read side extra data
@@ -124,9 +128,6 @@ void LoadGameExtraData(void *buffer, size_t size, size_t count, FILE *file)
   // Extra dummy bytes, to be replaced by new rules in future
   char dummy[32];
   _ReadFile(dummy, sizeof(dummy), 1, file);
-
-  // Reset MapScrollLockTicks
-  MapScrollLockTicks = 0;
 
   // Reset last played property of sounds in sound table
   for (int i = 0; i < _sampletablecount; i++)
