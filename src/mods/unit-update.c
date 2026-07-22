@@ -631,9 +631,14 @@ LABEL_89:
         {
           DebugFatal(
             "Unit.CPP",
-            "Unit %d Side %d is waiting with 'To' and 'From' blocks different",
+            "Unit %d Side %d Type %d is waiting with 'From' (%d,%d) and 'To' (%d,%d) blocks different",
             side_id,
-            (unsigned char)side_id_);
+            (unsigned char)side_id_,
+            unit->Type,
+            unit->BlockFromX,
+            unit->BlockFromY,
+            unit->BlockToX,
+            unit->BlockToY);
         }
       }
       unit_type_offset = unit->Type << 8;

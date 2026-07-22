@@ -5,194 +5,109 @@
 
 //http://msdn.microsoft.com/en-us/library/windows/desktop/dd375731(v=vs.85).aspx
 
-int SelectAllUnits = 'E';
-int Scatter = 'X';
-int CenterNextUnit = 'N';
-int Repair = 'T';
-int Sell = 'Y';
-int Guard = 'G';
-int CenterBase = 'H';
-int Stop = 'S';
-int Bookmark1 = VK_F9;
-int Bookmark2 = VK_F10;
-int Bookmark3 = VK_F11;
-int Bookmark4 = VK_F12;
-int SidebarUp = VK_UP;
-int SidebarDown = VK_DOWN;
-int Alliance = 'A';
-int Retreat = 'R';
-int SelectPrimaryBuilding = 'P';
-int OptionsMenu = VK_ESCAPE;
-int Team1 = '1';
-int Team2 = '2';
-int Team3 = '3';
-int Team4 = '4';
-int Team5 = '5';
-int Team6 = '6';
-int Team7 = '7';
-int Team8 = '8';
-int Team9 = '9';
-int Team10 = '0';
-int CTRL = VK_CONTROL;
-int ALT = VK_MENU;
-int SHIFT = VK_SHIFT;
-int PrivateChat1 = VK_F1;
-int PrivateChat2 = VK_F2;
-int PrivateChat3 = VK_F3;
-int PrivateChat4 = VK_F4;
-int PrivateChat5 = VK_F5;
-int PublicChat = VK_F6;
-int WOLPageReply = VK_F8;
-int WOLProposeDraw = 'D';
-int CenterSelectedUnits = VK_HOME;
-int ScrollLeft = VK_NUMPAD1;
-int ScrollDown = VK_NUMPAD2;
-int ScrollRight = VK_NUMPAD3;
-int ScrollUp = VK_NUMPAD5;
-int ToggleLiveStats = VK_TAB;
-int PlayRandomSong = VK_OEM_PLUS;
+int Hotkey_SelectAllUnits =           'E';
+int Hotkey_SelectAllUnitsOfSameType = 'W';
+int Hotkey_Scatter =                  'X';
+int Hotkey_CenterNextUnit =           'N';
+int Hotkey_Repair =                   'T';
+int Hotkey_Sell =                     'Y';
+int Hotkey_Guard =                    'G';
+int Hotkey_CenterBase =               'H';
+int Hotkey_Stop =                     'S';
+int Hotkey_Deploy =                   'D';
+int Hotkey_BuildOrPlaceBuilding =     'B';
+int Hotkey_Bookmark[4] =              {VK_F9, VK_F10, VK_F11, VK_F12};
+int Hotkey_SidebarUp =                VK_UP;
+int Hotkey_SidebarDown =              VK_DOWN;
+int Hotkey_Alliance =                 'A';
+int Hotkey_Retreat =                  'R';
+int Hotkey_SelectPrimaryBuilding =    'P';
+int Hotkey_OptionsMenu =              VK_ESCAPE;
+int Hotkey_Team[10] =                 {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+int Hotkey_CTRL =                     VK_CONTROL;
+int Hotkey_ALT =                      VK_MENU;
+int Hotkey_SHIFT =                    VK_SHIFT;
+int Hotkey_PrivateChat[5] =           {VK_F1, VK_F2, VK_F3, VK_F4, VK_F5};
+int Hotkey_PublicChat =               VK_F6;
+int Hotkey_WOLPageReply =             VK_F8;
+int Hotkey_WOLProposeDraw =           'O';
+int Hotkey_CenterSelectedUnits =      VK_HOME;
+int Hotkey_ScrollLeft =               VK_NUMPAD1;
+int Hotkey_ScrollDown =               VK_NUMPAD2;
+int Hotkey_ScrollRight =              VK_NUMPAD3;
+int Hotkey_ScrollUp =                 VK_NUMPAD5;
+int Hotkey_ToggleLiveStats =          VK_TAB;
+int Hotkey_PlayRandomSong =           VK_OEM_PLUS;
 
 void HandleKeyEvent(int key, bool keyIsDown)
 {
-    if (gGameState == GS_MAINLOOP && !gUIMgr->dw_field_110_index && key != OptionsMenu)
+  if (gGameState == GS_MAINLOOP && !gUIMgr->dw_field_110_index && key != Hotkey_OptionsMenu)
+  {
+    if (keyIsDown)
     {
-      if (keyIsDown)
+      if (ExecuteEventHook(HOOK_KEYBOARD_MOUSE_DOWN, 2, 0, key, 0, 0, 0))
+        return;
+    }
+    else
+    {
+      if (ExecuteEventHook(HOOK_KEYBOARD_MOUSE_UP, 2, 0, key, 0, 0, 0))
       {
-        if (ExecuteEventHook(HOOK_KEYBOARD_MOUSE_DOWN, 2, 0, key, 0, 0, 0))
-          return;
-      }
-      else
-      {
-        if (ExecuteEventHook(HOOK_KEYBOARD_MOUSE_UP, 2, 0, key, 0, 0, 0))
+        if (key == VK_LBUTTON)
         {
-          if (key == VK_LBUTTON)
-          {
-            _MouseLeftState = 0;
-            _TacticalData.__DraggingBandbox = 0;
-          }
-          if (key == VK_RBUTTON)
-            _MouseRightState = 0;
-          KeyIsDown2[key] = 0;
-          return;
+          _MouseLeftState = 0;
+          _TacticalData.__DraggingBandbox = 0;
         }
+        if (key == VK_RBUTTON)
+          _MouseRightState = 0;
+        _KeyboardKeyState[key] = 0;
+        return;
       }
     }
+  }
 
-    int destKey;
+  if (key == Hotkey_OptionsMenu && !keyIsDown && IsCurrentlyShown("MP_TIMEOUT"))
+  {
+    ForceQuickExit = true;
+    gGameState = GS_QUIT;
+    return;
+  }
 
-    if (key == SelectAllUnits) destKey = 'E';
-    else if (key == Scatter) destKey = 'X';
-    else if (key == CenterNextUnit) destKey = 'N';
-    else if (key == Repair) destKey = 'T';
-    else if (key == Sell) destKey = 'Y';
-    else if (key == Guard) destKey = 'G';
-    else if (key == CenterBase) destKey = 'H';
-    else if (key == Stop) destKey = 'S';
-    else if (key == Bookmark1) destKey = VK_F9;
-    else if (key == Bookmark2) destKey = VK_F10;
-    else if (key == Bookmark3) destKey = VK_F11;
-    else if (key == Bookmark4) destKey = VK_F12;
-    else if (key == SidebarUp) destKey = VK_UP;
-    else if (key == SidebarDown) destKey = VK_DOWN;
-    else if (key == Alliance) destKey = 'A';
-    else if (key == Retreat) destKey = 'R';
-    else if (key == SelectPrimaryBuilding) destKey = 'P';
-    else if (key == OptionsMenu) destKey = VK_ESCAPE;
-    else if (key == Team1) destKey = '1';
-    else if (key == Team2) destKey = '2';
-    else if (key == Team3) destKey = '3';
-    else if (key == Team4) destKey = '4';
-    else if (key == Team5) destKey = '5';
-    else if (key == Team6) destKey = '6';
-    else if (key == Team7) destKey = '7';
-    else if (key == Team8) destKey = '8';
-    else if (key == Team9) destKey = '9';
-    else if (key == Team10) destKey = '0';
-    else if (key == CTRL) destKey = VK_CONTROL;
-    else if (key == ALT) destKey = VK_MENU;
-    else if (key == SHIFT) destKey = VK_SHIFT;
-    else if (key == PrivateChat1) destKey = VK_F1;
-    else if (key == PrivateChat2) destKey = VK_F2;
-    else if (key == PrivateChat3) destKey = VK_F3;
-    else if (key == PrivateChat4) destKey = VK_F4;
-    else if (key == PrivateChat5) destKey = VK_F5;
-    else if (key == PublicChat) destKey = VK_F6;
-    else if (key == WOLPageReply) destKey = VK_F8;
-    else if (key == WOLProposeDraw) destKey = 'D';
-    else if (key == CenterSelectedUnits) destKey = VK_HOME;
-    else if (key == ScrollLeft) destKey = VK_NUMPAD1;
-    else if (key == ScrollDown) destKey = VK_NUMPAD2;
-    else if (key == ScrollRight) destKey = VK_NUMPAD3;
-    else if (key == ScrollUp) destKey = VK_NUMPAD5;
-    else destKey = key;
-    
-    if (SpawnerActive && destKey == WOLPageReply) return;
-    
-    if (destKey == ToggleLiveStats)
-    {
-        if (!keyIsDown) LiveStatsEnabled = !LiveStatsEnabled;
-        return;
-    }
+  if (key == Hotkey_OptionsMenu && keyIsDown)
+    _KeyboardKeyDown[VK_ESCAPE] = true;
 
-    if (destKey == PlayRandomSong)
+  if (key == Hotkey_PrivateChat[0] || key == Hotkey_PrivateChat[1] || key == Hotkey_PrivateChat[2] || key == Hotkey_PrivateChat[3] || key == Hotkey_PrivateChat[4] || key == Hotkey_PublicChat)
+  {
+    //rate limit for in game messages to avoid spam
+    if (keyIsDown && gGameState == GS_MAINLOOP)
     {
-        if (!keyIsDown) PlayRandomMusic();
-        return;
-    }
-
-    if (key == VK_ESCAPE && !keyIsDown && IsCurrentlyShown("MP_TIMEOUT"))
-    {
-        ForceQuickExit = true;
-        gGameState = GS_QUIT;
-        return;
-    }
-    
-    switch (destKey)
-    {
-        case VK_MBUTTON:
-        case VK_XBUTTON1:
-        case VK_XBUTTON2:
-            return; // those keys were not supported by the original game so we are not forwarding them if not assigned to any function
-        case VK_F1:
-        case VK_F2:
-        case VK_F3:
-        case VK_F4:
-        case VK_F5:
-        case VK_F6:
-        { 
-            //rate limit for in game messages to avoid spam
-            if (keyIsDown && gGameState == GS_MAINLOOP)
-            {
-                static uint32_t LastTickCount = 0;
-                if (!LastTickCount) LastTickCount = fake_timeGetTime();
-                else
-                {
-                    uint32_t tickCount = fake_timeGetTime();
-                    int difference = tickCount - LastTickCount;
-                    if (difference < 1000) return;
-                    else LastTickCount = tickCount;
-                }
-            }
-            break;
-        }
-    }
-    
-    if (keyIsDown) KeyIsDown1[destKey] = true;
-    KeyIsDown2[destKey] = keyIsDown;
-    if (key == VK_LBUTTON)
-    {
-      _MouseLeftState = keyIsDown;
-      if (keyIsDown)
-        _MouseLeftDown = 1;
+      static uint32_t LastTickCount = 0;
+      if (!LastTickCount) LastTickCount = fake_timeGetTime();
       else
-        _MouseLeftUp = 1;
+      {
+        uint32_t tickCount = fake_timeGetTime();
+        int difference = tickCount - LastTickCount;
+        if (difference < 1000) return;
+        else LastTickCount = tickCount;
+      }
     }
-    if (key == VK_RBUTTON)
-    {
-      _MouseRightState = keyIsDown;
-      if (keyIsDown)
-        _MouseRightDown = 1;
-      else
-        _MouseRightUp = 1;
-    }
+  }
+
+  if (keyIsDown) _KeyboardKeyDown[key] = true;
+  _KeyboardKeyState[key] = keyIsDown;
+  if (key == VK_LBUTTON)
+  {
+    _MouseLeftState = keyIsDown;
+    if (keyIsDown)
+      _MouseLeftDown = 1;
+    else
+      _MouseLeftUp = 1;
+  }
+  if (key == VK_RBUTTON)
+  {
+    _MouseRightState = keyIsDown;
+    if (keyIsDown)
+      _MouseRightDown = 1;
+    else
+      _MouseRightUp = 1;
+  }
 }

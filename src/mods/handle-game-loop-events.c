@@ -99,13 +99,6 @@ void Mod__HandleGameLoopEvents()
   char unit_is_selected; // al
   Building *building_; // ecx MAPDST
   Building *v101; // eax
-  int viewporty; // edi
-  signed int viewportx; // esi
-  char ctrl_key_is_down; // dl
-  MACRO_VK bookmark_key_id; // ecx
-  signed int v117; // eax
-  int unit_group_key_id; // eax
-  char v119; // cl
   char unit_group_id; // bl
   CSide *side; // eax MAPDST
   char *v122; // esi
@@ -117,7 +110,6 @@ void Mod__HandleGameLoopEvents()
   int v137; // ecx
   unsigned char v138; // si
   char v139; // cl
-  int v140; // eax
   char v141; // bl
   unsigned char v142; // dl
   int v143; // edx
@@ -285,7 +277,7 @@ LABEL_146:
             goto LABEL_163;
           }
           side_id = tile_flags & 7;
-          if ( _gDiplomacy[(unsigned char)gSideId][tile_flags & 7] || _KeyboardKeyState[VK_CONTROL] )
+          if ( _gDiplomacy[(unsigned char)gSideId][tile_flags & 7] || _KeyboardKeyState[Hotkey_CTRL] )
           {
             if ( GetBuildingOnTile_0(tile_x, pixel_y >> 5, &building, (eSideType *)&side_id, &object_index) )
             {
@@ -384,9 +376,9 @@ LABEL_146:
       if ( target
         && (!(target->Flags & UFLAGS_4_CLOAKED) || !_gDiplomacy[(unsigned char)gSideId][(unsigned char)side_id]) )
       {
-        if ( target->__IsSelected && side_id == gSideId && !_KeyboardKeyState[VK_CONTROL] )
+        if ( target->__IsSelected && side_id == gSideId && !_KeyboardKeyState[Hotkey_CTRL] )
         {
-          if ( _KeyboardKeyState[VK_SHIFT] )
+          if ( _KeyboardKeyState[Hotkey_SHIFT] )
           {
             SetMouseCursor(CURSOR_OVER_UNIT);
             goto LABEL_164;
@@ -432,18 +424,18 @@ LABEL_163:
         }
         // New logic start
         // Allow infantry to move on tile where some infantry is already standing (with Alt key)
-        if ( _KeyboardKeyState[VK_MENU] && IsAnyInfantrySelected() && _templates_unitattribs[target->Type].__IsInfantry && side_id == gSideId )
+        if ( _KeyboardKeyState[Hotkey_ALT] && IsAnyInfantrySelected() && _templates_unitattribs[target->Type].__IsInfantry && side_id == gSideId )
         {
           SetMouseCursor(CURSOR_MOVE);
           goto LABEL_164;
         }
         // New logic end
-        if ( !_gDiplomacy[(unsigned char)gSideId][(unsigned char)side_id] && !_KeyboardKeyState[VK_CONTROL] )
+        if ( !_gDiplomacy[(unsigned char)gSideId][(unsigned char)side_id] && !_KeyboardKeyState[Hotkey_CTRL] )
         {
           SetMouseCursor(CURSOR_OVER_UNIT);
           goto LABEL_164;
         }
-        if ( _KeyboardKeyState[VK_MENU] && _templates_unitattribs[target->Type].__IsInfantry && side_id != gSideId )
+        if ( _KeyboardKeyState[Hotkey_ALT] && _templates_unitattribs[target->Type].__IsInfantry && side_id != gSideId )
         {
           // New logic start
           // Implement uncrushable infantry
@@ -469,9 +461,9 @@ LABEL_163:
       }
       if ( GetBuildingOnTile_0(tile_x, tile_y, &building, (eSideType *)&side_id, &object_index) )
       {
-        if ( side_id != gSideId || _KeyboardKeyState[VK_CONTROL] )
+        if ( side_id != gSideId || _KeyboardKeyState[Hotkey_CTRL] )
         {
-          if ( _gDiplomacy[(unsigned char)gSideId][(unsigned char)side_id] || _KeyboardKeyState[VK_CONTROL] )
+          if ( _gDiplomacy[(unsigned char)gSideId][(unsigned char)side_id] || _KeyboardKeyState[Hotkey_CTRL] )
           {
             // New logic start
             // Fix cursor over enemy building when only armed engineer/saboteur is selected
@@ -553,7 +545,7 @@ LABEL_130:
         SetMouseCursor(CURSOR_OVER_UNIT);
         goto LABEL_164;
       }
-      if ( _KeyboardKeyState[VK_CONTROL] && IsAnyArmedUnitSelected() )
+      if ( _KeyboardKeyState[Hotkey_CTRL] && IsAnyArmedUnitSelected() )
       {
         SetMouseCursor(CURSOR_ATTACK);
         goto LABEL_164;
@@ -593,9 +585,9 @@ LABEL_94:
 LABEL_164:
   // New logic start
   // Allows scrolling the map with hotkeys, normally this feature is only available in debug window mode and the hotkeys are hardcoded by default
-  if ( !((_KeyboardKeyState[ScrollDown] || _gMousePos.y >= _ScreenClipHeight - 1) && gGameTicks > MapScrollLockTicks) )
+  if ( !((_KeyboardKeyState[Hotkey_ScrollDown] || _gMousePos.y >= _ScreenClipHeight - 1) && gGameTicks > MapScrollLockTicks) )
   {
-    if ( (_KeyboardKeyState[ScrollUp] || _gMousePos.y < 1) && gGameTicks > MapScrollLockTicks )
+    if ( (_KeyboardKeyState[Hotkey_ScrollUp] || _gMousePos.y < 1) && gGameTicks > MapScrollLockTicks )
     // New logic end
     {
       if ( _ViewportYPos - gScrollSize < 0 )
@@ -634,7 +626,7 @@ LABEL_164:
   }
   // New logic start
   // Allows scrolling the map with hotkeys, normally this feature is only available in debug window mode and the hotkeys are hardcoded by default
-  if ( (_KeyboardKeyState[ScrollRight] || _gMousePos.x >= _ScreenClipWidth - 1) && gGameTicks > MapScrollLockTicks )
+  if ( (_KeyboardKeyState[Hotkey_ScrollRight] || _gMousePos.x >= _ScreenClipWidth - 1) && gGameTicks > MapScrollLockTicks )
   // New logic end
   {
     dragging_bandbox = _TacticalData.__DraggingBandbox;
@@ -646,7 +638,7 @@ LABEL_164:
     {
       // New logic start
       // Allows scrolling the map with hotkeys, normally this feature is only available in debug window mode and the hotkeys are hardcoded by default
-      if ( (_KeyboardKeyState[ScrollLeft] || _gMousePos.x < 1) && gGameTicks > MapScrollLockTicks )
+      if ( (_KeyboardKeyState[Hotkey_ScrollLeft] || _gMousePos.x < 1) && gGameTicks > MapScrollLockTicks )
       // New logic end
       {
         if ( _ViewportXPos - gScrollSize < 0 )
@@ -737,19 +729,19 @@ LABEL_227:
   }
   // New logic start
   // Mouse wheel scrolling
-  if ( !_KeyboardKeyState[VK_DOWN] && !MouseWheelDown )
+  if ( !_KeyboardKeyState[Hotkey_SidebarDown] && !MouseWheelDown )
   // New logic end
   {
     if ( _gFullscreen_DebugModes_pathfinddebug )
     {
       // New logic start
       // Mouse wheel scrolling
-      if ( _KeyboardKeyState[VK_UP] || MouseWheelUp )
+      if ( _KeyboardKeyState[Hotkey_SidebarUp] || MouseWheelUp )
       {
         MouseWheelUp = false;
         if (SlowSideBarScrolling)
         {
-          _KeyboardKeyState[VK_UP] = false;
+          _KeyboardKeyState[Hotkey_SidebarUp] = false;
         }
         // New logic end
         if ( _TacticalData.__Strip1ScrollPos1 > 0 )
@@ -772,7 +764,7 @@ LABEL_240:
   MouseWheelDown = false;
   if (SlowSideBarScrolling)
   {
-    _KeyboardKeyState[VK_DOWN] = false;
+    _KeyboardKeyState[Hotkey_SidebarDown] = false;
   }
   // New logic end
   if ( (unsigned int)(_SideBarIconCount + _TacticalData.__Strip1ScrollPos1) < my_side->__BuildingIconCount )
@@ -923,9 +915,9 @@ LABEL_339:
         int unit_type = side->__UnitIcons[unit_icon_index];
         if (rulesExt__buildQueuesEnabled)
         {
-          if (_KeyboardKeyState[VK_MENU] && rulesExt__buildQueuesInfinityEnabled)
+          if (_KeyboardKeyState[Hotkey_ALT] && rulesExt__buildQueuesInfinityEnabled)
             gSideExtraData[gSideId].build_queue_unit_type_infinity[unit_type] = false;
-          else if (IsUnitBuilt(gSideId, unit_type) && (!IsUnitOnHold(gSideId, unit_type) || gSideExtraData[gSideId].build_queue_unit_type_count[unit_type] == 0 || _KeyboardKeyState[VK_CONTROL]))
+          else if (IsUnitBuilt(gSideId, unit_type) && (!IsUnitOnHold(gSideId, unit_type) || gSideExtraData[gSideId].build_queue_unit_type_count[unit_type] == 0 || _KeyboardKeyState[Hotkey_CTRL]))
           {
             GenerateBuildUnitCancelOrder(gSideId, unit_type);
             if (gSideExtraData[gSideId].build_queues[GetBuildQueueNumber(unit_type)].entry_count == 0 && IsUnitOnHold(gSideId, unit_type))
@@ -935,7 +927,7 @@ LABEL_339:
             }
           }
           else
-            RemoveFromBuildQueue(gSideId, unit_type, _KeyboardKeyState[VK_SHIFT]);
+            RemoveFromBuildQueue(gSideId, unit_type, _KeyboardKeyState[Hotkey_SHIFT]);
         }
         else
           GenerateBuildUnitCancelOrder(gSideId, unit_type);
@@ -1074,7 +1066,7 @@ LABEL_340:
   // New logic start
   // High resolution patch - Do not draw selection rectangle if cursor out of battlefield
   if ( _mouse_dword_798498.x >= _ViewportWidth || _mouse_dword_798498.y <= _OptionsBarHeight || _mouse_dword_798498.y >= _OptionsBarHeight + _ViewportHeight )
-  // New logic start
+  // New logic end
   {
     _TacticalData.__DraggingBandbox = 0;
   }
@@ -1459,12 +1451,12 @@ LABEL_544:
           // Implement build queues
           if (rulesExt__buildQueuesEnabled)
           {
-            if (_KeyboardKeyState[VK_MENU] && rulesExt__buildQueuesInfinityEnabled)
+            if (_KeyboardKeyState[Hotkey_ALT] && rulesExt__buildQueuesInfinityEnabled)
               gSideExtraData[gSideId].build_queue_unit_type_infinity[unit_type] = true;
             if (IsUnitOnHold(gSideId, unit_type))
               GenerateBuildUnitPickOrder(gSideId, unit_type);
             else
-              AddToBuildQueue(gSideId, unit_type, _KeyboardKeyState[VK_SHIFT], _KeyboardKeyState[VK_CONTROL]);
+              AddToBuildQueue(gSideId, unit_type, _KeyboardKeyState[Hotkey_SHIFT], _KeyboardKeyState[Hotkey_CTRL]);
           }
           else
             GenerateBuildUnitPickOrder(gSideId, unit_type);
@@ -1776,11 +1768,11 @@ LABEL_618:
     {
       my_side_id = gSideId;
 LABEL_559:
-      if ( side_id == my_side_id && !_KeyboardKeyState[VK_CONTROL] )
+      if ( side_id == my_side_id && !_KeyboardKeyState[Hotkey_CTRL] )
       {
         // New logic start
         // Allow infantry to move on tile where some infantry is already standing (with Alt key)
-        if ( _KeyboardKeyState[VK_MENU] )
+        if ( _KeyboardKeyState[Hotkey_ALT] )
         {
           if ( IsAnyInfantrySelected() && _templates_unitattribs[unit->Type].__IsInfantry )
           {
@@ -1788,7 +1780,7 @@ LABEL_559:
           }
         }
         // New logic end
-        if ( _KeyboardKeyState[VK_SHIFT] )
+        if ( _KeyboardKeyState[Hotkey_SHIFT] )
         {
           SelectUnit(side_id, object_index, 1);
 LABEL_582:
@@ -1857,7 +1849,7 @@ LABEL_580:
         SelectUnit(side_id, object_index, 0);
         goto LABEL_582;
       }
-      if ( !_gDiplomacy[(unsigned char)my_side_id][(unsigned char)side_id] && !_KeyboardKeyState[VK_CONTROL] )
+      if ( !_gDiplomacy[(unsigned char)my_side_id][(unsigned char)side_id] && !_KeyboardKeyState[Hotkey_CTRL] )
       {
         SelectUnit(side_id, object_index, 0);
         goto LABEL_649;
@@ -1885,7 +1877,7 @@ LABEL_580:
       }
       unit = a1_2;
       SetUnitToFlicker(a1_2);
-      if ( _KeyboardKeyState[VK_MENU] && _templates_unitattribs[unit->Type].__IsInfantry && side_id != gSideId )
+      if ( _KeyboardKeyState[Hotkey_ALT] && _templates_unitattribs[unit->Type].__IsInfantry && side_id != gSideId )
       {
         // New logic start
         // Implement uncrushable infantry
@@ -1916,7 +1908,7 @@ LABEL_648:
   }
   if ( !GetBuildingOnTile_0(x[0], y[0], &building, (eSideType *)&side_id, &object_index) )
   {
-    if ( _KeyboardKeyState[VK_CONTROL] )
+    if ( _KeyboardKeyState[Hotkey_CTRL] )
     {
       if ( !IsAnyArmedUnitSelected() )
       {
@@ -1935,7 +1927,7 @@ LABEL_647:
     AddCursorPuffAnimationToQueue(pixel_x, pixel_y);
     goto LABEL_648;
   }
-  if ( side_id == gSideId && !_KeyboardKeyState[VK_CONTROL] )
+  if ( side_id == gSideId && !_KeyboardKeyState[Hotkey_CTRL] )
   {
     if ( AllSelectedUnitsHaveBehavior(UnitBehavior_HARVESTER)
       && _templates_buildattribs[building->Type].__Behavior == BuildingBehavior_REFINERY )
@@ -1983,7 +1975,7 @@ LABEL_627:
     SelectBuilding((eSideType)side_id, object_index);
     goto LABEL_649;
   }
-  if ( !_gDiplomacy[(unsigned char)gSideId][(unsigned char)side_id] && !_KeyboardKeyState[VK_CONTROL] )
+  if ( !_gDiplomacy[(unsigned char)gSideId][(unsigned char)side_id] && !_KeyboardKeyState[Hotkey_CTRL] )
   {
     building_flags = _templates_buildattribs[building->Type]._____Flags;
     if ( building_flags & BFLAGS_200_SELECTABLE_REPAIRABLE )
@@ -2061,7 +2053,7 @@ LABEL_650:
   {
     return;
   }
-  if ( _KeyboardKeyDown[VK_D] && _IsMultiplayer && gGameType == GAME_INTERNET && gTournamentGame )
+  if ( _KeyboardKeyDown[Hotkey_WOLProposeDraw] && _IsMultiplayer && gGameType == GAME_INTERNET && gTournamentGame )
   {
     order.__ObjectsServed1 = gGameTicks + _firgcrap_dword_4E3AE8;
     order.NumObjects = 0;
@@ -2073,7 +2065,7 @@ LABEL_650:
       order.__PlaceBuildingX = 1;
       Orderdata_add(&order);
 LABEL_664:
-      _KeyboardKeyDown[VK_D] = 0;
+      _KeyboardKeyDown[Hotkey_WOLProposeDraw] = 0;
       goto LABEL_665;
     }
     if ( !_DrawOffered1 )
@@ -2100,30 +2092,30 @@ LABEL_664:
     goto LABEL_664;
   }
 LABEL_665:
-  if ( _KeyboardKeyDown[VK_S] )
+  if ( _KeyboardKeyDown[Hotkey_Stop] )
   {
     GenerateStopOrder(gSideId);
-    _KeyboardKeyDown[VK_S] = 0;
+    _KeyboardKeyDown[Hotkey_Stop] = 0;
   }
-  if ( _KeyboardKeyDown[VK_A] )
+  if ( _KeyboardKeyDown[Hotkey_Alliance] )
   {
     if ( gGameType )
     {
       GenerateAllyOrder(gSideId);
     }
-    _KeyboardKeyDown[VK_A] = 0;
+    _KeyboardKeyDown[Hotkey_Alliance] = 0;
   }
-  if ( _KeyboardKeyDown[VK_X] )
+  if ( _KeyboardKeyDown[Hotkey_Scatter] )
   {
     GenerateUnitScatterOrder(gSideId);
-    _KeyboardKeyDown[VK_X] = 0;
+    _KeyboardKeyDown[Hotkey_Scatter] = 0;
   }
-  if ( _KeyboardKeyDown[VK_P] )
+  if ( _KeyboardKeyDown[Hotkey_SelectPrimaryBuilding] )
   {
     GenerateBuildingSetPrimaryOrder(gSideId);
-    _KeyboardKeyDown[VK_P] = 0;
+    _KeyboardKeyDown[Hotkey_SelectPrimaryBuilding] = 0;
   }
-  if ( _KeyboardKeyDown[VK_G] )
+  if ( _KeyboardKeyDown[Hotkey_Guard] )
   {
     if ( IsAnyArmedUnitSelected() )
     {
@@ -2133,9 +2125,9 @@ LABEL_665:
       atreides_sound_id = GetSoundTableID("S_GUARDING");
       PlayMentatSound(atreides_sound_id, ordos_sound_id, harkonnen_sound_id, 0, 0, 0);
     }
-    _KeyboardKeyDown[VK_G] = 0;
+    _KeyboardKeyDown[Hotkey_Guard] = 0;
   }
-  if ( _KeyboardKeyDown[VK_R] )
+  if ( _KeyboardKeyDown[Hotkey_Retreat] )
   {
     if ( IsAnyUnitSelected() )
     {
@@ -2148,38 +2140,38 @@ LABEL_665:
         PlayMentatSound(atreides_sound_id, ordos_sound_id, harkonnen_sound_id, 0, 0, 0);
       }
     }
-    _KeyboardKeyDown[VK_R] = 0;
+    _KeyboardKeyDown[Hotkey_Retreat] = 0;
   }
-  if ( _KeyboardKeyDown[VK_H] && gGameTicks > MapScrollLockTicks )
+  if ( _KeyboardKeyDown[Hotkey_CenterBase] && gGameTicks > MapScrollLockTicks )
   {
     side = GetSide(gSideId);
     CSide__46CF10_HKEY_BattleFieldPos(side, &_ViewportXPos, &_ViewportYPos, 1);
-    _KeyboardKeyDown[VK_H] = 0;
+    _KeyboardKeyDown[Hotkey_CenterBase] = 0;
   }
-  if ( _KeyboardKeyDown[VK_E] )
+  if ( _KeyboardKeyDown[Hotkey_SelectAllUnits] )
   {
     SelectAllUnitsInArea(_ViewportXPos, _ViewportYPos, _ViewportXPos + _ViewportWidth, _ViewportYPos + _ViewportHeight);
-    _KeyboardKeyDown[VK_E] = 0;
+    _KeyboardKeyDown[Hotkey_SelectAllUnits] = 0;
   }
-  if ( _KeyboardKeyDown[VK_N] )
+  if ( _KeyboardKeyDown[Hotkey_CenterNextUnit] )
   {
     SelectNextUnit();
     CenterViewportOnSelectedUnits(gSideId, &_ViewportXPos, &_ViewportYPos);
-    _KeyboardKeyDown[VK_N] = 0;
+    _KeyboardKeyDown[Hotkey_CenterNextUnit] = 0;
   }
-  if ( _KeyboardKeyDown[VK_T] )
+  if ( _KeyboardKeyDown[Hotkey_Repair] )
   {
     _TacticalData.__SidebarButtonMode = 2;
-    _KeyboardKeyDown[VK_T] = 0;
+    _KeyboardKeyDown[Hotkey_Repair] = 0;
   }
-  if ( _KeyboardKeyDown[VK_Y] )
+  if ( _KeyboardKeyDown[Hotkey_Sell] )
   {
     _TacticalData.__SidebarButtonMode = 3;
-    _KeyboardKeyDown[VK_Y] = 0;
+    _KeyboardKeyDown[Hotkey_Sell] = 0;
   }
   // New logic start
-  // Order selected units to deploy with O key
-  if ( _KeyboardKeyDown[VK_O] )
+  // Order selected units to deploy with D key
+  if ( _KeyboardKeyDown[Hotkey_Deploy] )
   {
     side = GetSide(gSideId);
     for (unit = side->__FirstUnitPtr; unit; unit = unit->Next)
@@ -2197,12 +2189,12 @@ LABEL_665:
         }
       }
     }
-    _KeyboardKeyDown[VK_O] = 0;
+    _KeyboardKeyDown[Hotkey_Deploy] = 0;
   }
   // New logic end
   // New logic start
   // Select all units on screen of same type with W key
-  if ( _KeyboardKeyDown[VK_W] )
+  if ( _KeyboardKeyDown[Hotkey_SelectAllUnitsOfSameType] )
   {
     bool unit_group_used[MAX_UNIT_TYPES];
     memset(unit_group_used, 0, sizeof(unit_group_used));
@@ -2240,12 +2232,12 @@ LABEL_665:
           unit->__IsSelected = 1;
       }
     }
-    _KeyboardKeyDown[VK_W] = 0;
+    _KeyboardKeyDown[Hotkey_SelectAllUnitsOfSameType] = 0;
   }
   // New logic end
   // New logic start
   // Place building or rebuild last built building with B key
-  if ( _KeyboardKeyDown[VK_B] )
+  if ( _KeyboardKeyDown[Hotkey_BuildOrPlaceBuilding] )
   {
     side = GetSide(gSideId);
     if (side->__BuildingBuildQueue.__type != -1 && side->__BuildingBuildQueue.__build_progress == 0x5A00)
@@ -2259,7 +2251,7 @@ LABEL_665:
           break;
         }
     }
-    _KeyboardKeyDown[VK_B] = 0;
+    _KeyboardKeyDown[Hotkey_BuildOrPlaceBuilding] = 0;
   }
   // New logic end
   // New logic start
@@ -2277,60 +2269,51 @@ LABEL_665:
       }
   }
   // New logic end
-  if ( _KeyboardKeyDown[VK_HOME] )
+  if ( _KeyboardKeyDown[Hotkey_CenterSelectedUnits] )
   {
     if ( !CenterViewportOnSelectedUnits(gSideId, &_ViewportXPos, &_ViewportYPos) )
     {
       CenterViewportOnSelectedBuildings(gSideId, &_ViewportXPos, &_ViewportYPos);
     }
-    _KeyboardKeyDown[VK_HOME] = 0;
+    _KeyboardKeyDown[Hotkey_CenterSelectedUnits] = 0;
   }
-  viewporty = _ViewportYPos;
-  viewportx = _ViewportXPos;
-  ctrl_key_is_down = _KeyboardKeyState[VK_CONTROL];
-  bookmark_key_id = VK_F9;
-  v117 = 0;
-  do
+  // New logic start
+  // Hotkeys for bookmarks
+  for (int i = 0; i < 4; i++)
   {
-    if ( _KeyboardKeyState[bookmark_key_id] )
+    if ( _KeyboardKeyState[Hotkey_Bookmark[i]] )
     {
-      if ( ctrl_key_is_down )
+      if ( _KeyboardKeyState[Hotkey_CTRL] )
       {
-        _TacticalData.__Bookmarks[v117].x = viewportx;
-        _TacticalData.__Bookmarks[v117].y = viewporty;
+        _TacticalData.__Bookmarks[i].x = _ViewportXPos;
+        _TacticalData.__Bookmarks[i].y = _ViewportYPos;
       }
       else if ( gGameTicks > MapScrollLockTicks )
       {
-        viewportx = _TacticalData.__Bookmarks[v117].x;
-        viewporty = _TacticalData.__Bookmarks[v117].y;
+        _ViewportXPos = _TacticalData.__Bookmarks[i].x;
+        _ViewportYPos = _TacticalData.__Bookmarks[i].y;
       }
     }
-    ++v117;
-    ++bookmark_key_id;
   }
-  while ( v117 < 4 );
-  unit_group_key_id = VK_0;
-  _ViewportYPos = viewporty;
-  _ViewportXPos = viewportx;
-  v166 = VK_0;
-  while ( 1 )
+  // New logic end
+  // New logic start
+  // Hotkeys for unit groups
+  for (int i = 0; i < 10; i++)
   {
-    v119 = _KeyboardKeyState[unit_group_key_id];
-    unit_group_id = unit_group_key_id - VK_0;
-    a1[0] = unit_group_key_id - VK_0;
-    if ( v119 )
+    unit_group_id = i;
+    if ( _KeyboardKeyState[Hotkey_Team[i]] )
     {
-      if ( ctrl_key_is_down )
+      if ( _KeyboardKeyState[Hotkey_CTRL] )
       {
         SetUnitGroup(unit_group_id);
       }
-      else if ( _KeyboardKeyState[VK_MENU] )
+      else if ( _KeyboardKeyState[Hotkey_ALT] )
       {
         side = GetSide(gSideId);
         if ( CSide__SelectUnitsByGroupId(side, unit_group_id, 1) )
         {
-          v122 = &_UnitGroupKeyState[a1[0]];
-          if ( !_UnitGroupKeyState[a1[0]] )
+          v122 = &_UnitGroupKeyState[i];
+          if ( !_UnitGroupKeyState[i] )
           {
             PlayUnitResponse(0);
             *v122 = 1;
@@ -2339,14 +2322,14 @@ LABEL_665:
           CSide__CenterViewportOnFirstUnitFromGroupId(side, unit_group_id, &_ViewportXPos, &_ViewportYPos);
         }
       }
-      else if ( _KeyboardKeyState[VK_SHIFT] )
+      else if ( _KeyboardKeyState[Hotkey_SHIFT] )
       {
         side = GetSide(gSideId);
         if ( CSide__SelectUnitsByGroupId(side, unit_group_id, 0) )
         {
-          if ( _UnitGroupKeyState[a1[0]] )
+          if ( _UnitGroupKeyState[i] )
           {
-            _UnitGroupKeyState[a1[0]] = 1;
+            _UnitGroupKeyState[i] = 1;
             PlayUnitResponse(0);
             v125 = 0;
             side_id = 0;
@@ -2374,9 +2357,9 @@ LABEL_665:
         side = GetSide(gSideId);
         if ( CSide__SelectUnitsByGroupId(side, unit_group_id, 1) )
         {
-          if ( !_UnitGroupKeyState[a1[0]] )
+          if ( !_UnitGroupKeyState[i] )
           {
-            _UnitGroupKeyState[a1[0]] = 1;
+            _UnitGroupKeyState[i] = 1;
             PlayUnitResponse(0);
             v129 = 0;
             side_id = 0;
@@ -2402,15 +2385,10 @@ LABEL_665:
     }
     else
     {
-      _UnitGroupKeyState[a1[0]] = 0;
+      _UnitGroupKeyState[i] = 0;
     }
-    unit_group_key_id = v166 + 1;
-    if ( !(++v166 < 58) )
-    {
-      break;
-    }
-    ctrl_key_is_down = _KeyboardKeyState[VK_CONTROL];
   }
+  // New logic end
   if ( _IsMultiplayer )
   {
     uimgr = gUIMgr;
@@ -2436,21 +2414,21 @@ LABEL_665:
       v138 = a1[0];
       v139 = 0;
       my_side_1 = 0;
-      v140 = VK_F1;
-      do
+      // New logic start
+      // Hotkeys for private chat
+      for (int i = 0; i < 5; i++)
       {
-        if ( _KeyboardKeyDown[v140] )
+        if ( _KeyboardKeyDown[Hotkey_PrivateChat[i]] )
         {
-          if ( v140 - 112 < v138 - 1 )
+          if ( i < v138 - 1 )
           {
-            _KeyboardKeyDown[v140] = 0;
-            v139 = v140 - 112;
+            _KeyboardKeyDown[Hotkey_PrivateChat[i]] = 0;
+            v139 = i;
             v135 = 1;
           }
         }
-        ++v140;
       }
-      while ( v140 <= VK_F5 );
+      // New logic end
       my_side_1 = v139;
       if ( v135 )
       {
@@ -2509,9 +2487,9 @@ LABEL_665:
     }
     _KeyboardKeyDown[VK_F7] = 0;
   }
-  if ( _KeyboardKeyDown[VK_F8] )
+  if ( _KeyboardKeyDown[Hotkey_WOLPageReply] )
   {
-    if ( _IsMultiplayer )
+    if ( !SpawnerActive && _IsMultiplayer )
     {
       if ( gGameType == GAME_INTERNET )
       {
@@ -2528,9 +2506,9 @@ LABEL_665:
         QueueMessage(string, -1);
       }
     }
-    _KeyboardKeyDown[VK_F8] = 0;
+    _KeyboardKeyDown[Hotkey_WOLPageReply] = 0;
   }
-  if ( _KeyboardKeyDown[VK_F6] )
+  if ( _KeyboardKeyDown[Hotkey_PublicChat] )
   {
     if ( _IsMultiplayer )
     {
@@ -2542,6 +2520,22 @@ LABEL_665:
         CUIManager__ReplaceWithOne_470E60(gUIMgr, "GAMEMESSAGE", gBackBuf);
       }
     }
-    _KeyboardKeyDown[VK_F6] = 0;
+    _KeyboardKeyDown[Hotkey_PublicChat] = 0;
   }
+  // New logic start
+  // Toggle live stats
+  if ( _KeyboardKeyDown[Hotkey_ToggleLiveStats] )
+  {
+    LiveStatsEnabled = !LiveStatsEnabled;
+    _KeyboardKeyDown[Hotkey_ToggleLiveStats] = 0;
+  }
+  // New logic end
+  // New logic start
+  // Play random song
+  if ( _KeyboardKeyDown[Hotkey_PlayRandomSong] )
+  {
+    PlayRandomMusic();
+    _KeyboardKeyDown[Hotkey_PlayRandomSong] = 0;
+  }
+  // New logic end
 }

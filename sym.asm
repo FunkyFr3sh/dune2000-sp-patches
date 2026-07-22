@@ -414,11 +414,9 @@ setcglob 0x00797A98, CurrentSoundTrack
 setcglob 0x00797E18, dword_797E18
 setcglob 0x00797E1C, gRestartGame
 setcglob 0x00797E34, gGameType
-setcglob 0x00797E78, KeyIsDown2
 setcglob 0x00797E78, _KeyboardKeyState
 setcglob 0x00798384, _colormask1
 setcglob 0x00798388, _MouseClickCoords
-setcglob 0x00798390, KeyIsDown1
 setcglob 0x00798390, _KeyboardKeyDown
 setcglob 0x00798498, _mouse_dword_798498
 setcglob 0x007984C0, gTotalPlayers

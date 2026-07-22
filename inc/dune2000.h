@@ -51,7 +51,6 @@ typedef struct dwXYStruct
 #include "dune2000/graphlib.h"
 #include "dune2000/sound.h"
 #include "dune2000/uimgr.h"
-#include "dune2000/vk.h"
 
 typedef struct NetPlayer
 {
