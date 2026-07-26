@@ -61,7 +61,10 @@ bool Mod__UpdateBuilding(Building *bld, unsigned char side_id, short building_in
       bld->__BuildupAnimCounter = buildup_anim_counter - 1;
     }
   }
-  else if ( bld_flags & (BFLAGS_20_ANIM_ONCE|BFLAGS_10_ANIM_PERMANENT) )
+  // New logic start
+  // Allow permanent animation for factories
+  else if ( (bld_flags & (BFLAGS_20_ANIM_ONCE|BFLAGS_10_ANIM_PERMANENT)) || (_templates_buildattribs[bld->Type]._____Flags & BFLAGS_10_ANIM_PERMANENT) )
+  // New logic end
   {
     if ( bld_flags & BFLAGS_40_HAS_ANIMATION )
     {

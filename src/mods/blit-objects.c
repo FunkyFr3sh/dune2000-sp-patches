@@ -271,6 +271,11 @@ void Mod__BlitObjects(TImage *img)
           {
             barrel_imagea = gBuildingElements[0][32 * barrel_art
                                                + (unsigned char)_templates_buildattribs[0]._____DirectionFrames[(unsigned char)bld_->__Facing + building_type__ * 268]];
+            // New logic start
+            // Allow damaged sprites for turret barrels
+            if (is_low_health && _gBuildingElementsDamaged[barrel_art][(int)_templates_buildattribs[building_type__]._____DirectionFrames[bld_->__Facing]])
+              barrel_imagea = _gBuildingElementsDamaged[barrel_art][(int)_templates_buildattribs[building_type__]._____DirectionFrames[bld_->__Facing]];
+            // New logic end
           }
           is_selling_or_buildup = bld_->Flags & (BFLAGS_4_SELLING|BFLAGS_2_BUILDUP);
           if ( is_selling_or_buildup )
@@ -290,7 +295,10 @@ void Mod__BlitObjects(TImage *img)
             }
           }
           building_flags = bld_->Flags;
-          if ( building_flags & (BFLAGS_20_ANIM_ONCE|BFLAGS_10_ANIM_PERMANENT) )
+          // New logic start
+          // Allow permanent animation for factories
+          if ( (building_flags & (BFLAGS_20_ANIM_ONCE|BFLAGS_10_ANIM_PERMANENT)) || (_templates_buildattribs[building_type__]._____Flags & BFLAGS_10_ANIM_PERMANENT) )
+          // New logic end
           {
             if ( building_flags & BFLAGS_40_HAS_ANIMATION )
             {
