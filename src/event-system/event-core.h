@@ -454,7 +454,7 @@ typedef struct EventVariable
 
 // Variables
 
-#define MAX_EVENTS 1024
+#define MAX_EVENTS 16384
 #define MAX_CONDITIONS 256
 #define MAX_EVENT_VARIABLES 256
 

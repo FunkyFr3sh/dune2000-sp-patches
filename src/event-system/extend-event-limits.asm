@@ -38,7 +38,7 @@ hack 0x0044FDC7 ; LoadMission
     ; Read extended part of _gEventArray
     add esp, 10h
     push esi
-    push (1024 - 64)
+    push (16384 - 64)
     push 72
     push _gEventArray + (64 * 72)
     call _ReadFile
@@ -51,7 +51,7 @@ hack 0x0044FDC7 ; LoadMission
 @ENDPATCH
 
 @PATCH 0x004416E5 ; SaveGame
-    push 72 * 1024
+    push 72 * 16384
     push _gEventArray
 @ENDPATCH
 
@@ -70,7 +70,7 @@ hack 0x0044FDC7 ; LoadMission
 @ENDPATCH
 
 @PATCH 0x00441B28 ; LoadGame
-    push 72 * 1024
+    push 72 * 16384
     push _gEventArray
 @ENDPATCH
 
