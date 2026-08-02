@@ -1,5 +1,6 @@
 #include "macros/patch.h"
 #include "dune2000.h"
+#include "hotkeys.h"
 
 // Custom implementation of function SelectAllUnitsInArea
 DETOUR(0x004A5AE0, 0x004A5BF2, _Mod__SelectAllUnitsInArea);
@@ -61,7 +62,7 @@ LABEL_16:
   }
   // New logic start
   // Additive multiselection of units when Shift key is held
-  if ( !_KeyboardKeyState[VK_SHIFT] )
+  if ( !_KeyboardKeyState[Hotkey_SHIFT] )
     DeselectAllForAllSides();
   // New logic end
   for ( unit = side->__FirstUnitPtr; unit; unit = unit->Next )
@@ -78,7 +79,7 @@ LABEL_16:
         && !(unit->Flags & (UFLAGS_100_CARRYING|UFLAGS_40_FLYING))
         // New logic start
         // Exclude non-armed units from multiselection when Alt key is held
-        && (!_KeyboardKeyState[VK_MENU] || _templates_unitattribs[unit->Type].__PrimaryWeapon != -1)
+        && (!_KeyboardKeyState[Hotkey_ALT] || _templates_unitattribs[unit->Type].__PrimaryWeapon != -1)
         // New logic end
         )
       {
@@ -87,4 +88,67 @@ LABEL_16:
     }
   }
   return result;
+}
+
+// Custom implementation of function CSide__SelectUnitsByGroupId
+DETOUR(0x0046CB40, 0x0046CBCA, _Mod__CSide__SelectUnitsByGroupId);
+
+char __thiscall Mod__CSide__SelectUnitsByGroupId(CSide *this, char group_id, char deselect_others)
+{
+  Unit *unit; // edx
+  Unit *unit_; // esi
+  signed int v5; // edi
+  Building *bld; // ecx
+
+  unit = this->__FirstUnitPtr;
+  unit_ = this->__FirstUnitPtr;
+  v5 = 0;
+  if ( unit_ )
+  {
+    while ( !v5 )
+    {
+      // New logic start
+      // Exclude dead unit from group selection
+      if ( unit_->__GroupID == group_id && unit_->State != UNIT_STATE_8_LEAVING_BUILDING && unit_->State != UNIT_STATE_17_DEAD )
+      // New logic end
+      {
+        v5 = 1;
+      }
+      unit_ = unit_->Next;
+      if ( !unit_ )
+      {
+        goto LABEL_7;
+      }
+    }
+  }
+  else
+  {
+LABEL_7:
+    if ( !v5 )
+    {
+      return 0;
+    }
+  }
+  for ( ; unit; unit = unit->Next )
+  {
+    // New logic start
+    // Exclude dead unit from group selection
+    if ( unit->__GroupID != group_id || unit->State == UNIT_STATE_8_LEAVING_BUILDING || unit->State == UNIT_STATE_17_DEAD )
+    // New logic end
+    {
+      if ( deselect_others )
+      {
+        unit->__IsSelected = 0;
+      }
+    }
+    else if ( !(unit->Flags & (UFLAGS_100_CARRYING|UFLAGS_40_FLYING)) )
+    {
+      unit->__IsSelected = 1;
+    }
+  }
+  for ( bld = this->__FirstBuildingPtr; bld; bld = bld->Next )
+  {
+    bld->__IsSelected = 0;
+  }
+  return 1;
 }

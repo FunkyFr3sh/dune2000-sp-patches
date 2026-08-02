@@ -2215,6 +2215,7 @@ LABEL_665:
         && unit_pos_y > _ViewportYPos
         && unit_pos_y < _ViewportYPos + _ViewportHeight
         && !(unit->Flags & (UFLAGS_100_CARRYING|UFLAGS_40_FLYING))
+        && (unit->State != UNIT_STATE_8_LEAVING_BUILDING || unit->pos_steps) && unit->State != UNIT_STATE_17_DEAD
         && unit_group_used[(int)_templates_unitattribs[unit->Type].__UnitType]
         )
       {
@@ -2227,6 +2228,7 @@ LABEL_665:
       for (unit = side->__FirstUnitPtr; unit; unit = unit->Next)
       {
         if ( !(unit->Flags & (UFLAGS_100_CARRYING|UFLAGS_40_FLYING))
+          && (unit->State != UNIT_STATE_8_LEAVING_BUILDING || unit->pos_steps) && unit->State != UNIT_STATE_17_DEAD
           && unit_group_used[(int)_templates_unitattribs[unit->Type].__UnitType]
           )
           unit->__IsSelected = 1;
