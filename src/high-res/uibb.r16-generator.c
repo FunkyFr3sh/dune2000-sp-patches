@@ -6,9 +6,7 @@
 
 void GenerateUIBB_r16(char *UIBBR16Name)
 {
-    char UIBBR16Path[256];
-    sprintf(UIBBR16Path, ".\\%sUIBB.R16", ResourcePath);
-    FILE *UIBBR16 = fopen(UIBBR16Path, "rb"); 
+    FILE *UIBBR16 = _OpenFile("UIBB.R16", "rb", 0);
     if (UIBBR16)
     {
         int p; 
