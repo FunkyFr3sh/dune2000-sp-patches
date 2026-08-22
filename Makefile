@@ -66,7 +66,7 @@ OBJS            ?= callsites.o \
         src/mods/ai-do-set-go-berserk.o \
         src/mods/tooltips.o \
         src/mods/event-hooks-func.o \
-        src/mods/delivery-tag.o \
+        src/mods/unit-deliver.o \
         src/mods/handle-game-loop-events.o \
         src/mods/radar.o \
         src/mods/unit-multiselection-improvements.o \

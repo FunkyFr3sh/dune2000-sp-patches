@@ -5,9 +5,10 @@
 #include "crates-func.h"
 
 // Add tagged deliveries - delivered units are given a tag
+// Pick up crate when unit is delivered on top of a crate
 
 // Custom implementation of function UnitDeliver
-DETOUR(0x0049E3E0, 0x0049E6AF, _Mod__UnitDeliver); // UpdateUnit
+DETOUR(0x0049E3E0, 0x0049E6AF, _Mod__UnitDeliver);
 
 char Mod__UnitDeliver(Unit *unit, int side_id)
 {
@@ -70,6 +71,10 @@ char Mod__UnitDeliver(Unit *unit, int side_id)
     if ( v11 > 0x50u )
     {
       delivery->__is_active = 0;
+      // New logic start
+      // Reset delivery tag to 0 so that new harv delivery is not affected
+      delivery->tag = 0;
+      // New logic end
       return 0;
     }
     return result;
@@ -96,6 +101,10 @@ char Mod__UnitDeliver(Unit *unit, int side_id)
   {
     result = 0;
     delivery->__is_active = 0;
+    // New logic start
+    // Reset delivery tag to 0 so that new harv delivery is not affected
+    delivery->tag = 0;
+    // New logic end
     return result;
   }
   if ( gDifficultyLevel
