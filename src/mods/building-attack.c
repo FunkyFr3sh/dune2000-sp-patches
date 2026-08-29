@@ -420,6 +420,8 @@ void Mod__BuildingShootTarget(Building *building, char side_id, short index, int
   int source_ypos;
   int dest_xpos;
   int dest_ypos;
+  int num_attempts;
+  bool is_outside_of_map;
   int homing_index;
   int homing_side;
   bool is_muzzle_flash_explosion;
@@ -507,14 +509,19 @@ void Mod__BuildingShootTarget(Building *building, char side_id, short index, int
         {
           source_xpos = (_sinValues[shoot_offset + ((16 - direction + shoot_angle) & 31) * 512] / 2048) + building_xpos + building_template->_____ExitPoint2X;
           source_ypos = (_cosValues[shoot_offset + ((16 - direction + shoot_angle) & 31) * 512] / 2048) + building_ypos + building_template->_____ExitPoint2Y;
-          dest_xpos = target_xpos;
-          dest_ypos = target_ypos;
-          if ( inaccuracy )
-          {
-            dest_xpos += rand() % (2 * inaccuracy) - inaccuracy;
-            dest_ypos += rand() % (2 * inaccuracy) - inaccuracy;
-          }
-          if ((bullet_index = ModelAddBullet(side_id, bullet_type, 0, index, source_xpos, source_ypos, dest_xpos, dest_ypos, homing_index, homing_side)) != -1)
+          num_attempts = 0;
+          do { // Make sure the bullet will not end up outside of map
+            dest_xpos = target_xpos;
+            dest_ypos = target_ypos;
+            if ( inaccuracy )
+            {
+              dest_xpos += rand() % (2 * inaccuracy) - inaccuracy;
+              dest_ypos += rand() % (2 * inaccuracy) - inaccuracy;
+            }
+            num_attempts++;
+            is_outside_of_map = dest_xpos < 0 || dest_ypos < 0 || dest_xpos >= gGameMapWidth * 32 || dest_ypos >= gGameMapHeight * 32;
+          } while (is_outside_of_map && num_attempts < 10);
+          if (!is_outside_of_map && ((bullet_index = ModelAddBullet(side_id, bullet_type, 0, index, source_xpos, source_ypos, dest_xpos, dest_ypos, homing_index, homing_side)) != -1))
           {
             Bullet *b = (Bullet *)&GetSide(side_id)->__ObjectArray[bullet_index];
             if ((muzzle_flash_explosion_type != -1) && ((explosion_index = ModelAddExplosion(side_id, muzzle_flash_explosion_type, is_muzzle_flash_explosion?building_xpos:source_xpos, is_muzzle_flash_explosion?(int)building->__PosY/0x10000-y_offset:source_ypos, is_muzzle_flash_explosion?0:b->__PosZHeight, 0, 0, 0, 0)) != -1) && is_muzzle_flash_explosion)

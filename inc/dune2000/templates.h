@@ -167,7 +167,7 @@ typedef struct BullAtrbStruct
   char c_field_13;
   char AntiAircraft;
   char Warhead;
-  char Inaccuracy; // Additional field for extended functionality (mod)
+  uint8_t Inaccuracy; // Additional field for extended functionality (mod)
   char Behavior; // Additional field for extended functionality (mod)
   int __Range;
 }BullAtrbStruct;
