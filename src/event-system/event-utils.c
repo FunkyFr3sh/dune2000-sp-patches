@@ -70,7 +70,7 @@ void SetDataValue(int event_id, char *data_ptr, eDataType data_type, int offset,
   {
     case DATATYPE_BYTE:
     {
-      int8_t *p = (int8_t *)&data_ptr[offset];
+      uint8_t *p = (uint8_t *)&data_ptr[offset];
       *p = ValueOperation(event_id, *p, value, operation);
       break;
     }
