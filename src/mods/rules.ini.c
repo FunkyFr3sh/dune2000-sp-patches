@@ -35,6 +35,7 @@ void InitExtraRules(void)
   rulesExt__buildQueuesInfinityEnabled       = false;
   rulesExt__showEnemyStructureNames          = false;
   rulesExt__showNeutralStructureNames        = false;
+  rulesExt__deliverEveryOtherEnemyUnitOnEasy = true;
 }
 
 static void LoadVars(LPCTSTR fileName);
@@ -119,4 +120,5 @@ static void LoadVars(LPCTSTR fileName)
     rulesExt__buildQueuesInfinityEnabled = IniGetBool("Vars", "buildQueuesInfinityEnabled", rulesExt__buildQueuesInfinityEnabled, fileName);
     rulesExt__showEnemyStructureNames = IniGetBool("Vars", "showEnemyStructureNames", rulesExt__showEnemyStructureNames, fileName);
     rulesExt__showNeutralStructureNames = IniGetBool("Vars", "showNeutralStructureNames", rulesExt__showNeutralStructureNames, fileName);
+    rulesExt__deliverEveryOtherEnemyUnitOnEasy = IniGetBool("Vars", "deliverEveryOtherEnemyUnitOnEasy", rulesExt__deliverEveryOtherEnemyUnitOnEasy, fileName);
 }

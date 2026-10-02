@@ -3,9 +3,11 @@
 #include "macros/patch.h"
 #include "dune2000.h"
 #include "crates-func.h"
+#include "rules.h"
 
 // Add tagged deliveries - delivered units are given a tag
 // Pick up crate when unit is delivered on top of a crate
+// Implement deliverEveryOtherEnemyUnitOnEasy rule
 
 // Custom implementation of function UnitDeliver
 DETOUR(0x0049E3E0, 0x0049E6AF, _Mod__UnitDeliver);
@@ -109,7 +111,11 @@ char Mod__UnitDeliver(Unit *unit, int side_id)
   }
   if ( gDifficultyLevel
     || !(unit_delivery_order & 1)
-    || !_gDiplomacy[(unsigned char)side_id][(unsigned char)gSideId] )
+    || !_gDiplomacy[(unsigned char)side_id][(unsigned char)gSideId]
+    // New logic start
+    // Implement deliverEveryOtherEnemyUnitOnEasy rule
+    || !rulesExt__deliverEveryOtherEnemyUnitOnEasy )
+    // New logic end
   {
     add_at_x = unit_->BlockToX;
     y = add_at_y;

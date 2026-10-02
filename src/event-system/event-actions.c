@@ -1660,6 +1660,7 @@ void EvAct_SetRule(int event_id, int rule, eValueOperation operation, int value)
     case 47: rulesExt__buildQueuesInfinityEnabled =       ValueOperation(event_id, rulesExt__buildQueuesInfinityEnabled, value, operation); break;
     case 48: rulesExt__showEnemyStructureNames =          ValueOperation(event_id, rulesExt__showEnemyStructureNames, value, operation); break;
     case 49: rulesExt__showNeutralStructureNames =        ValueOperation(event_id, rulesExt__showNeutralStructureNames, value, operation); break;
+    case 50: rulesExt__deliverEveryOtherEnemyUnitOnEasy = ValueOperation(event_id, rulesExt__deliverEveryOtherEnemyUnitOnEasy, value, operation); break;
   }
 }
 
@@ -2136,6 +2137,7 @@ void EvAct_GetRule(int event_id, int rule, int target_var)
     case 47: result = rulesExt__buildQueuesInfinityEnabled; break;
     case 48: result = rulesExt__showEnemyStructureNames; break;
     case 49: result = rulesExt__showNeutralStructureNames; break;
+    case 50: result = rulesExt__deliverEveryOtherEnemyUnitOnEasy; break;
   }
   SetVariableValue(event_id, target_var, result);
 }
