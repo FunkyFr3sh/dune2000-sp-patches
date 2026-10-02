@@ -25,15 +25,20 @@ bool Mod__UpdateExplosion(Explosion *explosion, eSideType side_id)
     {
       if ( associated_unit->State == UNIT_STATE_17_DEAD )
       {
-        return 0;
+        explosion->__AssociatedUnitIndex = -1;
+        explosion->RepeatCount = 255;
+      }
+      else
+      {
+        explosion->__PosX = associated_unit->__PosX + (explosion->AssocUnitOffsetX << 16);
+        explosion->__PosY = associated_unit->__PosY + (explosion->AssocUnitOffsetY << 16);
       }
     }
     else
     {
-      return 0;
+      explosion->__AssociatedUnitIndex = -1;
+      explosion->RepeatCount = 255;
     }
-    explosion->__PosX = associated_unit->__PosX + (explosion->AssocUnitOffsetX << 16);
-    explosion->__PosY = associated_unit->__PosY + (explosion->AssocUnitOffsetY << 16);
     // New logic end
   }
   flags = explosion->Flags;
