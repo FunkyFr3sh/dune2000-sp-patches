@@ -384,6 +384,7 @@ extern int                  _SidebarStrip2YPos;
 extern int                  _PowerBarUIPosX;
 extern int                  _PowerBarUIPosY;
 extern int                  _CreditsTextXPos;
+extern int                  gCDVolume;
 extern short                gDifficultyLevel;
 extern short                _SandTileIDs[8];
 extern POINT                _UnitAnimTypeFrames[16];

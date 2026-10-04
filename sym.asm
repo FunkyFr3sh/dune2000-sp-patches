@@ -190,6 +190,7 @@ setcglob 0x004E4208, _SidebarStrip2YPos
 setcglob 0x004E420C, _PowerBarUIPosX
 setcglob 0x004E4210, _PowerBarUIPosY
 setcglob 0x004E4214, _CreditsTextXPos
+setcglob 0x004E5FC8, gCDVolume
 setcglob 0x004E8BF0, gDifficultyLevel
 setcglob 0x004E9520, _SandTileIDs
 setcglob 0x004E9530, _UnitAnimTypeFrames

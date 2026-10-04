@@ -535,7 +535,10 @@ bool __thiscall Mod__ISampleManager__InitStream(ISampleManager *this, char *file
     AIL_set_sample_playback_rate(sm->__streamedsamplehandle_1B0, 22050);
     AIL_set_sample_position(sm->__streamedsamplehandle_1B0, 0);
     AIL_set_sample_pan(sm->__streamedsamplehandle_1B0, 64);
-    AIL_set_sample_volume(sm->__streamedsamplehandle_1B0, 64);
+    // New logic start
+    // Fix incorrect music volume when music is chosen from menu
+    AIL_set_sample_volume(sm->__streamedsamplehandle_1B0, gCDVolume);
+    // New logic end
     AIL_minimum_sample_buffer_size(sm->__driver, 22050, 1);
   }
   if ( sm->__musicfilehandle_1AC )
