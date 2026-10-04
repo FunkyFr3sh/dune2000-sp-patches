@@ -37,6 +37,7 @@ void InitExtraRules(void)
   rulesExt__showNeutralStructureNames        = false;
   rulesExt__deliverEveryOtherEnemyUnitOnEasy = true;
   rulesExt__harvsUnloadOnlyIfEnoughStorage   = false;
+  rulesExt__separateBuildingVoiceLines       = false;
 }
 
 static void LoadVars(LPCTSTR fileName);
@@ -68,59 +69,63 @@ static void LoadMultiPlayerSettings(LPCTSTR fileName)
     SideBarIconCount = iconCount > maxIcons ? maxIcons : iconCount < 1 ? 1 : iconCount;
 }
 
+#define LOAD_RULE(rule, type)                    rule = IniGet##type("Vars", #rule,             rule, fileName);
+#define LOAD_CUSTOM_RULE(rule, type) rulesExt__##rule = IniGet##type("Vars", #rule, rulesExt__##rule, fileName);
+
 static void LoadVars(LPCTSTR fileName)
 {
-    harvestUnloadDelay = IniGetInt("Vars", "harvestUnloadDelay", harvestUnloadDelay, fileName);
-    harvestBlobValue = IniGetInt("Vars", "harvestBlobValue", harvestBlobValue, fileName);
-    harvestLoadSpiceDelay = IniGetInt("Vars", "harvestLoadSpiceDelay", harvestLoadSpiceDelay, fileName);
-    starportUpdateDelay = IniGetInt("Vars", "starportUpdateDelay", starportUpdateDelay, fileName);
-    starportStockIncreaseDelay = IniGetInt("Vars", "starportStockIncreaseDelay", starportStockIncreaseDelay, fileName);
-    starportStockIncreaseProb = IniGetInt("Vars", "starportStockIncreaseProb", starportStockIncreaseProb, fileName);
-    starportCostVariationPercent = IniGetInt("Vars", "starportCostVariationPercent", starportCostVariationPercent, fileName);
-    starportFrigateDelay = IniGetInt("Vars", "starportFrigateDelay", starportFrigateDelay, fileName);
-    refineryExplosionOffsetX = IniGetInt("Vars", "refineryExplosionOffsetX", refineryExplosionOffsetX, fileName);
-    refineryExplosionOffsetY = IniGetInt("Vars", "refineryExplosionOffsetY", refineryExplosionOffsetY, fileName);
-    HarvesterDriveDistance = IniGetInt("Vars", "HarvesterDriveDistance", HarvesterDriveDistance, fileName);
-    RepairDriveDistance = IniGetInt("Vars", "RepairDriveDistance", RepairDriveDistance, fileName);
-    BuildingRepairValue = IniGetInt("Vars", "BuildingRepairValue", BuildingRepairValue, fileName);
-    UnitRepairValue = IniGetInt("Vars", "UnitRepairValue", UnitRepairValue, fileName);
-    SinglePlayerDelay = IniGetInt("Vars", "SinglePlayerDelay", SinglePlayerDelay, fileName);
-    NumberOfFremen = IniGetInt("Vars", "NumberOfFremen", NumberOfFremen, fileName);
-    SandWormAppetite = IniGetInt("Vars", "SandWormAppetite", SandWormAppetite, fileName);
-    SandWormInitialSleep = IniGetInt("Vars", "SandWormInitialSleep", SandWormInitialSleep, fileName);
-    SandWormFedSleep = IniGetInt("Vars", "SandWormFedSleep", SandWormFedSleep, fileName);
-    SandWormShotSleep = IniGetInt("Vars", "SandWormShotSleep", SandWormShotSleep, fileName);
-    NumberOfCrates = IniGetInt("Vars", "NumberOfCrates", NumberOfCrates, fileName);
-    CratesPerPlayer = IniGetBool("Vars", "CratesPerPlayer", CratesPerPlayer, fileName);
-    DevastatorExplodeDelay = IniGetInt("Vars", "DevastatorExplodeDelay", DevastatorExplodeDelay, fileName);
-    IgnoreDistance = IniGetInt("Vars", "IgnoreDistance", IgnoreDistance, fileName);
-    CrateCash = IniGetInt("Vars", "CrateCash", CrateCash, fileName);
-    ShowWarnings = IniGetBool("Vars", "ShowWarnings", ShowWarnings, fileName);
-    DeathHandAccuracy = IniGetInt("Vars", "DeathHandAccuracy", DeathHandAccuracy, fileName);
+    LOAD_RULE(harvestUnloadDelay, Int)
+    LOAD_RULE(harvestBlobValue, Int)
+    LOAD_RULE(harvestLoadSpiceDelay, Int)
+    LOAD_RULE(starportUpdateDelay, Int)
+    LOAD_RULE(starportStockIncreaseDelay, Int);
+    LOAD_RULE(starportStockIncreaseProb, Int)
+    LOAD_RULE(starportCostVariationPercent, Int)
+    LOAD_RULE(starportFrigateDelay, Int)
+    LOAD_RULE(refineryExplosionOffsetX, Int)
+    LOAD_RULE(refineryExplosionOffsetY, Int)
+    LOAD_RULE(HarvesterDriveDistance, Int)
+    LOAD_RULE(RepairDriveDistance, Int)
+    LOAD_RULE(BuildingRepairValue, Int)
+    LOAD_RULE(UnitRepairValue, Int)
+    LOAD_RULE(SinglePlayerDelay, Int)
+    LOAD_RULE(NumberOfFremen, Int)
+    LOAD_RULE(SandWormAppetite, Int)
+    LOAD_RULE(SandWormInitialSleep, Int)
+    LOAD_RULE(SandWormFedSleep, Int)
+    LOAD_RULE(SandWormShotSleep, Int)
+    LOAD_RULE(NumberOfCrates, Int)
+    LOAD_RULE(CratesPerPlayer, Bool)
+    LOAD_RULE(DevastatorExplodeDelay, Int)
+    LOAD_RULE(IgnoreDistance, Int)
+    LOAD_RULE(CrateCash, Int)
+    LOAD_RULE(ShowWarnings, Bool)
+    LOAD_RULE(DeathHandAccuracy, Int)
     
-    rulesExt__InfiniteSpice = IniGetBool("Vars", "InfiniteSpice", fileName == rulesSpawnIni || fileName == rulesIni ? false : rulesExt__InfiniteSpice, fileName);
-    rulesExt__infantryReleaseLimit = IniGetInt("Vars", "infantryReleaseLimit", rulesExt__infantryReleaseLimit, fileName);
-    rulesExt__infantryReleaseChance = IniGetInt("Vars", "infantryReleaseChance", rulesExt__infantryReleaseChance, fileName);
-    rulesExt__buildingsAlwaysNeedPrerequisites = IniGetBool("Vars", "buildingsAlwaysNeedPrerequisites", rulesExt__buildingsAlwaysNeedPrerequisites, fileName);
-    rulesExt__returnCreditsToSpiceStorage = IniGetBool("Vars", "returnCreditsToSpiceStorage", rulesExt__returnCreditsToSpiceStorage, fileName);
-    rulesExt__intervalsAreOffByOneTick = IniGetBool("Vars", "intervalsAreOffByOneTick", rulesExt__intervalsAreOffByOneTick, fileName);
-    rulesExt__guardModeRadius = IniGetInt("Vars", "guardModeRadius", rulesExt__guardModeRadius, fileName);
-    rulesExt__alwaysShowRadar = IniGetBool("Vars", "alwaysShowRadar", rulesExt__alwaysShowRadar, fileName);
-    rulesExt__costPercentageEasy = IniGetInt("Vars", "costPercentageEasy", rulesExt__costPercentageEasy, fileName);
-    rulesExt__costPercentageHard = IniGetInt("Vars", "costPercentageHard", rulesExt__costPercentageHard, fileName);
-    rulesExt__buildSpeedPercentageEasy = IniGetInt("Vars", "buildSpeedPercentageEasy", rulesExt__buildSpeedPercentageEasy, fileName);
-    rulesExt__buildSpeedPercentageHard = IniGetInt("Vars", "buildSpeedPercentageHard", rulesExt__buildSpeedPercentageHard, fileName);
-    rulesExt__uncloakRemainingStealthUnit = IniGetBool("Vars", "uncloakRemainingStealthUnit", rulesExt__uncloakRemainingStealthUnit, fileName);
-    rulesExt__maxChatMessages = IniGetInt("Vars", "maxChatMessages", rulesExt__maxChatMessages, fileName);
-    rulesExt__showNeutralBecomeHostileMsg = IniGetBool("Vars", "showNeutralBecomeHostileMsg", rulesExt__showNeutralBecomeHostileMsg, fileName);
-    rulesExt__maxSameSoundsPlaying = IniGetInt("Vars", "maxSameSoundsPlaying", rulesExt__maxSameSoundsPlaying, fileName);
-    rulesExt__buildQueuesEnabled = IniGetBool("Vars", "buildQueuesEnabled", rulesExt__buildQueuesEnabled, fileName);
-    rulesExt__buildQueuesMaxPerFactory = IniGetInt("Vars", "buildQueuesMaxPerFactory", rulesExt__buildQueuesMaxPerFactory, fileName);
-    rulesExt__buildQueuesMaxPerUnitType = IniGetInt("Vars", "buildQueuesMaxPerUnitType", rulesExt__buildQueuesMaxPerUnitType, fileName);
-    rulesExt__buildQueuesBulkIncrement = IniGetInt("Vars", "buildQueuesBulkIncrement", rulesExt__buildQueuesBulkIncrement, fileName);
-    rulesExt__buildQueuesInfinityEnabled = IniGetBool("Vars", "buildQueuesInfinityEnabled", rulesExt__buildQueuesInfinityEnabled, fileName);
-    rulesExt__showEnemyStructureNames = IniGetBool("Vars", "showEnemyStructureNames", rulesExt__showEnemyStructureNames, fileName);
-    rulesExt__showNeutralStructureNames = IniGetBool("Vars", "showNeutralStructureNames", rulesExt__showNeutralStructureNames, fileName);
-    rulesExt__deliverEveryOtherEnemyUnitOnEasy = IniGetBool("Vars", "deliverEveryOtherEnemyUnitOnEasy", rulesExt__deliverEveryOtherEnemyUnitOnEasy, fileName);
-    rulesExt__harvsUnloadOnlyIfEnoughStorage = IniGetBool("Vars", "harvsUnloadOnlyIfEnoughStorage", rulesExt__harvsUnloadOnlyIfEnoughStorage, fileName);
+    LOAD_CUSTOM_RULE(InfiniteSpice, Bool)
+    LOAD_CUSTOM_RULE(infantryReleaseLimit, Int)
+    LOAD_CUSTOM_RULE(infantryReleaseChance, Int)
+    LOAD_CUSTOM_RULE(buildingsAlwaysNeedPrerequisites, Bool)
+    LOAD_CUSTOM_RULE(returnCreditsToSpiceStorage, Bool)
+    LOAD_CUSTOM_RULE(intervalsAreOffByOneTick, Bool)
+    LOAD_CUSTOM_RULE(guardModeRadius, Int)
+    LOAD_CUSTOM_RULE(alwaysShowRadar, Bool)
+    LOAD_CUSTOM_RULE(costPercentageEasy, Int)
+    LOAD_CUSTOM_RULE(costPercentageHard, Int)
+    LOAD_CUSTOM_RULE(buildSpeedPercentageEasy, Int)
+    LOAD_CUSTOM_RULE(buildSpeedPercentageHard, Int)
+    LOAD_CUSTOM_RULE(uncloakRemainingStealthUnit, Bool)
+    LOAD_CUSTOM_RULE(maxChatMessages, Int)
+    LOAD_CUSTOM_RULE(showNeutralBecomeHostileMsg, Bool)
+    LOAD_CUSTOM_RULE(maxSameSoundsPlaying, Int)
+    LOAD_CUSTOM_RULE(buildQueuesEnabled, Bool)
+    LOAD_CUSTOM_RULE(buildQueuesMaxPerFactory, Int)
+    LOAD_CUSTOM_RULE(buildQueuesMaxPerUnitType, Int)
+    LOAD_CUSTOM_RULE(buildQueuesBulkIncrement, Int)
+    LOAD_CUSTOM_RULE(buildQueuesInfinityEnabled, Bool)
+    LOAD_CUSTOM_RULE(showEnemyStructureNames, Bool)
+    LOAD_CUSTOM_RULE(showNeutralStructureNames, Bool)
+    LOAD_CUSTOM_RULE(deliverEveryOtherEnemyUnitOnEasy, Bool)
+    LOAD_CUSTOM_RULE(harvsUnloadOnlyIfEnoughStorage, Bool)
+    LOAD_CUSTOM_RULE(separateBuildingVoiceLines, Bool)
 }

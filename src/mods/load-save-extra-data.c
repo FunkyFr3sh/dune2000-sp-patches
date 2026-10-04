@@ -10,6 +10,8 @@
 
 CALL(0x00441836, _SaveGameExtraData); // SaveGame
 
+#define SAVE_DATA(var) _WriteFile(&var, sizeof(var), 1, file);
+
 void SaveGameExtraData(void *buffer, size_t size, size_t count, FILE *file)
 {
   (void)buffer;
@@ -40,38 +42,41 @@ void SaveGameExtraData(void *buffer, size_t size, size_t count, FILE *file)
   _WriteFile(_WarheadData, sizeof(_WarheadData), 1, file);
   _WriteFile(_speed_values, sizeof(_speed_values), 1, file);
   // Write rules
-  _WriteFile(&_gVariables, sizeof(_gVariables), 1, file);
-  _WriteFile(&rulesExt__InfiniteSpice, sizeof(rulesExt__InfiniteSpice), 1, file);
-  _WriteFile(&rulesExt__infantryReleaseLimit, sizeof(rulesExt__infantryReleaseLimit), 1, file);
-  _WriteFile(&rulesExt__infantryReleaseChance, sizeof(rulesExt__infantryReleaseChance), 1, file);
-  _WriteFile(&rulesExt__buildingsAlwaysNeedPrerequisites, sizeof(rulesExt__buildingsAlwaysNeedPrerequisites), 1, file);
-  _WriteFile(&rulesExt__returnCreditsToSpiceStorage, sizeof(rulesExt__returnCreditsToSpiceStorage), 1, file);
-  _WriteFile(&rulesExt__intervalsAreOffByOneTick, sizeof(rulesExt__intervalsAreOffByOneTick), 1, file);
-  _WriteFile(&rulesExt__guardModeRadius, sizeof(rulesExt__guardModeRadius), 1, file);
-  _WriteFile(&rulesExt__alwaysShowRadar, sizeof(rulesExt__alwaysShowRadar), 1, file);
-  _WriteFile(&rulesExt__costPercentageEasy, sizeof(rulesExt__costPercentageEasy), 1, file);
-  _WriteFile(&rulesExt__costPercentageHard, sizeof(rulesExt__costPercentageHard), 1, file);
-  _WriteFile(&rulesExt__buildSpeedPercentageEasy, sizeof(rulesExt__buildSpeedPercentageEasy), 1, file);
-  _WriteFile(&rulesExt__buildSpeedPercentageHard, sizeof(rulesExt__buildSpeedPercentageHard), 1, file);
-  _WriteFile(&rulesExt__uncloakRemainingStealthUnit, sizeof(rulesExt__uncloakRemainingStealthUnit), 1, file);
-  _WriteFile(&rulesExt__maxChatMessages, sizeof(rulesExt__maxChatMessages), 1, file);
-  _WriteFile(&rulesExt__showNeutralBecomeHostileMsg, sizeof(rulesExt__showNeutralBecomeHostileMsg), 1, file);
-  _WriteFile(&rulesExt__maxSameSoundsPlaying, sizeof(rulesExt__maxSameSoundsPlaying), 1, file);
-  _WriteFile(&rulesExt__buildQueuesEnabled, sizeof(rulesExt__buildQueuesEnabled), 1, file);
-  _WriteFile(&rulesExt__buildQueuesMaxPerFactory, sizeof(rulesExt__buildQueuesMaxPerFactory), 1, file);
-  _WriteFile(&rulesExt__buildQueuesMaxPerUnitType, sizeof(rulesExt__buildQueuesMaxPerUnitType), 1, file);
-  _WriteFile(&rulesExt__buildQueuesBulkIncrement, sizeof(rulesExt__buildQueuesBulkIncrement), 1, file);
-  _WriteFile(&rulesExt__buildQueuesInfinityEnabled, sizeof(rulesExt__buildQueuesInfinityEnabled), 1, file);
-  _WriteFile(&rulesExt__showEnemyStructureNames, sizeof(rulesExt__showEnemyStructureNames), 1, file);
-  _WriteFile(&rulesExt__showNeutralStructureNames, sizeof(rulesExt__showNeutralStructureNames), 1, file);
-  _WriteFile(&rulesExt__deliverEveryOtherEnemyUnitOnEasy, sizeof(rulesExt__deliverEveryOtherEnemyUnitOnEasy), 1, file);
-  _WriteFile(&rulesExt__harvsUnloadOnlyIfEnoughStorage, sizeof(rulesExt__harvsUnloadOnlyIfEnoughStorage), 1, file);
+  SAVE_DATA(_gVariables)
+  SAVE_DATA(rulesExt__InfiniteSpice)
+  SAVE_DATA(rulesExt__infantryReleaseLimit)
+  SAVE_DATA(rulesExt__infantryReleaseChance)
+  SAVE_DATA(rulesExt__buildingsAlwaysNeedPrerequisites)
+  SAVE_DATA(rulesExt__returnCreditsToSpiceStorage)
+  SAVE_DATA(rulesExt__intervalsAreOffByOneTick)
+  SAVE_DATA(rulesExt__guardModeRadius)
+  SAVE_DATA(rulesExt__alwaysShowRadar)
+  SAVE_DATA(rulesExt__costPercentageEasy)
+  SAVE_DATA(rulesExt__costPercentageHard)
+  SAVE_DATA(rulesExt__buildSpeedPercentageEasy)
+  SAVE_DATA(rulesExt__buildSpeedPercentageHard)
+  SAVE_DATA(rulesExt__uncloakRemainingStealthUnit)
+  SAVE_DATA(rulesExt__maxChatMessages)
+  SAVE_DATA(rulesExt__showNeutralBecomeHostileMsg)
+  SAVE_DATA(rulesExt__maxSameSoundsPlaying)
+  SAVE_DATA(rulesExt__buildQueuesEnabled)
+  SAVE_DATA(rulesExt__buildQueuesMaxPerFactory)
+  SAVE_DATA(rulesExt__buildQueuesMaxPerUnitType)
+  SAVE_DATA(rulesExt__buildQueuesBulkIncrement)
+  SAVE_DATA(rulesExt__buildQueuesInfinityEnabled)
+  SAVE_DATA(rulesExt__showEnemyStructureNames)
+  SAVE_DATA(rulesExt__showNeutralStructureNames)
+  SAVE_DATA(rulesExt__deliverEveryOtherEnemyUnitOnEasy)
+  SAVE_DATA(rulesExt__harvsUnloadOnlyIfEnoughStorage)
+  SAVE_DATA(rulesExt__separateBuildingVoiceLines)
   // Extra dummy bytes, to be replaced by new rules in future
-  char dummy[30] = {0};
+  char dummy[29] = {0};
   _WriteFile(dummy, sizeof(dummy), 1, file);
 }
 
 CALL(0x00441C79, _LoadGameExtraData); // LoadGame
+
+#define LOAD_DATA(var) _ReadFile(&var, sizeof(var), 1, file);
 
 void LoadGameExtraData(void *buffer, size_t size, size_t count, FILE *file)
 {
@@ -103,34 +108,35 @@ void LoadGameExtraData(void *buffer, size_t size, size_t count, FILE *file)
   _ReadFile(_WarheadData, sizeof(_WarheadData), 1, file);
   _ReadFile(_speed_values, sizeof(_speed_values), 1, file);
   // Read rules
-  _ReadFile(&_gVariables, sizeof(_gVariables), 1, file);
-  _ReadFile(&rulesExt__InfiniteSpice, sizeof(rulesExt__InfiniteSpice), 1, file);
-  _ReadFile(&rulesExt__infantryReleaseLimit, sizeof(rulesExt__infantryReleaseLimit), 1, file);
-  _ReadFile(&rulesExt__infantryReleaseChance, sizeof(rulesExt__infantryReleaseChance), 1, file);
-  _ReadFile(&rulesExt__buildingsAlwaysNeedPrerequisites, sizeof(rulesExt__buildingsAlwaysNeedPrerequisites), 1, file);
-  _ReadFile(&rulesExt__returnCreditsToSpiceStorage, sizeof(rulesExt__returnCreditsToSpiceStorage), 1, file);
-  _ReadFile(&rulesExt__intervalsAreOffByOneTick, sizeof(rulesExt__intervalsAreOffByOneTick), 1, file);
-  _ReadFile(&rulesExt__guardModeRadius, sizeof(rulesExt__guardModeRadius), 1, file);
-  _ReadFile(&rulesExt__alwaysShowRadar, sizeof(rulesExt__alwaysShowRadar), 1, file);
-  _ReadFile(&rulesExt__costPercentageEasy, sizeof(rulesExt__costPercentageEasy), 1, file);
-  _ReadFile(&rulesExt__costPercentageHard, sizeof(rulesExt__costPercentageHard), 1, file);
-  _ReadFile(&rulesExt__buildSpeedPercentageEasy, sizeof(rulesExt__buildSpeedPercentageEasy), 1, file);
-  _ReadFile(&rulesExt__buildSpeedPercentageHard, sizeof(rulesExt__buildSpeedPercentageHard), 1, file);
-  _ReadFile(&rulesExt__uncloakRemainingStealthUnit, sizeof(rulesExt__uncloakRemainingStealthUnit), 1, file);
-  _ReadFile(&rulesExt__maxChatMessages, sizeof(rulesExt__maxChatMessages), 1, file);
-  _ReadFile(&rulesExt__showNeutralBecomeHostileMsg, sizeof(rulesExt__showNeutralBecomeHostileMsg), 1, file);
-  _ReadFile(&rulesExt__maxSameSoundsPlaying, sizeof(rulesExt__maxSameSoundsPlaying), 1, file);
-  _ReadFile(&rulesExt__buildQueuesEnabled, sizeof(rulesExt__buildQueuesEnabled), 1, file);
-  _ReadFile(&rulesExt__buildQueuesMaxPerFactory, sizeof(rulesExt__buildQueuesMaxPerFactory), 1, file);
-  _ReadFile(&rulesExt__buildQueuesMaxPerUnitType, sizeof(rulesExt__buildQueuesMaxPerUnitType), 1, file);
-  _ReadFile(&rulesExt__buildQueuesBulkIncrement, sizeof(rulesExt__buildQueuesBulkIncrement), 1, file);
-  _ReadFile(&rulesExt__buildQueuesInfinityEnabled, sizeof(rulesExt__buildQueuesInfinityEnabled), 1, file);
-  _ReadFile(&rulesExt__showEnemyStructureNames, sizeof(rulesExt__showEnemyStructureNames), 1, file);
-  _ReadFile(&rulesExt__showNeutralStructureNames, sizeof(rulesExt__showNeutralStructureNames), 1, file);
-  _ReadFile(&rulesExt__deliverEveryOtherEnemyUnitOnEasy, sizeof(rulesExt__deliverEveryOtherEnemyUnitOnEasy), 1, file);
-  _ReadFile(&rulesExt__harvsUnloadOnlyIfEnoughStorage, sizeof(rulesExt__harvsUnloadOnlyIfEnoughStorage), 1, file);
+  LOAD_DATA(_gVariables)
+  LOAD_DATA(rulesExt__InfiniteSpice)
+  LOAD_DATA(rulesExt__infantryReleaseLimit)
+  LOAD_DATA(rulesExt__infantryReleaseChance)
+  LOAD_DATA(rulesExt__buildingsAlwaysNeedPrerequisites)
+  LOAD_DATA(rulesExt__returnCreditsToSpiceStorage)
+  LOAD_DATA(rulesExt__intervalsAreOffByOneTick)
+  LOAD_DATA(rulesExt__guardModeRadius)
+  LOAD_DATA(rulesExt__alwaysShowRadar)
+  LOAD_DATA(rulesExt__costPercentageEasy)
+  LOAD_DATA(rulesExt__costPercentageHard)
+  LOAD_DATA(rulesExt__buildSpeedPercentageEasy)
+  LOAD_DATA(rulesExt__buildSpeedPercentageHard)
+  LOAD_DATA(rulesExt__uncloakRemainingStealthUnit)
+  LOAD_DATA(rulesExt__maxChatMessages)
+  LOAD_DATA(rulesExt__showNeutralBecomeHostileMsg)
+  LOAD_DATA(rulesExt__maxSameSoundsPlaying)
+  LOAD_DATA(rulesExt__buildQueuesEnabled)
+  LOAD_DATA(rulesExt__buildQueuesMaxPerFactory)
+  LOAD_DATA(rulesExt__buildQueuesMaxPerUnitType)
+  LOAD_DATA(rulesExt__buildQueuesBulkIncrement)
+  LOAD_DATA(rulesExt__buildQueuesInfinityEnabled)
+  LOAD_DATA(rulesExt__showEnemyStructureNames)
+  LOAD_DATA(rulesExt__showNeutralStructureNames)
+  LOAD_DATA(rulesExt__deliverEveryOtherEnemyUnitOnEasy)
+  LOAD_DATA(rulesExt__harvsUnloadOnlyIfEnoughStorage)
+  LOAD_DATA(rulesExt__separateBuildingVoiceLines)
   // Extra dummy bytes, to be replaced by new rules in future
-  char dummy[30];
+  char dummy[29];
   _ReadFile(dummy, sizeof(dummy), 1, file);
 
   // Reset last played property of sounds in sound table

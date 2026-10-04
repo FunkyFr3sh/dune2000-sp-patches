@@ -100,6 +100,7 @@ OBJS            ?= callsites.o \
         src/mods/extended-templates.o \
         src/mods/open-file.o \
         src/mods/damage-tiles.o \
+        src/mods/build-unit-pick.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \
@@ -127,7 +128,6 @@ OBJS            ?= callsites.o \
 	src/fixes/upgrade-cancel-refund-fix.o \
 	src/fixes/ai-stuck-targeting-cloaked-unit-fix.o \
 	src/fixes/cancel-upgrade-when-lowered-tech.o \
-	src/fixes/unit-build-availability-check-fix.o \
 	src/fixes/ai-place-built-building-fix.o \
 	src/fixes/score-screen-volume-fix.o \
 	src/fixes/deactivate-ai-broken-orders-fix.o \

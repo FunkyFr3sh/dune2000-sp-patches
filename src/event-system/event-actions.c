@@ -1606,62 +1606,65 @@ void EvAct_SetSpeedValue(int event_id, int speed_type, int terrain_type, eValueO
   _speed_values[terrain_type][speed_type] = ValueOperationFloat(event_id, _speed_values[terrain_type][speed_type], val.float_val, operation);
 }
 
+#define SET_RULE(rule) { rule = ValueOperation(event_id, rule, value, operation); break; }
+
 void EvAct_SetRule(int event_id, int rule, eValueOperation operation, int value)
 {
   switch(rule)
   {
-    case 0: _gVariables.harvestUnloadDelay =              ValueOperation(event_id, _gVariables.harvestUnloadDelay, value, operation); break;
-    case 1: _gVariables.harvestBlobValue =                ValueOperation(event_id, _gVariables.harvestBlobValue, value, operation); break;
-    case 2: _gVariables.harvestLoadSpiceDelay =           ValueOperation(event_id, _gVariables.harvestLoadSpiceDelay, value, operation); break;
-    case 3: _gVariables.starportUpdateDelay =             ValueOperation(event_id, _gVariables.starportUpdateDelay, value, operation); break;
-    case 4: _gVariables.starportStockIncreaseDelay =      ValueOperation(event_id, _gVariables.starportStockIncreaseDelay, value, operation); break;
-    case 5: _gVariables.starportStockIncreaseProb =       ValueOperation(event_id, _gVariables.starportStockIncreaseProb, value, operation); break;
-    case 6: _gVariables.starportCostVariationPercent =    ValueOperation(event_id, _gVariables.starportCostVariationPercent, value, operation); break;
-    case 7: _gVariables.starportFrigateDelay =            ValueOperation(event_id, _gVariables.starportFrigateDelay, value, operation); break;
-    case 8: _gVariables.refineryExplosionOffsetX =        ValueOperation(event_id, _gVariables.refineryExplosionOffsetX, value, operation); break;
-    case 9: _gVariables.refineryExplosionOffsetY =        ValueOperation(event_id, _gVariables.refineryExplosionOffsetY, value, operation); break;
-    case 10: _gVariables.HarvesterDriveDistance =         ValueOperation(event_id, _gVariables.HarvesterDriveDistance, value, operation); break;
-    case 11: _gVariables.RepairDriveDistance =            ValueOperation(event_id, _gVariables.RepairDriveDistance, value, operation); break;
-    case 12: _gVariables.BuildingRepairValue =            ValueOperation(event_id, _gVariables.BuildingRepairValue, value, operation); break;
-    case 13: _gVariables.UnitRepairValue =                ValueOperation(event_id, _gVariables.UnitRepairValue, value, operation); break;
-    case 14: _gVariables.SinglePlayerDelay =              ValueOperation(event_id, _gVariables.SinglePlayerDelay, value, operation); break;
-    case 15: _gVariables.NumberOfFremen =                 ValueOperation(event_id, _gVariables.NumberOfFremen, value, operation); break;
-    case 16: _gVariables.SandWormAppetite =               ValueOperation(event_id, _gVariables.SandWormAppetite, value, operation); break;
-    case 17: _gVariables.SandWormInitialSleep =           ValueOperation(event_id, _gVariables.SandWormInitialSleep, value, operation); break;
-    case 18: _gVariables.SandWormFedSleep =               ValueOperation(event_id, _gVariables.SandWormFedSleep, value, operation); break;
-    case 19: _gVariables.SandWormShotSleep =              ValueOperation(event_id, _gVariables.SandWormShotSleep, value, operation); break;
-    case 20: _gVariables.NumberOfCrates =                 ValueOperation(event_id, _gVariables.NumberOfCrates, value, operation); break;
-    case 21: _gVariables.CratesPerPlayer =                ValueOperation(event_id, _gVariables.CratesPerPlayer, value, operation); break;
-    case 22: _gVariables.DevastatorExplodeDelay =         ValueOperation(event_id, _gVariables.DevastatorExplodeDelay, value, operation); break;
-    case 23: _gVariables.IgnoreDistance =                 ValueOperation(event_id, _gVariables.IgnoreDistance, value, operation); break;
-    case 24: _gVariables.CrateCash =                      ValueOperation(event_id, _gVariables.CrateCash, value, operation); break;
-    case 25: _gVariables.ShowWarnings =                   ValueOperation(event_id, _gVariables.ShowWarnings, value, operation); break;
-    case 26: _gVariables.DeathHandAccuracy =              ValueOperation(event_id, _gVariables.DeathHandAccuracy, value, operation); break;
-    case 27: rulesExt__InfiniteSpice =                    ValueOperation(event_id, rulesExt__InfiniteSpice, value, operation); break;
-    case 28: rulesExt__infantryReleaseLimit =             ValueOperation(event_id, rulesExt__infantryReleaseLimit, value, operation); break;
-    case 29: rulesExt__infantryReleaseChance =            ValueOperation(event_id, rulesExt__infantryReleaseChance, value, operation); break;
-    case 30: rulesExt__buildingsAlwaysNeedPrerequisites = ValueOperation(event_id, rulesExt__buildingsAlwaysNeedPrerequisites, value, operation); break;
-    case 31: rulesExt__returnCreditsToSpiceStorage =      ValueOperation(event_id, rulesExt__returnCreditsToSpiceStorage, value, operation); break;
-    case 32: rulesExt__intervalsAreOffByOneTick =         ValueOperation(event_id, rulesExt__intervalsAreOffByOneTick, value, operation); break;
-    case 33: rulesExt__guardModeRadius =                  ValueOperation(event_id, rulesExt__guardModeRadius, value, operation); break;
-    case 34: rulesExt__alwaysShowRadar =                  ValueOperation(event_id, rulesExt__alwaysShowRadar, value, operation); break;
-    case 35: rulesExt__costPercentageEasy =               ValueOperation(event_id, rulesExt__costPercentageEasy, value, operation); break;
-    case 36: rulesExt__costPercentageHard =               ValueOperation(event_id, rulesExt__costPercentageHard, value, operation); break;
-    case 37: rulesExt__buildSpeedPercentageEasy =         ValueOperation(event_id, rulesExt__buildSpeedPercentageEasy, value, operation); break;
-    case 38: rulesExt__buildSpeedPercentageHard =         ValueOperation(event_id, rulesExt__buildSpeedPercentageHard, value, operation); break;
-    case 39: rulesExt__uncloakRemainingStealthUnit =      ValueOperation(event_id, rulesExt__uncloakRemainingStealthUnit, value, operation); break;
-    case 40: rulesExt__maxChatMessages =                  ValueOperation(event_id, rulesExt__maxChatMessages, value, operation); break;
-    case 41: rulesExt__showNeutralBecomeHostileMsg =      ValueOperation(event_id, rulesExt__showNeutralBecomeHostileMsg, value, operation); break;
-    case 42: rulesExt__maxSameSoundsPlaying =             ValueOperation(event_id, rulesExt__maxSameSoundsPlaying, value, operation); break;
-    case 43: rulesExt__buildQueuesEnabled =               ValueOperation(event_id, rulesExt__buildQueuesEnabled, value, operation); break;
-    case 44: rulesExt__buildQueuesMaxPerFactory =         ValueOperation(event_id, rulesExt__buildQueuesMaxPerFactory, value, operation); break;
-    case 45: rulesExt__buildQueuesMaxPerUnitType =        ValueOperation(event_id, rulesExt__buildQueuesMaxPerUnitType, value, operation); break;
-    case 46: rulesExt__buildQueuesBulkIncrement =         ValueOperation(event_id, rulesExt__buildQueuesBulkIncrement, value, operation); break;
-    case 47: rulesExt__buildQueuesInfinityEnabled =       ValueOperation(event_id, rulesExt__buildQueuesInfinityEnabled, value, operation); break;
-    case 48: rulesExt__showEnemyStructureNames =          ValueOperation(event_id, rulesExt__showEnemyStructureNames, value, operation); break;
-    case 49: rulesExt__showNeutralStructureNames =        ValueOperation(event_id, rulesExt__showNeutralStructureNames, value, operation); break;
-    case 50: rulesExt__deliverEveryOtherEnemyUnitOnEasy = ValueOperation(event_id, rulesExt__deliverEveryOtherEnemyUnitOnEasy, value, operation); break;
-    case 51: rulesExt__harvsUnloadOnlyIfEnoughStorage =   ValueOperation(event_id, rulesExt__harvsUnloadOnlyIfEnoughStorage, value, operation); break;
+    case 0: SET_RULE(_gVariables.harvestUnloadDelay)
+    case 1: SET_RULE(_gVariables.harvestBlobValue)
+    case 2: SET_RULE(_gVariables.harvestLoadSpiceDelay)
+    case 3: SET_RULE(_gVariables.starportUpdateDelay)
+    case 4: SET_RULE(_gVariables.starportStockIncreaseDelay)
+    case 5: SET_RULE(_gVariables.starportStockIncreaseProb)
+    case 6: SET_RULE(_gVariables.starportCostVariationPercent)
+    case 7: SET_RULE(_gVariables.starportFrigateDelay)
+    case 8: SET_RULE(_gVariables.refineryExplosionOffsetX)
+    case 9: SET_RULE(_gVariables.refineryExplosionOffsetY)
+    case 10: SET_RULE(_gVariables.HarvesterDriveDistance)
+    case 11: SET_RULE(_gVariables.RepairDriveDistance)
+    case 12: SET_RULE(_gVariables.BuildingRepairValue)
+    case 13: SET_RULE(_gVariables.UnitRepairValue)
+    case 14: SET_RULE(_gVariables.SinglePlayerDelay)
+    case 15: SET_RULE(_gVariables.NumberOfFremen)
+    case 16: SET_RULE(_gVariables.SandWormAppetite)
+    case 17: SET_RULE(_gVariables.SandWormInitialSleep)
+    case 18: SET_RULE(_gVariables.SandWormFedSleep)
+    case 19: SET_RULE(_gVariables.SandWormShotSleep)
+    case 20: SET_RULE(_gVariables.NumberOfCrates)
+    case 21: SET_RULE(_gVariables.CratesPerPlayer)
+    case 22: SET_RULE(_gVariables.DevastatorExplodeDelay)
+    case 23: SET_RULE(_gVariables.IgnoreDistance)
+    case 24: SET_RULE(_gVariables.CrateCash)
+    case 25: SET_RULE(_gVariables.ShowWarnings)
+    case 26: SET_RULE(_gVariables.DeathHandAccuracy)
+    case 27: SET_RULE(rulesExt__InfiniteSpice)
+    case 28: SET_RULE(rulesExt__infantryReleaseLimit)
+    case 29: SET_RULE(rulesExt__infantryReleaseChance)
+    case 30: SET_RULE(rulesExt__buildingsAlwaysNeedPrerequisites)
+    case 31: SET_RULE(rulesExt__returnCreditsToSpiceStorage)
+    case 32: SET_RULE(rulesExt__intervalsAreOffByOneTick)
+    case 33: SET_RULE(rulesExt__guardModeRadius)
+    case 34: SET_RULE(rulesExt__alwaysShowRadar)
+    case 35: SET_RULE(rulesExt__costPercentageEasy)
+    case 36: SET_RULE(rulesExt__costPercentageHard)
+    case 37: SET_RULE(rulesExt__buildSpeedPercentageEasy)
+    case 38: SET_RULE(rulesExt__buildSpeedPercentageHard)
+    case 39: SET_RULE(rulesExt__uncloakRemainingStealthUnit)
+    case 40: SET_RULE(rulesExt__maxChatMessages)
+    case 41: SET_RULE(rulesExt__showNeutralBecomeHostileMsg)
+    case 42: SET_RULE(rulesExt__maxSameSoundsPlaying)
+    case 43: SET_RULE(rulesExt__buildQueuesEnabled)
+    case 44: SET_RULE(rulesExt__buildQueuesMaxPerFactory)
+    case 45: SET_RULE(rulesExt__buildQueuesMaxPerUnitType)
+    case 46: SET_RULE(rulesExt__buildQueuesBulkIncrement)
+    case 47: SET_RULE(rulesExt__buildQueuesInfinityEnabled)
+    case 48: SET_RULE(rulesExt__showEnemyStructureNames)
+    case 49: SET_RULE(rulesExt__showNeutralStructureNames)
+    case 50: SET_RULE(rulesExt__deliverEveryOtherEnemyUnitOnEasy)
+    case 51: SET_RULE(rulesExt__harvsUnloadOnlyIfEnoughStorage)
+    case 52: SET_RULE(rulesExt__separateBuildingVoiceLines)
   }
 }
 
@@ -2083,63 +2086,66 @@ void EvAct_GetDifficulty(int event_id, int target_var)
   SetVariableValue(event_id, target_var, gDifficultyLevel);
 }
 
+#define GET_RULE(rule) { result = rule; break; }
+
 void EvAct_GetRule(int event_id, int rule, int target_var)
 {
   int result = 0;
   switch(rule)
   {
-    case 0: result = _gVariables.harvestUnloadDelay; break;
-    case 1: result = _gVariables.harvestBlobValue; break;
-    case 2: result = _gVariables.harvestLoadSpiceDelay; break;
-    case 3: result = _gVariables.starportUpdateDelay; break;
-    case 4: result = _gVariables.starportStockIncreaseDelay; break;
-    case 5: result = _gVariables.starportStockIncreaseProb; break;
-    case 6: result = _gVariables.starportCostVariationPercent; break;
-    case 7: result = _gVariables.starportFrigateDelay; break;
-    case 8: result = _gVariables.refineryExplosionOffsetX; break;
-    case 9: result = _gVariables.refineryExplosionOffsetY; break;
-    case 10: result = _gVariables.HarvesterDriveDistance; break;
-    case 11: result = _gVariables.RepairDriveDistance; break;
-    case 12: result = _gVariables.BuildingRepairValue; break;
-    case 13: result = _gVariables.UnitRepairValue; break;
-    case 14: result = _gVariables.SinglePlayerDelay; break;
-    case 15: result = _gVariables.NumberOfFremen; break;
-    case 16: result = _gVariables.SandWormAppetite; break;
-    case 17: result = _gVariables.SandWormInitialSleep; break;
-    case 18: result = _gVariables.SandWormFedSleep; break;
-    case 19: result = _gVariables.SandWormShotSleep; break;
-    case 20: result = _gVariables.NumberOfCrates; break;
-    case 21: result = _gVariables.CratesPerPlayer; break;
-    case 22: result = _gVariables.DevastatorExplodeDelay; break;
-    case 23: result = _gVariables.IgnoreDistance; break;
-    case 24: result = _gVariables.CrateCash; break;
-    case 25: result = _gVariables.ShowWarnings; break;
-    case 26: result = _gVariables.DeathHandAccuracy; break;
-    case 27: result = rulesExt__InfiniteSpice; break;
-    case 28: result = rulesExt__infantryReleaseLimit; break;
-    case 29: result = rulesExt__infantryReleaseChance; break;
-    case 30: result = rulesExt__buildingsAlwaysNeedPrerequisites; break;
-    case 31: result = rulesExt__returnCreditsToSpiceStorage; break;
-    case 32: result = rulesExt__intervalsAreOffByOneTick; break;
-    case 33: result = rulesExt__guardModeRadius; break;
-    case 34: result = rulesExt__alwaysShowRadar; break;
-    case 35: result = rulesExt__costPercentageEasy; break;
-    case 36: result = rulesExt__costPercentageHard; break;
-    case 37: result = rulesExt__buildSpeedPercentageEasy; break;
-    case 38: result = rulesExt__buildSpeedPercentageHard; break;
-    case 39: result = rulesExt__uncloakRemainingStealthUnit; break;
-    case 40: result = rulesExt__maxChatMessages; break;
-    case 41: result = rulesExt__showNeutralBecomeHostileMsg; break;
-    case 42: result = rulesExt__maxSameSoundsPlaying; break;
-    case 43: result = rulesExt__buildQueuesEnabled; break;
-    case 44: result = rulesExt__buildQueuesMaxPerFactory; break;
-    case 45: result = rulesExt__buildQueuesMaxPerUnitType; break;
-    case 46: result = rulesExt__buildQueuesBulkIncrement; break;
-    case 47: result = rulesExt__buildQueuesInfinityEnabled; break;
-    case 48: result = rulesExt__showEnemyStructureNames; break;
-    case 49: result = rulesExt__showNeutralStructureNames; break;
-    case 50: result = rulesExt__deliverEveryOtherEnemyUnitOnEasy; break;
-    case 51: result = rulesExt__harvsUnloadOnlyIfEnoughStorage; break;
+    case 0: GET_RULE(_gVariables.harvestUnloadDelay)
+    case 1: GET_RULE(_gVariables.harvestBlobValue)
+    case 2: GET_RULE(_gVariables.harvestLoadSpiceDelay)
+    case 3: GET_RULE(_gVariables.starportUpdateDelay)
+    case 4: GET_RULE(_gVariables.starportStockIncreaseDelay)
+    case 5: GET_RULE(_gVariables.starportStockIncreaseProb)
+    case 6: GET_RULE(_gVariables.starportCostVariationPercent)
+    case 7: GET_RULE(_gVariables.starportFrigateDelay)
+    case 8: GET_RULE(_gVariables.refineryExplosionOffsetX)
+    case 9: GET_RULE(_gVariables.refineryExplosionOffsetY)
+    case 10: GET_RULE(_gVariables.HarvesterDriveDistance)
+    case 11: GET_RULE(_gVariables.RepairDriveDistance)
+    case 12: GET_RULE(_gVariables.BuildingRepairValue)
+    case 13: GET_RULE(_gVariables.UnitRepairValue)
+    case 14: GET_RULE(_gVariables.SinglePlayerDelay)
+    case 15: GET_RULE(_gVariables.NumberOfFremen)
+    case 16: GET_RULE(_gVariables.SandWormAppetite)
+    case 17: GET_RULE(_gVariables.SandWormInitialSleep)
+    case 18: GET_RULE(_gVariables.SandWormFedSleep)
+    case 19: GET_RULE(_gVariables.SandWormShotSleep)
+    case 20: GET_RULE(_gVariables.NumberOfCrates)
+    case 21: GET_RULE(_gVariables.CratesPerPlayer)
+    case 22: GET_RULE(_gVariables.DevastatorExplodeDelay)
+    case 23: GET_RULE(_gVariables.IgnoreDistance)
+    case 24: GET_RULE(_gVariables.CrateCash)
+    case 25: GET_RULE(_gVariables.ShowWarnings)
+    case 26: GET_RULE(_gVariables.DeathHandAccuracy)
+    case 27: GET_RULE(rulesExt__InfiniteSpice)
+    case 28: GET_RULE(rulesExt__infantryReleaseLimit)
+    case 29: GET_RULE(rulesExt__infantryReleaseChance)
+    case 30: GET_RULE(rulesExt__buildingsAlwaysNeedPrerequisites)
+    case 31: GET_RULE(rulesExt__returnCreditsToSpiceStorage)
+    case 32: GET_RULE(rulesExt__intervalsAreOffByOneTick)
+    case 33: GET_RULE(rulesExt__guardModeRadius)
+    case 34: GET_RULE(rulesExt__alwaysShowRadar)
+    case 35: GET_RULE(rulesExt__costPercentageEasy)
+    case 36: GET_RULE(rulesExt__costPercentageHard)
+    case 37: GET_RULE(rulesExt__buildSpeedPercentageEasy)
+    case 38: GET_RULE(rulesExt__buildSpeedPercentageHard)
+    case 39: GET_RULE(rulesExt__uncloakRemainingStealthUnit)
+    case 40: GET_RULE(rulesExt__maxChatMessages)
+    case 41: GET_RULE(rulesExt__showNeutralBecomeHostileMsg)
+    case 42: GET_RULE(rulesExt__maxSameSoundsPlaying)
+    case 43: GET_RULE(rulesExt__buildQueuesEnabled)
+    case 44: GET_RULE(rulesExt__buildQueuesMaxPerFactory)
+    case 45: GET_RULE(rulesExt__buildQueuesMaxPerUnitType)
+    case 46: GET_RULE(rulesExt__buildQueuesBulkIncrement)
+    case 47: GET_RULE(rulesExt__buildQueuesInfinityEnabled)
+    case 48: GET_RULE(rulesExt__showEnemyStructureNames)
+    case 49: GET_RULE(rulesExt__showNeutralStructureNames)
+    case 50: GET_RULE(rulesExt__deliverEveryOtherEnemyUnitOnEasy)
+    case 51: GET_RULE(rulesExt__harvsUnloadOnlyIfEnoughStorage)
+    case 52: GET_RULE(rulesExt__separateBuildingVoiceLines)
   }
   SetVariableValue(event_id, target_var, result);
 }
