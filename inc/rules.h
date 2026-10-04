@@ -59,3 +59,4 @@ bool     rulesExt__buildQueuesInfinityEnabled;
 bool     rulesExt__showEnemyStructureNames;
 bool     rulesExt__showNeutralStructureNames;
 bool     rulesExt__deliverEveryOtherEnemyUnitOnEasy;
+bool     rulesExt__harvsUnloadOnlyIfEnoughStorage;

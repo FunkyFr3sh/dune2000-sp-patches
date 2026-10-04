@@ -36,6 +36,7 @@ void InitExtraRules(void)
   rulesExt__showEnemyStructureNames          = false;
   rulesExt__showNeutralStructureNames        = false;
   rulesExt__deliverEveryOtherEnemyUnitOnEasy = true;
+  rulesExt__harvsUnloadOnlyIfEnoughStorage   = false;
 }
 
 static void LoadVars(LPCTSTR fileName);
@@ -121,4 +122,5 @@ static void LoadVars(LPCTSTR fileName)
     rulesExt__showEnemyStructureNames = IniGetBool("Vars", "showEnemyStructureNames", rulesExt__showEnemyStructureNames, fileName);
     rulesExt__showNeutralStructureNames = IniGetBool("Vars", "showNeutralStructureNames", rulesExt__showNeutralStructureNames, fileName);
     rulesExt__deliverEveryOtherEnemyUnitOnEasy = IniGetBool("Vars", "deliverEveryOtherEnemyUnitOnEasy", rulesExt__deliverEveryOtherEnemyUnitOnEasy, fileName);
+    rulesExt__harvsUnloadOnlyIfEnoughStorage = IniGetBool("Vars", "harvsUnloadOnlyIfEnoughStorage", rulesExt__harvsUnloadOnlyIfEnoughStorage, fileName);
 }

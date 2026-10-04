@@ -224,7 +224,6 @@ char Mod__UpdateUnit(Unit *unit, eSideType side_id, short myIndex)
   int v181; // eax
   unsigned char v182; // al
   unsigned char v183; // dl
-  int v184; // ST30_4
   char v188; // al
   char v189; // al
   char v191; // al
@@ -1492,32 +1491,38 @@ LABEL_368:
           && (unit->__CurrentAnimDelayCounter_SandwormSleepTimeCounter = _gVariables.harvestUnloadDelay,
               unit->__SpecialPurpose) )
         {
-          v184 = _gVariables.harvestBlobValue;
           side_ = GetSide((eSideType)side_id_);
-          CSide__AddSpice(side_, v184);
-          side_ = GetSide((eSideType)side_id_);
-          side_->__SpiceHarvested += _gVariables.harvestBlobValue;
-          --unit->__SpecialPurpose;
-          if ( _templates_GroupIDs.EX_REF != -1 )
+          // New logic start
+          // Implement harvsUnloadOnlyIfEnoughStorage rule
+          // Harvester can unload spice only if there is enough spice storage capacity
+          if (!(rulesExt__harvsUnloadOnlyIfEnoughStorage && side_->SpiceReal + side_->SpiceDrip + _gVariables.harvestBlobValue > side_->__MaxStorage))
           {
-            if ( unit->RefineryIndex == -1 )
-            {
-              DebugFatal("Unit.cpp", "refineryIndex out of range (1)");
-            }
+            CSide__AddSpice(side_, _gVariables.harvestBlobValue);
             side_ = GetSide((eSideType)side_id_);
-            ModelAddExplosion(
-              (eSideType)side_id_,
-              _templates_GroupIDs.EX_REF,
-              LOWORD(_gVariables.refineryExplosionOffsetX)
-            + side_->__ObjectArray[(unsigned short)unit->RefineryIndex].Speed / 0x10000,
-              LOWORD(_gVariables.refineryExplosionOffsetY)
-            + side_->__ObjectArray[(unsigned short)unit->RefineryIndex].Health / 0x10000,
-              0,
-              0,
-              0,
-              0,
-              0);
+            side_->__SpiceHarvested += _gVariables.harvestBlobValue;
+            --unit->__SpecialPurpose;
+            if ( _templates_GroupIDs.EX_REF != -1 )
+            {
+              if ( unit->RefineryIndex == -1 )
+              {
+                DebugFatal("Unit.cpp", "refineryIndex out of range (1)");
+              }
+              side_ = GetSide((eSideType)side_id_);
+              ModelAddExplosion(
+                (eSideType)side_id_,
+                _templates_GroupIDs.EX_REF,
+                LOWORD(_gVariables.refineryExplosionOffsetX)
+              + side_->__ObjectArray[(unsigned short)unit->RefineryIndex].Speed / 0x10000,
+                LOWORD(_gVariables.refineryExplosionOffsetY)
+              + side_->__ObjectArray[(unsigned short)unit->RefineryIndex].Health / 0x10000,
+                0,
+                0,
+                0,
+                0,
+                0);
+            }
           }
+          // New logic end
         }
         else
         {

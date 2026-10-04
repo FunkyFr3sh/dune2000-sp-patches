@@ -65,8 +65,9 @@ void SaveGameExtraData(void *buffer, size_t size, size_t count, FILE *file)
   _WriteFile(&rulesExt__showEnemyStructureNames, sizeof(rulesExt__showEnemyStructureNames), 1, file);
   _WriteFile(&rulesExt__showNeutralStructureNames, sizeof(rulesExt__showNeutralStructureNames), 1, file);
   _WriteFile(&rulesExt__deliverEveryOtherEnemyUnitOnEasy, sizeof(rulesExt__deliverEveryOtherEnemyUnitOnEasy), 1, file);
+  _WriteFile(&rulesExt__harvsUnloadOnlyIfEnoughStorage, sizeof(rulesExt__harvsUnloadOnlyIfEnoughStorage), 1, file);
   // Extra dummy bytes, to be replaced by new rules in future
-  char dummy[31] = {0};
+  char dummy[30] = {0};
   _WriteFile(dummy, sizeof(dummy), 1, file);
 }
 
@@ -127,8 +128,9 @@ void LoadGameExtraData(void *buffer, size_t size, size_t count, FILE *file)
   _ReadFile(&rulesExt__showEnemyStructureNames, sizeof(rulesExt__showEnemyStructureNames), 1, file);
   _ReadFile(&rulesExt__showNeutralStructureNames, sizeof(rulesExt__showNeutralStructureNames), 1, file);
   _ReadFile(&rulesExt__deliverEveryOtherEnemyUnitOnEasy, sizeof(rulesExt__deliverEveryOtherEnemyUnitOnEasy), 1, file);
+  _ReadFile(&rulesExt__harvsUnloadOnlyIfEnoughStorage, sizeof(rulesExt__harvsUnloadOnlyIfEnoughStorage), 1, file);
   // Extra dummy bytes, to be replaced by new rules in future
-  char dummy[31];
+  char dummy[30];
   _ReadFile(dummy, sizeof(dummy), 1, file);
 
   // Reset last played property of sounds in sound table
