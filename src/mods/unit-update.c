@@ -1491,6 +1491,13 @@ LABEL_368:
           && (unit->__CurrentAnimDelayCounter_SandwormSleepTimeCounter = _gVariables.harvestUnloadDelay,
               unit->__SpecialPurpose) )
         {
+          // New logic start
+          // Implement harvsCanBeOrderedToUndock rule
+          if (rulesExt__harvsCanBeOrderedToUndock && unit->__Lying)
+          {
+            goto LABEL_396;
+          }
+          // New logic end
           side_ = GetSide((eSideType)side_id_);
           // New logic start
           // Implement harvsUnloadOnlyIfEnoughStorage rule
@@ -1545,6 +1552,15 @@ LABEL_396:
         unit->__CurrentAnimFrame = v189 - 1;
         goto LABEL_612;
       }
+      // New logic start
+      // Implement harvsCanBeOrderedToUndock rule
+      if ( rulesExt__harvsCanBeOrderedToUndock && unit->__Lying )
+      {
+        unit->State = unit->__Lying;
+        unit->__Lying = 0;
+        goto LABEL_612;
+      }
+      // New logic end
       if ( GetSpiceTileToHarvest(unit, (eSideType)side_id_, &x, &y) )
       {
         unit->TargetX = x;

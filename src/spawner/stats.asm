@@ -202,14 +202,15 @@ hack 0x0045CEA9, 0x0045CEB0 ; Opponent Surrendered
     jmp 0x0045CEB0
 
 
-hack 0x00458D2D, 0x00458D34 ; OpponentSurrendered2
-    cmp dword[SpawnerGameEndState], GES_ENDEDNORMALLY
-    jnz .out
-    mov dword[SpawnerGameEndState], GES_OPPONENTSURRENDERED
-    
-.out:
-    cmp dword[gGameType], GAME_INTERNET
-    jmp 0x00458D34
+; Superseded by Mod__ProcessOrder
+;hack 0x00458D2D, 0x00458D34 ; OpponentSurrendered2
+;    cmp dword[SpawnerGameEndState], GES_ENDEDNORMALLY
+;    jnz .out
+;    mov dword[SpawnerGameEndState], GES_OPPONENTSURRENDERED
+;
+;.out:
+;    cmp dword[gGameType], GAME_INTERNET
+;    jmp 0x00458D34
 
 
 hack 0x0045CD36 ; ConnectionLost

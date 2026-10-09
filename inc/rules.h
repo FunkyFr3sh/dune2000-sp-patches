@@ -60,4 +60,5 @@ bool     rulesExt__showEnemyStructureNames;
 bool     rulesExt__showNeutralStructureNames;
 bool     rulesExt__deliverEveryOtherEnemyUnitOnEasy;
 bool     rulesExt__harvsUnloadOnlyIfEnoughStorage;
+bool     rulesExt__harvsCanBeOrderedToUndock;
 bool     rulesExt__separateBuildingVoiceLines;

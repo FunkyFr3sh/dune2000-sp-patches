@@ -206,11 +206,13 @@ setcglob 0x004EB048, MousePositionX
 setcglob 0x004EB04C, MousePositionY
 setcglob 0x004EB2D8, _offsets_4EB2D8
 setcglob 0x004ED870, RandSeed
+setcglob 0x004DB9E0, _GameEndState
 setcglob 0x004DFB04, _bool_shroud_4DFB04
 setcglob 0x004F0F18, _Nullstring
 setcglob 0x004F1D60, gPageUser
 setcglob 0x004F3D24, _DrawOffered1
 setcglob 0x004F3D28, _DrawOffered2
+setcglob 0x004F3D34, _EndTime
 setcglob 0x004F3D3C, gTournamentGame
 setcglob 0x004F4118, _gAIArray
 setcglob 0x00502ED8, _crater_draw_offsets_y
@@ -309,7 +311,9 @@ setcglob 0x006B87C0, _gBuildingsExist
 setcglob 0x006B87C8, _gMiscData
 setcglob 0x006B8818, _gVariables
 setcglob 0x006B8868, _TechPosdata
+setcglob 0x006B8A60, processorderbuffer
 setcglob 0x006B91F8, _OrderData
+setcglob 0x006B93F8, _someNameString
 setcglob 0x006B9518, NetMessageString
 setcglob 0x006B9864, LimitedModelRate
 ;setcglob 0x006D5FD0, _templates_AnimationArtFrames ; Replaced by mod
@@ -709,6 +713,7 @@ setcglob 0x00442A00, GetUnitBuildSpeedPercentage
 setcglob 0x00442B10, GetBuildingBuildSpeedPercentage
 setcglob 0x00442BB0, GetUnitCost
 setcglob 0x00442BE0, GetBuildingCost
+setcglob 0x00442C20, GetBuildingProducedUnitWillArriveFrom
 setcglob 0x00443040, HandleSidebarButton
 setcglob 0x004430D0, CanUnitBeBuilt
 setcglob 0x004431D0, CanSideUpgradeBuildingGroup
@@ -755,16 +760,32 @@ setcglob 0x004544E0, ReadVariables
 setcglob 0x00454E00, Mission__LoadTechposFile
 ; Model
 setcglob 0x00455290, EvaluateIfBuildingsOrUnitsExistForSide
+setcglob 0x004553E0, checksides_4553E0
 setcglob 0x00455480, UncloakRemainingStealthUnit
 setcglob 0x00455510, ModelBuildUnitPick
+setcglob 0x00455750, ModelBuildUnitCancel
 setcglob 0x00455870, ModelAddUnit
 setcglob 0x00455FC0, ModelBuildBuildingPick
+setcglob 0x004560F0, ModelBuildBuildingCancel
 setcglob 0x00456210, ModelAddConcrete
 setcglob 0x004563B0, ModelAddBuilding
 setcglob 0x00456A30, ModelAddBullet
 setcglob 0x00456D50, AddCursorPuffAnimationToQueue
 setcglob 0x00456DF0, ModelAddExplosion
+setcglob 0x00456EE0, ModelBuildingSell
+setcglob 0x00456FB0, ModelBuildingRepair
+setcglob 0x00456FD0, ModelStarportPick
+setcglob 0x004570D0, ModelStarportUnpick
+setcglob 0x00457140, ModelStarportPurchase
 setcglob 0x004572F0, ModelStarportCancel
+setcglob 0x00457350, ModelUpgradePick
+setcglob 0x00457490, ModelUpgradeCancel
+setcglob 0x00457580, MoveUnitInRandomDirection
+setcglob 0x004576B0, StopUnit
+setcglob 0x00457710, StopBuilding
+setcglob 0x00457740, CheckBuildingCanBePlacedAt
+setcglob 0x00457810, ProcessOrder
+setcglob 0x00458E90, ModelUpdates
 setcglob 0x00459450, GenerateUnitMoveOrder
 setcglob 0x00459540, GenerateDockWithRefineryOrder
 setcglob 0x004595E0, GenerateRepairSelectedUnitsOrder

@@ -156,17 +156,18 @@ enum eSideType
   SIDE_NONE = 0xFF,
 };
 
-enum GameEndStates
+typedef enum EndStatus
 {
-    GES_ENDEDNORMALLY,
-    GES_ISURRENDERED,
-    GES_OPPONENTSURRENDERED,
-    GES_OUTOFSYNC,
-    GES_CONNECTIONLOST,
-    GES_WASHGAME,
-    GES_DRAWGAME,
-    GES_UNKNOWNENDSTATE
-};
+  END_NORMALLY = 0x0,
+  END_SURRENDERED = 0x1,
+  END_OPPONENT_SURRENDERED = 0x2,
+  END_OUT_OF_SYNC = 0x3,
+  END_CONNECTION_LOST = 0x4,
+  END_WASH_GAME1 = 0x5,
+  END_WASH_GAME2 = 0x6,
+  END_DRAW_GAME = 0x7,
+  END_UNKNOWN = 0x8,
+} EndStatus;
 
 typedef enum eGameType
 {
@@ -400,11 +401,13 @@ extern int                  MousePositionX;
 extern int                  MousePositionY;
 extern char                 _offsets_4EB2D8[3][4];
 extern int                  RandSeed;
+extern EndStatus            _GameEndState;
 extern char                 _bool_shroud_4DFB04;
 extern char                 _Nullstring;
 extern char                 gPageUser[56];
 extern char                 _DrawOffered1;
 extern char                 _DrawOffered2;
+extern int                  _EndTime;
 extern char                 gTournamentGame;
 extern CAI_                 _gAIArray[];
 extern int                  _crater_draw_offsets_y[16];
@@ -503,7 +506,9 @@ extern bool                 _gBuildingsExist[MAX_SIDES];
 extern MiscData             _gMiscData;
 extern VariableStruct       _gVariables;
 extern TechPosEntry         _TechPosdata[10][10];
+extern char                 processorderbuffer[112];
 extern OrderStruct          _OrderData[8];
+extern char                 _someNameString[23];
 
 
 // extern int                  _templates_AnimationArtFrames[MAX_EXPLOSION_TYPES]; // Replaced by mod
@@ -667,7 +672,7 @@ void __thiscall CAI__Do(CAI_ *this);
 bool __thiscall CAI__CanBuildUnit(CAI_ *this, char type);
 int  __thiscall CAI__FindBestUnitToBuild(CAI_ *this);
 Building *__thiscall CAI__GetBestBuilding(CAI_ *this, eSideType side_id, char x, char y, float scale);
-int  __thiscall CAI__GetBestUnit(CAI_ *this, eSideType side_id, unsigned __int8 x, unsigned __int8 y);
+int  __thiscall CAI__GetBestUnit(CAI_ *this, eSideType side_id, unsigned char x, unsigned char y);
 bool __thiscall CAI__ShouldIBuildNow(CAI_ *this, int a2);
 void __thiscall CAI__DoRepairs(CAI_ *this);
 void __thiscall CAI__DoBuildUnits(CAI_ *this);
@@ -678,12 +683,12 @@ int  __thiscall CAI__GetGroupStrength(CAI_ *this, char group_id, eTaskType task)
 char __thiscall CAI__FindFirstFreeGroup(CAI_ *this);
 void __thiscall CAI__GroupNewUnits(CAI_ *this, char group_id, char activate_ai);
 void __thiscall CAI__DoAttackBuildings(CAI_ *this);
-bool __thiscall CAI__CreateSplinterGroup(CAI_ *this, char group_1_id, unsigned __int8 group_2_id, int percent);
+bool __thiscall CAI__CreateSplinterGroup(CAI_ *this, char group_1_id, unsigned char group_2_id, int percent);
 int  __thiscall CAI__GetUnitStrength(CAI_ *this, Unit *unit, eTaskType task);
 void __thiscall CAI__GetSelected(CAI_ *this);
 void __thiscall CAI__ResetSelected(CAI_ *this);
 char __thiscall CAI__SelectedGroup(CAI_ *this, char group_id, char bool1);
-bool __thiscall CAI__SelectUnit(CAI_ *this, unsigned __int16 a2);
+bool __thiscall CAI__SelectUnit(CAI_ *this, unsigned short a2);
 void __thiscall CAI__ClearUnits(CAI_ *this);
 eSideType __thiscall CAI__GetBestSideToAttack(CAI_ *this);
 eSideType __thiscall CAI__RecalculateSideToAttack(CAI_ *this);
@@ -694,58 +699,58 @@ char __thiscall CAI__RecentlyInAction(CAI_ *this, char a2);
 bool __thiscall CAI__UnitRecentlyInAction(CAI_ *this, Unit *unit);
 bool __thiscall CAI__UnitRecentlyHit(CAI_ *this, Unit *unit);
 void __thiscall CAI__ReturnToBase(CAI_ *this, int a2);
-void __thiscall CAI__SendGroupToPoint(CAI_ *this, char x, char y, unsigned __int8 group);
-bool __thiscall CAI__MoraleCheck(CAI_ *this, unsigned __int8 a2);
+void __thiscall CAI__SendGroupToPoint(CAI_ *this, char x, char y, unsigned char group);
+bool __thiscall CAI__MoraleCheck(CAI_ *this, unsigned char a2);
 void __thiscall CAI__SetGroupToGuard(CAI_ *this, char group);
-bool __thiscall CAI__GroupNearTarget(CAI_ *this, unsigned __int8 group, int dist);
+bool __thiscall CAI__GroupNearTarget(CAI_ *this, unsigned char group, int dist);
 unsigned int __thiscall CAI__GetPercentage(CAI_ *this, char a2, char strength);
 void __thiscall CAI__DoRepairUnits(CAI_ *this, int a2, char group_1, char group_2);
 bool __thiscall CAI__GroupAtFullHealth(CAI_ *this, char a2);
-bool __thiscall CAI__CanSpendCash(CAI_ *this, __int8 job, int amount);
+bool __thiscall CAI__CanSpendCash(CAI_ *this, char job, int amount);
 void __thiscall CAI__GetInitialBuildingPositions(CAI_ *this);
 void __thiscall CAI__MonitorBuildings(CAI_ *this);
 void __thiscall CAI__RebuildBuildings(CAI_ *this);
 void __thiscall CAI__PlaceBuiltBuilding(CAI_ *this);
 void __thiscall CAI__PickNextBuildingToBuild(CAI_ *this);
 bool __thiscall CAI__concrete_41F5C0(CAI_ *this);
-char __thiscall CAI__DoStopStartStuff(CAI_ *this, char a2, unsigned __int8 arg4, bool a4);
+char __thiscall CAI__DoStopStartStuff(CAI_ *this, char a2, unsigned char arg4, bool a4);
 bool __thiscall CAI__GroupExists(CAI_ *this, char a2);
 void __thiscall CAI__CommenceOperation(CAI_ *this, char group);
 void __thiscall CAI__SetUnitToGuard(CAI_ *this, Unit *unit);
 bool __thiscall CAI__AttackBestBuilding(CAI_ *this, char group, eSideType side, char x, char y);
-void __thiscall CAI__AttackObject(CAI_ *this, Unit *unit, eSideType side_id, __int16 index);
+void __thiscall CAI__AttackObject(CAI_ *this, Unit *unit, eSideType side_id, short index);
 void __thiscall CAI__FindMostAppropriateTarget(CAI_ *this, Unit *unit, _WORD *index_ptr, eSideType *side_id_ptr);
 bool __thiscall CAI__ShouldIBuildHarvester(CAI_ *this);
 bool __thiscall CAI__ShouldIBuildCarryall(CAI_ *this);
-bool __thiscall CAI__ShouldIBuildUnit(CAI_ *this, unsigned __int8 unit_type);
+bool __thiscall CAI__ShouldIBuildUnit(CAI_ *this, unsigned char unit_type);
 bool __thiscall CAI__DoBuildCarryalls(CAI_ *this);
 char __thiscall CAI__FindGroupForDelivery(CAI_ *this, char a2);
 void __thiscall CAI__DoAttackApproachers(CAI_ *this);
 char __thiscall CAI__GetUnitInBase(CAI_ *this, eSideType side_id, Unit **unit_ptr);
 char __thiscall CAI__NumberOfGroupsDoingTask(CAI_ *this, eTaskType task);
-bool __thiscall CAI__GetNearestHostileThing(CAI_ *this, int a2, _BYTE *a3, _BYTE *a4, _WORD *result_index, unsigned __int8 *result_side_id);
+bool __thiscall CAI__GetNearestHostileThing(CAI_ *this, int a2, _BYTE *a3, _BYTE *a4, _WORD *result_index, unsigned char *result_side_id);
 bool __thiscall CAI__AttackBestUnit(CAI_ *this, char group, eSideType side_id, char x, char y);
 void __thiscall CAI__GetAveragePositionOfGroup(CAI_ *this, char group, _BYTE *x_ptr, _BYTE *y_ptr);
-void __thiscall CAI__GetEnemyBaseWaypoint(CAI_ *this, char group, unsigned __int8 *a2, unsigned __int8 *a3, unsigned __int8 a4, unsigned __int8 a5);
+void __thiscall CAI__GetEnemyBaseWaypoint(CAI_ *this, char group, unsigned char *a2, unsigned char *a3, unsigned char a4, unsigned char a5);
 bool __thiscall CAI__NoHostileUnitsWithinRange(CAI_ *, char a1, char a2, int a3);
 void __thiscall CAI__DoUnitFacings(CAI_ *this, int a2);
 char __thiscall CAI__GetBestBuildingToBuild(CAI_ *this);
 bool __thiscall CAI__FindRandomBuildingPosition(CAI_ *this, _BYTE *a2, _BYTE *a3, char a4, int a5);
-bool __thiscall CAI__CanAIPlaceBuilding(CAI_ *this, unsigned __int8 building_type, unsigned __int8 x, unsigned __int8 y);
-char __thiscall CAI__CanAIPlaceConcrete(CAI_ *this, unsigned __int8 a2, unsigned __int8 x, unsigned __int8 y);
+bool __thiscall CAI__CanAIPlaceBuilding(CAI_ *this, unsigned char building_type, unsigned char x, unsigned char y);
+char __thiscall CAI__CanAIPlaceConcrete(CAI_ *this, unsigned char a2, unsigned char x, unsigned char y);
 void __thiscall CAI__DoDefendChecks(CAI_ *this);
-void __thiscall CAI__MergeGroups(CAI_ *this, unsigned __int8 group_1, char group_2);
+void __thiscall CAI__MergeGroups(CAI_ *this, unsigned char group_1, char group_2);
 int             GetUnitFromUnitDistanceSquared(Unit *unit1, Unit *unit2);
-int             GetUnitFromTileDistanceSquared(Unit *unit, unsigned __int8 x, unsigned __int8 y);
-bool            side_421860(eSideType side_id, unsigned __int16 index);
-bool            side_4218A0(eSideType side_id, unsigned __int16 index);
+int             GetUnitFromTileDistanceSquared(Unit *unit, unsigned char x, unsigned char y);
+bool            side_421860(eSideType side_id, unsigned short index);
+bool            side_4218A0(eSideType side_id, unsigned short index);
 bool __thiscall CAI__NeedBuilding(CAI_ *this, char building_group);
 bool __thiscall CAI__FindNewPositonForBuilding(CAI_ *this, _BYTE *x_ptr, _BYTE *y_ptr, char building_type, char a5);
-bool __thiscall CAI__ConcreteAlready(CAI_ *this, unsigned __int8 x, unsigned __int8 y);
-bool __thiscall CAI__FindAlternativePlace(CAI_ *, unsigned __int8 *a1, _BYTE *a2);
+bool __thiscall CAI__ConcreteAlready(CAI_ *this, unsigned char x, unsigned char y);
+bool __thiscall CAI__FindAlternativePlace(CAI_ *, unsigned char *a1, _BYTE *a2);
 void __thiscall CAI__UpgradeBuildings(CAI_ *this);
 void __thiscall CAI__BuyUnitsFromStarport(CAI_ *this);
-char __thiscall CAI__ShouldIBuyUnit(CAI_ *this, unsigned __int8 unit_type);
+char __thiscall CAI__ShouldIBuyUnit(CAI_ *this, unsigned char unit_type);
 void __thiscall CAI__MonitorHarvesters(CAI_ *this);
 void __thiscall CAI__DoMCVs(CAI_ *this);
 char __thiscall CAI__GetDefendGroupId(CAI_ *this, char a2);
@@ -756,16 +761,16 @@ void __thiscall CAI__DoSaboteur(CAI_ *this, char activate_ai);
 void __thiscall CAI__DoFremen(CAI_ *this, char a2);
 bool            CheckIfProducedUnitCanArriveFromBuilding(int unit_type, int side_id);
 char __thiscall CAI__DoOverrides(CAI_ *this);
-bool __thiscall CAI__InIconList(CAI_ *this, unsigned __int8 unit_type);
+bool __thiscall CAI__InIconList(CAI_ *this, unsigned char unit_type);
 void __thiscall CAI__DealWithMCV(CAI_ *this, Unit *unit);
 bool __thiscall CAI__CanIDeployMCVHere(CAI_ *this, int a2, int a3);
-bool __thiscall CAI__KickUnitsOutofArea(CAI_ *this, unsigned __int8 x1, unsigned __int8 y1, unsigned __int8 x2, unsigned __int8 y2, Unit *a6);
-bool __thiscall CAI__GetPlaceToMoveTo(CAI_ *, unsigned __int8 a1, unsigned __int8 a2, unsigned __int8 a3, unsigned __int8 a4, unsigned __int8 a5, _BYTE *a6, _BYTE *a7);
+bool __thiscall CAI__KickUnitsOutofArea(CAI_ *this, unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, Unit *a6);
+bool __thiscall CAI__GetPlaceToMoveTo(CAI_ *, unsigned char a1, unsigned char a2, unsigned char a3, unsigned char a4, unsigned char a5, _BYTE *a6, _BYTE *a7);
 bool __thiscall CAI__SendNearestUnit(CAI_ *this, char group, char x, char y, int a5);
-bool __thiscall CAI__SendSomeUnitsToAttackBuilding(CAI_ *this, char group, int a3, int a4, __int16 a5, char a6, unsigned __int8 a7);
-char __thiscall CAI__NoFriendlyUnits(CAI_ *this, unsigned __int8 a2, unsigned __int8 x, unsigned __int8 y);
+bool __thiscall CAI__SendSomeUnitsToAttackBuilding(CAI_ *this, char group, int a3, int a4, short a5, char a6, unsigned char a7);
+char __thiscall CAI__NoFriendlyUnits(CAI_ *this, unsigned char a2, unsigned char x, unsigned char y);
 void __thiscall CAI__TakeOver(CAI_ *this);
-void __thiscall CAI__ValidateTargetUnitOfGroup(CAI_ *this, unsigned __int8 group_id);
+void __thiscall CAI__ValidateTargetUnitOfGroup(CAI_ *this, unsigned char group_id);
 int             return_10000();
 void            AIDebugPrint(char *str);
 void __thiscall CAI__DoSetGoBerserk(CAI_ *this);
@@ -879,6 +884,7 @@ unsigned int    GetUnitBuildSpeedPercentage(unsigned char unit_type, unsigned ch
 unsigned int    GetBuildingBuildSpeedPercentage(unsigned char side_id);
 unsigned int    GetUnitCost(int type, eSideType side);
 unsigned int    GetBuildingCost(int building_type, int num_upgrades, eSideType side_id);
+Building *      GetBuildingProducedUnitWillArriveFrom(unsigned char unit_type, unsigned char side_id, _BYTE *exit1x_ptr, _BYTE *exit1y_ptr, _BYTE *exit2x_ptr, _BYTE *exit2y_ptr, char check_exit_tile_is_free);
 char            HandleSidebarButton(int idx, bool pressed_down);
 bool            CanUnitBeBuilt(unsigned char side_id, unsigned char unitType, char bool1);
 bool            CanSideUpgradeBuildingGroup(eSideType side_id, eBuildingGroupType building_group);
@@ -925,16 +931,32 @@ void            ReadVariables();
 
 // Model
 bool            EvaluateIfBuildingsOrUnitsExistForSide(eSideType side_id, char buildings_or_units);
-
+bool            checksides_4553E0(eSideType a1, eSideType a2);
+void            UncloakRemainingStealthUnit();
 void            ModelBuildUnitPick(eSideType side_id, unsigned short unit_type);
+void            ModelBuildUnitCancel(eSideType side, unsigned short a2);
 index           ModelAddUnit(unsigned char side, unsigned char type, unsigned char add_at_x, unsigned char add_at_y, unsigned char move_to_x, unsigned char move_to_y, int pixel_offset_x, int pixel_offset_y);
-
+int             ModelBuildBuildingPick(unsigned char a1, unsigned short buildingType);
+void            ModelBuildBuildingCancel(eSideType side_id, unsigned short building_type);
 void            ModelAddConcrete(eSideType side_id, char building_type, unsigned char xpos, int ypos, int a5, int tilebitmask);
 signed short    ModelAddBuilding(eSideType side_id, char building_type, unsigned char x, unsigned char y, int initialsetup, bool captured, bool captured2);
 signed short    ModelAddBullet(unsigned char side_id, unsigned char bulletype, int a3, short firer, unsigned short source_x, unsigned short source_y, unsigned short target_x, unsigned short target_y, short homing_index, char homing_side);
 void            AddCursorPuffAnimationToQueue(int x, int y);
 signed short    ModelAddExplosion(unsigned char side_id, unsigned char explosionType, unsigned short x, unsigned short y, int z, int extraFlags, char a7, int a8, int a9);
-
+void            ModelBuildingSell(eSideType side_id, unsigned short objIndex);
+void            ModelBuildingRepair(eSideType side, unsigned short objIndex);
+void            ModelStarportPick(eSideType side_id, unsigned short objIndex);
+void            ModelStarportUnpick(eSideType side_id, unsigned short objIndex);
+void            ModelStarportPurchase(eSideType side_id);
+void            ModelStarportCancel(eSideType side_id);
+void            ModelUpgradePick(eSideType side_id, eBuildingGroupType buildingGroupType);
+void            ModelUpgradeCancel(eSideType side_id, unsigned short building_type);
+void            MoveUnitInRandomDirection(eSideType side, unsigned short objIndex);
+void            StopUnit(unsigned char side_id, unsigned short unit_index);
+void            StopBuilding(unsigned char a1, unsigned short objIndex);
+char            CheckBuildingCanBePlacedAt(unsigned char building_type, unsigned char x, unsigned char y);
+void            ProcessOrder(OrderEntry *order);
+void            ModelUpdates();
 void            GenerateUnitMoveOrder(char side_id, unsigned char x, unsigned char y);
 void            GenerateDockWithRefineryOrder(char side_id, short refinery_index);
 void            GenerateRepairSelectedUnitsOrder(char side_id, short repair_pad_index);

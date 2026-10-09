@@ -48,7 +48,6 @@ OBJS            ?= callsites.o \
         src/mods/spice-on-buildable-tiles.o \
         src/mods/keep-underneath-tile-flags.o \
         src/mods/restore-side-id-upon-restart.o \
-        src/mods/reset-available-buildings.o \
         src/mods/return-credits-to-spice-storage.o \
         src/mods/setupmapstuff.o \
         src/mods/ai-do-unit-facings.o \
@@ -101,6 +100,8 @@ OBJS            ?= callsites.o \
         src/mods/open-file.o \
         src/mods/damage-tiles.o \
         src/mods/build-unit-pick.o \
+        src/mods/process-order.o \
+        src/mods/side-update-icons.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \
@@ -138,7 +139,6 @@ OBJS            ?= callsites.o \
 	src/hotkeys/hotkeys-func.o \
 	src/hotkeys/force-quick-exit.o \
 	\
-	src/ai-alliances.o \
 	src/hardware-cursor.o \
 	src/hardware-cursor-func.o \
 	src/load-save-restart-exit.o \

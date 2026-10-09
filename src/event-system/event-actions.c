@@ -1664,7 +1664,8 @@ void EvAct_SetRule(int event_id, int rule, eValueOperation operation, int value)
     case 49: SET_RULE(rulesExt__showNeutralStructureNames)
     case 50: SET_RULE(rulesExt__deliverEveryOtherEnemyUnitOnEasy)
     case 51: SET_RULE(rulesExt__harvsUnloadOnlyIfEnoughStorage)
-    case 52: SET_RULE(rulesExt__separateBuildingVoiceLines)
+    case 52: SET_RULE(rulesExt__harvsCanBeOrderedToUndock)
+    case 53: SET_RULE(rulesExt__separateBuildingVoiceLines)
   }
 }
 
@@ -2145,7 +2146,8 @@ void EvAct_GetRule(int event_id, int rule, int target_var)
     case 49: GET_RULE(rulesExt__showNeutralStructureNames)
     case 50: GET_RULE(rulesExt__deliverEveryOtherEnemyUnitOnEasy)
     case 51: GET_RULE(rulesExt__harvsUnloadOnlyIfEnoughStorage)
-    case 52: GET_RULE(rulesExt__separateBuildingVoiceLines)
+    case 52: GET_RULE(rulesExt__harvsCanBeOrderedToUndock)
+    case 53: GET_RULE(rulesExt__separateBuildingVoiceLines)
   }
   SetVariableValue(event_id, target_var, result);
 }

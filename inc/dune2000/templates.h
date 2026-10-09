@@ -67,7 +67,9 @@ typedef struct UnitAtribStruct
   char SecondaryWeaponShootYOffset;
   bool SecondaryWeaponUseBarrel;
   uint8_t WeaponPriority;
-  char ZeroBytes[58];
+  uint8_t Prereq2UpgradesNeeded;
+  uint8_t Prereq2OwnerHouse;
+  char ZeroBytes[56];
 }UnitAtribStruct;
 
 typedef struct BuildingAtrbStruct

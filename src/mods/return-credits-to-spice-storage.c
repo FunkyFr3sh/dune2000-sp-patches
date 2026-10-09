@@ -12,8 +12,8 @@ CALL(0x004561B3, _CSide_return_credits); // ModelBuildBuildingCancel
 CALL(0x00457117, _CSide_return_credits); // ModelStarportUnpick
 CALL(0x00457329, _CSide_return_credits); // ModelStarportCancel
 CALL(0x004574F3, _CSide_return_credits); // ModelUpgradeCancel
-CALL(0x0046C2F1, _CSide_return_credits); // CSide__UpdateBuildingAndUnitIconsAndBaseBoundaries
-CALL(0x0046C38D, _CSide_return_credits); // CSide__UpdateBuildingAndUnitIconsAndBaseBoundaries
+//CALL(0x0046C2F1, _CSide_return_credits); // CSide__UpdateBuildingAndUnitIconsAndBaseBoundaries
+//CALL(0x0046C38D, _CSide_return_credits); // CSide__UpdateBuildingAndUnitIconsAndBaseBoundaries
 CALL(0x0046EAD4, _CSide_return_credits); // CSide_cash_46EAC0
 
 void __thiscall CSide_return_credits(CSide *this, int amount)

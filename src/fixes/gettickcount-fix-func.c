@@ -61,8 +61,9 @@ CALL(0x00449E9A, _fake_GetTickCount);
 CLEAR(0x0044A300+5, 0x90, 0x0044A306);
 CALL(0x0044A300, _fake_GetTickCount);
 
-CLEAR(0x00458D44+5, 0x90, 0x00458D4A);
-CALL(0x00458D44, _fake_GetTickCount);
+// Superseded by Mod__ProcessOrder
+//CLEAR(0x00458D44+5, 0x90, 0x00458D4A);
+//CALL(0x00458D44, _fake_GetTickCount);
 
 CLEAR(0x0045CD5F+5, 0x90, 0x0045CD65);
 CALL(0x0045CD5F, _fake_GetTickCount);
