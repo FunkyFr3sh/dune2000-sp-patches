@@ -220,6 +220,7 @@ setcglob 0x00503F88, _crater_draw_offsets_x
 ;setcglob 0x00504030, _gMessageData ; Replaced by mod
 ;setcglob 0x005042E8, _DisplayList ; Replaced by mod
 setcglob 0x00512D58, _selectedmaybe_dw_BlitVehicles_512D58
+setcglob 0x00512D70, _drawdata_512D70
 setcglob 0x00513488, ResourcePath
 setcglob 0x00513488, gRES_PATH
 setcglob 0x00513520, gMOVIES_RES_PATH
@@ -234,6 +235,7 @@ setcglob 0x00513B20, _FontData
 setcglob 0x00515B60, _FontPals
 setcglob 0x00515BB0, _isnot8bit_byte_515BB0
 setcglob 0x00515BB8, gHighScores
+setcglob 0x005162B0, _shadowed_font_id
 setcglob 0x005162B4, _GreenColor8
 setcglob 0x005162B8, _GreyColor16
 setcglob 0x005162BC, _RedColor8
@@ -261,6 +263,7 @@ setcglob 0x005174FC, _tooltipcolor_yellow
 setcglob 0x00517500, _cheatstates
 setcglob 0x00517508, _Tooltipdata
 setcglob 0x005175C8, _TooltipBackupImage
+setcglob 0x005175CC, _fontpal_index_green_flashing
 setcglob 0x005175D0, _tooltipcolor_gray
 setcglob 0x005175D4, _NeutralStructureText
 setcglob 0x005175D8, _IRValuesBackup
@@ -317,6 +320,7 @@ setcglob 0x006B93F8, _someNameString
 setcglob 0x006B9518, NetMessageString
 setcglob 0x006B9864, LimitedModelRate
 ;setcglob 0x006D5FD0, _templates_AnimationArtFrames ; Replaced by mod
+setcglob 0x006D60D0, _image_empty_icon
 setcglob 0x006D60D8, _templates_GroupIDs
 setcglob 0x006D6130, _SideBarPowerImages
 setcglob 0x006D7BA0, _RadarMap1
@@ -327,6 +331,7 @@ setcglob 0x006D8D88, _images_blobs
 setcglob 0x006D8D98, _RadarHouseImages
 setcglob 0x006D8DA8, _blitarray_6D8DA8
 setcglob 0x006D91A8, _tangentValues
+setcglob 0x006D9260, _UnitUIIcons
 setcglob 0x006D9350, _palettes_6D9350
 setcglob 0x006D9B50, _templates_UnitGroupCount
 ;setcglob 0x006D9B58, _images_tiles ; Replaced by mod
@@ -340,9 +345,12 @@ setcglob 0x006DC540, _templates_buildattribs
 setcglob 0x006E2DF0, _images_small_numbers
 setcglob 0x006E2E18, _WarheadCount
 ;setcglob 0x006E2E20, gExplosionElements ; Replaced by mod
+setcglob 0x006E5620, _palette_6E5620
+setcglob 0x006E5720, _images_credit_numbers
 ;setcglob 0x006E5750, _templates_Explosiondata_AnimationArtFlags ; Replaced by mod
 setcglob 0x006E5850, _templates_BuildingGroupCount
 setcglob 0x006E5854, _image_placement_marker_buildable_concrete
+setcglob 0x006E5858, _images_unit_icon_construction
 setcglob 0x006E5880, dataimage
 setcglob 0x006E5A60, _templates_BuildingArtDirections
 setcglob 0x006E5C40, gBuildingElements
@@ -372,8 +380,10 @@ setcglob 0x00786FE8, _image_placement_marker_buildable
 setcglob 0x00786FEC, _SpawnLocationCount
 setcglob 0x00786FF0, _radarcolor8_sidecolor
 ;setcglob 0x00786FF8, _TileBitflags ; Replaced by mod
+setcglob 0x00787C78, _BuildingUIIcons
 setcglob 0x00787E08, _templates_BuildingGroupNameList
 setcglob 0x00789190, _ArmourCount
+setcglob 0x00789194, _image_building_icon_construction
 setcglob 0x00789198, _images_healthbars
 setcglob 0x007891B0, _templates_UnitNameList
 setcglob 0x0078FB28, _image_selection_bl
@@ -658,12 +668,14 @@ setcglob 0x0042BB80, _WriteFile
 setcglob 0x0042BBA0, SeekFile
 setcglob 0x0042BC60, CreateGlobe
 ; Graphlib
+setcglob 0x0042D140, BlitRectRGB
 setcglob 0x0042D450, BlitHorizontalLineRGB
 setcglob 0x0042D660, BlitBeveledRectRGB
 setcglob 0x0042DC00, BlitFontChars
 setcglob 0x0042DD50, Graphlib__DrawRightAlignedText
 setcglob 0x0042DD90, Graphlib__DrawTextWithBlackShadow
 setcglob 0x0042DFB0, GetStringPixelWidth
+setcglob 0x0042E0B0, GL_DrawStringCentered1Color
 setcglob 0x0042E1A0, GetFontHeight
 setcglob 0x0042E1C0, Graphlib_font_pal
 setcglob 0x0042E420, GetFontPaletteHandle

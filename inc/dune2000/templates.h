@@ -69,7 +69,8 @@ typedef struct UnitAtribStruct
   uint8_t WeaponPriority;
   uint8_t Prereq2UpgradesNeeded;
   uint8_t Prereq2OwnerHouse;
-  char ZeroBytes[56];
+  uint8_t MaxCount;
+  char ZeroBytes[55];
 }UnitAtribStruct;
 
 typedef struct BuildingAtrbStruct
@@ -123,7 +124,7 @@ typedef struct BuildingAtrbStruct
   char _____AnimationSpeed;
   uint8_t _____ArtHeight;
   uint8_t _____ArtWidth;
-  char GroupType;
+  uint8_t GroupType;
   char _____BuildupFramesToShow;
   char _____BuildupArt;
   char _____BuildingAnimation;
@@ -143,7 +144,7 @@ typedef struct BuildingAtrbStruct
   uint8_t SecondaryWeaponShootOffset;
   uint8_t SecondaryWeaponShootAngle;
   uint8_t BuildRestrictionTerrain;
-  uint8_t _Padding;
+  uint8_t MaxCount;
   uint32_t StorageCapacity;
   char field_8D[108];
 }BuildingAtrbStruct;

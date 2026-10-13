@@ -175,10 +175,13 @@ void ProcessBuildQueues(void)
   {
     // Check what unit types side can build
     bool can_build_unit_type[MAX_UNIT_TYPES] = {false};
+    int unit_count[MAX_UNIT_TYPES] = {0};
     CSide *side = GetSide(side_id);
+    for (Unit *unit = side->__FirstUnitPtr; unit; unit = unit->Next)
+      unit_count[unit->Type]++;
     for (unsigned int i = 0; i < side->__UnitIconCount; i++)
       if (side->__UnitIcons[i] != -1)
-        can_build_unit_type[side->__UnitIcons[i]] = true;
+        can_build_unit_type[side->__UnitIcons[i]] = _templates_unitattribs[side->__UnitIcons[i]].MaxCount == 0 || unit_count[side->__UnitIcons[i]] < _templates_unitattribs[side->__UnitIcons[i]].MaxCount;
     // Cancel infinity on unit types that cannot be built
     for (int i = 0; i < MAX_UNIT_TYPES; i++)
       if (!can_build_unit_type[i])

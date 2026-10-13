@@ -415,6 +415,7 @@ extern int                  _crater_draw_offsets_x[16];
 // extern MessageData          _gMessageData; // Replaced by mod
 // extern DisplayListStruct    _DisplayList[1000]; // Replaced by mod
 extern DisplayListStruct *  _selectedmaybe_dw_BlitVehicles_512D58;
+extern int                  _drawdata_512D70;
 extern char                 ResourcePath[];
 extern char                 gRES_PATH[152];
 extern char                 gMOVIES_RES_PATH[152];
@@ -429,6 +430,7 @@ extern FontHeader           _FontData[8];
 extern int *                _FontPals[16];
 extern char                 _isnot8bit_byte_515BB0;
 extern HighScoreStruct      gHighScores[6];
+extern char                 _shadowed_font_id;
 extern char                 _GreenColor8;
 extern short                _GreyColor16;
 extern char                 _RedColor8;
@@ -456,6 +458,7 @@ extern int                  _tooltipcolor_yellow;
 extern char                 _cheatstates[MAX_SIDES];
 extern TooltipStruct        _Tooltipdata;
 extern TImage *             _TooltipBackupImage;
+extern char                 _fontpal_index_green_flashing;
 extern int                  _tooltipcolor_gray;
 extern unsigned int         _NeutralStructureText;
 extern char                 _IRValuesBackup[8];
@@ -512,6 +515,7 @@ extern char                 _someNameString[23];
 
 
 // extern int                  _templates_AnimationArtFrames[MAX_EXPLOSION_TYPES]; // Replaced by mod
+extern TImage *             _image_empty_icon;
 extern GroupIDsStruct       _templates_GroupIDs;
 extern TImage *             _SideBarPowerImages[4];
 extern TImage *             _RadarMap1;
@@ -522,6 +526,7 @@ extern TImage *             _images_blobs[2];
 extern TImage *             _RadarHouseImages[3];
 extern short                _blitarray_6D8DA8[512];
 extern unsigned short       _tangentValues[89];
+extern TImage *             _UnitUIIcons[60];;
 extern char                 _palettes_6D9350[2048];
 extern char                 _templates_UnitGroupCount;
 // extern TImage *             _images_tiles[MAX_TILES]; // Replaced by mod
@@ -535,9 +540,12 @@ extern BuildingAtrbStruct   _templates_buildattribs[MAX_BUILDING_TYPES];
 extern TImage *             _images_small_numbers[10];
 extern char                 _WarheadCount;
 // extern TImage *             gExplosionElements[MAX_EXPLOSION_TYPES][40]; // Replaced by mod
+extern char                 _palette_6E5620[256];
+extern TImage *             _images_credit_numbers[11];
 // extern int                  _templates_Explosiondata_AnimationArtFlags[MAX_EXPLOSION_TYPES]; // Replaced by mod
 extern char                 _templates_BuildingGroupCount;
 extern TImage *             _image_placement_marker_buildable_concrete;
+extern TImage *             _images_unit_icon_construction[10];
 extern TImage *             dataimage[480];
 extern int                  _templates_BuildingArtDirections[120];
 extern TImage *             gBuildingElements[120][32];
@@ -567,8 +575,10 @@ extern TImage *             _image_placement_marker_buildable;
 extern char                 _SpawnLocationCount;
 extern char                 _radarcolor8_sidecolor[MAX_SIDES];
 // extern unsigned int         _TileBitflags[MAX_TILES]; // Replaced by mod
+extern TImage *             _BuildingUIIcons[100];
 extern char                 _templates_BuildingGroupNameList[MAX_BUILDING_TYPES][50];
 extern char                 _ArmourCount;
+extern TImage *             _image_building_icon_construction;
 extern TImage *             _images_healthbars[6];
 extern char                 _templates_UnitNameList[MAX_UNIT_TYPES][450];
 extern TImage *             _image_selection_bl;
@@ -829,12 +839,14 @@ size_t          _WriteFile(void *buffer, size_t size, size_t count, FILE *file);
 int             SeekFile(FILE *file, int offset, int origin);
 
 // Graphlib
+void            BlitRectRGB(TImage *img, RECT *rect, int color);
 void            BlitHorizontalLineRGB(TImage *img, int x, int y, int length, int color);
 void            BlitBeveledRectRGB(TImage *img, RECT *rect, int fill, int hightlight, int shadow);
 void            BlitFontChars(TImage *img, char *string, int x, int y, unsigned char font, int color1, int color2);
 void            Graphlib__DrawRightAlignedText(int *image, char *text, int x, int y, bool bold_unk, int color_unk, int unk2);
 void            Graphlib__DrawTextWithBlackShadow(TImage *image, char *text, int x, int y, int unk, int color_unk);
 int             GetStringPixelWidth(const char *string, unsigned char font);
+void            GL_DrawStringCentered1Color(TImage *img, char *string, int xpos, int ypos, int widthsub, unsigned char font, unsigned char font_palette_index);
 char            GetFontHeight(unsigned char font);
 
 void *          GetFontPaletteHandle(unsigned char a1);

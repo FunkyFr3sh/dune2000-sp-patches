@@ -576,8 +576,8 @@ typedef struct DeliveryStruct
 typedef struct BuildQueueStruct
 {
   int16_t __type;
-  int16_t __build_progress;
-  int16_t __build_progress_prev;
+  uint16_t __build_progress;
+  uint16_t __build_progress_prev;
   char field_6;
   char field_7;
   float __credits_spent_float;

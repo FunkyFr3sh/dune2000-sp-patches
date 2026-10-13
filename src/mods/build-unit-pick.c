@@ -3,7 +3,80 @@
 #include "rules.h"
 
 // Fix missing check for unit type availability when ordered to build such unit type
+// Implement Max Count unit template parameter
 // Implement separateBuildingVoiceLines rule
+
+// Custom implementation of function CanUnitBeBuilt
+DETOUR(0x004430D0, 0x004431C4, _Mod__CanUnitBeBuilt);
+
+bool Mod__CanUnitBeBuilt(unsigned char side_id, unsigned char unitType, char bool1)
+{
+  CSide *side; // esi
+  char behavior; // al MAPDST
+  unsigned int unit_build_queue_id; // edi
+  BuildQueueStruct *unit_build_queue; // ebp
+  int prereq1; // ebx
+  signed int built_unit_type; // esi
+  signed int built_unit_type_offset; // esi
+
+  side = GetSide(side_id);
+  if ( unitType >= 60u )
+  {
+    DebugFatal("CanUnitBeBuilt", "Invalid unitType");
+  }
+  // New logic start
+  // Implement Max Count building template parameter
+  int count = 0;
+  if (_templates_unitattribs[unitType].MaxCount)
+    for (Unit *u = GetSide(side_id)->__FirstUnitPtr; u; u = u->Next)
+      if (u->Type == unitType && ++count >= _templates_unitattribs[unitType].MaxCount)
+        return 0;
+  // New logic end
+  if ( bool1 )
+  {
+    behavior = _templates_unitattribs[unitType].__Behavior;
+    if ( behavior == UnitBehavior_ORNITHOPTER
+      || _templates_unitattribs[unitType].__Behavior == UnitBehavior_DEATH_HAND
+      || _templates_unitattribs[unitType].__Behavior == UnitBehavior_SABOTEUR
+      || _templates_unitattribs[unitType].__Behavior == UnitBehavior_FREMEN )
+    {
+      return 1;
+    }
+  }
+  unit_build_queue_id = 0;
+  unit_build_queue = side->__UnitBuildQueue;
+  prereq1 = _templates_unitattribs[unitType].__PreReq1;
+  while ( 1 )
+  {
+    built_unit_type = unit_build_queue->__type;
+    if ( built_unit_type >= 0 )
+    {
+      if ( built_unit_type >= 60 )
+      {
+        DebugFatal("CanUnitBeBuilt", "Invalid index %d", unit_build_queue->__type);
+      }
+      built_unit_type_offset = built_unit_type << 8;
+      if ( *(int *)((char *)&_templates_unitattribs[0].__PreReq1 + built_unit_type_offset) == prereq1 )
+      {
+        behavior = *(&_templates_unitattribs[0].__Behavior + built_unit_type_offset);
+        if ( behavior != UnitBehavior_ORNITHOPTER
+          && behavior != UnitBehavior_DEATH_HAND
+          && behavior != UnitBehavior_SABOTEUR
+          && behavior != UnitBehavior_FREMEN )
+        {
+          break;
+        }
+      }
+    }
+    ++unit_build_queue_id;
+    ++unit_build_queue;
+    if ( unit_build_queue_id >= 10 )
+    {
+      return 1;
+    }
+  }
+  return 0;
+}
 
 // Custom implementation of function ModelBuildUnitPick
 DETOUR(0x00455510, 0x0045574F, _Mod__ModelBuildUnitPick);
