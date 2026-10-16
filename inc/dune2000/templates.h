@@ -70,7 +70,8 @@ typedef struct UnitAtribStruct
   uint8_t Prereq2UpgradesNeeded;
   uint8_t Prereq2OwnerHouse;
   uint8_t MaxCount;
-  char ZeroBytes[55];
+  uint8_t ExcludeFromMultiselect;
+  char ZeroBytes[54];
 }UnitAtribStruct;
 
 typedef struct BuildingAtrbStruct

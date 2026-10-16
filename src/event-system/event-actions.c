@@ -1666,6 +1666,7 @@ void EvAct_SetRule(int event_id, int rule, eValueOperation operation, int value)
     case 51: SET_RULE(rulesExt__harvsUnloadOnlyIfEnoughStorage)
     case 52: SET_RULE(rulesExt__harvsCanBeOrderedToUndock)
     case 53: SET_RULE(rulesExt__separateBuildingVoiceLines)
+    case 54: SET_RULE(rulesExt__alwaysExcludeFromMultiselect)
   }
 }
 
@@ -2148,6 +2149,7 @@ void EvAct_GetRule(int event_id, int rule, int target_var)
     case 51: GET_RULE(rulesExt__harvsUnloadOnlyIfEnoughStorage)
     case 52: GET_RULE(rulesExt__harvsCanBeOrderedToUndock)
     case 53: GET_RULE(rulesExt__separateBuildingVoiceLines)
+    case 54: GET_RULE(rulesExt__alwaysExcludeFromMultiselect)
   }
   SetVariableValue(event_id, target_var, result);
 }

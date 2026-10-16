@@ -70,8 +70,9 @@ void SaveGameExtraData(void *buffer, size_t size, size_t count, FILE *file)
   SAVE_DATA(rulesExt__harvsUnloadOnlyIfEnoughStorage)
   SAVE_DATA(rulesExt__harvsCanBeOrderedToUndock)
   SAVE_DATA(rulesExt__separateBuildingVoiceLines)
+  SAVE_DATA(rulesExt__alwaysExcludeFromMultiselect)
   // Extra dummy bytes, to be replaced by new rules in future
-  char dummy[28] = {0};
+  char dummy[27] = {0};
   _WriteFile(dummy, sizeof(dummy), 1, file);
 }
 
@@ -137,8 +138,9 @@ void LoadGameExtraData(void *buffer, size_t size, size_t count, FILE *file)
   LOAD_DATA(rulesExt__harvsUnloadOnlyIfEnoughStorage)
   LOAD_DATA(rulesExt__harvsCanBeOrderedToUndock)
   LOAD_DATA(rulesExt__separateBuildingVoiceLines)
+  LOAD_DATA(rulesExt__alwaysExcludeFromMultiselect)
   // Extra dummy bytes, to be replaced by new rules in future
-  char dummy[28];
+  char dummy[27];
   _ReadFile(dummy, sizeof(dummy), 1, file);
 
   // Reset last played property of sounds in sound table

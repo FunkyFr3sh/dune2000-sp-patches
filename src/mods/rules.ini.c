@@ -39,6 +39,7 @@ void InitExtraRules(void)
   rulesExt__harvsUnloadOnlyIfEnoughStorage   = false;
   rulesExt__harvsCanBeOrderedToUndock        = false;
   rulesExt__separateBuildingVoiceLines       = false;
+  rulesExt__alwaysExcludeFromMultiselect     = false;
 }
 
 static void LoadVars(LPCTSTR fileName);
@@ -130,4 +131,5 @@ static void LoadVars(LPCTSTR fileName)
     LOAD_CUSTOM_RULE(harvsUnloadOnlyIfEnoughStorage, Bool)
     LOAD_CUSTOM_RULE(harvsCanBeOrderedToUndock, Bool)
     LOAD_CUSTOM_RULE(separateBuildingVoiceLines, Bool)
+    LOAD_CUSTOM_RULE(alwaysExcludeFromMultiselect, Bool)
 }

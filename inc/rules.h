@@ -62,3 +62,4 @@ bool     rulesExt__deliverEveryOtherEnemyUnitOnEasy;
 bool     rulesExt__harvsUnloadOnlyIfEnoughStorage;
 bool     rulesExt__harvsCanBeOrderedToUndock;
 bool     rulesExt__separateBuildingVoiceLines;
+bool     rulesExt__alwaysExcludeFromMultiselect;
