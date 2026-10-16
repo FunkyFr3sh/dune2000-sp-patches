@@ -1,11 +1,5 @@
 #include "event-filters.h"
 
-typedef union int_or_float
-{
-  int int_val;
-  float float_val;
-} int_or_float;
-
 typedef struct ShowMessageEventData
 {
   uint32_t sample_id;

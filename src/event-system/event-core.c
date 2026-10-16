@@ -508,6 +508,8 @@ void ExecuteEvent(int event_index)
     e.args[i] = GetVariableValueOrConst(event->arg_var_flags, flag_num, event->args[i]);
   }
   e.args[5] = GetVariableValueOrConst(event->arg_var_flags, 5, event->value);
+  int *arg6 = (int *)&event->data[1];
+  e.args[6] = GetVariableValueOrConst(event->arg_var_flags, 6, *arg6);
   e.data = event->data;
   int skip = GetVariableValueOrConst(event->event_flags, 4, event->filter_skip);
   int limit = GetVariableValueOrConst(event->event_flags, 5, event->data[0]);
@@ -851,7 +853,7 @@ void ExecuteEvent(int event_index)
 #define A3  e->args[3]
 #define A4  e->args[4]
 #define A5  e->args[5]
-#define A6  *(int *)&e->data[1]
+#define A6  e->args[6]
 #define OBJ e->object_index
 
 #define VALUEOPERATION(data) data = ValueOperation(ID, data, A5, A3)

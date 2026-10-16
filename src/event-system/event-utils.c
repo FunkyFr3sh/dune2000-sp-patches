@@ -89,8 +89,9 @@ void SetDataValue(int event_id, char *data_ptr, eDataType data_type, int offset,
     case DATATYPE_FLOAT:
     {
       float *p = (float *)&data_ptr[offset];
-      float *fvalptr = (float *)&value;
-      *p = ValueOperationFloat(event_id, *p, *fvalptr, operation);
+      int_or_float v;
+      v.int_val = value;
+      *p = ValueOperationFloat(event_id, *p, v.float_val, operation);
       break;
     }
   }
@@ -141,9 +142,11 @@ bool CompareDataValue(char *data_ptr, eDataType data_type, int offset, int comp_
   int value = GetDataValue(data_ptr, data_type, offset);
   if (data_type == DATATYPE_FLOAT)
   {
-    float *fvalptr = (float *)&value;
-    float *fcompvalptr = (float *)&comp_val;
-    return CompareValueFloat(*fvalptr, *fcompvalptr, comparison);
+    int_or_float v;
+    v.int_val = value;
+    int_or_float c;
+    c.int_val = comp_val;
+    return CompareValueFloat(v.float_val, c.float_val, comparison);
   }
   return CompareValue(value, comp_val, comparison);
 }

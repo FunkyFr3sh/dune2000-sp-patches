@@ -1,5 +1,11 @@
 #define EVENT_ERROR "Event execution error"
 
+typedef union int_or_float
+{
+  int int_val;
+  float float_val;
+} int_or_float;
+
 typedef enum eValueOperation
 {
   VALUEOPERATION_SET,

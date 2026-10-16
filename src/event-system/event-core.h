@@ -30,7 +30,7 @@ typedef struct EventContext
   int event_index;
   int coord_x[4];
   int coord_y[4];
-  int args[6];
+  int args[7];
   char *data;
   int object_index;
 } EventContext;
