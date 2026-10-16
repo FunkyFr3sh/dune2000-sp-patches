@@ -69,13 +69,16 @@ bool Mod__UpdateBuilding(Building *bld, unsigned char side_id, short building_in
     if ( bld_flags & BFLAGS_40_HAS_ANIMATION )
     {
       building_type_ = 268 * bld->Type;
-      if ( bld->Health >= (signed int)(*(unsigned int *)((char *)&_templates_buildattribs[0]._____HitPoints
-                                                       + building_type_) >> 1) )
+      // New logic start
+      // Add support for damaged building animation
+      BuildingAtrbStruct *building_template = &_templates_buildattribs[bld->Type];
+      bool is_low_health = bld->Health < building_template->_____HitPoints >> 1;
+      if ( !is_low_health || building_template->DamagedAnimationEnabled )
       {
         buildup_anim_counter = bld->__BuildingAnimCounter + 1;
         bld->__BuildingAnimCounter = buildup_anim_counter;
         if ( buildup_anim_counter
-           / (signed int)*((unsigned char *)&_templates_buildattribs[0]._____AnimationSpeed + building_type_) >= (unsigned char)_templates_BuildingAnimationFrames[*((unsigned char *)&_templates_buildattribs[0]._____BuildingAnimation + building_type_)] )
+           / building_template->_____AnimationSpeed >= _templates_BuildingAnimationFrames[is_low_health?building_template->DamagedAnimation:building_template->_____BuildingAnimation] )
         {
           bld->__BuildingAnimCounter = 0;
           if ( bld_flags & BFLAGS_20_ANIM_ONCE )
@@ -87,6 +90,7 @@ LABEL_16:
           }
         }
       }
+      // New logic end
     }
   }
 LABEL_17:

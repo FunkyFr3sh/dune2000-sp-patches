@@ -302,17 +302,19 @@ void Mod__BlitObjects(TImage *img)
           {
             if ( building_flags & BFLAGS_40_HAS_ANIMATION )
             {
-              if ( !is_low_health && !is_selling_or_buildup )
+              // New logic start
+              // Add support for damaged building animation
+              BuildingAtrbStruct *building_template = &_templates_buildattribs[building_type__];
+              if ( (!is_low_health || building_template->DamagedAnimationEnabled) && !is_selling_or_buildup )
               {
-                anim_image = _BuildingAnimationImages[0][bld_->__BuildingAnimCounter
-                                                       / (signed int)(unsigned char)_templates_buildattribs[(unsigned char)_templates_buildattribs[building_type__]._____BuildingAnimation]._____AnimationSpeed
-                                                       + 42
-                                                       * (unsigned char)_templates_buildattribs[building_type__]._____BuildingAnimation];
-                if ( _templates_buildattribs[building_type__]._____Flags & BFLAGS_800000_ANIM_ALPHA )
+                int animation_index = is_low_health?building_template->DamagedAnimation:building_template->_____BuildingAnimation;
+                anim_image = _BuildingAnimationImages[animation_index][bld_->__BuildingAnimCounter / building_template->_____AnimationSpeed];
+                if ( building_template->_____Flags & BFLAGS_800000_ANIM_ALPHA )
                 {
                   v126_ = 4;
                 }
               }
+              // New logic end
             }
           }
           AddToDisplayList(

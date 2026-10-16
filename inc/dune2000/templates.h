@@ -146,7 +146,9 @@ typedef struct BuildingAtrbStruct
   uint8_t BuildRestrictionTerrain;
   uint8_t MaxCount;
   uint32_t StorageCapacity;
-  char field_8D[108];
+  uint8_t DamagedAnimationEnabled;
+  uint8_t DamagedAnimation;
+  char field_8D[106];
 }BuildingAtrbStruct;
 
 typedef struct SmokeDataStruct
