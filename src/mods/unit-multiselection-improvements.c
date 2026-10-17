@@ -83,7 +83,7 @@ LABEL_16:
         && unit_pos_y < max_y
         && !(unit->Flags & (UFLAGS_100_CARRYING|UFLAGS_40_FLYING))
         // Exclude units
-        && !((_KeyboardKeyState[Hotkey_ALT] || rulesExt__alwaysExcludeFromMultiselect) &&
+        && !(((_KeyboardKeyState[Hotkey_ALT] != 0) != (rulesExt__alwaysExcludeFromMultiselect != 0)) &&
              (behavior == UnitBehavior_HARVESTER || behavior == UnitBehavior_MCV || behavior == UnitBehavior_ENGINEER || behavior == UnitBehavior_THUMPER) != (_templates_unitattribs[unit->Type].ExcludeFromMultiselect != 0))
         )
       {

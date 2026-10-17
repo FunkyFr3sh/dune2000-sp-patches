@@ -344,7 +344,10 @@ char Mod__UpdateUnit(Unit *unit, eSideType side_id, short myIndex)
   }
   // Handle saboteur cloaking
   side = GetSide((eSideType)side_id_);
-  if ( _templates_unitattribs[unit->Type].__Behavior == UnitBehavior_SABOTEUR && !(gGameTicks & 0xF) )
+  // New logic start
+  // Implement TempCloak unit template property
+  if ( (_templates_unitattribs[unit->Type].__Behavior == UnitBehavior_SABOTEUR || _templates_unitattribs[unit->Type].TempCloak) && !(gGameTicks & 0xF) )
+  // New logic end
   {
     unit_flags = unit->Flags;
     cloaking_points = unit->__SpecialPurpose;

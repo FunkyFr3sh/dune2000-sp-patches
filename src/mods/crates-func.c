@@ -290,9 +290,9 @@ bool DoPickupCrate(int crate_index, Unit *unit, unsigned char side_id)
           {
             case 0:
               // Make unit stealth
-              if ( _templates_unitattribs[u->Type].__Behavior == UnitBehavior_SABOTEUR )
+              if ( _templates_unitattribs[u->Type].__Behavior == UnitBehavior_SABOTEUR || _templates_unitattribs[u->Type].TempCloak )
               {
-                u->__SpecialPurpose = -96;
+                u->__SpecialPurpose = _templates_unitattribs[u->Type].StorageCapacity?_templates_unitattribs[u->Type].StorageCapacity:160;
                 crate_used = true;
               }
               else if ( !UnitIsCloaked(u) )

@@ -418,6 +418,14 @@ LABEL_41:
               }
               goto LABEL_41;
           }
+          // New logic start
+          // Implement TempCloak unit template property
+          if (_templates_unitattribs[target->Type].TempCloak)
+          {
+            SetMouseCursor(target->__SpecialPurpose >= (_templates_unitattribs[target->Type].StorageCapacity?_templates_unitattribs[target->Type].StorageCapacity:160u)?CURSOR_DEPLOY:CURSOR_CANT_DEPLOY);
+            goto LABEL_164;
+          }
+          // New logic end
 LABEL_163:
           SetMouseCursor(CURSOR_POINTER);
           goto LABEL_164;
@@ -1829,7 +1837,10 @@ LABEL_580:
                 PlayUnitResponse(0);
                 goto LABEL_649;
               }
-              if ( unit_is_selected && _templates_unitattribs[unit->Type].__Behavior == UnitBehavior_SABOTEUR )
+              // New logic start
+              // Implement TempCloak unit template property
+              if ( unit_is_selected && (_templates_unitattribs[unit->Type].__Behavior == UnitBehavior_SABOTEUR || _templates_unitattribs[unit->Type].TempCloak) )
+              // New logic end
               {
 
                 // New logic start
@@ -2182,7 +2193,7 @@ LABEL_665:
         if ( (behavior == UnitBehavior_MCV && CheckIfMCVCanBeDeployedOn(unit->BlockFromX, unit->BlockFromY))
           || (behavior == UnitBehavior_DEVASTATOR && unit->State != UNIT_STATE_31_SELFDESTRUCT)
           || (behavior == UnitBehavior_THUMPER && gGameMap.map[unit->BlockFromX + _CellNumbersWidthSpan[unit->BlockFromY]].__tile_bitflags & TileFlags_10000_SANDY)
-          || (behavior == UnitBehavior_SABOTEUR && unit->__SpecialPurpose >= (_templates_unitattribs[unit->Type].StorageCapacity?_templates_unitattribs[unit->Type].StorageCapacity:160u))
+          || ((behavior == UnitBehavior_SABOTEUR || _templates_unitattribs[unit->Type].TempCloak) && unit->__SpecialPurpose >= (_templates_unitattribs[unit->Type].StorageCapacity?_templates_unitattribs[unit->Type].StorageCapacity:160u))
           )
         {
           GenerateUnitDeployOrder(gSideId, unit->MyIndex);

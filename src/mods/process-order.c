@@ -5,6 +5,7 @@
 
 // Implement harvsCanBeOrderedToUndock rule
 // Enable AI Alliances via the the "a" hotkey in skirmish games
+// Implement TempCloak unit template property
 // Spawner game end state
 // GetTickCount fix
 
@@ -749,6 +750,22 @@ void Mod__ProcessOrder(OrderEntry *order)
       unit = &side->__ObjectArray[order_->orderdata.ObjectArray[0]];
       if ( unit->ObjectType == 1 && CanUnitAcceptOrders(unit, 1) )
       {
+        // New logic start
+        // Implement TempCloak unit template property
+        if (_templates_unitattribs[unit->Type].TempCloak)
+        {
+          unit_flags = unit->Flags;
+          if ( !(unit_flags & UFLAGS_10_STEALTH) )
+          {
+            posx = unit->BlockToX;
+            unit_flags = unit_flags | UFLAGS_10_STEALTH;
+            unit->Flags = unit_flags;
+            posy = unit->BlockToY;
+            sound_id = GetSoundTableID("S_STEALTHUP");
+            PlaySoundAt(sound_id, posx, posy);
+          }
+        }
+        // New logic end
         behavior = _templates_unitattribs[unit->Type].__Behavior;
         switch ( behavior )
         {

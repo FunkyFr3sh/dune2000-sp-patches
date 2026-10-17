@@ -71,7 +71,8 @@ typedef struct UnitAtribStruct
   uint8_t Prereq2OwnerHouse;
   uint8_t MaxCount;
   uint8_t ExcludeFromMultiselect;
-  char ZeroBytes[54];
+  uint8_t TempCloak;
+  char ZeroBytes[53];
 }UnitAtribStruct;
 
 typedef struct BuildingAtrbStruct

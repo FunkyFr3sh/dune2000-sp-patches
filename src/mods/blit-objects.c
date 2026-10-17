@@ -1121,7 +1121,10 @@ LABEL_217:
         v125 = 10;
         goto LABEL_218;
       }
-      if ( _templates_unitattribs[unit->Type].__Behavior == UnitBehavior_SABOTEUR )
+      // New logic start
+      // Implement TempCloak unit template property
+      if ( _templates_unitattribs[unit->Type].__Behavior == UnitBehavior_SABOTEUR || _templates_unitattribs[unit->Type].TempCloak )
+      // New logic end
       {
         a3 = 0;
         blob_draw_y = draw_y + _healthbar_heights[health_bar_size_] + 1;
