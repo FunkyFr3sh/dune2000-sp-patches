@@ -12,6 +12,7 @@ bool SlowSideBarScrolling;
 void SetMouseCursorForUnitMovementRestriction();
 
 // Fix cursor over enemy building when only armed engineer/saboteur is selected
+// Implement NoAttackOrders unit template property
 bool IsAnyArmedUnitSelectedExceptEngineerAndSaboteur()
 {
   for (Unit *unit = GetSide(gSideId)->__FirstUnitPtr; unit; unit = unit->Next)
@@ -19,11 +20,60 @@ bool IsAnyArmedUnitSelectedExceptEngineerAndSaboteur()
     UnitAtribStruct *unit_template = &_templates_unitattribs[unit->Type];
     if (unit->__IsSelected &&
         unit_template->__PrimaryWeapon != -1 &&
+        !unit_template->NoAttackOrders &&
         unit_template->__Behavior != UnitBehavior_SABOTEUR &&
         unit_template->__Behavior != UnitBehavior_ENGINEER)
       return 1;
   }
   return 0;
+}
+
+// Custom implementation of function IsAnyArmedUnitSelected
+DETOUR(0x004A58B0, 0x004A58EF, _Mod__IsAnyArmedUnitSelected);
+
+// Implement NoAttackOrders unit template property
+char Mod__IsAnyArmedUnitSelected()
+{
+  Unit *unit; // eax
+
+  unit = GetSide(gSideId)->__FirstUnitPtr;
+  if ( !unit )
+  {
+    return 0;
+  }
+  while ( !unit->__IsSelected || _templates_unitattribs[unit->Type].__PrimaryWeapon == -1 || _templates_unitattribs[unit->Type].NoAttackOrders )
+  {
+    unit = unit->Next;
+    if ( !unit )
+    {
+      return 0;
+    }
+  }
+  return 1;
+}
+
+// Custom implementation of function IsAnyArmedUnitSelectedExceptThis
+DETOUR(0x004A58F0, 0x004A593B, _Mod__IsAnyArmedUnitSelectedExceptThis);
+
+// Implement NoAttackOrders unit template property
+char Mod__IsAnyArmedUnitSelectedExceptThis(Unit *this_unit)
+{
+  Unit *unit; // eax
+
+  unit = GetSide(gSideId)->__FirstUnitPtr;
+  if ( !unit )
+  {
+    return 0;
+  }
+  while ( !unit->__IsSelected || unit == this_unit || _templates_unitattribs[unit->Type].__PrimaryWeapon == -1 || _templates_unitattribs[unit->Type].NoAttackOrders )
+  {
+    unit = unit->Next;
+    if ( !unit )
+    {
+      return 0;
+    }
+  }
+  return 1;
 }
 
 // Custom implementation of function IsAnyCrusherSelected
@@ -45,7 +95,7 @@ char Mod__IsAnyCrusherSelected()
 // Custom implementation of function GetSelectedBuildingWithBarrel
 DETOUR(0x004A5860, 0x004A58A3, _Mod__GetSelectedBuildingWithBarrel);
 
-// Implement TurretNoOrders template property
+// Implement TurretNoOrders building template property
 Building *Mod__GetSelectedBuildingWithBarrel()
 {
   Building *result; // eax

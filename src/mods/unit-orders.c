@@ -167,7 +167,9 @@ void Mod__GenerateUnitAttackUnitOrder(eSideType side_id, eSideType target_side_i
       if ( unit->State != UNIT_STATE_17_DEAD && _templates_unitattribs[unit->Type].__PrimaryWeapon != -1
         // New logic start
         // Do not allow ordering AI unit to attack the same unit it's already ordered to attack
-        && !(_gAIArray[(int)side_id].__IsAI && unit->State == UNIT_STATE_4_ATTACKING_UNIT && unit->EnemySide == target_side_id && unit->EnemyIndex == target_unit_index) )
+        && !(_gAIArray[(int)side_id].__IsAI && unit->State == UNIT_STATE_4_ATTACKING_UNIT && unit->EnemySide == target_side_id && unit->EnemyIndex == target_unit_index)
+        // Implement NoAttackOrders unit template property
+        && !_templates_unitattribs[unit->Type].NoAttackOrders )
         // New logic end
       {
         order.ObjectArray[i++] = unit->MyIndex;
@@ -216,7 +218,9 @@ void Mod__GenerateUnitAttackBuildingOrder(eSideType side_id, char target_side_id
           && (side_id != target_side_id || (behavior != UnitBehavior_ENGINEER && behavior != UnitBehavior_SABOTEUR))
           // New logic start
           // Do not allow ordering AI unit to attack the same building it's already ordered to attack
-          && !(_gAIArray[(int)side_id].__IsAI && unit->State == UNIT_STATE_5_ATTACKING_BUILDING && unit->EnemySide == target_side_id && unit->EnemyIndex == target_building_index) )
+          && !(_gAIArray[(int)side_id].__IsAI && unit->State == UNIT_STATE_5_ATTACKING_BUILDING && unit->EnemySide == target_side_id && unit->EnemyIndex == target_building_index)
+          // Implement NoAttackOrders unit template property
+          && !_templates_unitattribs[unit->Type].NoAttackOrders )
           // New logic end
         {
           order.ObjectArray[i++] = unit->MyIndex;
@@ -256,7 +260,11 @@ void Mod__GenerateUnitAttackTileOrder(char side_id, short x, short y)
     }
     if ( unit->__IsSelected )
     {
-      if ( unit->State != UNIT_STATE_17_DEAD && _templates_unitattribs[unit->Type].__PrimaryWeapon != -1 )
+      if ( unit->State != UNIT_STATE_17_DEAD && _templates_unitattribs[unit->Type].__PrimaryWeapon != -1
+      // New logic start
+      // Implement NoAttackOrders unit template property
+      && !_templates_unitattribs[unit->Type].NoAttackOrders )
+      // New logic end
       {
         order.ObjectArray[i++] = unit->MyIndex;
       }
@@ -292,7 +300,11 @@ void Mod__GenerateUnitGuardOrder(char side_id)
     }
     if ( unit->__IsSelected )
     {
-      if ( unit->State != UNIT_STATE_17_DEAD && _templates_unitattribs[unit->Type].__PrimaryWeapon != -1 )
+      if ( unit->State != UNIT_STATE_17_DEAD && _templates_unitattribs[unit->Type].__PrimaryWeapon != -1
+      // New logic start
+      // Implement NoGuarding unit template property
+      && !_templates_unitattribs[unit->Type].NoGuarding )
+      // New logic end
       {
         order.ObjectArray[i++] = unit->MyIndex;
       }

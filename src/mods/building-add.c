@@ -1,5 +1,6 @@
 #include "macros/patch.h"
 #include "dune2000.h"
+#include "patch.h"
 
 // Custom implementation of function AddBuildingTileDataAndRadar
 DETOUR(0x0044DBD0, 0x0044DED2, _Mod__AddBuildingTileDataAndRadar);
@@ -392,7 +393,10 @@ LABEL_46:
     Building *b = (Building *)&side->__ObjectArray[(unsigned short)side->__PrimaryConyard];
     b->Flags |= BFLAGS_20_ANIM_ONCE;
   }
-  if ( side_id == gSideId )
+  // New logic start
+  // Share buildings view with spectators
+  if ( (side_id == gSideId) || (SpawnerActive && gLose && gGameType != GAME_CAMPAIGN) )
+  // New logic end
   {
     RevealTilesSeenByBuilding(building_type, x, y);
   }

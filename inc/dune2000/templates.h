@@ -72,7 +72,9 @@ typedef struct UnitAtribStruct
   uint8_t MaxCount;
   uint8_t ExcludeFromMultiselect;
   uint8_t TempCloak;
-  char ZeroBytes[53];
+  uint8_t NoGuarding;
+  uint8_t NoAttackOrders;
+  char ZeroBytes[51];
 }UnitAtribStruct;
 
 typedef struct BuildingAtrbStruct
@@ -152,7 +154,9 @@ typedef struct BuildingAtrbStruct
   uint8_t DamagedAnimation;
   uint8_t TurretNoWall;
   uint8_t TurretNoOrders;
-  char field_8D[104];
+  uint8_t PrimaryWeaponNoAutoAttack;
+  uint8_t SecondaryWeaponNoAutoAttack;
+  char field_8D[102];
 }BuildingAtrbStruct;
 
 typedef struct SmokeDataStruct

@@ -16,19 +16,19 @@ hack 0x0044904F, 0x00449055 ; DrawMiniMapForSpectators
     jz 0x00449055
     jmp 0x0044906D
 
-
-hack 0x00456843, 0x00456849 ; ShareBuildingsViewWithSpectators
-    cmp byte[SpawnerActive], 1
-    jnz .out
-    cmp byte[gLose], 1
-    jnz .out
-    cmp dword[gGameType], 0
-    jz .out
-    jmp 0x0045684D
-    
-.out:
-    mov cl, byte[MySideID]
-    jmp 0x00456849
+; Superseded by Mod__ModelAddBuilding
+;hack 0x00456843, 0x00456849 ; ShareBuildingsViewWithSpectators
+;    cmp byte[SpawnerActive], 1
+;    jnz .out
+;    cmp byte[gLose], 1
+;    jnz .out
+;    cmp dword[gGameType], 0
+;    jz .out
+;    jmp 0x0045684D
+;
+;.out:
+;    mov cl, byte[MySideID]
+;    jmp 0x00456849
 
 
 hack 0x0044D02F, 0x0044D035 ; ShareUnitsViewWithSpectators

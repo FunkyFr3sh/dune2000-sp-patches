@@ -69,7 +69,7 @@ OBJS            ?= callsites.o \
         src/mods/handle-game-loop-events.o \
         src/mods/radar.o \
         src/mods/unit-multiselection-improvements.o \
-        src/mods/unlimited-unit-orders.o \
+        src/mods/unit-orders.o \
         src/mods/unit-update.o \
         src/mods/unit-attack.o \
         src/mods/building-update.o \
