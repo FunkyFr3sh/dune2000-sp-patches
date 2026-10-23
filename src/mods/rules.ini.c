@@ -41,6 +41,7 @@ void InitExtraRules(void)
   rulesExt__separateBuildingVoiceLines       = false;
   rulesExt__alwaysExcludeFromMultiselect     = false;
   rulesExt__fixedBarrelIgnoresTurnSpeed      = true;
+  rulesExt__arcAndFallingBulletsHaveShadow   = true;
 }
 
 static void LoadVars(LPCTSTR fileName);
@@ -134,4 +135,5 @@ static void LoadVars(LPCTSTR fileName)
     LOAD_CUSTOM_RULE(separateBuildingVoiceLines, Bool)
     LOAD_CUSTOM_RULE(alwaysExcludeFromMultiselect, Bool)
     LOAD_CUSTOM_RULE(fixedBarrelIgnoresTurnSpeed, Bool)
+    LOAD_CUSTOM_RULE(arcAndFallingBulletsHaveShadow, Bool)
 }

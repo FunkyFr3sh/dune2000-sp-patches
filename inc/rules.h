@@ -64,3 +64,4 @@ bool     rulesExt__harvsCanBeOrderedToUndock;
 bool     rulesExt__separateBuildingVoiceLines;
 bool     rulesExt__alwaysExcludeFromMultiselect;
 bool     rulesExt__fixedBarrelIgnoresTurnSpeed;
+bool     rulesExt__arcAndFallingBulletsHaveShadow;

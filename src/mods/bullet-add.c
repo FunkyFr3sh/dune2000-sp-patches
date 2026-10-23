@@ -2,9 +2,11 @@
 #include "dune2000.h"
 #include "utils.h"
 #include "extended-templates.h"
+#include "rules.h"
 
 // Add lightning bullet behavior
 // Add railgun bullet behavior
+// Implement arcAndFallingBulletsHaveShadow rule
 
 void AddLightning(unsigned char side_id, unsigned char bullet_type, short firer_index, unsigned short source_xpos, unsigned short source_ypos, unsigned short target_xpos, unsigned short target_ypos)
 {
@@ -168,14 +170,26 @@ LABEL_16:
   if ( v19 & BULFLAGS_1_ARC_TRAJECTORY )
   {
     bullet->__FallingSpeed = (signed int)(-0x2000u * move_steps) / 2;
-    bullet_flags = bullet_flags | BULFLAGS_2_DRAW_SHADOW;
-    bullet->Flags = bullet_flags;
+    // New logic start
+    // Implement arcAndFallingBulletsHaveShadow rule
+    if (rulesExt__arcAndFallingBulletsHaveShadow)
+    {
+      bullet_flags = bullet_flags | BULFLAGS_2_DRAW_SHADOW;
+      bullet->Flags = bullet_flags;
+    }
+    // New logic end
   }
   bullet_flags = bullet->Flags;
   if ( bullet_flags & BULFLAGS_100_FALLING )
   {
-    bullet_flags = bullet_flags | BULFLAGS_2_DRAW_SHADOW;
-    bullet->Flags = bullet_flags;
+    // New logic start
+    // Implement arcAndFallingBulletsHaveShadow rule
+    if (rulesExt__arcAndFallingBulletsHaveShadow)
+    {
+      bullet_flags = bullet_flags | BULFLAGS_2_DRAW_SHADOW;
+      bullet->Flags = bullet_flags;
+    }
+    // New logic end
     if ( firer == -1 )
     {
       DebugFatal("Model.cpp", "Firer was illegal");
