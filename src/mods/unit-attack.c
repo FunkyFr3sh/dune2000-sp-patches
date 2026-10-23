@@ -1,6 +1,7 @@
 #include "macros/patch.h"
 #include "dune2000.h"
 #include "utils.h"
+#include "rules.h"
 #include "shooting-restrictions.h"
 #include "extended-templates.h"
 
@@ -858,7 +859,8 @@ LABEL_12:
       TurnUnitBarrelInDirection(unit_, target_direction);
       if ( fixed_barrel )
       {
-        unit_->__UnitTurnDelayCounter = 0;
+        if (rulesExt__fixedBarrelIgnoresTurnSpeed)
+          unit_->__UnitTurnDelayCounter = 0;
         TurnUnitInDirection(unit_, target_direction);
       }
     }
