@@ -920,10 +920,17 @@ char            GetSpiceTileToHarvest(Unit *unit, eSideType side, _BYTE *x, _BYT
 bool            spice_44D970(unsigned char *x, unsigned char *y);
 unsigned int    FindFreeSpotForInfantry(TileFlags tile_flags);
 void            GetBuildingOnConcreteCount(char side_id, unsigned char building_type, unsigned char x, unsigned char y, unsigned int *buildTileCount1, unsigned int *concreteTileCount1);
+void            AddBuildingTileDataAndRadar(eSideType side_id, unsigned char building_type, unsigned char x, unsigned char y);
 void            RemoveBuildingStuff(int building_type, int x, int y, eSideType side_id);
+void            RemoveBuildingTileDataAndRadar(unsigned char building_type, unsigned char x, unsigned char y);
 void            RemoveUnitTileData(Unit *a1);
+void            RevealTilesSeenByBuilding(unsigned char building_type, unsigned char xpos, unsigned char ypos);
 void            RevealCircle(int x, int y, int size);
 bool            TileHasSpice(int x, int y);
+bool            CoordinatesInsideMapArea(int x, int y);
+char            TileHasWall(int x, int y);
+char            ResolveWall(int x, int y);
+void            UpdateWallFrameOnAdjacentBuildings(int x, int y);
 void            InitCrates();
 char            GetFreeCrateIndex();
 void            PlaceCrate(int x, int y, int timing, eCrateType type, eCrateImage image, int respawn_count);
@@ -932,6 +939,8 @@ eCrateType      GetCrateFromMap(int x, int y);
 void            UpdateSpiceInRegion(RECT *a1);
 void            SpiceMound(unsigned char xpos, unsigned char ypos, int range);
 void            RecycleCrate(unsigned char index);
+void            AddSkirt(unsigned char x, unsigned char y, unsigned char building_type);
+void            RemoveSkirt(unsigned char x, unsigned char y, unsigned char building_type);
 int             GetMapVisState();
 // Memory
 void *          Alloc(size_t size, char *debugString);

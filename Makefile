@@ -104,6 +104,7 @@ OBJS            ?= callsites.o \
         src/mods/side-update-icons.o \
         src/mods/blit-ui-icons.o \
         src/mods/build-building-pick.o \
+        src/mods/building-add.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \

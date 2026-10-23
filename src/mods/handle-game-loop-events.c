@@ -42,6 +42,30 @@ char Mod__IsAnyCrusherSelected()
   return 0;
 }
 
+// Custom implementation of function GetSelectedBuildingWithBarrel
+DETOUR(0x004A5860, 0x004A58A3, _Mod__GetSelectedBuildingWithBarrel);
+
+// Implement TurretNoOrders template property
+Building *Mod__GetSelectedBuildingWithBarrel()
+{
+  Building *result; // eax
+
+  result = GetSide(gSideId)->__FirstBuildingPtr;
+  if ( !result )
+  {
+    return 0;
+  }
+  while ( !result->__IsSelected || _templates_buildattribs[result->Type]._____BarrelArt == -1 || _templates_buildattribs[result->Type].TurretNoOrders )
+  {
+    result = result->Next;
+    if ( !result )
+    {
+      return 0;
+    }
+  }
+  return result;
+}
+
 // Custom implementation of function HandleGameLoopEvents
 DETOUR(0x004433A0, 0x00446689, _Mod__HandleGameLoopEvents);
 

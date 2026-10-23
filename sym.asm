@@ -749,10 +749,17 @@ setcglob 0x0044D760, GetSpiceTileToHarvest
 setcglob 0x0044D970, spice_44D970
 setcglob 0x0044DA90, FindFreeSpotForInfantry
 setcglob 0x0044DAC0, GetBuildingOnConcreteCount
+setcglob 0x0044DBD0, AddBuildingTileDataAndRadar
 setcglob 0x0044DEE0, RemoveBuildingStuff
+setcglob 0x0044DF60, RemoveBuildingTileDataAndRadar
 setcglob 0x0044E120, RemoveUnitTileData
+setcglob 0x0044E330, RevealTilesSeenByBuilding
 setcglob 0x0044E3B0, RevealCircle
 setcglob 0x0044E4D0, TileHasSpice
+setcglob 0x0044E510, CoordinatesInsideMapArea
+setcglob 0x0044E540, TileHasWall
+setcglob 0x0044E580, ResolveWall
+setcglob 0x0044E6D0, UpdateWallFrameOnAdjacentBuildings
 setcglob 0x0044E770, InitCrates
 setcglob 0x0044E790, GetFreeCrateIndex
 setcglob 0x0044E8E0, PlaceCrate
@@ -761,6 +768,8 @@ setcglob 0x0044E9D0, GetCrateFromMap
 setcglob 0x0044EC50, UpdateSpiceInRegion
 setcglob 0x0044EF10, SpiceMound
 setcglob 0x0044F110, RecycleCrate
+setcglob 0x0044F1B0, AddSkirt
+setcglob 0x0044F2F0, RemoveSkirt
 setcglob 0x0044F440, GetMapVisState
 ; Memory
 setcglob 0x0044F4D0, Alloc

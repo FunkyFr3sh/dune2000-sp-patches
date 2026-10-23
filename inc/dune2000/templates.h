@@ -150,7 +150,9 @@ typedef struct BuildingAtrbStruct
   uint32_t StorageCapacity;
   uint8_t DamagedAnimationEnabled;
   uint8_t DamagedAnimation;
-  char field_8D[106];
+  uint8_t TurretNoWall;
+  uint8_t TurretNoOrders;
+  char field_8D[104];
 }BuildingAtrbStruct;
 
 typedef struct SmokeDataStruct
