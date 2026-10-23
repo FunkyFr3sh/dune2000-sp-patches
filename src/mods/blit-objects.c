@@ -377,11 +377,17 @@ void Mod__BlitObjects(TImage *img)
             if ( _templates_unitattribs[unit->Type].__Behavior == UnitBehavior_HARVESTER && unit->__CurrentAnimFrame )
             {
               anim_frame = (unsigned char)unit->__CurrentAnimFrame;
-              base_image = gExplosionElements[0][anim_frame + 40 * (unsigned char)_templates_GroupIDs.EX_HARV];
-              if ( !gExplosionElements[0][anim_frame + 40 * (unsigned char)_templates_GroupIDs.EX_HARV] )
+              // New logic start
+              // Implement customizable harvester dock explosion
+              int harv_explosion_type = _templates_unitattribs[unit->Type].HarvDockAnimation == 0?-1:_templates_unitattribs[unit->Type].HarvDockAnimation;
+              if (harv_explosion_type == -1)
+                harv_explosion_type = _templates_GroupIDs.EX_HARV;
+              base_image = gExplosionElements[harv_explosion_type][anim_frame];
+              if ( !gExplosionElements[harv_explosion_type][anim_frame] )
               {
                 DebugFatal("Display.cpp", "BaseImage is NULL for harvester explosion, frame %d", anim_frame);
               }
+              // New logic end
             }
             else
             {

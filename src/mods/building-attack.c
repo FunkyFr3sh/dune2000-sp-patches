@@ -554,6 +554,7 @@ void Mod__BuildingShootTarget(Building *building, char side_id, short index, int
         {
           DebugFatal("ShootTarget", "NewBestBullet failed to find weapon");
         }
+        muzzle_flash_explosion_type = (bullet_type == building_template->_____PrimaryWeapon)?building_template->PrimaryMuzzleFlash:(building_template->SecondaryMuzzleFlash == 0?-1:building_template->SecondaryMuzzleFlash);
         // Play sound
         PlaySoundAt(_templates_bulletattribs[bullet_type].__FiringSound, building_xpos >> 5, building_ypos >> 5);
         // Reveal building shooting player's unit
@@ -590,7 +591,6 @@ void Mod__BuildingShootTarget(Building *building, char side_id, short index, int
         }
         homing_index = (enemy_object_type == OBJECT_UNIT)?enemy_index:-1;
         homing_side = (enemy_object_type == OBJECT_UNIT)?enemy_side_id:-1;
-        muzzle_flash_explosion_type = building_template->_____MuzzleFlashExplosion;
         is_muzzle_flash_explosion = (_templates_Explosiondata_AnimationArtFlags[muzzle_flash_explosion_type] & EXPFLAGS_400_MUZZLE_FLASH) != 0;
         y_offset = 0;
         if (building_template->_____BarrelArt != -1)

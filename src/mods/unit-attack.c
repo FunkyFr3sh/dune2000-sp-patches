@@ -692,6 +692,7 @@ void Mod__UnitShootTarget(Unit *unit, char side, unsigned short index, int targe
       }
     }
     use_barrel = (bullet_type == unit_template->__PrimaryWeapon)?unit_template->PrimaryWeaponUseBarrel:unit_template->SecondaryWeaponUseBarrel;
+    muzzle_flash_explosion_type = (bullet_type == unit_template->__PrimaryWeapon)?unit_template->PrimaryMuzzleFlash:(unit_template->SecondaryMuzzleFlash == 0?-1:unit_template->SecondaryMuzzleFlash);
     fixed_barrel = unit_->Flags & UFLAGS_8000_FIXED_BARREL;
     if ( use_barrel || fixed_barrel )
     {
@@ -750,7 +751,6 @@ LABEL_12:
         }
         homing_index = (enemy_object_type == OBJECT_UNIT)?enemyIndex:-1;
         homing_side = (enemy_object_type == OBJECT_UNIT)?enemySideId:-1;
-        muzzle_flash_explosion_type = unit_template->__FireFlashAnim;
         is_muzzle_flash_explosion = (_templates_Explosiondata_AnimationArtFlags[muzzle_flash_explosion_type] & EXPFLAGS_400_MUZZLE_FLASH) != 0;
         // Single shot
         if ( !double_shot )

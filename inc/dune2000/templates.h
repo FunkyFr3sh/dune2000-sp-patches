@@ -39,7 +39,7 @@ typedef struct UnitAtribStruct
   int __ReportingSounds[3][3];
   int __ConfirmationSounds[3][3];
   int __VoicePriority;
-  char __FireFlashAnim;
+  char PrimaryMuzzleFlash;
   char __VehicleType;
   char __MPOnly;
   // Additional fields for extended functionality (mod)
@@ -74,7 +74,9 @@ typedef struct UnitAtribStruct
   uint8_t TempCloak;
   uint8_t NoGuarding;
   uint8_t NoAttackOrders;
-  char ZeroBytes[51];
+  char SecondaryMuzzleFlash;
+  char HarvDockAnimation;
+  char ZeroBytes[49];
 }UnitAtribStruct;
 
 typedef struct BuildingAtrbStruct
@@ -132,7 +134,7 @@ typedef struct BuildingAtrbStruct
   char _____BuildupFramesToShow;
   char _____BuildupArt;
   char _____BuildingAnimation;
-  char _____MuzzleFlashExplosion;
+  char PrimaryMuzzleFlash;
   // Additional fields for extended functionality (mod)
   char BuildRestriction;
   char BuildMaxDistance;
@@ -156,7 +158,8 @@ typedef struct BuildingAtrbStruct
   uint8_t TurretNoOrders;
   uint8_t PrimaryWeaponNoAutoAttack;
   uint8_t SecondaryWeaponNoAutoAttack;
-  char field_8D[102];
+  char SecondaryMuzzleFlash;
+  char field_8D[101];
 }BuildingAtrbStruct;
 
 typedef struct SmokeDataStruct
