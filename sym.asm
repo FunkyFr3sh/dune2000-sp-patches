@@ -221,6 +221,7 @@ setcglob 0x00503F88, _crater_draw_offsets_x
 ;setcglob 0x005042E8, _DisplayList ; Replaced by mod
 setcglob 0x00512D58, _selectedmaybe_dw_BlitVehicles_512D58
 setcglob 0x00512D70, _drawdata_512D70
+setcglob 0x00512D74, _drawdata_512D74
 setcglob 0x00513488, ResourcePath
 setcglob 0x00513488, gRES_PATH
 setcglob 0x00513520, gMOVIES_RES_PATH
@@ -675,6 +676,7 @@ setcglob 0x0042DC00, BlitFontChars
 setcglob 0x0042DD50, Graphlib__DrawRightAlignedText
 setcglob 0x0042DD90, Graphlib__DrawTextWithBlackShadow
 setcglob 0x0042DFB0, GetStringPixelWidth
+setcglob 0x0042E050, GL_DrawStringCentered1Color_FF
 setcglob 0x0042E0B0, GL_DrawStringCentered1Color
 setcglob 0x0042E1A0, GetFontHeight
 setcglob 0x0042E1C0, Graphlib_font_pal

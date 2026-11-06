@@ -416,6 +416,7 @@ extern int                  _crater_draw_offsets_x[16];
 // extern DisplayListStruct    _DisplayList[1000]; // Replaced by mod
 extern DisplayListStruct *  _selectedmaybe_dw_BlitVehicles_512D58;
 extern int                  _drawdata_512D70;
+extern int                  _drawdata_512D74;
 extern char                 ResourcePath[];
 extern char                 gRES_PATH[152];
 extern char                 gMOVIES_RES_PATH[152];
@@ -846,6 +847,7 @@ void            BlitFontChars(TImage *img, char *string, int x, int y, unsigned 
 void            Graphlib__DrawRightAlignedText(int *image, char *text, int x, int y, bool bold_unk, int color_unk, int unk2);
 void            Graphlib__DrawTextWithBlackShadow(TImage *image, char *text, int x, int y, int unk, int color_unk);
 int             GetStringPixelWidth(const char *string, unsigned char font);
+void            GL_DrawStringCentered1Color_FF(TImage *img, char *buffer, int xpos, int ypos, int widthsub, unsigned __int8 font, int color);
 void            GL_DrawStringCentered1Color(TImage *img, char *string, int xpos, int ypos, int widthsub, unsigned char font, unsigned char font_palette_index);
 char            GetFontHeight(unsigned char font);
 

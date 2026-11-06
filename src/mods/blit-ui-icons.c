@@ -3,6 +3,7 @@
 
 // Implement Max Count building template parameter
 // Implement Max Count unit template parameter
+// Building upgrade becomes available if side owns any upgradable building from same group
 
 // Custom implementation of function BlitUIIcons
 DETOUR(0x00426E80, 0x00427685, _Mod__BlitUIIcons);
@@ -477,4 +478,234 @@ void Mod__BlitUIIcons(TImage *img, int strip_bld_scroll_pos, int strip_bld_scrol
     }
     while ( unit_icon_num < num_unit_icons_to_draw );
   }
+}
+
+// Custom implementation of function BlitUIUpgradeIcons
+DETOUR(0x004278A0, 0x00427CBB, _Mod__BlitUIUpgradeIcons);
+
+void Mod__BlitUIUpgradeIcons(TImage *img, unsigned int tech_lvl, char full_redraw)
+{
+  CSide *side; // ebp MAPDST
+  int imh_width; // ecx
+  int img_height; // edx
+  unsigned int upgrade_icon_num; // ebx
+  char v8; // al MAPDST
+  short upgraded_building; // ax MAPDST
+  int upgrade_icon; // eax
+  int building_group; // esi
+  unsigned int row; // esi
+  int text_draw_y; // ST0C_4 MAPDST
+  int text_draw_x; // ST08_4 MAPDST
+  int text_id; // eax
+  char *text; // eax
+  unsigned int upgrade_count; // esi
+  bool can_upgrade; // cl
+  TImage *icon_image; // [esp-10h] [ebp-34h]
+  int sidebar_icon_width; // [esp-Ch] [ebp-30h]
+  RECT rect; // [esp+14h] [ebp-10h]
+  char colorRGB[4]; // [esp+28h] [ebp+4h]
+  int *upgrade_icon_ptr; // [esp+30h] [ebp+Ch]
+
+  (void)tech_lvl;
+  side = GetSide(gSideId);
+  imh_width = img->width;
+  img_height = img->height;
+  upgrade_icon_num = 0;
+  v8 = _drawdata_512D74 + 1;
+  rect.left = 0;
+  rect.top = 0;
+  rect.right = imh_width;
+  rect.bottom = img_height;
+  ++_drawdata_512D74;
+  if ( _drawdata_512D74 == 40 )
+  {
+    v8 = 0;
+    _drawdata_512D74 = 0;
+  }
+  colorRGB[1] = v8 - 46;
+  upgraded_building = side->__BuildingUpgradeQueue.__type;
+  colorRGB[0] = v8 + 20;
+  colorRGB[2] = (unsigned char)(v8 + 20);
+  if ( upgraded_building >= 0 )
+  {
+    if ( full_redraw )
+    {
+      BlitClipTImageColoured(_image_building_icon_construction, &rect, 0, 0, _BuildingUIIcons[upgraded_building], 0);
+      UpdateIconImage(
+        _BuildingUIIcons[side->__BuildingUpgradeQueue.__type],
+        _image_building_icon_construction,
+        0,
+        side->__BuildingUpgradeQueue.__build_progress >> 6);
+    }
+    else
+    {
+      if ( !side->__BuildingUpgradeQueue.__build_progress_prev )
+      {
+        BlitClipTImageColoured(_image_building_icon_construction, &rect, 0, 0, _BuildingUIIcons[upgraded_building], 0);
+      }
+      UpdateIconImage(
+        _BuildingUIIcons[side->__BuildingUpgradeQueue.__type],
+        _image_building_icon_construction,
+        side->__BuildingUpgradeQueue.__build_progress_prev >> 6,
+        side->__BuildingUpgradeQueue.__build_progress >> 6);
+    }
+  }
+  upgrade_icon_ptr = side->__UpgradeIcons;
+  do
+  {
+    upgrade_icon = *upgrade_icon_ptr;
+    building_group = _templates_buildattribs[*upgrade_icon_ptr].GroupType;
+    if ( *upgrade_icon_ptr != -1 && side->__BuildingsExistPerGroup[building_group] )
+    {
+      upgraded_building = side->__BuildingUpgradeQueue.__type;
+      if ( upgraded_building < 0 )
+      {
+        upgrade_count = (unsigned char)side->__BuildingGroupUpgradeCount[building_group];
+        can_upgrade = 0;
+        if ( upgrade_count < 3 )
+        {
+          // New logic start
+          // Building upgrade becomes available if side owns any upgradable building from same group
+          can_upgrade = CanSideUpgradeBuildingGroup(gSideId, building_group);
+          // New logic end
+        }
+        if ( can_upgrade )
+        {
+          icon_image = _BuildingUIIcons[upgrade_icon];
+          if ( upgrade_icon_num & 1 )
+          {
+            BlitClipTImage1(
+              img,
+              _SidebarStrip2XPos,
+              _SidebarStrip1YPos + _SideBarIconHeight2 * (upgrade_icon_num >> 1),
+              icon_image,
+              0,
+              0,
+              0);
+          }
+          else
+          {
+            BlitClipTImage1(
+              img,
+              _SidebarStrip1XPos,
+              _SidebarStrip1YPos + _SideBarIconHeight2 * (upgrade_icon_num >> 1),
+              icon_image,
+              0,
+              0,
+              0);
+          }
+        }
+        else if ( upgrade_icon_num & 1 )
+        {
+          BlitClipTImageColoured(
+            img,
+            &rect,
+            _SidebarStrip2XPos,
+            _SidebarStrip1YPos + _SideBarIconHeight2 * (upgrade_icon_num >> 1),
+            _BuildingUIIcons[upgrade_icon],
+            0);
+        }
+        else
+        {
+          BlitClipTImageColoured(
+            img,
+            &rect,
+            _SidebarStrip1XPos,
+            _SidebarStrip1YPos + _SideBarIconHeight2 * (upgrade_icon_num >> 1),
+            _BuildingUIIcons[upgrade_icon],
+            0);
+        }
+      }
+      else if ( upgraded_building == upgrade_icon )
+      {
+        if ( upgrade_icon_num & 1 )
+        {
+          row = upgrade_icon_num >> 1;
+          BlitClipTImage1(
+            img,
+            _SidebarStrip2XPos,
+            _SidebarStrip1YPos + (upgrade_icon_num >> 1) * _SideBarIconHeight2,
+            _image_building_icon_construction,
+            0,
+            0,
+            0);
+        }
+        else
+        {
+          row = upgrade_icon_num >> 1;
+          BlitClipTImage1(
+            img,
+            _SidebarStrip1XPos,
+            _SidebarStrip1YPos + (upgrade_icon_num >> 1) * _SideBarIconHeight2,
+            _image_building_icon_construction,
+            0,
+            0,
+            0);
+        }
+        if ( side->__BuildingUpgradeQueue.__on_hold )
+        {
+          sidebar_icon_width = _SidebarIconWidth;
+          if ( upgrade_icon_num & 1 )
+          {
+            text_draw_y = row * _SideBarIconHeight2 + _SidebarStrip1YPos + 16;
+            text_draw_x = _SidebarStrip2XPos;
+          }
+          else
+          {
+            text_draw_y = row * _SideBarIconHeight2 + _SidebarStrip1YPos + 16;
+            text_draw_x = _SidebarStrip1XPos;
+          }
+          text_id = GetTextID("Hold");
+          text = GetTextString(text_id, 1);
+          int *colorRGB_ = (int *)colorRGB;
+          GL_DrawStringCentered1Color_FF(img, text, text_draw_x, text_draw_y, sidebar_icon_width, 0, *colorRGB_);
+        }
+      }
+      else if ( upgrade_icon_num & 1 )
+      {
+        BlitClipTImageColoured(
+          img,
+          &rect,
+          _SidebarStrip2XPos,
+          _SidebarStrip1YPos + _SideBarIconHeight2 * (upgrade_icon_num >> 1),
+          _BuildingUIIcons[upgrade_icon],
+          0);
+      }
+      else
+      {
+        BlitClipTImageColoured(
+          img,
+          &rect,
+          _SidebarStrip1XPos,
+          _SidebarStrip1YPos + _SideBarIconHeight2 * (upgrade_icon_num >> 1),
+          _BuildingUIIcons[upgrade_icon],
+          0);
+      }
+    }
+    else if ( upgrade_icon_num & 1 )
+    {
+      BlitClipTImage1(
+        img,
+        _SidebarStrip2XPos,
+        _SidebarStrip1YPos + _SideBarIconHeight2 * (upgrade_icon_num >> 1),
+        _image_empty_icon,
+        0,
+        0,
+        0);
+    }
+    else
+    {
+      BlitClipTImage1(
+        img,
+        _SidebarStrip1XPos,
+        _SidebarStrip1YPos + _SideBarIconHeight2 * (upgrade_icon_num >> 1),
+        _image_empty_icon,
+        0,
+        0,
+        0);
+    }
+    ++upgrade_icon_num;
+    ++upgrade_icon_ptr;
+  }
+  while ( upgrade_icon_num < 8 );
 }
