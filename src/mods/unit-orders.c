@@ -1,5 +1,6 @@
 #include "macros/patch.h"
 #include "dune2000.h"
+#include "patch.h"
 
 // Custom implementation of function GenerateUnitMoveOrder
 DETOUR(0x00459450, 0x0045953B, _Mod__GenerateUnitMoveOrder);
@@ -164,8 +165,10 @@ void Mod__GenerateUnitAttackUnitOrder(eSideType side_id, eSideType target_side_i
     }
     if ( unit->__IsSelected )
     {
-      if ( unit->State != UNIT_STATE_17_DEAD && _templates_unitattribs[unit->Type].__PrimaryWeapon != -1
+      if ( unit->State != UNIT_STATE_17_DEAD
         // New logic start
+        // Implement anti-air-only weapons
+        && IsUnitArmedAgainstLandTarget(unit)
         // Do not allow ordering AI unit to attack the same unit it's already ordered to attack
         && !(_gAIArray[(int)side_id].__IsAI && unit->State == UNIT_STATE_4_ATTACKING_UNIT && unit->EnemySide == target_side_id && unit->EnemyIndex == target_unit_index)
         // Implement NoAttackOrders unit template property
@@ -217,6 +220,8 @@ void Mod__GenerateUnitAttackBuildingOrder(eSideType side_id, char target_side_id
           && behavior != UnitBehavior_THUMPER
           && (side_id != target_side_id || (behavior != UnitBehavior_ENGINEER && behavior != UnitBehavior_SABOTEUR))
           // New logic start
+          // Implement anti-air-only weapons
+          && (IsUnitArmedAgainstLandTarget(unit) || behavior == UnitBehavior_ENGINEER || behavior == UnitBehavior_SABOTEUR)
           // Do not allow ordering AI unit to attack the same building it's already ordered to attack
           && !(_gAIArray[(int)side_id].__IsAI && unit->State == UNIT_STATE_5_ATTACKING_BUILDING && unit->EnemySide == target_side_id && unit->EnemyIndex == target_building_index)
           // Implement NoAttackOrders unit template property
@@ -260,8 +265,10 @@ void Mod__GenerateUnitAttackTileOrder(char side_id, short x, short y)
     }
     if ( unit->__IsSelected )
     {
-      if ( unit->State != UNIT_STATE_17_DEAD && _templates_unitattribs[unit->Type].__PrimaryWeapon != -1
+      if ( unit->State != UNIT_STATE_17_DEAD
       // New logic start
+      // Implement anti-air-only weapons
+      && IsUnitArmedAgainstLandTarget(unit)
       // Implement NoAttackOrders unit template property
       && !_templates_unitattribs[unit->Type].NoAttackOrders )
       // New logic end
@@ -300,8 +307,10 @@ void Mod__GenerateUnitGuardOrder(char side_id)
     }
     if ( unit->__IsSelected )
     {
-      if ( unit->State != UNIT_STATE_17_DEAD && _templates_unitattribs[unit->Type].__PrimaryWeapon != -1
+      if ( unit->State != UNIT_STATE_17_DEAD
       // New logic start
+      // Implement anti-air-only weapons
+      && IsUnitArmedAgainstLandTarget(unit)
       // Implement NoGuarding unit template property
       && !_templates_unitattribs[unit->Type].NoGuarding )
       // New logic end

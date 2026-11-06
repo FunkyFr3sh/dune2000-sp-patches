@@ -210,5 +210,7 @@ int SetupAIPlayerSides();
 int GetStartingLocation(int house);
 int GetFreeStartingLocation(int currentLocation);
 void SetBattleFieldSize();
+bool IsUnitArmedAgainstLandTarget(Unit *unit);
+bool IsBuildingArmedAgainstLandTarget(Building *building);
 DWORD WINAPI fake_timeGetTime();
 DWORD WINAPI fake_GetTickCount();

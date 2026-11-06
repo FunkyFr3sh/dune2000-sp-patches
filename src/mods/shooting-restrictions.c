@@ -187,17 +187,17 @@ char Mod__EnemyUnitInRange(int xpos, int ypos, eSideType side_id, int radius, in
   }
   else if ( secondary_weapon_type == -1 )
   {
-    range = _templates_bulletattribs[(int)primary_weapon_type].__Range;
+    range = _templates_bulletattribs[(int)primary_weapon_type].AntiAircraft == 2?-100:_templates_bulletattribs[(int)primary_weapon_type].__Range;
     restriction_type = (_templates_bulletattribs[(int)primary_weapon_type].Flags & BULFLAGS_1000_BLOCKED_BY_WALL)?1:2;
   }
-  else if ( (unsigned int)_templates_bulletattribs[(int)primary_weapon_type].__Range <= (unsigned int)_templates_bulletattribs[(int)secondary_weapon_type].__Range )
+  else if ( (unsigned int)_templates_bulletattribs[(int)primary_weapon_type].__Range <= (unsigned int)_templates_bulletattribs[(int)secondary_weapon_type].__Range && _templates_bulletattribs[(int)secondary_weapon_type].AntiAircraft != 2 )
   {
     range = _templates_bulletattribs[(int)secondary_weapon_type].__Range;
     restriction_type = (_templates_bulletattribs[(int)secondary_weapon_type].Flags & BULFLAGS_1000_BLOCKED_BY_WALL)?1:2;
   }
   else
   {
-    range = _templates_bulletattribs[(int)primary_weapon_type].__Range;
+    range = _templates_bulletattribs[(int)primary_weapon_type].AntiAircraft == 2?-100:_templates_bulletattribs[(int)primary_weapon_type].__Range;
     restriction_type = (_templates_bulletattribs[(int)primary_weapon_type].Flags & BULFLAGS_1000_BLOCKED_BY_WALL)?1:2;
   }
   v51 = 1;

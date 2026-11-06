@@ -13,16 +13,17 @@ void SetMouseCursorForUnitMovementRestriction();
 
 // Fix cursor over enemy building when only armed engineer/saboteur is selected
 // Implement NoAttackOrders unit template property
+// Implement anti-air-only weapons
 bool IsAnyArmedUnitSelectedExceptEngineerAndSaboteur()
 {
   for (Unit *unit = GetSide(gSideId)->__FirstUnitPtr; unit; unit = unit->Next)
   {
     UnitAtribStruct *unit_template = &_templates_unitattribs[unit->Type];
-    if (unit->__IsSelected &&
-        unit_template->__PrimaryWeapon != -1 &&
-        !unit_template->NoAttackOrders &&
-        unit_template->__Behavior != UnitBehavior_SABOTEUR &&
-        unit_template->__Behavior != UnitBehavior_ENGINEER)
+    if (unit->__IsSelected
+        && IsUnitArmedAgainstLandTarget(unit)
+        && !unit_template->NoAttackOrders
+        && unit_template->__Behavior != UnitBehavior_SABOTEUR
+        && unit_template->__Behavior != UnitBehavior_ENGINEER)
       return 1;
   }
   return 0;
@@ -32,48 +33,37 @@ bool IsAnyArmedUnitSelectedExceptEngineerAndSaboteur()
 DETOUR(0x004A58B0, 0x004A58EF, _Mod__IsAnyArmedUnitSelected);
 
 // Implement NoAttackOrders unit template property
+// Implement anti-air-only weapons
 char Mod__IsAnyArmedUnitSelected()
 {
-  Unit *unit; // eax
-
-  unit = GetSide(gSideId)->__FirstUnitPtr;
-  if ( !unit )
+  for (Unit *unit = GetSide(gSideId)->__FirstUnitPtr; unit; unit = unit->Next)
   {
-    return 0;
+    UnitAtribStruct *unit_template = &_templates_unitattribs[unit->Type];
+    if (unit->__IsSelected
+        && IsUnitArmedAgainstLandTarget(unit)
+        && !unit_template->NoAttackOrders)
+      return 1;
   }
-  while ( !unit->__IsSelected || _templates_unitattribs[unit->Type].__PrimaryWeapon == -1 || _templates_unitattribs[unit->Type].NoAttackOrders )
-  {
-    unit = unit->Next;
-    if ( !unit )
-    {
-      return 0;
-    }
-  }
-  return 1;
+  return 0;
 }
 
 // Custom implementation of function IsAnyArmedUnitSelectedExceptThis
 DETOUR(0x004A58F0, 0x004A593B, _Mod__IsAnyArmedUnitSelectedExceptThis);
 
 // Implement NoAttackOrders unit template property
+// Implement anti-air-only weapons
 char Mod__IsAnyArmedUnitSelectedExceptThis(Unit *this_unit)
 {
-  Unit *unit; // eax
-
-  unit = GetSide(gSideId)->__FirstUnitPtr;
-  if ( !unit )
+  for (Unit *unit = GetSide(gSideId)->__FirstUnitPtr; unit; unit = unit->Next)
   {
-    return 0;
+    UnitAtribStruct *unit_template = &_templates_unitattribs[unit->Type];
+    if (unit->__IsSelected
+        && unit != this_unit
+        && IsUnitArmedAgainstLandTarget(unit)
+        && !unit_template->NoAttackOrders)
+      return 1;
   }
-  while ( !unit->__IsSelected || unit == this_unit || _templates_unitattribs[unit->Type].__PrimaryWeapon == -1 || _templates_unitattribs[unit->Type].NoAttackOrders )
-  {
-    unit = unit->Next;
-    if ( !unit )
-    {
-      return 0;
-    }
-  }
-  return 1;
+  return 0;
 }
 
 // Custom implementation of function IsAnyCrusherSelected
@@ -82,9 +72,7 @@ DETOUR(0x004A5A10, 0x004A5A4E, _Mod__IsAnyCrusherSelected);
 // Implement uncrushable infantry
 char Mod__IsAnyCrusherSelected()
 {
-  Unit *unit; // eax
-
-  for (unit = GetSide(gSideId)->__FirstUnitPtr; unit; unit = unit->Next)
+  for (Unit *unit = GetSide(gSideId)->__FirstUnitPtr; unit; unit = unit->Next)
   {
     if (unit->__IsSelected && _templates_unitattribs[unit->Type].__CanCrush && !_templates_unitattribs[unit->Type].__IsInfantry)
       return 1;
@@ -96,24 +84,19 @@ char Mod__IsAnyCrusherSelected()
 DETOUR(0x004A5860, 0x004A58A3, _Mod__GetSelectedBuildingWithBarrel);
 
 // Implement TurretNoOrders building template property
+// Implement anti-air-only weapons
 Building *Mod__GetSelectedBuildingWithBarrel()
 {
-  Building *result; // eax
-
-  result = GetSide(gSideId)->__FirstBuildingPtr;
-  if ( !result )
+  for (Building *building = GetSide(gSideId)->__FirstBuildingPtr; building; building = building->Next)
   {
-    return 0;
+    BuildingAtrbStruct *building_template = &_templates_buildattribs[building->Type];
+    if (building->__IsSelected
+        && building_template->_____ActLikeTurret
+        && IsBuildingArmedAgainstLandTarget(building)
+        && !building_template->TurretNoOrders)
+      return building;
   }
-  while ( !result->__IsSelected || _templates_buildattribs[result->Type]._____BarrelArt == -1 || _templates_buildattribs[result->Type].TurretNoOrders )
-  {
-    result = result->Next;
-    if ( !result )
-    {
-      return 0;
-    }
-  }
-  return result;
+  return 0;
 }
 
 // Custom implementation of function HandleGameLoopEvents

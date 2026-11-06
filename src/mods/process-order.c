@@ -137,7 +137,10 @@ void Mod__ProcessOrder(OrderEntry *order)
             unit = &side->__ObjectArray[*object_ptr];
             if ( side->__ObjectArray[*object_ptr].ObjectType == 1
               && CanUnitAcceptOrders(unit, 1)
-              && _templates_unitattribs[unit->Type].__PrimaryWeapon != -1
+              // New logic start
+              // Implement anti-air-only weapons
+              && IsUnitArmedAgainstLandTarget(unit)
+              // New logic end
               && (order_->orderdata.SideId != order_->orderdata.TargetSideId
                || *object_ptr != (unsigned short)order_->orderdata.TargetObjectIndex)
               && UnitAdjustState(unit, UNIT_STATE_4_ATTACKING_UNIT) )
@@ -219,7 +222,10 @@ void Mod__ProcessOrder(OrderEntry *order)
           unit = &side->__ObjectArray[*object_ptr];
           if ( side->__ObjectArray[*object_ptr].ObjectType == 1
             && CanUnitAcceptOrders(unit, 1)
-            && _templates_unitattribs[unit->Type].__PrimaryWeapon != -1
+            // New logic start
+            // Implement anti-air-only weapons
+            && IsUnitArmedAgainstLandTarget(unit)
+            // New logic end
             && UnitAdjustState(unit, UNIT_STATE_6_ATTACKING_TILE) )
           {
             unit->OldState = 1;
@@ -287,7 +293,10 @@ void Mod__ProcessOrder(OrderEntry *order)
           unit = &side->__ObjectArray[*object_ptr];
           if ( side->__ObjectArray[*object_ptr].ObjectType == 1
             && CanUnitAcceptOrders(unit, 1)
-            && _templates_unitattribs[unit->Type].__PrimaryWeapon != -1
+            // New logic start
+            // Implement anti-air-only weapons
+            && IsUnitArmedAgainstLandTarget(unit)
+            // New logic end
             && UnitAdjustState(unit, UNIT_STATE_3_GUARDING) )
           {
             posx = unit->BlockToX;

@@ -9,6 +9,14 @@
 // - Customizable inaccuracy of weapons (0 = vanilla behavior, 1 = almost accurate, the higher value the less accurate)
 // - Shoot offset
 // - Non-muzzle-flash explosions can be used as muzzle flash, they will be spawned at the origin of shot bullet
+// - Anti-Aircraft only weapons
+
+bool IsBuildingArmedAgainstLandTarget(Building *building)
+{
+  BuildingAtrbStruct *building_template = &_templates_buildattribs[building->Type];
+  return ((building_template->_____PrimaryWeapon != -1 && _templates_bulletattribs[(int)building_template->_____PrimaryWeapon].AntiAircraft != 2) ||
+          (building_template->_____SecondaryWeapon != -1 && _templates_bulletattribs[(int)building_template->_____SecondaryWeapon].AntiAircraft != 2));
+}
 
 bool CanBuildingShoot(Building *building)
 {
@@ -25,9 +33,10 @@ bool CanBuildingShoot(Building *building)
   return false;
 }
 
-// Extended implementation of function CanBuildingAttackTile
+// Custom implementation of function CanBuildingAttackTile
+DETOUR(0x00497140, 0x0049726D, _Mod__CanBuildingAttackTile);
 
-char Ext__CanBuildingAttackTile(Building *building, unsigned char x, unsigned char y, char air_target)
+char Mod__CanBuildingAttackTile(Building *building, unsigned char x, unsigned char y, char air_target)
 {
   Building *bld; // edi
   int building_type_offset; // ecx
@@ -60,15 +69,21 @@ char Ext__CanBuildingAttackTile(Building *building, unsigned char x, unsigned ch
   primary_weapon_ = primary_weapon;
   primary_weapon_antiaircraft = _templates_bulletattribs[primary_weapon_].AntiAircraft;
   primary_weapon_range = _templates_bulletattribs[primary_weapon_].__Range;
-  if (building->LastUsedWeapon == 2)
+  if (building->LastUsedWeapon == 1 && !air_target && primary_weapon_antiaircraft == 2)
+    return 0;
+  if (building->LastUsedWeapon == 2 && !air_target && _templates_bulletattribs[(int)secondary_weapon].AntiAircraft == 2)
+    return 0;
+  if (building->LastUsedWeapon == 2 || (!air_target && primary_weapon_antiaircraft == 2))
   {
+    if (secondary_weapon == -1)
+      return 0;
     primary_weapon_antiaircraft = _templates_bulletattribs[(int)secondary_weapon].AntiAircraft;
     primary_weapon_range = _templates_bulletattribs[(int)secondary_weapon].__Range;
   }
   source_ypos = ypos + 16;
   target_xpos = 32 * x + 16;
   target_ypos = 32 * y + 16;
-  if ( secondary_weapon == -1 || building->LastUsedWeapon == 1 )
+  if ( secondary_weapon == -1 || building->LastUsedWeapon == 1 || (!air_target && _templates_bulletattribs[(int)secondary_weapon].AntiAircraft == 2) )
   {
     secondary_weapon_range = 0;
     secondary_weapon_antiaircraft = 0;
@@ -179,7 +194,7 @@ char Mod__BuildingAttack(Building *building, char side_id, int building_index, c
       {
         enemy_object_xpos = enemy_object->__PosX / 0x10000;
         enemy_object_ypos = enemy_object->__PosY / 0x10000;
-        if ( Ext__CanBuildingAttackTile(bld_, enemy_object_xpos / 32, enemy_object_ypos / 32, 0) )
+        if ( CanBuildingAttackTile(bld_, enemy_object_xpos / 32, enemy_object_ypos / 32, 0) )
         {
           BuildingShootTarget(
             bld_,
@@ -198,7 +213,7 @@ char Mod__BuildingAttack(Building *building, char side_id, int building_index, c
              && _templates_buildattribs[LOBYTE(enemy_object->__PosX)].__Behavior == BuildingBehavior_TURRET )
       {
         GetBuildingInRange(bld_xpos / 32, bld_ypos / 32, (Building *)enemy_object, &tile_x, &tile_y);
-        if ( Ext__CanBuildingAttackTile(bld_, tile_x, tile_y, 0) )
+        if ( CanBuildingAttackTile(bld_, tile_x, tile_y, 0) )
         {
           BuildingShootTarget(
             bld_,
@@ -302,7 +317,7 @@ char Mod__BuildingAttackUnit(Building *building, char side_id, short building_in
   if ( !enemy_unit
     || enemy_unit->ObjectType != OBJECT_UNIT
     || enemy_unit->State == UNIT_STATE_17_DEAD
-    || !Ext__CanBuildingAttackTile(
+    || !CanBuildingAttackTile(
           building,
           enemy_unit->BlockFromX,
           enemy_unit->BlockFromY,
@@ -386,7 +401,7 @@ DETOUR(0x00497090, 0x004970EB, _Mod__BuildingAttackTile);
 
 char Mod__BuildingAttackTile(Building *building, eSideType side_id, short building_index)
 {
-  if ( Ext__CanBuildingAttackTile(building, building->__AttackTileX, building->__AttackTileY, 0) )
+  if ( CanBuildingAttackTile(building, building->__AttackTileX, building->__AttackTileY, 0) )
   {
     if ( CanBuildingShoot(building) )
     {
@@ -461,8 +476,8 @@ char Mod__NewBestBullet(char primary_weapon, char secondary_weapon, unsigned int
   }
   primary_weapon_ = primary_weapon;
   secondary_weapon_ = secondary_weapon;
-  primary_weapon_range = _templates_bulletattribs[primary_weapon_].__Range;
-  secondary_weapon_range = _templates_bulletattribs[secondary_weapon_].__Range;
+  primary_weapon_range = (!enemy_is_flying && _templates_bulletattribs[primary_weapon_].AntiAircraft == 2)?0:_templates_bulletattribs[primary_weapon_].__Range;
+  secondary_weapon_range = (!enemy_is_flying && _templates_bulletattribs[secondary_weapon_].AntiAircraft == 2)?0:_templates_bulletattribs[secondary_weapon_].__Range;
   if ( primary_weapon_range >= secondary_weapon_range )
   {
     if ( secondary_weapon_range * secondary_weapon_range < check )
