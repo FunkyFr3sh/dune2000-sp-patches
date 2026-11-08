@@ -160,3 +160,6 @@ char Ext_UpdateBullet(Bullet *bul, int side_id)
   int result = UpdateBullet(bul, side_id);
   return ExecuteEventHook(HOOK_POSTUPDATEBULLET, 3, result, side_id, bul->MyIndex, 0, 0);
 }
+
+// Hit explosion's Pos Z is not divided by 0x10000
+CLEAR(0x0049C993, 0x90, 0x0049C993+3); // UpdateBullet

@@ -629,8 +629,7 @@ void Mod__BuildingShootTarget(Building *building, char side_id, short index, int
           } while (is_outside_of_map && num_attempts < 10);
           if (!is_outside_of_map && ((bullet_index = ModelAddBullet(side_id, bullet_type, 0, index, source_xpos, source_ypos, dest_xpos, dest_ypos, homing_index, homing_side)) != -1))
           {
-            Bullet *b = (Bullet *)&GetSide(side_id)->__ObjectArray[bullet_index];
-            if ((muzzle_flash_explosion_type != -1) && ((explosion_index = ModelAddExplosion(side_id, muzzle_flash_explosion_type, is_muzzle_flash_explosion?building_xpos:source_xpos, is_muzzle_flash_explosion?(int)building->__PosY/0x10000-y_offset:source_ypos, is_muzzle_flash_explosion?0:b->__PosZHeight, 0, 0, 0, 0)) != -1) && is_muzzle_flash_explosion)
+            if ((muzzle_flash_explosion_type != -1) && ((explosion_index = ModelAddExplosion(side_id, muzzle_flash_explosion_type, is_muzzle_flash_explosion?building_xpos:source_xpos, is_muzzle_flash_explosion?(int)building->__PosY/0x10000-y_offset:source_ypos, is_muzzle_flash_explosion?0:0x60000, 0, 0, 0, 0)) != -1) && is_muzzle_flash_explosion)
             {
               Explosion *e = (Explosion *)&GetSide(side_id)->__ObjectArray[explosion_index];
               e->__AnimationFrame = (direction - shoot_angle) & 31;
@@ -655,8 +654,7 @@ void Mod__BuildingShootTarget(Building *building, char side_id, short index, int
           dest_ypos = target_ypos + (_cosValues[(shoot_angle * shoot_offset) / 8 + ((16 - direction + 8) & 31) * 512] / 2048) + inaccuracy_y;
           if ((bullet_index = ModelAddBullet(side_id, bullet_type, 0, index, source_xpos, source_ypos, dest_xpos, dest_ypos, homing_index, homing_side)) != -1)
           {
-            Bullet *b = (Bullet *)&GetSide(side_id)->__ObjectArray[bullet_index];
-            if ((muzzle_flash_explosion_type != -1) && ((explosion_index = ModelAddExplosion(side_id, muzzle_flash_explosion_type, is_muzzle_flash_explosion?building_xpos:source_xpos, is_muzzle_flash_explosion?(int)building->__PosY/0x10000-y_offset:source_ypos, is_muzzle_flash_explosion?0:b->__PosZHeight, 0, 0, 0, 0)) != -1) && is_muzzle_flash_explosion)
+            if ((muzzle_flash_explosion_type != -1) && ((explosion_index = ModelAddExplosion(side_id, muzzle_flash_explosion_type, is_muzzle_flash_explosion?building_xpos:source_xpos, is_muzzle_flash_explosion?(int)building->__PosY/0x10000-y_offset:source_ypos, is_muzzle_flash_explosion?0:0x60000, 0, 0, 0, 0)) != -1) && is_muzzle_flash_explosion)
             {
               Explosion *e = (Explosion *)&GetSide(side_id)->__ObjectArray[explosion_index];
               e->__AnimationFrame = (direction + shoot_angle) & 31;
@@ -674,8 +672,7 @@ void Mod__BuildingShootTarget(Building *building, char side_id, short index, int
           dest_ypos = target_ypos + (_cosValues[(shoot_angle * shoot_offset) / 8 + ((16 - direction - 8) & 31) * 512] / 2048) + inaccuracy_y;
           if ((bullet_index = ModelAddBullet(side_id, bullet_type, 0, index, source_xpos, source_ypos, dest_xpos, dest_ypos, homing_index, homing_side)) != -1)
           {
-            Bullet *b = (Bullet *)&GetSide(side_id)->__ObjectArray[bullet_index];
-            if ((muzzle_flash_explosion_type != -1) && ((explosion_index = ModelAddExplosion(side_id, muzzle_flash_explosion_type, is_muzzle_flash_explosion?building_xpos:source_xpos, is_muzzle_flash_explosion?(int)building->__PosY/0x10000-y_offset:source_ypos, is_muzzle_flash_explosion?0:b->__PosZHeight, 0, 0, 0, 0)) != -1) && is_muzzle_flash_explosion)
+            if ((muzzle_flash_explosion_type != -1) && ((explosion_index = ModelAddExplosion(side_id, muzzle_flash_explosion_type, is_muzzle_flash_explosion?building_xpos:source_xpos, is_muzzle_flash_explosion?(int)building->__PosY/0x10000-y_offset:source_ypos, is_muzzle_flash_explosion?0:0x60000, 0, 0, 0, 0)) != -1) && is_muzzle_flash_explosion)
             {
               Explosion *e = (Explosion *)&GetSide(side_id)->__ObjectArray[explosion_index];
               e->__AnimationFrame = (direction - shoot_angle) & 31;

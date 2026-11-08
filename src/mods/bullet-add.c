@@ -8,7 +8,7 @@
 // Add railgun bullet behavior
 // Implement arcAndFallingBulletsHaveShadow rule
 
-void AddLightning(unsigned char side_id, unsigned char bullet_type, short firer_index, unsigned short source_xpos, unsigned short source_ypos, unsigned short target_xpos, unsigned short target_ypos)
+void AddLightning(unsigned char side_id, unsigned char bullet_type, short firer_index, unsigned short source_xpos, unsigned short source_ypos, unsigned short target_xpos, unsigned short target_ypos, unsigned int target_posz)
 {
   int distance = sqrt((double)((source_xpos - target_xpos) * (source_xpos - target_xpos) + (source_ypos - target_ypos) * (source_ypos - target_ypos)));
   int num_steps = distance / 24;
@@ -16,8 +16,10 @@ void AddLightning(unsigned char side_id, unsigned char bullet_type, short firer_
     num_steps = 1;
   int step_x = ((target_xpos << 16) - (source_xpos << 16)) / num_steps;
   int step_y = ((target_ypos << 16) - (source_ypos << 16)) / num_steps;
+  int step_z = target_posz / num_steps;
   int posx = source_xpos << 16;
   int posy = source_ypos << 16;
+  int posz = 0;
   int direction = GetFacing(source_xpos, source_ypos, target_xpos, target_ypos);
 
   for (int i = 0; i < num_steps; i++)
@@ -35,16 +37,17 @@ void AddLightning(unsigned char side_id, unsigned char bullet_type, short firer_
     xpos += _sinValues[offset + ((16 - direction + (offset_side?8:-8)) & 31) * 512] / 2048;
     ypos += _cosValues[offset + ((16 - direction + (offset_side?8:-8)) & 31) * 512] / 2048;
 
-    ModelAddExplosion(side_id, explosion_type, xpos, ypos, 0, 0, 0, 0, 0);
+    ModelAddExplosion(side_id, explosion_type, xpos, ypos, posz, 0, 0, 0, 0);
     posx += step_x;
     posy += step_y;
+    posz += step_z;
   }
 
   BullAtrbStruct *bullet_template = &_templates_bulletattribs[bullet_type];
-  DamageTiles(target_xpos, target_ypos, 0, bullet_type, side_id, firer_index, (bullet_template->Flags & BULFLAGS_40_DEVIATOR) != 0);
+  DamageTiles(target_xpos, target_ypos, target_posz, bullet_type, side_id, firer_index, (bullet_template->Flags & BULFLAGS_40_DEVIATOR) != 0);
   if (bullet_template->__HitExplosion != -1)
   {
-    ModelAddExplosion(side_id, bullet_template->__HitExplosion, target_xpos, target_ypos, 0, 0, 0, 0, 0);
+    ModelAddExplosion(side_id, bullet_template->__HitExplosion, target_xpos, target_ypos, target_posz, 0, 0, 0, 0);
     ExploisonAtrbStruct *explosion_template = &_templates_explosionattribs[(int)bullet_template->__HitExplosion];
     PlaySoundAt(explosion_template->__Sound, target_xpos / 32, target_ypos / 32);
   }
@@ -86,7 +89,10 @@ short Mod__ModelAddBullet(unsigned char side_id, unsigned char bulletype, int de
   bullet_template = &_templates_bulletattribs[bulletype];
   if (bullet_template->Behavior == BulletBehavior_LIGHTNING)
   {
-    AddLightning(side_id, bulletype, firer, source_xpos, source_ypos, target_xpos, target_ypos);
+    int target_posz = 0;
+    if (homing_index != -1)
+      target_posz = GetSide(homing_side)->__ObjectArray[homing_index].__PosZHeight;
+    AddLightning(side_id, bulletype, firer, source_xpos, source_ypos, target_xpos, target_ypos, target_posz);
     return -1;
   }
   // New logic end
@@ -115,7 +121,13 @@ short Mod__ModelAddBullet(unsigned char side_id, unsigned char bulletype, int de
   bullet->Type = bulletype;
   bullet_type = bulletype;
   bullet->__Delay = delay;
-  bullet->__PosZHeight = 0x60000;
+  // New logic start
+  // Non-homing bullets can hit flying units
+  if (!(bullet_template->Flags & BULFLAGS_20_HOMING) && homing_index != -1 && GetSide(homing_side)->__ObjectArray[homing_index].Flags & UFLAGS_40_FLYING)
+    bullet->__PosZHeight = GetSide(homing_side)->__ObjectArray[homing_index].__PosZHeight;
+  else
+    bullet->__PosZHeight = 0x60000;
+  // New logic end
   bullet->Flags = _templates_bulletattribs[bullet_type].Flags;
   bullet_type_ = bulletype;
   bullet->c_field_1B_template_c_field_13 = _templates_bulletattribs[bullet_type].c_field_13;
