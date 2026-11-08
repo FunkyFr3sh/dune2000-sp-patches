@@ -1,6 +1,6 @@
 #include "hotkeys.h"
-#include "patch.h"
 #include "dune2000.h"
+#include "patch.h"
 #include "../event-system/event-core.h"
 
 //http://msdn.microsoft.com/en-us/library/windows/desktop/dd375731(v=vs.85).aspx

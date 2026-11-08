@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <stdint.h>
+#include "dune2000.h"
 #include "patch.h"
 
 #define FRAMES_PER_SECOND 60

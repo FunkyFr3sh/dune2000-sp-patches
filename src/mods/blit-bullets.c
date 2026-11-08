@@ -6,28 +6,21 @@
 #include "extended-templates.h"
 
 // Implement railgun bullet behavior
+// Implement beam bullet behavior
 
-void BlitBullet_Railgun(TImage *img, Bullet *bul, int side_id)
+void BlitBullet_RailgunBeam(TImage *img, Bullet *bul, int side_id)
 {
   // Get bullet properties
   BullAtrbStruct *bullet_template = &_templates_bulletattribs[bul->Type];
-  int range = bullet_template->__Range;
   int projectile_speed = bullet_template->__ProjectileSpeed >> 16;
-  // Calculate positional stuff
-  int num_steps = range;
-  if (num_steps == 0)
-    num_steps = 1;
   // Go step by step
   float xpos = bul->__PosX >> 16;
   float ypos = bul->__PosY >> 16;
   int step_counter = 0;
-  for (int i = 0; i < num_steps; i++)
+  for (unsigned int i = 0; i < bul->RailgunNumSteps; i++)
   {
     // Check if position is inside map area
     if (!(xpos > 0 && ypos > 0 && xpos < (gGameMapWidth * 32) && ypos < (gGameMapHeight * 32)))
-      break;
-    // Check if blocked position was reached
-    if (bul->RailgunBlockedX == xpos && bul->RailgunBlockedY == ypos)
       break;
     // Draw explosion only after n steps
     if (step_counter == 0)
@@ -115,9 +108,9 @@ void Mod__BlitBullets(TImage *img)
       for ( bullet = GetSide(side_id)->__FirstBulletPtr; bullet; bullet = bullet->Next )
       {
         // New logic start
-        // Implement railgun bullet behavior
-        if (_templates_bulletattribs[bullet->Type].Behavior == BulletBehavior_RAILGUN)
-          BlitBullet_Railgun(img, bullet, side_id);
+        // Implement railgun and beam bullet behavior
+        if (_templates_bulletattribs[bullet->Type].Behavior == BulletBehavior_RAILGUN || _templates_bulletattribs[bullet->Type].Behavior == BulletBehavior_BEAM)
+          BlitBullet_RailgunBeam(img, bullet, side_id);
         // New logic end
         else if ( !bullet->__Delay )
         {

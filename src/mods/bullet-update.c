@@ -7,8 +7,9 @@
 #include "extended-templates.h"
 
 // Implement railgun bullet behavior
+// Implement beam bullet behavior
 
-int UpdateBullet_Railgun(Bullet *bul, int side_id)
+int UpdateBullet_RailgunBeam(Bullet *bul, int side_id)
 {
   // Handle railgun animation frames
   BullAtrbStruct *bullet_template = &_templates_bulletattribs[bul->Type];
@@ -67,34 +68,40 @@ int UpdateBullet_Railgun(Bullet *bul, int side_id)
   int restriction_type = (bullet_template->Flags & BULFLAGS_1000_BLOCKED_BY_WALL)?1:2;
   // Calculate positional stuff
   float distance = sqrt((float)((source_xpos - target_xpos) * (source_xpos - target_xpos) + (source_ypos - target_ypos) * (source_ypos - target_ypos)));
-  float ratio = (float)range / distance;
-  float delta_x = (target_xpos - source_xpos) * ratio;
-  float delta_y = (target_ypos - source_ypos) * ratio;
-  int num_steps = range;
+  float delta_x = (target_xpos - source_xpos);
+  float delta_y = (target_ypos - source_ypos);
+  int num_steps = distance;
+  if (bullet_template->Behavior == BulletBehavior_RAILGUN)
+  {
+    float ratio = (float)range / distance;
+    delta_x *= ratio;
+    delta_y *= ratio;
+    num_steps = range;
+  }
   if (num_steps == 0)
     num_steps = 1;
   bul->RailgunStepX = delta_x / num_steps;
   bul->RailgunStepY = delta_y / num_steps;
+  bul->RailgunNumSteps = num_steps;
   // Go step by step
   float xpos = source_xpos;
   float ypos = source_ypos;
-  bul->RailgunBlockedX = 0;
-  bul->RailgunBlockedY = 0;
   int step_counter = 0;
-  for (int i = 0; i < num_steps; i++)
+  bool was_blocked = false;
+  for (unsigned int i = 0; i < bul->RailgunNumSteps; i++)
   {
     // Check if position is inside map area
     if (!(xpos > 0 && ypos > 0 && xpos < (gGameMapWidth * 32) && ypos < (gGameMapHeight * 32)))
       break;
     // Check for tile restriction and wall
-    if (!bul->RailgunBlockedX && !bul->RailgunBlockedY)
+    if (!was_blocked)
     {
       int x = xpos / 32;
       int y = ypos / 32;
       GameMapTileStruct *tile = &gGameMap.map[_CellNumbersWidthSpan[y] + x];
       bool blocked_by_wall = (bullet_template->Flags & BULFLAGS_1000_BLOCKED_BY_WALL) && (tile->__tile_bitflags & TileFlags_400_HAS_WALL);
       // If bullet was blocked by wall, make sure to damage the wall
-      if (blocked_by_wall)
+      if (bullet_template->Behavior == BulletBehavior_RAILGUN && blocked_by_wall)
         DamageTiles(x * 32 + 16, y * 32 + 16, 0, bul->Type, side_id, bul->__FirerIndex, (bullet_template->Flags & BULFLAGS_40_DEVIATOR) != 0);
       if (((!(source_xpos / 32 == x && source_ypos / 32 == y)) && (tile_restrictions[tile->__tile_index] & (restrictions_check[direction] << restriction_type))) || blocked_by_wall)
       {
@@ -103,30 +110,27 @@ int UpdateBullet_Railgun(Bullet *bul, int side_id)
         float center_ypos = y * 32 + 16;
         float tmp_xpos = xpos;
         float tmp_ypos = ypos;
-        float min_xpos = tmp_xpos;
-        float min_ypos = tmp_ypos;
         float min_dist = (center_xpos - tmp_xpos) * (center_xpos - tmp_xpos) + (center_ypos - tmp_ypos) * (center_ypos - tmp_ypos);
+        int tmp_num_steps = i;
+        int min_num_steps = i;
         while ((int)tmp_xpos / 32 == x && (int)tmp_ypos / 32 == y)
         {
           float dist = (center_xpos - tmp_xpos) * (center_xpos - tmp_xpos) + (center_ypos - tmp_ypos) * (center_ypos - tmp_ypos);
           if (dist < min_dist)
           {
             min_dist = dist;
-            min_xpos = tmp_xpos;
-            min_ypos = tmp_ypos;
+            min_num_steps = tmp_num_steps;
           }
           tmp_xpos += bul->RailgunStepX;
           tmp_ypos += bul->RailgunStepY;
+          tmp_num_steps++;
         }
-        bul->RailgunBlockedX = min_xpos;
-        bul->RailgunBlockedY = min_ypos;
+        bul->RailgunNumSteps = min_num_steps;
+        was_blocked = true;
       }
     }
-    // Check if blocked position was reached
-    if (bul->RailgunBlockedX == xpos && bul->RailgunBlockedY == ypos)
-      break;
     // Do damage only after n steps
-    if (step_counter == 0)
+    if (bullet_template->Behavior == BulletBehavior_RAILGUN && step_counter == 0)
     {
       // Do damage far enough from the firer to avoid self-damaging
       int diff_x = firer_xpos - (int)xpos;
@@ -141,6 +145,13 @@ int UpdateBullet_Railgun(Bullet *bul, int side_id)
     xpos += bul->RailgunStepX;
     ypos += bul->RailgunStepY;
   }
+  // Beam will do damage only at the end
+  if (bullet_template->Behavior == BulletBehavior_BEAM)
+  {
+    DamageTiles(xpos, ypos, 0, bul->Type, side_id, bul->__FirerIndex, (bullet_template->Flags & BULFLAGS_40_DEVIATOR) != 0);
+    if (bullet_template->__HitExplosion != -1)
+      ModelAddExplosion(side_id, bullet_template->__HitExplosion, xpos, ypos, 0, 0, 0, 0, 0);
+  }
   return 1;
 }
 
@@ -154,8 +165,8 @@ char Ext_UpdateBullet(Bullet *bul, int side_id)
   if (ExecuteEventHook(HOOK_PREUPDATEBULLET, 3, 0, side_id, bul->MyIndex, 0, 0))
     return 1;
   // Special logic for railgun bullet behavior
-  if (_templates_bulletattribs[bul->Type].Behavior == BulletBehavior_RAILGUN)
-    return UpdateBullet_Railgun(bul, side_id);
+  if (_templates_bulletattribs[bul->Type].Behavior == BulletBehavior_RAILGUN || _templates_bulletattribs[bul->Type].Behavior == BulletBehavior_BEAM)
+    return UpdateBullet_RailgunBeam(bul, side_id);
   // Normal logic
   int result = UpdateBullet(bul, side_id);
   return ExecuteEventHook(HOOK_POSTUPDATEBULLET, 3, result, side_id, bul->MyIndex, 0, 0);

@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "macros/patch.h"
+#include "dune2000.h"
 #include "patch.h"
 #include "utils.h"
 

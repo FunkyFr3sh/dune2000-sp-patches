@@ -416,7 +416,8 @@ typedef enum BulletBehaviorType
 {
   BulletBehaviorType_0 = 0,
   BulletBehavior_LIGHTNING = 1,
-  BulletBehavior_RAILGUN
+  BulletBehavior_RAILGUN = 2,
+  BulletBehavior_BEAM = 3
 }BulletBehaviorType;
 
 typedef struct Bullet
@@ -471,8 +472,11 @@ typedef struct Bullet
   uint32_t custom_dword_4; // Additional field for extended functionality (mod)
   float RailgunStepX; // Additional field for extended functionality (mod)
   float RailgunStepY; // Additional field for extended functionality (mod)
-  float RailgunBlockedX; // Additional field for extended functionality (mod)
-  float RailgunBlockedY; // Additional field for extended functionality (mod)
+  uint32_t RailgunNumSteps; // Additional field for extended functionality (mod)
+  char field_6C;
+  char field_6D;
+  char field_6E;
+  char field_6F;
   char field_70;
   char field_71;
   char field_72;

@@ -6,6 +6,7 @@
 
 // Add lightning bullet behavior
 // Add railgun bullet behavior
+// Add beam bullet behavior
 // Implement arcAndFallingBulletsHaveShadow rule
 
 void AddLightning(unsigned char side_id, unsigned char bullet_type, short firer_index, unsigned short source_xpos, unsigned short source_ypos, unsigned short target_xpos, unsigned short target_ypos, unsigned int target_posz)
@@ -103,8 +104,8 @@ short Mod__ModelAddBullet(unsigned char side_id, unsigned char bulletype, int de
     return -1;
   }
   // New logic start
-  // Implement railgun bullet behavior
-  if (bullet_template->Behavior == BulletBehavior_RAILGUN)
+  // Implement railgun and beam bullet behavior
+  if (bullet_template->Behavior == BulletBehavior_RAILGUN || bullet_template->Behavior == BulletBehavior_BEAM)
   {
     if (bullet_template->__TrailExplosion == -1)
       DebugFatal("ModelAddBullet", "Weapon %d has no trail explosion defined.", bulletype);
