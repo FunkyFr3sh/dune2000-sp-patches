@@ -47,7 +47,8 @@ hack 0x0049F25C, 0x0049F26E ; SubHousesPlayUnitResponseFix
 ;    jmp hackend
 
 ; When interacting with the sidebar (i.e. building a unit), this only works if side is <= 2, so disable the if side == 2 check, so sides that are not 0 or 1 will use 2 (Ordos)
-@CLEAR 0x0046F919, 0x90, 0x0046F91C ; SubHousesSidebarResponseFix
+; Superseded by Mod__PlayMentatSound
+;@CLEAR 0x0046F919, 0x90, 0x0046F91C ; SubHousesSidebarResponseFix
 
 hack 0x00435F1A, 0x00435F20 ; LoadCustomInGameBriefingMenuFiles
     cmp byte[MySideID], 0

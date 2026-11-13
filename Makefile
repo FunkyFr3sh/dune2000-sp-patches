@@ -106,6 +106,7 @@ OBJS            ?= callsites.o \
         src/mods/build-building-pick.o \
         src/mods/building-add.o \
         src/mods/building-upgrades.o \
+        src/mods/mentat-sound-extra-houses.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \
