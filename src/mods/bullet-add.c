@@ -131,7 +131,10 @@ short Mod__ModelAddBullet(unsigned char side_id, unsigned char bulletype, int de
   // New logic end
   bullet->Flags = _templates_bulletattribs[bullet_type].Flags;
   bullet_type_ = bulletype;
-  bullet->c_field_1B_template_c_field_13 = _templates_bulletattribs[bullet_type].c_field_13;
+  // New logic start
+  // Remove storing bullet template byte 19 because it is reused as min range instead
+  //bullet->c_field_1B_template_c_field_13 = _templates_bulletattribs[bullet_type].c_field_13;
+  // New logic end
   if ( ((unsigned short)homing_index > 1000u && homing_index != -1) || homing_side > 8 || homing_side < -1 )
   {
     DebugFatal(

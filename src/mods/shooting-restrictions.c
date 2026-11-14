@@ -127,6 +127,36 @@ bool CheckLineOfSight(int x1, int y1, int x2, int y2, int restriction_type)
   return true;
 }
 
+bool CanTargetBeAttacked(int source_xpos, int source_ypos, int target_xpos, int target_ypos, int primary_weapon_type, int secondary_weapon_type, int air_target)
+{
+  int distance_squared = (source_xpos - target_xpos) * (source_xpos - target_xpos) + (source_ypos - target_ypos) * (source_ypos - target_ypos);
+  if (primary_weapon_type != -1)
+  {
+    BullAtrbStruct *primary_weapon_template = &_templates_bulletattribs[primary_weapon_type];
+    if ((air_target && primary_weapon_template->AntiAircraft != 0) || (!air_target && primary_weapon_template->AntiAircraft != 2))
+    {
+      int primary_weapon_range = primary_weapon_template->__Range;
+      int primary_weapon_min_range = primary_weapon_template->MinRange;
+      int primary_weapon_restriction_type = (primary_weapon_template->Flags & BULFLAGS_1000_BLOCKED_BY_WALL)?1:2;
+      if (primary_weapon_range * primary_weapon_range >= distance_squared && primary_weapon_min_range * primary_weapon_min_range < distance_squared && (air_target || CheckLineOfSight(source_xpos, source_ypos, target_xpos, target_ypos, primary_weapon_restriction_type)))
+        return true;
+    }
+  }
+  if (secondary_weapon_type != -1)
+  {
+    BullAtrbStruct *secondary_weapon_template = &_templates_bulletattribs[secondary_weapon_type];
+    if ((air_target && secondary_weapon_template->AntiAircraft != 0) || (!air_target && secondary_weapon_template->AntiAircraft != 2))
+    {
+      int secondary_weapon_range = secondary_weapon_template->__Range;
+      int secondary_weapon_min_range = secondary_weapon_template->MinRange;
+      int secondary_weapon_restriction_type = (secondary_weapon_template->Flags & BULFLAGS_1000_BLOCKED_BY_WALL)?1:2;
+      if (secondary_weapon_range * secondary_weapon_range >= distance_squared && secondary_weapon_min_range * secondary_weapon_min_range < distance_squared && (air_target || CheckLineOfSight(source_xpos, source_ypos, target_xpos, target_ypos, secondary_weapon_restriction_type)))
+        return true;
+    }
+  }
+  return false;
+}
+
 // Custom implementation of function EnemyUnitInRange
 DETOUR(0x004A4900, 0x004A4FCF, _Mod__EnemyUnitInRange);
 
@@ -146,7 +176,6 @@ char Mod__EnemyUnitInRange(int xpos, int ypos, eSideType side_id, int radius, in
   int secondary_weapon_type___; // ecx
   unsigned int primary_weapon_range; // eax
   unsigned int secondary_weapon_range; // ecx
-  unsigned short v29; // di
   unsigned char v30; // cl
   int v31; // eax
   int v32; // edx
@@ -173,7 +202,8 @@ char Mod__EnemyUnitInRange(int xpos, int ypos, eSideType side_id, int radius, in
   int v56; // [esp+30h] [ebp-4h]
   unsigned int enemy_side_id; // [esp+60h] [ebp+2Ch] MAPDST
 
-  int restriction_type;
+  BullAtrbStruct *primary_weapon_template = &_templates_bulletattribs[(int)primary_weapon_type];
+  BullAtrbStruct *secondary_weapon_template = &_templates_bulletattribs[(int)secondary_weapon_type];
   *target_index_ptr = -1;
   if ( primary_weapon_type == -1 )
   {
@@ -183,23 +213,27 @@ char Mod__EnemyUnitInRange(int xpos, int ypos, eSideType side_id, int radius, in
   if ( radius )
   {
     range = radius;
-    restriction_type = 3;
   }
   else if ( secondary_weapon_type == -1 )
   {
-    range = _templates_bulletattribs[(int)primary_weapon_type].AntiAircraft == 2?-100:_templates_bulletattribs[(int)primary_weapon_type].__Range;
-    restriction_type = (_templates_bulletattribs[(int)primary_weapon_type].Flags & BULFLAGS_1000_BLOCKED_BY_WALL)?1:2;
+    range = primary_weapon_template->AntiAircraft == 2?-100:primary_weapon_template->__Range;
   }
-  else if ( (unsigned int)_templates_bulletattribs[(int)primary_weapon_type].__Range <= (unsigned int)_templates_bulletattribs[(int)secondary_weapon_type].__Range && _templates_bulletattribs[(int)secondary_weapon_type].AntiAircraft != 2 )
+  else if ( (unsigned int)primary_weapon_template->__Range <= (unsigned int)secondary_weapon_template->__Range && secondary_weapon_template->AntiAircraft != 2 )
   {
-    range = _templates_bulletattribs[(int)secondary_weapon_type].__Range;
-    restriction_type = (_templates_bulletattribs[(int)secondary_weapon_type].Flags & BULFLAGS_1000_BLOCKED_BY_WALL)?1:2;
+    range = secondary_weapon_template->__Range;
   }
   else
   {
-    range = _templates_bulletattribs[(int)primary_weapon_type].AntiAircraft == 2?-100:_templates_bulletattribs[(int)primary_weapon_type].__Range;
-    restriction_type = (_templates_bulletattribs[(int)primary_weapon_type].Flags & BULFLAGS_1000_BLOCKED_BY_WALL)?1:2;
+    range = primary_weapon_template->AntiAircraft == 2?-100:primary_weapon_template->__Range;
   }
+  int min_range;
+  if ( secondary_weapon_type == -1 )
+    min_range = primary_weapon_template->MinRange;
+  else if (primary_weapon_template->MinRange > secondary_weapon_template->MinRange)
+    min_range = secondary_weapon_template->MinRange;
+  else
+    min_range = primary_weapon_template->MinRange;
+
   v51 = 1;
   v44 = 1;
   v50 = 0;
@@ -236,7 +270,9 @@ char Mod__EnemyUnitInRange(int xpos, int ypos, eSideType side_id, int radius, in
             v20 = 32 * v17 + 16;
             v13 = 32 * v13 + 16;
             unit = GetUnitOnTile((unsigned short)v20, (unsigned short)v13, &side_id_ptr, &index_ptr, a11 == 0);
-            if ( unit && unit->State != 17 && CheckDistance(xpos, ypos, v20, v13, range) && CheckLineOfSight(xpos, ypos, v20, v13, restriction_type) )
+            if ( unit && unit->State != 17 &&
+                ((!radius && CanTargetBeAttacked(xpos, ypos, v20, v13, primary_weapon_type, secondary_weapon_type, 0))
+                || (radius && CheckDistance(xpos, ypos, v20, v13, radius) && !CheckDistance(xpos, ypos, v20, v13, min_range) && CheckLineOfSight(xpos, ypos, v20, v13, 3))) )
             {
               *target_xpos_ptr = unit->__PosX / 0x10000;
               v43 = index_ptr;
@@ -278,17 +314,14 @@ LABEL_63:
       if ( secondary_weapon_type_ == -1 )
       {
         range_ = _templates_bulletattribs[(int)primary_weapon_type].__Range;
-        restriction_type = (_templates_bulletattribs[(int)primary_weapon_type].Flags & BULFLAGS_1000_BLOCKED_BY_WALL)?1:2;
       }
       else
       {
         secondary_weapon_type__ = secondary_weapon_type_;
         range_ = _templates_bulletattribs[(int)primary_weapon_type].__Range;
-        restriction_type = (_templates_bulletattribs[(int)primary_weapon_type].Flags & BULFLAGS_1000_BLOCKED_BY_WALL)?1:2;
         if ( range_ <= (unsigned int)_templates_bulletattribs[secondary_weapon_type__].__Range )
         {
           range_ = _templates_bulletattribs[secondary_weapon_type__].__Range;
-          restriction_type = (_templates_bulletattribs[(int)secondary_weapon_type__].Flags & BULFLAGS_1000_BLOCKED_BY_WALL)?1:2;
         }
       }
       v39 = v55;
@@ -345,7 +378,7 @@ LABEL_82:
              || unit->Flags & UFLAGS_4_CLOAKED
              || unit->BlockFromX != v39
              || unit->BlockFromY != v49
-             || !(CheckDistance(xpos, ypos, 32 * v39 + 16, 32 * v49 + 16, range_) && CheckLineOfSight(xpos, ypos, 32 * v39 + 16, 32 * v49 + 16, restriction_type)) )
+             || !CanTargetBeAttacked(xpos, ypos, 32 * v39 + 16, 32 * v49 + 16, primary_weapon_type, secondary_weapon_type, (unit->Flags & UFLAGS_40_FLYING) != 0) )
         {
           unit = unit->Next;
           if ( !unit )
@@ -384,7 +417,6 @@ LABEL_82:
   }
   range = primary_weapon_range;
 LABEL_38:
-  v29 = range;
   v30 = v56;
   v51 = 1;
   v45 = 1;
@@ -452,7 +484,7 @@ LABEL_57:
        || unit->Type == _templates_GroupIDs.Frigate
        || (unit->BlockToX != v16[0] && unit->BlockFromX != v16[0])
        || (unit->BlockFromY != v49 && unit->BlockToY != v49)
-       || !CheckDistance(xpos, ypos, 32 * v16[0] + 16, 32 * v49 + 16, v29) )
+       || !CanTargetBeAttacked(xpos, ypos, 32 * v16[0] + 16, 32 * v49 + 16, primary_weapon_type, secondary_weapon_type, 1) )
   {
     unit = unit->Next;
     if ( !unit )
@@ -496,7 +528,6 @@ char Mod__EnemyBuildingInRange(int xpos, int ypos, eSideType side_id, _DWORD *ta
   int v32; // [esp+28h] [ebp-4h]
   char bullet1a; // [esp+4Ch] [ebp+20h]
 
-  int restriction_type;
   *target_index_ptr = -1;
   *target_side_id_ptr = 0;
   primary_weapon_range = _templates_bulletattribs[(int)primary_weapon_type].__Range;
@@ -508,14 +539,13 @@ char Mod__EnemyBuildingInRange(int xpos, int ypos, eSideType side_id, _DWORD *ta
   else
   {
     secondary_weapon_range = _templates_bulletattribs[(int)secondary_weapon_type].__Range;
-    restriction_type = (_templates_bulletattribs[(int)secondary_weapon_type].Flags & BULFLAGS_1000_BLOCKED_BY_WALL)?1:2;
   }
   range = secondary_weapon_range;
   if ( secondary_weapon_range <= primary_weapon_range )
   {
     range = primary_weapon_range;
-    restriction_type = (_templates_bulletattribs[(int)primary_weapon_type].Flags & BULFLAGS_1000_BLOCKED_BY_WALL)?1:2;
   }
+
   v29 = 1;
   bullet1a = 1;
   v28 = 0;
@@ -549,7 +579,7 @@ char Mod__EnemyBuildingInRange(int xpos, int ypos, eSideType side_id, _DWORD *ta
               v16[0] = v14[0];
               v19 = 32 * v15 + 16;
               v20 = 32 * v16[0] + 16;
-              if ( CheckDistance(xpos, ypos, v20, v19, range) && CheckLineOfSight(xpos, ypos, v20, v19, restriction_type) )
+              if ( CanTargetBeAttacked(xpos, ypos, v20, v19, primary_weapon_type, secondary_weapon_range, 0) )
               {
                 v24 = index;
                 *target_xpos_ptr = (unsigned short)v20;

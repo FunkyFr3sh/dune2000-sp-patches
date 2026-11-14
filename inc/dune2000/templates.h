@@ -180,7 +180,7 @@ typedef struct BullAtrbStruct
   char __ProjectileArt;
   char __HitExplosion;
   char __TrailExplosion;
-  char c_field_13;
+  char MinRange; // Additional field for extended functionality (mod);
   char AntiAircraft;
   char Warhead;
   uint8_t Inaccuracy; // Additional field for extended functionality (mod)

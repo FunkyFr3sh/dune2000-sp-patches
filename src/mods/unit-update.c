@@ -1141,7 +1141,10 @@ LABEL_285:
       else
       {
         v131 = gGameMap.map[unit->TargetX + _CellNumbersWidthSpan[unit->TargetY]].__tile_bitflags;
-        if ( v131 & 0x3F8 && (v131 & 7) != (_BYTE)side_id_ )
+        // New logic start
+        // Prevent unit getting stuck when it cannot attack the blockage
+        if ( v131 & 0x3F8 && (v131 & 7) != (_BYTE)side_id_ && CanUnitAttackTile(unit, unit->TargetX, unit->TargetY, 0) )
+        // New logic end
         {
           UnitAttackTile(unit, (eSideType)side_id_, myIndex);
         }

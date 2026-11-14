@@ -78,6 +78,18 @@ BOOL Mod__CanUnitUseSquare(dwXYStruct x, Unit *unit, eSideType side_id, char rou
   {
     return 1;
   }
+  // New logic start
+  // Prevent unit clipping into building it's attempting to attack when it cannot attack it
+  int behavior = _templates_unitattribs[unit->Type].__Behavior;
+  if (unit->State == UNIT_STATE_5_ATTACKING_BUILDING
+      && (tile_flags & TileFlags_10_OCC_BUILDING)
+      && !(tile_flags & TileFlags_10000000_BUILDING_EXIT)
+      && behavior != UnitBehavior_ENGINEER
+      && behavior != UnitBehavior_SABOTEUR
+      && x.X == unit->TargetX
+      && x.Y == unit->TargetY)
+    return 0;
+  // New logic end
   v11 = unit_->State;
   if ( v11 != UNIT_STATE_24_MOVING_TO_REPAIR_PAD )
   {

@@ -17,6 +17,7 @@
 // - Configurable whether specific weapon (pri/sec) uses barrel or not
 // - Primary/secondary weapon priority
 // - Anti-Aircraft only weapons
+// - Weapon minimum range
 
 bool IsUnitArmedAgainstLandTarget(Unit *unit)
 {
@@ -45,88 +46,20 @@ DETOUR(0x00497270, 0x00497386, _Mod__CanUnitAttackTile);
 
 bool Mod__CanUnitAttackTile(Unit *unit, int target_x, int target_y, bool air_target)
 {
-  int primary_weapon;
-  int secondary_weapon;
-  char primary_weapon_antiaircraft;
-  unsigned int primary_weapon_range;
-  int unit_xpos;
-  int unit_ypos;
-  int target_xpos;
-  int target_ypos;
-  char secondary_weapon_antiaircraft;
-  unsigned int secondary_weapon_range;
-  int primary_weapon_restriction_type;
-  int secondary_weapon_restriction_type;
-
   if ( unit->pos_steps )
   {
     DebugFatal("CanUnitAttackTile", "unit->pos.steps not zero");
   }
-  primary_weapon = _templates_unitattribs[unit->Type].__PrimaryWeapon;
-  secondary_weapon = _templates_unitattribs[unit->Type].__SecondaryWeapon;
-  if ( primary_weapon == -1 )
-  {
-    return 0;
-  }
-  target_x = (unsigned char)target_x;
-  target_y = (unsigned char)target_y;
-  primary_weapon_antiaircraft = _templates_bulletattribs[primary_weapon].AntiAircraft;
-  primary_weapon_range = _templates_bulletattribs[primary_weapon].__Range;
-  primary_weapon_restriction_type = (_templates_bulletattribs[primary_weapon].Flags & BULFLAGS_1000_BLOCKED_BY_WALL)?1:2;
-  if (unit->LastUsedWeapon == 1 && !air_target && primary_weapon_antiaircraft == 2)
-    return 0;
-  if (unit->LastUsedWeapon == 2 && !air_target && _templates_bulletattribs[secondary_weapon].AntiAircraft == 2)
-    return 0;
-  if (unit->LastUsedWeapon == 2 || (!air_target && primary_weapon_antiaircraft == 2))
-  {
-    if (secondary_weapon == -1)
-      return 0;
-    primary_weapon_antiaircraft = _templates_bulletattribs[secondary_weapon].AntiAircraft;
-    primary_weapon_range = _templates_bulletattribs[secondary_weapon].__Range;
-    primary_weapon_restriction_type = (_templates_bulletattribs[secondary_weapon].Flags & BULFLAGS_1000_BLOCKED_BY_WALL)?1:2;
-  }
-  unit_xpos = 32 * unit->BlockFromX + 16;
-  unit_ypos = 32 * unit->BlockFromY + 16;
-  target_xpos = 32 * target_x + 16;
-  target_ypos = 32 * target_y + 16;
-  if ( secondary_weapon == -1 || unit->LastUsedWeapon == 1 || (!air_target && _templates_bulletattribs[secondary_weapon].AntiAircraft == 2) )
-  {
-    secondary_weapon_antiaircraft = 0;
-    secondary_weapon_range = 0;
-    secondary_weapon_restriction_type = 0;
-  }
-  else
-  {
-    secondary_weapon_antiaircraft = _templates_bulletattribs[secondary_weapon].AntiAircraft;
-    secondary_weapon_range = _templates_bulletattribs[secondary_weapon].__Range;
-    secondary_weapon_restriction_type = (_templates_bulletattribs[secondary_weapon].Flags & BULFLAGS_1000_BLOCKED_BY_WALL)?1:2;
-  }
-  if ( air_target )
-  {
-    if ( !primary_weapon_antiaircraft )
-    {
-      if ( !secondary_weapon_antiaircraft )
-      {
-        return 0;
-      }
-      return CheckDistance(unit_xpos, unit_ypos, target_xpos, target_ypos, secondary_weapon_range);
-    }
-    if ( secondary_weapon_antiaircraft )
-    {
-      if ( secondary_weapon_range <= primary_weapon_range )
-      {
-        return CheckDistance(unit_xpos, unit_ypos, target_xpos, target_ypos, primary_weapon_range);
-      }
-      return CheckDistance(unit_xpos, unit_ypos, target_xpos, target_ypos, secondary_weapon_range);
-    }
-  }
-  else if ( primary_weapon_range <= secondary_weapon_range )
-  {
-    primary_weapon_range = secondary_weapon_range;
-    primary_weapon_restriction_type = secondary_weapon_restriction_type;
-  }
-  // New logic - check shooting restrictions
-  return CheckDistance(unit_xpos, unit_ypos, target_xpos, target_ypos, primary_weapon_range) && CheckLineOfSight(unit_xpos, unit_ypos, target_xpos, target_ypos, primary_weapon_restriction_type);
+
+  UnitAtribStruct *unit_template = &_templates_unitattribs[unit->Type];
+  int source_xpos = 32 * unit->BlockFromX + 16;
+  int source_ypos = 32 * unit->BlockFromY  + 16;
+  int target_xpos = 32 * target_x + 16;
+  int target_ypos = 32 * target_y + 16;
+  int primary_weapon_type = unit->LastUsedWeapon != 2?unit_template->__PrimaryWeapon:-1;
+  int secondary_weapon_type = unit->LastUsedWeapon != 1?unit_template->__SecondaryWeapon:-1;
+
+  return CanTargetBeAttacked(source_xpos, source_ypos, target_xpos, target_ypos, primary_weapon_type, secondary_weapon_type, air_target);
 }
 
 // Custom implementation of function UnitAttack
@@ -546,26 +479,16 @@ char Mod__UnitAttackTile(Unit *unit, char side, short index)
 
 char NewBestBulletExt(UnitAtribStruct *unit_template, unsigned int distance_squared, char enemy_side_id, short enemy_index, char enemy_object_type)
 {
-  CSide *enemy_side; // eax
-  char result; // al
-  unsigned int primary_weapon_range; // edi
-  unsigned int secondary_weapon_range; // esi
-  char enemy_is_flying; // [esp+Fh] [ebp-5h]
-  unsigned char armour_type; // [esp+10h] [ebp-4h]
-
   int primary_weapon = unit_template->__PrimaryWeapon;
   int secondary_weapon = unit_template->__SecondaryWeapon;
-  armour_type = 0;
-  enemy_is_flying = 0;
-  if ( primary_weapon == -1 )
-  {
-    DebugFatal("NewBestBullet", "no primary weapon");
-  }
+  int priority = unit_template->WeaponPriority;
+  unsigned char armour_type = 0;
+  char enemy_is_flying = 0;
   if ( enemy_index != -1 )
   {
     if ( enemy_object_type == OBJECT_UNIT )
     {
-      enemy_side = GetSide(enemy_side_id);
+      CSide *enemy_side = GetSide(enemy_side_id);
       armour_type = _templates_unitattribs[enemy_side->__ObjectArray[enemy_index].Type].__Armour;
       if ( enemy_side->__ObjectArray[enemy_index].Flags & UFLAGS_40_FLYING )
       {
@@ -577,60 +500,40 @@ char NewBestBulletExt(UnitAtribStruct *unit_template, unsigned int distance_squa
       armour_type = _templates_buildattribs[LOBYTE(GetSide(enemy_side_id)->__ObjectArray[enemy_index].__PosX)].Armour;
     }
   }
-  if ( enemy_is_flying )
+
+  bool can_use_primary_weapon = false;
+  bool can_use_secondary_weapon = false;
+  if (primary_weapon != -1)
   {
-    if ( !_templates_bulletattribs[primary_weapon].AntiAircraft )
+    BullAtrbStruct *primary_weapon_template = &_templates_bulletattribs[(int)primary_weapon];
+    if ((enemy_is_flying && primary_weapon_template->AntiAircraft != 0) || (!enemy_is_flying && primary_weapon_template->AntiAircraft != 2))
     {
-      result = secondary_weapon;
-      if ( secondary_weapon < 0 || !_templates_bulletattribs[secondary_weapon].AntiAircraft )
-      {
-        DebugFatal("NewBestBullet", "Trying to shoot air unit with no AA weapon");
-        result = primary_weapon;
-      }
-      return result;
+      unsigned int primary_weapon_range = primary_weapon_template->__Range;
+      unsigned int primary_weapon_min_range = primary_weapon_template->MinRange;
+      can_use_primary_weapon = primary_weapon_range * primary_weapon_range >= distance_squared && primary_weapon_min_range * primary_weapon_min_range < distance_squared;
     }
+  }
+  if (secondary_weapon != -1)
+  {
+    BullAtrbStruct *secondary_weapon_template = &_templates_bulletattribs[(int)secondary_weapon];
+    if ((enemy_is_flying && secondary_weapon_template->AntiAircraft != 0) || (!enemy_is_flying && secondary_weapon_template->AntiAircraft != 2))
+    {
+      unsigned int secondary_weapon_range = secondary_weapon_template->__Range;
+      unsigned int secondary_weapon_min_range = secondary_weapon_template->MinRange;
+      can_use_secondary_weapon = secondary_weapon_range * secondary_weapon_range >= distance_squared && secondary_weapon_min_range * secondary_weapon_min_range < distance_squared;
+    }
+  }
+  if (!can_use_primary_weapon && !can_use_secondary_weapon)
+    return -1;
+  if (!can_use_primary_weapon || priority == 2)
+    return secondary_weapon;
+  if (!can_use_secondary_weapon || priority == 1)
     return primary_weapon;
-  }
-  result = secondary_weapon;
-  if ( secondary_weapon == -1 )
-  {
+  if ( _templates_bulletattribs[(int)primary_weapon].__Damage
+     * (unsigned int)(unsigned char)_WarheadData[(unsigned char)_templates_bulletattribs[(int)primary_weapon].Warhead].Verses[armour_type] > _templates_bulletattribs[(int)secondary_weapon].__Damage * (unsigned int)(unsigned char)_WarheadData[(unsigned char)_templates_bulletattribs[(int)secondary_weapon].Warhead].Verses[armour_type] )
     return primary_weapon;
-  }
-  primary_weapon_range = (!enemy_is_flying && _templates_bulletattribs[primary_weapon].AntiAircraft == 2)?0:_templates_bulletattribs[primary_weapon].__Range;
-  secondary_weapon_range = (!enemy_is_flying && _templates_bulletattribs[secondary_weapon].AntiAircraft == 2)?0:_templates_bulletattribs[secondary_weapon].__Range;
-  if ( primary_weapon_range >= secondary_weapon_range )
-  {
-    if ( secondary_weapon_range * secondary_weapon_range < distance_squared )
-    {
-      return primary_weapon;
-    }
-    if (unit_template->WeaponPriority == 1)
-      return primary_weapon;
-    if (unit_template->WeaponPriority == 2)
-      return secondary_weapon;
-    if ( _templates_bulletattribs[primary_weapon].__Damage * ((unit_template->PrimaryWeaponDoubleShot)?2:1)
-       * (unsigned int)(unsigned __int8)_WarheadData[(unsigned __int8)_templates_bulletattribs[primary_weapon].Warhead].Verses[armour_type] >
-        _templates_bulletattribs[secondary_weapon].__Damage * ((unit_template->SecondaryWeaponDoubleShot)?2:1)
-       * (unsigned int)(unsigned __int8)_WarheadData[(unsigned __int8)_templates_bulletattribs[secondary_weapon].Warhead].Verses[armour_type] )
-    {
-      result = primary_weapon;
-    }
-  }
-  else if ( primary_weapon_range * primary_weapon_range >= distance_squared )
-  {
-    if (unit_template->WeaponPriority == 1)
-      return primary_weapon;
-    if (unit_template->WeaponPriority == 2)
-      return secondary_weapon;
-    if ( _templates_bulletattribs[primary_weapon].__Damage * ((unit_template->PrimaryWeaponDoubleShot)?2:1)
-       * (unsigned int)(unsigned __int8)_WarheadData[(unsigned __int8)_templates_bulletattribs[primary_weapon].Warhead].Verses[armour_type] >
-        _templates_bulletattribs[secondary_weapon].__Damage * ((unit_template->SecondaryWeaponDoubleShot)?2:1)
-       * (unsigned int)(unsigned __int8)_WarheadData[(unsigned __int8)_templates_bulletattribs[secondary_weapon].Warhead].Verses[armour_type] )
-    {
-      result = primary_weapon;
-    }
-  }
-  return result;
+  else
+    return secondary_weapon;
 }
 
 // Custom implementation of function UnitShootTarget
@@ -686,7 +589,15 @@ void Mod__UnitShootTarget(Unit *unit, char side, unsigned short index, int targe
   {
     target_direction = GetFacing(unit_xpos, unit_ypos, target_xpos, target_ypos);
     // Get distance
-    distance_squared = (unit_ypos - target_ypos) * (unit_ypos - target_ypos) + (unit_xpos - target_xpos) * (unit_xpos - target_xpos);
+    int target_xpos_normalized = target_xpos;
+    int target_ypos_normalized = target_ypos;
+    if (enemy_object_type == OBJECT_UNIT)
+    {
+      Unit *target_unit = GetUnit(enemySideId, enemyIndex);
+      target_xpos_normalized = target_unit->BlockFromX * 32 + 16;
+      target_ypos_normalized = target_unit->BlockFromY * 32 + 16;
+    }
+    distance_squared = (unit_ypos - target_ypos_normalized) * (unit_ypos - target_ypos_normalized) + (unit_xpos - target_xpos_normalized) * (unit_xpos - target_xpos_normalized);
     distance = sqrt((double)distance_squared);
     // Get bullet type
     if (unit->LastUsedWeapon == 1)
@@ -703,7 +614,8 @@ void Mod__UnitShootTarget(Unit *unit, char side, unsigned short index, int targe
                       enemy_object_type);
       if ( bullet_type < 0 )
       {
-        DebugFatal("ShootTarget", "NewBestBullet failed to find weapon");
+        //DebugFatal("ShootTarget", "NewBestBullet failed to find weapon");
+        return;
       }
     }
     use_barrel = (bullet_type == unit_template->__PrimaryWeapon)?unit_template->PrimaryWeaponUseBarrel:unit_template->SecondaryWeaponUseBarrel;
