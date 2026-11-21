@@ -107,6 +107,9 @@ OBJS            ?= callsites.o \
         src/mods/building-add.o \
         src/mods/building-upgrades.o \
         src/mods/mentat-sound-extra-houses.o \
+        src/mods/do-icon-build.o \
+        src/mods/new-orders.o \
+        src/mods/building-capture.o \
 	\
 	src/event-system/event-core.o \
 	src/event-system/event-conditions.o \
@@ -133,7 +136,6 @@ OBJS            ?= callsites.o \
 	src/fixes/starport-sell-refund-fix.o \
 	src/fixes/upgrade-cancel-refund-fix.o \
 	src/fixes/ai-stuck-targeting-cloaked-unit-fix.o \
-	src/fixes/cancel-upgrade-when-lowered-tech.o \
 	src/fixes/ai-place-built-building-fix.o \
 	src/fixes/score-screen-volume-fix.o \
 	src/fixes/deactivate-ai-broken-orders-fix.o \

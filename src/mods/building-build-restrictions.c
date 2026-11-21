@@ -55,6 +55,17 @@ bool CheckBuildingBuildRestriction(int tile_flags, int restriction, int restrict
   return false;
 };
 
+bool CheckBuildingRallyPointRestriction(int tile_flags, int restriction, int restriction_terrain)
+{
+  switch (restriction)
+  {
+    case BUILDINGBUILDRESTRICTON_NORMAL_OR:  return ((tile_flags & (TileFlags_2000_DRIVE_ON|TileFlags_4000_WALK_ON)) != 0) || ((restriction_terrain & (0x80 >> ((tile_flags >> 29) & 7))) != 0);
+    case BUILDINGBUILDRESTRICTON_NORMAL_AND: return ((tile_flags & (TileFlags_2000_DRIVE_ON|TileFlags_4000_WALK_ON)) != 0) && ((restriction_terrain & (0x80 >> ((tile_flags >> 29) & 7))) != 0);
+    case BUILDINGBUILDRESTRICTON_TERRAIN:    return (restriction_terrain & (0x80 >> ((tile_flags >> 29) & 7))) != 0;
+  }
+  return false;
+};
+
 // Custom implementation of function HandleBuildingPlacement
 DETOUR(0x004285C0, 0x004288C1, _Mod__HandleBuildingPlacement);
 

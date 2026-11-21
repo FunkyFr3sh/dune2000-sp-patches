@@ -1050,7 +1050,18 @@ LABEL_270:
           }
           else
           {
-            UnitAdjustState(unit, UNIT_STATE_2_IDLE);
+            // New logic start
+            // Implement factory rally points
+            if (unit->OldState == UNIT_STATE_7_MOVING)
+            {
+              unit->TargetX = unit->__RememberPosX;
+              unit->TargetY = unit->__RememberPosY;
+              UnitAdjustState(unit, UNIT_STATE_7_MOVING);
+              goto LABEL_612;
+            }
+            else
+              UnitAdjustState(unit, UNIT_STATE_2_IDLE);
+            // New logic end
           }
         }
       }
@@ -1058,11 +1069,21 @@ LABEL_270:
       {
         goto LABEL_612;
       }
+      // New logic start
+      // Implement factory rally points
       if ( _templates_unitattribs[unit->Type].__Behavior != UnitBehavior_HARVESTER )
       {
+        if (unit->OldState == UNIT_STATE_7_MOVING)
+        {
+          unit->TargetX = unit->__RememberPosX;
+          unit->TargetY = unit->__RememberPosY;
+          UnitAdjustState(unit, UNIT_STATE_7_MOVING);
+          goto LABEL_612;
+        }
         goto LABEL_345;
       }
-      UnitAdjustState(unit, UNIT_STATE_12_HARVESTING);
+      UnitAdjustState(unit, UNIT_STATE_16_LEAVING_REFINERY);
+      // New logic end
       goto LABEL_612;
     case UNIT_STATE_9_MOVING_AWAY:
       if ( unit->pos_steps )
@@ -2301,6 +2322,19 @@ LABEL_612:
         unit->TargetX = point.X;
         unit->TargetY = v260;
         UnitAdjustState(unit, UNIT_STATE_8_LEAVING_BUILDING);
+        // New logic start
+        // Implement factory rally points
+        if (unit->RepairPadIndex != -1)
+        {
+          Building *repair_pad = GetBuilding(side_id_, unit->RepairPadIndex);
+          if (repair_pad->RallyPointEnabled)
+          {
+            unit->__RememberPosX = repair_pad->RallyPointX;
+            unit->__RememberPosY = repair_pad->RallyPointY;
+            unit->OldState = UNIT_STATE_7_MOVING;
+          }
+        }
+        // New logic end
       }
       else if ( !unit->__CurrentAnimDelayCounter_SandwormSleepTimeCounter )
       {

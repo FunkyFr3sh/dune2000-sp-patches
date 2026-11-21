@@ -303,9 +303,9 @@ typedef struct Building
   char __MinYPos;
   char __MaxXPos;
   char __MaxYPos;
-  char field_1A;
-  char field_1B;
-  char field_1C;
+  char RallyPointEnabled; // Additional field for extended functionality (mod)
+  char RallyPointX; // Additional field for extended functionality (mod)
+  char RallyPointY; // Additional field for extended functionality (mod)
   char field_1D;
   char field_1E;
   char field_1F;

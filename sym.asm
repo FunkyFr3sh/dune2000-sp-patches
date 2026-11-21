@@ -735,6 +735,7 @@ setcglob 0x00443250, CheckIfMCVCanBeDeployedOn
 setcglob 0x004432F0, MoreProductionBuildingsOfSameGroupExist
 setcglob 0x00443370, IsAnyStarportUnitPicked
 setcglob 0x00448460, GetRandomValue
+setcglob 0x0044ABE0, DoCash
 setcglob 0x0044B170, SetUnitGroup
 setcglob 0x0044B1D0, SetBuildingState17andFlags20000
 setcglob 0x0044B1F0, SetBuildingAsPrimary

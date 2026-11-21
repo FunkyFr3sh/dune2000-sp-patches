@@ -73,8 +73,9 @@ void SaveGameExtraData(void *buffer, size_t size, size_t count, FILE *file)
   SAVE_DATA(rulesExt__alwaysExcludeFromMultiselect)
   SAVE_DATA(rulesExt__fixedBarrelIgnoresTurnSpeed)
   SAVE_DATA(rulesExt__arcAndFallingBulletsHaveShadow)
+  SAVE_DATA(rulesExt__factoryRallyPointMaxDistance)
   // Extra dummy bytes, to be replaced by new rules in future
-  char dummy[25] = {0};
+  char dummy[24] = {0};
   _WriteFile(dummy, sizeof(dummy), 1, file);
 }
 
@@ -143,8 +144,9 @@ void LoadGameExtraData(void *buffer, size_t size, size_t count, FILE *file)
   LOAD_DATA(rulesExt__alwaysExcludeFromMultiselect)
   LOAD_DATA(rulesExt__fixedBarrelIgnoresTurnSpeed)
   LOAD_DATA(rulesExt__arcAndFallingBulletsHaveShadow)
+  LOAD_DATA(rulesExt__factoryRallyPointMaxDistance)
   // Extra dummy bytes, to be replaced by new rules in future
-  char dummy[25];
+  char dummy[24];
   _ReadFile(dummy, sizeof(dummy), 1, file);
 
   // Reset last played property of sounds in sound table

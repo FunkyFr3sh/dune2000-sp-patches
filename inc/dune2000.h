@@ -906,6 +906,7 @@ char            CheckIfMCVCanBeDeployedOn(int xpos, int ypos);
 char            MoreProductionBuildingsOfSameGroupExist(int buildingtype);
 char            IsAnyStarportUnitPicked(unsigned char side_id);
 int             GetRandomValue(char *, int);
+void            DoCash();
 void            SetUnitGroup(char group_id);
 void            SetBuildingState17andFlags20000(Building *a1);
 void            SetBuildingAsPrimary(eSideType side_id, int building_index);

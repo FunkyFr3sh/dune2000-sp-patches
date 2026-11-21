@@ -61,23 +61,6 @@ bool Ext_UpdateExplosion(Explosion *exp, int side_id)
   return ExecuteEventHook(HOOK_POSTUPDATEEXPLOSION, 3, result, side_id, exp->MyIndex, 0, 0);
 }
 
-// Build speed hooks
-// Extension wrapper for function GetUnitBuildSpeedPercentage
-CALL(0x004469DE, _Ext_GetUnitBuildSpeedPercentage); // DoIconBuild
-
-unsigned int Ext_GetUnitBuildSpeedPercentage(unsigned char unit_type, unsigned char side_id)
-{
-  return ExecuteEventHook(HOOK_GETUNITBUILDSPEEDPERCENTAGE, 3, GetUnitBuildSpeedPercentage(unit_type, side_id), side_id, unit_type, 0, 0);
-}
-
-// Extension wrapper for function GetBuildingBuildSpeedPercentage
-CALL(0x0044683D, _Ext_GetBuildingBuildSpeedPercentage); // DoIconBuild
-
-unsigned int Ext_GetBuildingBuildSpeedPercentage(unsigned char side_id)
-{
-  return ExecuteEventHook(HOOK_GETBUILDINGBUILDSPEEDPERCENTAGE, 2, GetBuildingBuildSpeedPercentage(side_id), side_id, 0, 0, 0);
-}
-
 // Cost hooks
 // Custom implementation of function GetUnitCost
 DETOUR(0x00442BB0, 0x00442BDA, _Mod__GetUnitCost);

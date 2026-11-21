@@ -42,6 +42,7 @@ void InitExtraRules(void)
   rulesExt__alwaysExcludeFromMultiselect     = false;
   rulesExt__fixedBarrelIgnoresTurnSpeed      = true;
   rulesExt__arcAndFallingBulletsHaveShadow   = true;
+  rulesExt__factoryRallyPointMaxDistance     = 0;
 }
 
 static void LoadVars(LPCTSTR fileName);
@@ -136,4 +137,5 @@ static void LoadVars(LPCTSTR fileName)
     LOAD_CUSTOM_RULE(alwaysExcludeFromMultiselect, Bool)
     LOAD_CUSTOM_RULE(fixedBarrelIgnoresTurnSpeed, Bool)
     LOAD_CUSTOM_RULE(arcAndFallingBulletsHaveShadow, Bool)
+    LOAD_CUSTOM_RULE(factoryRallyPointMaxDistance, Int)
 }

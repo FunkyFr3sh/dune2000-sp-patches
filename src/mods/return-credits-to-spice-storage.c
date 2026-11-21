@@ -6,7 +6,7 @@
 // If rule returnCreditsToSpiceStorage is set, then credits which are returned from cancelled builds and starport orders
 // are stored into spice storage. If not enough storage capacity, remaining credits are given as non-spice cash.
 // This does not apply to sold buildings and cash crates - those will always give non-spice cash.
-CALL(0x00446BA2, _CSide_return_credits); // DoIconBuild
+//CALL(0x00446BA2, _CSide_return_credits); // DoIconBuild
 CALL(0x00455815, _CSide_return_credits); // ModelBuildUnitCancel
 CALL(0x004561B3, _CSide_return_credits); // ModelBuildBuildingCancel
 CALL(0x00457117, _CSide_return_credits); // ModelStarportUnpick
@@ -30,5 +30,5 @@ void __thiscall CSide_return_credits(CSide *this, int amount)
     }
   }
   else
-    this->CashDrip += amount; 
+    this->CashDrip += amount;
 }

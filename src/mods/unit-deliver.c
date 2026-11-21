@@ -8,6 +8,7 @@
 // Add tagged deliveries - delivered units are given a tag
 // Pick up crate when unit is delivered on top of a crate
 // Implement deliverEveryOtherEnemyUnitOnEasy rule
+// Implement factory rally points
 
 // Custom implementation of function UnitDeliver
 DETOUR(0x0049E3E0, 0x0049E6AF, _Mod__UnitDeliver);
@@ -157,6 +158,19 @@ char Mod__UnitDeliver(Unit *unit, int side_id)
         if ( _templates_unitattribs[delivered_unit->Type].__Behavior != UnitBehavior_CARRYALL )
         {
           UnitAdjustState(delivered_unit, UNIT_STATE_26_LEAVING_REPAIR_PAD);
+          // New logic start
+          // Implement factory rally points
+          if (side->__PrimaryStarport != -1)
+          {
+            Building *primary_starport = GetBuilding(side_id, side->__PrimaryStarport);
+            if (primary_starport->RallyPointEnabled)
+            {
+                delivered_unit->__RememberPosX = primary_starport->RallyPointX;
+                delivered_unit->__RememberPosY = primary_starport->RallyPointY;
+                delivered_unit->OldState = UNIT_STATE_7_MOVING;
+            }
+          }
+          // New logic end
         }
       }
       else

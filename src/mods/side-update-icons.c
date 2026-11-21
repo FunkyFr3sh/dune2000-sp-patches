@@ -1,12 +1,11 @@
 #include "macros/patch.h"
 #include "dune2000.h"
+#include "patch.h"
 #include "rules.h"
 
 // Always reset list of available buildings if rule buildingsAlwaysNeedPrerequisites is set
 // Implement unit prerequisite 2 owner side needed and upgrades needed
 // Implement returnCreditsToSpiceStorage rule
-
-void __thiscall CSide_return_credits(CSide *this, int amount);
 
 // Custom implementation of function CSide__UpdateBuildingAndUnitIconsAndBaseBoundaries
 DETOUR(0x0046BE50, 0x0046C44B, _Mod__CSide__UpdateBuildingAndUnitIconsAndBaseBoundaries);

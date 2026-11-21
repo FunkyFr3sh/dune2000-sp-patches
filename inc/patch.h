@@ -212,5 +212,8 @@ int GetFreeStartingLocation(int currentLocation);
 void SetBattleFieldSize();
 bool IsUnitArmedAgainstLandTarget(Unit *unit);
 bool IsBuildingArmedAgainstLandTarget(Building *building);
+void __thiscall CSide_return_credits(CSide *this, int amount);
+void GenerateBuildingSetRallyPointOrder(unsigned char side_id, int operation, int x, int y);
+bool CheckBuildingRallyPointRestriction(int tile_flags, int restriction, int restriction_terrain);
 DWORD WINAPI fake_timeGetTime();
 DWORD WINAPI fake_GetTickCount();

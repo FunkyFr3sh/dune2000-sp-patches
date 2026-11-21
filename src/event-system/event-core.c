@@ -981,6 +981,7 @@ void ExecuteEventAction(EventContext *e)
   case ET_ORDER_UPGRADE_PICK:             GenerateUpgradePickOrder            (A0, A2);                                     break;
   case ET_ORDER_UPGRADE_CANCEL:           EvAct_OrderUpgradeCancel            (ID, A0, A4);                                 break;
   case ET_ORDER_SPECIAL_WEAPON:           GenerateSpecialWeaponOrder          (A0, A2, C0);                                 break;
+  case ET_ORDER_BUILDING_SET_RALLY_POINT: GenerateBuildingSetRallyPointOrder  (A0, A1, C0);   RestoreBuildingSelection(A0, A4); break;
   // Game modifications
   case ET_SET_UNIT_TEMPLATE_PROPERTY:     EvAct_SetUnitTemplateProperty       (ID, A1, A2, A3, A4, A5);                     break;
   case ET_SET_BUILDING_TEMPLATE_PROPERTY: EvAct_SetBuildingTemplateProperty   (ID, A1, A2, A3, A4, A5);                     break;

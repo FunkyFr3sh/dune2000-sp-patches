@@ -68,6 +68,8 @@ typedef enum eOrderType
   eOrderType_3F = 63,
   eOrderType_40 = 64,
   eOrderType_41 = 65,
+  // Additional values for extended functionality (mod)
+  eOrderType_42_BUILDINGSETRALLYPOINT = 66
 } eOrderType;
 
 typedef struct Orderdata

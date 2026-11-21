@@ -99,6 +99,30 @@ Building *Mod__GetSelectedBuildingWithBarrel()
   return 0;
 }
 
+// Implement factory rally points
+Building *GetSelectedFactoryBuilding()
+{
+  for (Building *building = GetSide(gSideId)->__FirstBuildingPtr; building; building = building->Next)
+  {
+    BuildingAtrbStruct *building_template = &_templates_buildattribs[building->Type];
+    int behavior = building_template->__Behavior;
+    if (building->__IsSelected
+        && (behavior == BuildingBehavior_REPAIR
+          || behavior == BuildingBehavior_LIGHT_FACTORY
+          || behavior == BuildingBehavior_HEAVY_FACTORY
+          || behavior == BuildingBehavior_HITEECH
+          || behavior == BuildingBehavior_AT_HITEECH
+          || behavior == BuildingBehavior_BARRACKS
+          || behavior == BuildingBehavior_WOR
+          || behavior == BuildingBehavior_STARPORT
+          || behavior == BuildingBehavior_HK_PALACE
+          || behavior == BuildingBehavior_OR_PALACE
+          || behavior == BuildingBehavior_A_PALACE))
+      return building;
+  }
+  return 0;
+}
+
 // Custom implementation of function HandleGameLoopEvents
 DETOUR(0x004433A0, 0x00446689, _Mod__HandleGameLoopEvents);
 
@@ -327,6 +351,7 @@ LABEL_146:
       if ( !IsAnyUnitSelected() )
       {
         building_ = GetSelectedBuildingWithBarrel();
+        Building *factory;
         if ( building_ )
         {
           if ( !(tile_flags & (TileFlags_200_CSPOT_TL|TileFlags_100_CSPOT_DL|TileFlags_80_CSPOT_DR|TileFlags_40_CSPOT_TR|TileFlags_20_CSPOT_MID|TileFlags_10_OCC_BUILDING|TileFlags_8_OCC_UNIT)) )
@@ -362,6 +387,26 @@ LABEL_146:
             goto LABEL_163;
           }
         }
+        // New logic start
+        // Implement factory rally points
+        else if (rulesExt__factoryRallyPointMaxDistance
+                 && _KeyboardKeyState[Hotkey_ALT]
+                 && (factory = GetSelectedFactoryBuilding()))
+        {
+          BuildingAtrbStruct *building_template = &_templates_buildattribs[factory->Type];
+          if (!(tile_flags & (TileFlags_200_CSPOT_TL|TileFlags_100_CSPOT_DL|TileFlags_80_CSPOT_DR|TileFlags_40_CSPOT_TR|TileFlags_20_CSPOT_MID|TileFlags_10_OCC_BUILDING|TileFlags_8_OCC_UNIT))
+              && CheckBuildingRallyPointRestriction(tile_flags, building_template->BuildRestriction, building_template->BuildRestrictionTerrain)
+              && CheckDistance((factory->__MinXPos + factory->__MaxXPos)/2, (factory->__MinYPos + factory->__MaxYPos)/2, tile_x, tile_y, rulesExt__factoryRallyPointMaxDistance))
+          {
+            SetMouseCursor(CURSOR_MOVE);
+          }
+          else
+          {
+            SetMouseCursor(CURSOR_POINTER);
+          }
+          goto LABEL_164;
+        }
+        // New logic end
         else if ( IsAnyBuildingSelected() )
         {
           tile_flags_byte1 = (tile_flags >> 8) & 0xFF;
@@ -898,6 +943,17 @@ LABEL_241:
     goto LABEL_340;
   }
   _MouseRightDown = 0;
+  // New logic start
+  // Implement factory rally points
+  Building *factory;
+  if (rulesExt__factoryRallyPointMaxDistance
+           && _KeyboardKeyState[Hotkey_ALT]
+           && (factory = GetSelectedFactoryBuilding()))
+  {
+    GenerateBuildingSetRallyPointOrder(gSideId, 1, 0, 0);
+    goto LABEL_340;
+  }
+  // New logic end
   _TacticalData.__SidebarButtonMode = 0;
   _TacticalData.__DraggingBandbox = 0;
   if ( _TacticalData.__SidebarMode == 2 )
@@ -1787,6 +1843,7 @@ LABEL_618:
   pixel_x = _ViewportXPos + _gMousePos.x;
   pixel_y = _gMousePos.y + _ViewportYPos - _OptionsBarHeight;
   tile_x = (unsigned int)(_ViewportXPos + _gMousePos.x) >> 5;
+  tile_y = pixel_y >> 5;
   v87 = _CellNumbersWidthSpan[(unsigned int)(_gMousePos.y + _ViewportYPos - _OptionsBarHeight) >> 5];
   v166 = (unsigned int)(_gMousePos.y + _ViewportYPos - _OptionsBarHeight) >> 5;
   y[0] = v166;
@@ -1806,6 +1863,23 @@ LABEL_618:
     }
     goto LABEL_646;
   }
+  // New logic start
+  // Implement factory rally points
+  if (rulesExt__factoryRallyPointMaxDistance
+           && _KeyboardKeyState[Hotkey_ALT]
+           && (factory = GetSelectedFactoryBuilding()))
+  {
+    BuildingAtrbStruct *building_template = &_templates_buildattribs[factory->Type];
+    if (!(tile_flags & (TileFlags_200_CSPOT_TL|TileFlags_100_CSPOT_DL|TileFlags_80_CSPOT_DR|TileFlags_40_CSPOT_TR|TileFlags_20_CSPOT_MID|TileFlags_10_OCC_BUILDING|TileFlags_8_OCC_UNIT))
+        && CheckBuildingRallyPointRestriction(tile_flags, building_template->BuildRestriction, building_template->BuildRestrictionTerrain)
+        && CheckDistance((factory->__MinXPos + factory->__MaxXPos)/2, (factory->__MinYPos + factory->__MaxYPos)/2, tile_x, tile_y, rulesExt__factoryRallyPointMaxDistance))
+    {
+      GenerateBuildingSetRallyPointOrder(gSideId, 0, tile_x, tile_y);
+      AddCursorPuffAnimationToQueue(pixel_x, pixel_y);
+    }
+    goto LABEL_649;
+  }
+  // New logic end
   side_id = tile_flags & 7;
   if ( (tile_flags & 7) != gSideId
     && tile_flags & (TileFlags_200_CSPOT_TL|TileFlags_100_CSPOT_DL|TileFlags_80_CSPOT_DR|TileFlags_40_CSPOT_TR|TileFlags_20_CSPOT_MID|TileFlags_8_OCC_UNIT) )

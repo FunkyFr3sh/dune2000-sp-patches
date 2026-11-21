@@ -999,5 +999,19 @@ LABEL_278:
         _DrawOffered2 = 1;
       }
       break;
+    // New logic start
+    // Implement factory rally points
+    case eOrderType_42_BUILDINGSETRALLYPOINT:
+      bld = GetBuilding(order->orderdata.SideId, order->orderdata.ObjectArray[0]);
+      if (order->orderdata.field_25 == 0)
+      {
+        bld->RallyPointEnabled = 1;
+        bld->RallyPointX = order->orderdata.BlockToX;
+        bld->RallyPointY = order->orderdata.BlockToY;
+      }
+      else
+        bld->RallyPointEnabled = 0;
+      break;
+    // New logic end
   }
 }

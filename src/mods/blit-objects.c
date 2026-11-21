@@ -1008,6 +1008,13 @@ LABEL_180:
                 {
                   BlitClipTImage2(img, &rect, draw_x + 2, draw_y + 6, _images_miscIcon[0], 1, 1);
                 }
+                // New logic start
+                // Implement factory rally points
+                if (list_item_->__object_ptr->RallyPointEnabled)
+                {
+                  BlitClipTImage2(img, &rect, draw_x + _templates_buildattribs[list_item_->__object_ptr->Type]._____ArtWidth - 18, draw_y + 6, _images_miscIcon[1], 1, 1);
+                }
+                // New logic end
               }
               goto LABEL_191;
             }
