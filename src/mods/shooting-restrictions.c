@@ -1,6 +1,7 @@
 #include "macros/patch.h"
 #include "dune2000.h"
 #include "extended-tileset.h"
+#include "extended-templates.h"
 
 const int restrictions_check[32] =
 {
@@ -155,6 +156,64 @@ bool CanTargetBeAttacked(int source_xpos, int source_ypos, int target_xpos, int 
     }
   }
   return false;
+}
+
+// Extended implementation of function NewBestBullet
+char Ext__NewBestBullet(char primary_weapon, char secondary_weapon, int priority, int source_xpos, int source_ypos, int target_xpos, int target_ypos, char enemy_side_id, short enemy_index, char enemy_object_type)
+{
+  int distance_squared = (source_xpos - target_xpos) * (source_xpos - target_xpos) + (source_ypos - target_ypos) * (source_ypos - target_ypos);
+  unsigned char armour_type = 0;
+  char enemy_is_flying = 0;
+  if ( enemy_index != -1 )
+  {
+    if ( enemy_object_type == OBJECT_UNIT )
+    {
+      CSide *enemy_side = GetSide(enemy_side_id);
+      armour_type = _templates_unitattribs[enemy_side->__ObjectArray[enemy_index].Type].__Armour;
+      if ( enemy_side->__ObjectArray[enemy_index].Flags & UFLAGS_40_FLYING )
+      {
+        enemy_is_flying = 1;
+      }
+    }
+    else if ( enemy_object_type == OBJECT_BUILDING )
+    {
+      armour_type = _templates_buildattribs[LOBYTE(GetSide(enemy_side_id)->__ObjectArray[enemy_index].__PosX)].Armour;
+    }
+  }
+
+  bool can_use_primary_weapon = false;
+  bool can_use_secondary_weapon = false;
+  BullAtrbStruct *primary_weapon_template = &_templates_bulletattribs[(int)primary_weapon];
+  if ((enemy_is_flying && primary_weapon_template->AntiAircraft != 0) || (!enemy_is_flying && primary_weapon_template->AntiAircraft != 2))
+  {
+    int primary_weapon_range = primary_weapon_template->__Range;
+    int primary_weapon_min_range = primary_weapon_template->MinRange;
+    int primary_weapon_restriction_type = (primary_weapon_template->Flags & BULFLAGS_1000_BLOCKED_BY_WALL)?1:2;
+    can_use_primary_weapon = primary_weapon_range * primary_weapon_range >= distance_squared && primary_weapon_min_range * primary_weapon_min_range < distance_squared && (enemy_is_flying || CheckLineOfSight(source_xpos, source_ypos, target_xpos, target_ypos, primary_weapon_restriction_type));
+  }
+  BullAtrbStruct *secondary_weapon_template = &_templates_bulletattribs[(int)secondary_weapon];
+  if ((enemy_is_flying && secondary_weapon_template->AntiAircraft != 0) || (!enemy_is_flying && secondary_weapon_template->AntiAircraft != 2))
+  {
+    int secondary_weapon_range = secondary_weapon_template->__Range;
+    int secondary_weapon_min_range = secondary_weapon_template->MinRange;
+    int secondary_weapon_restriction_type = (secondary_weapon_template->Flags & BULFLAGS_1000_BLOCKED_BY_WALL)?1:2;
+    can_use_secondary_weapon = secondary_weapon_range * secondary_weapon_range >= distance_squared && secondary_weapon_min_range * secondary_weapon_min_range < distance_squared && (enemy_is_flying || CheckLineOfSight(source_xpos, source_ypos, target_xpos, target_ypos, secondary_weapon_restriction_type));
+  }
+  if (!can_use_primary_weapon && !can_use_secondary_weapon)
+    return -1;
+  if (!can_use_primary_weapon)
+    return secondary_weapon;
+  if (!can_use_secondary_weapon)
+    return primary_weapon;
+  if (priority == 2)
+    return secondary_weapon;
+  if (priority == 1)
+    return primary_weapon;
+  if ( _templates_bulletattribs[(int)primary_weapon].__Damage
+     * (unsigned int)(unsigned char)_WarheadData[(unsigned char)_templates_bulletattribs[(int)primary_weapon].Warhead].Verses[armour_type] > _templates_bulletattribs[(int)secondary_weapon].__Damage * (unsigned int)(unsigned char)_WarheadData[(unsigned char)_templates_bulletattribs[(int)secondary_weapon].Warhead].Verses[armour_type] )
+    return primary_weapon;
+  else
+    return secondary_weapon;
 }
 
 // Custom implementation of function EnemyUnitInRange

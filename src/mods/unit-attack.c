@@ -477,65 +477,6 @@ char Mod__UnitAttackTile(Unit *unit, char side, short index)
   return 1;
 }
 
-char NewBestBulletExt(UnitAtribStruct *unit_template, unsigned int distance_squared, char enemy_side_id, short enemy_index, char enemy_object_type)
-{
-  int primary_weapon = unit_template->__PrimaryWeapon;
-  int secondary_weapon = unit_template->__SecondaryWeapon;
-  int priority = unit_template->WeaponPriority;
-  unsigned char armour_type = 0;
-  char enemy_is_flying = 0;
-  if ( enemy_index != -1 )
-  {
-    if ( enemy_object_type == OBJECT_UNIT )
-    {
-      CSide *enemy_side = GetSide(enemy_side_id);
-      armour_type = _templates_unitattribs[enemy_side->__ObjectArray[enemy_index].Type].__Armour;
-      if ( enemy_side->__ObjectArray[enemy_index].Flags & UFLAGS_40_FLYING )
-      {
-        enemy_is_flying = 1;
-      }
-    }
-    else if ( enemy_object_type == OBJECT_BUILDING )
-    {
-      armour_type = _templates_buildattribs[LOBYTE(GetSide(enemy_side_id)->__ObjectArray[enemy_index].__PosX)].Armour;
-    }
-  }
-
-  bool can_use_primary_weapon = false;
-  bool can_use_secondary_weapon = false;
-  if (primary_weapon != -1)
-  {
-    BullAtrbStruct *primary_weapon_template = &_templates_bulletattribs[(int)primary_weapon];
-    if ((enemy_is_flying && primary_weapon_template->AntiAircraft != 0) || (!enemy_is_flying && primary_weapon_template->AntiAircraft != 2))
-    {
-      unsigned int primary_weapon_range = primary_weapon_template->__Range;
-      unsigned int primary_weapon_min_range = primary_weapon_template->MinRange;
-      can_use_primary_weapon = primary_weapon_range * primary_weapon_range >= distance_squared && primary_weapon_min_range * primary_weapon_min_range < distance_squared;
-    }
-  }
-  if (secondary_weapon != -1)
-  {
-    BullAtrbStruct *secondary_weapon_template = &_templates_bulletattribs[(int)secondary_weapon];
-    if ((enemy_is_flying && secondary_weapon_template->AntiAircraft != 0) || (!enemy_is_flying && secondary_weapon_template->AntiAircraft != 2))
-    {
-      unsigned int secondary_weapon_range = secondary_weapon_template->__Range;
-      unsigned int secondary_weapon_min_range = secondary_weapon_template->MinRange;
-      can_use_secondary_weapon = secondary_weapon_range * secondary_weapon_range >= distance_squared && secondary_weapon_min_range * secondary_weapon_min_range < distance_squared;
-    }
-  }
-  if (!can_use_primary_weapon && !can_use_secondary_weapon)
-    return -1;
-  if (!can_use_primary_weapon || priority == 2)
-    return secondary_weapon;
-  if (!can_use_secondary_weapon || priority == 1)
-    return primary_weapon;
-  if ( _templates_bulletattribs[(int)primary_weapon].__Damage
-     * (unsigned int)(unsigned char)_WarheadData[(unsigned char)_templates_bulletattribs[(int)primary_weapon].Warhead].Verses[armour_type] > _templates_bulletattribs[(int)secondary_weapon].__Damage * (unsigned int)(unsigned char)_WarheadData[(unsigned char)_templates_bulletattribs[(int)secondary_weapon].Warhead].Verses[armour_type] )
-    return primary_weapon;
-  else
-    return secondary_weapon;
-}
-
 // Custom implementation of function UnitShootTarget
 DETOUR(0x00495B90, 0x0049602C, _Mod__UnitShootTarget);
 
@@ -574,8 +515,8 @@ void Mod__UnitShootTarget(Unit *unit, char side, unsigned short index, int targe
 
   unit_ = unit;
   unit_is_in_right_direction = 0;
-  unit_xpos = unit->__PosX / 0x10000;
-  unit_ypos = unit->__PosY / 0x10000;
+  unit_xpos = 32 * unit->BlockFromX + 16;
+  unit_ypos = 32 * unit->BlockFromY + 16;
   unit_template = &_templates_unitattribs[unit_->Type];
   if ( unit_template->__PrimaryWeapon == -1 )
   {
@@ -600,15 +541,20 @@ void Mod__UnitShootTarget(Unit *unit, char side, unsigned short index, int targe
     distance_squared = (unit_ypos - target_ypos_normalized) * (unit_ypos - target_ypos_normalized) + (unit_xpos - target_xpos_normalized) * (unit_xpos - target_xpos_normalized);
     distance = sqrt((double)distance_squared);
     // Get bullet type
-    if (unit->LastUsedWeapon == 1)
+    if (unit->LastUsedWeapon == 1 || unit_template->__SecondaryWeapon == -1)
       bullet_type = unit_template->__PrimaryWeapon;
-    else if (unit->LastUsedWeapon == 2)
+    else if (unit->LastUsedWeapon == 2 || unit_template->__PrimaryWeapon == -1)
       bullet_type = unit_template->__SecondaryWeapon;
     else
     {
-      bullet_type = NewBestBulletExt(
-                      unit_template,
-                      distance_squared,
+      bullet_type = Ext__NewBestBullet(
+                      unit_template->__PrimaryWeapon,
+                      unit_template->__SecondaryWeapon,
+                      unit_template->WeaponPriority,
+                      unit_xpos,
+                      unit_ypos,
+                      target_xpos_normalized,
+                      target_ypos_normalized,
                       enemySideId,
                       enemyIndex,
                       enemy_object_type);

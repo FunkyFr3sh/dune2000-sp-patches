@@ -2327,7 +2327,7 @@ LABEL_612:
         if (unit->RepairPadIndex != -1)
         {
           Building *repair_pad = GetBuilding(side_id_, unit->RepairPadIndex);
-          if (repair_pad->RallyPointEnabled)
+          if (repair_pad && repair_pad->RallyPointEnabled)
           {
             unit->__RememberPosX = repair_pad->RallyPointX;
             unit->__RememberPosY = repair_pad->RallyPointY;

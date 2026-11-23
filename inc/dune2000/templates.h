@@ -159,7 +159,8 @@ typedef struct BuildingAtrbStruct
   uint8_t PrimaryWeaponNoAutoAttack;
   uint8_t SecondaryWeaponNoAutoAttack;
   char SecondaryMuzzleFlash;
-  char field_8D[101];
+  uint8_t WeaponPriority;
+  char ZeroBytes[100];
 }BuildingAtrbStruct;
 
 typedef struct SmokeDataStruct
