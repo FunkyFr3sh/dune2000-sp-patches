@@ -75,7 +75,13 @@ char Mod__CaptureBuilding(eSideType source_side_id, eSideType target_side_id, un
   behavior = _templates_buildattribs[source_building->Type].__Behavior;
   if ( behavior == BuildingBehavior_REFINERY || behavior == BuildingBehavior_SILO )
   {
-    credits = (unsigned int)(2000 * source_side->SpiceReal) / source_side->__MaxStorage;
+    // New logic start
+    // Capturing refinery/silo will give you proper amount of credits according to actual building capacity
+    int capacity = _templates_buildattribs[source_building->Type].StorageCapacity;
+    if (capacity == 0)
+      capacity = behavior == BuildingBehavior_REFINERY?2000:1500;
+    credits = (unsigned int)(capacity * source_side->SpiceReal) / source_side->__MaxStorage;
+    // New logic end
     CSide__AddSpice(target_side, credits);
     CSide__SpendMoneyIfSufficient(source_side, credits, 0);
   }
