@@ -1154,6 +1154,7 @@ void EvAct_ChangeUnitType(int event_id, int side_id, int target_type, bool defin
   CHECK_SIDE_ID;
   CHECK_PARAMETER(target_type, "target unit type", gUnitTypeNum);
   CHECK_OBJECT_INDEX;
+  CSide *side = GetSide(side_id);
   Unit *unit = GetUnit(side_id, index);
   if (defined_type)
   {
@@ -1165,7 +1166,9 @@ void EvAct_ChangeUnitType(int event_id, int side_id, int target_type, bool defin
   unit->Health = LLIMIT(unit->Health + _templates_unitattribs[target_type].__Strength - _templates_unitattribs[unit->Type].__Strength, 1);
   unit->Flags = (unit->Flags & (~_templates_unitattribs[unit->Type].Flags)) | _templates_unitattribs[target_type].Flags;
   unit->Speed = _templates_unitattribs[target_type].__Speed;
+  side->__UnitsExistPerType[unit->Type]--;
   unit->Type = target_type;
+  side->__UnitsExistPerType[target_type]++;
 }
 
 void EvAct_SetUnitFlag(int event_id, int side_id, eFlagOperation operation, int flag, int index)
@@ -1298,10 +1301,13 @@ void EvAct_ChangeBuildingType(int event_id, int side_id, int target_type, int in
   CHECK_SIDE_ID;
   CHECK_PARAMETER(target_type, "target building type", gBuildingTypeNum);
   CHECK_OBJECT_INDEX;
+  CSide *side = GetSide(side_id);
   Building *bld = GetBuilding(side_id, index);
   bld->Health = LLIMIT(bld->Health + _templates_buildattribs[target_type]._____HitPoints - _templates_buildattribs[bld->Type]._____HitPoints, 1);
   bld->Flags = (bld->Flags & (~_templates_buildattribs[bld->Type]._____Flags)) | _templates_buildattribs[target_type]._____Flags;
+  side->__BuildingsExistPerGroup[_templates_buildattribs[bld->Type].GroupType]--;
   bld->Type = target_type;
+  side->__BuildingsExistPerGroup[_templates_buildattribs[target_type].GroupType]++;
 }
 
 void EvAct_SetBuildingFlag(int event_id, int side_id, eFlagOperation operation, int flag, int index)
