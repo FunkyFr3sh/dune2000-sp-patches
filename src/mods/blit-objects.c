@@ -1263,3 +1263,133 @@ LABEL_239:
   BlitExplosions(img, 1);
   BlitFlyingUnits(img, 1);
 }
+
+// Custom implementation of function BlitBuildingFoundation
+DETOUR(0x00427D50, 0x0042806E, _Mod__BlitBuildingFoundation);
+
+void Mod__BlitBuildingFoundation(TImage *img)
+{
+  Building *bld; // ebp
+  signed int building_type; // esi
+  signed int building_type_; // esi
+  int building_art_offset; // ecx
+  TImage *base_image; // ebx
+  TImagePalette *palette; // eax
+  char not_buildup_animation; // al
+  char v8; // al
+  int draw_x; // ecx
+  int draw_y; // eax
+  int building_flags; // ecx
+  TImage *anim_image; // ecx
+  char v13; // [esp+3h] [ebp-1Dh]
+  unsigned __int8 side_id; // [esp+8h] [ebp-18h]
+  unsigned __int8 house_id; // [esp+Ch] [ebp-14h]
+  RECT rect; // [esp+10h] [ebp-10h]
+
+  rect.top = _OptionsBarHeight;
+  rect.left = 0;
+  rect.bottom = _ViewportHeight + _OptionsBarHeight;
+  rect.right = _ViewportWidth;
+  side_id = 0;
+  if ( _SidesToProcess )
+  {
+    do
+    {
+      bld = GetSide(side_id)->__FirstBuildingPtr;
+      house_id = _IRValuesBackup[side_id];
+      if ( gBitsPerPixel == 8 )
+      {
+        _palette_ptr_7984DC = &_palettes_6D9350[256 * house_id];
+      }
+      for ( ; bld; bld = bld->Next )
+      {
+        if ( !(bld->Flags & BFLAGS_100000_INVISIBLE) )
+        {
+          building_type = bld->Type;
+          if ( building_type >= gBuildingTypeNum )
+          {
+            DebugFatal("BlitBuildingFoundation", "Error with data, buildingType = %d", bld->Type);
+          }
+          building_type_ = building_type;
+          building_art_offset = _templates_buildattribs[building_type_]._____BuildingArt << 7;
+          if ( *(TImage **)((char *)gBuildingElements[0] + building_art_offset)
+            || bld->Health >= _templates_buildattribs[building_type_]._____HitPoints / 2
+            || bld->Flags & (BFLAGS_4_SELLING|BFLAGS_2_BUILDUP) )
+          {
+            base_image = dataimage[_templates_buildattribs[building_type_]._____BuildingArt];
+          }
+          else
+          {
+            base_image = *(TImage **)((char *)_gBuildingElementsDamaged[0] + building_art_offset);
+          }
+          if ( base_image )
+          {
+            palette = base_image->palette;
+            if ( palette )
+            {
+              if ( base_image->bitdepth == 8 )
+              {
+                memcpy(palette->data + 240, &_ColoursBinData[16 * house_id], 0x20u);
+              }
+            }
+            not_buildup_animation = 1;
+            v13 = 1;
+            if ( bld->Flags & (BFLAGS_4_SELLING|BFLAGS_2_BUILDUP) )
+            {
+              not_buildup_animation = 0;
+              v13 = 0;
+            }
+            if ( not_buildup_animation
+              || (bld->__BuildupAnimCounter / 3 < (unsigned __int8)_templates_buildattribs[building_type_]._____BuildupFramesToShow ? (v8 = v13) : (v8 = 1),
+                  v8) )
+            {
+              draw_x = bld->__PosX / 0x10000 - base_image->right - _ViewportXPos;
+              draw_y = _OptionsBarHeight + bld->__PosY / 0x10000 - base_image->bottom - _ViewportYPos;
+              if ( bld->__FlickerFrames & 2 )
+              {
+                BlitClipTImageColoured(img, &rect, draw_x, draw_y, base_image, 1);
+              }
+              else
+              {
+                BlitClipTImage2(img, &rect, draw_x, draw_y, base_image, 1, 1);
+              }
+              if ( !gBuildingElements[_templates_buildattribs[building_type_]._____BuildingArt][0] )
+              {
+                building_flags = bld->Flags;
+                if ( building_flags & (BFLAGS_20_ANIM_ONCE|BFLAGS_10_ANIM_PERMANENT) )
+                {
+                  if ( building_flags & BFLAGS_40_HAS_ANIMATION )
+                  {
+                    // New logic start
+                    // Add support for damaged building animation
+                    BuildingAtrbStruct *building_template = &_templates_buildattribs[bld->Type];
+                    if ( (bld->Health >= _templates_buildattribs[building_type_]._____HitPoints / 2 || building_template->DamagedAnimationEnabled)
+                      && !(building_flags & (BFLAGS_4_SELLING|BFLAGS_2_BUILDUP)) )
+                    {
+                      int animation_index = bld->Health >= _templates_buildattribs[building_type_]._____HitPoints / 2?building_template->_____BuildingAnimation:building_template->DamagedAnimation;
+                      anim_image = _BuildingAnimationImages[animation_index][bld->__BuildingAnimCounter / building_template->_____AnimationSpeed];
+                    // New logic end
+                      if ( anim_image )
+                      {
+                        BlitClipTImage2(
+                          img,
+                          &rect,
+                          bld->__PosX / 0x10000 - anim_image->right - _ViewportXPos,
+                          _OptionsBarHeight + bld->__PosY / 0x10000 - anim_image->bottom - _ViewportYPos,
+                          anim_image,
+                          1,
+                          1);
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      ++side_id;
+    }
+    while ( side_id < (unsigned __int8)_SidesToProcess );
+  }
+}
