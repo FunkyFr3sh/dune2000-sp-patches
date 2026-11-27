@@ -32,7 +32,7 @@ char Mod__CaptureBuilding(eSideType source_side_id, eSideType target_side_id, un
     return 0;
   }
   RemoveBuildingStuff(
-    37 * source_building_index,
+    source_building->Type,
     source_side->__ObjectArray[source_building_index].Speed / 0x10000 / 32,
     (source_side->__ObjectArray[source_building_index].Health / 0x10000
    - _templates_buildattribs[LOBYTE(source_side->__ObjectArray[source_building_index].__PosX)]._____ArtHeight)

@@ -515,8 +515,8 @@ void Mod__UnitShootTarget(Unit *unit, char side, unsigned short index, int targe
 
   unit_ = unit;
   unit_is_in_right_direction = 0;
-  unit_xpos = 32 * unit->BlockFromX + 16;
-  unit_ypos = 32 * unit->BlockFromY + 16;
+  unit_xpos = unit->__PosX / 0x10000;
+  unit_ypos = unit->__PosY / 0x10000;
   unit_template = &_templates_unitattribs[unit_->Type];
   if ( unit_template->__PrimaryWeapon == -1 )
   {
@@ -538,7 +538,7 @@ void Mod__UnitShootTarget(Unit *unit, char side, unsigned short index, int targe
       target_xpos_normalized = target_unit->BlockFromX * 32 + 16;
       target_ypos_normalized = target_unit->BlockFromY * 32 + 16;
     }
-    distance_squared = (unit_ypos - target_ypos_normalized) * (unit_ypos - target_ypos_normalized) + (unit_xpos - target_xpos_normalized) * (unit_xpos - target_xpos_normalized);
+    distance_squared = (unit_ypos - target_ypos) * (unit_ypos - target_ypos) + (unit_xpos - target_xpos) * (unit_xpos - target_xpos);
     distance = sqrt((double)distance_squared);
     // Get bullet type
     if (unit->LastUsedWeapon == 1 || unit_template->__SecondaryWeapon == -1)
@@ -551,8 +551,8 @@ void Mod__UnitShootTarget(Unit *unit, char side, unsigned short index, int targe
                       unit_template->__PrimaryWeapon,
                       unit_template->__SecondaryWeapon,
                       unit_template->WeaponPriority,
-                      unit_xpos,
-                      unit_ypos,
+                      32 * unit->BlockFromX + 16,
+                      32 * unit->BlockFromY + 16,
                       target_xpos_normalized,
                       target_ypos_normalized,
                       enemySideId,

@@ -83,7 +83,7 @@ BOOL Mod__CanUnitUseSquare(dwXYStruct x, Unit *unit, eSideType side_id, char rou
   int behavior = _templates_unitattribs[unit->Type].__Behavior;
   if (unit->State == UNIT_STATE_5_ATTACKING_BUILDING
       && (tile_flags & TileFlags_10_OCC_BUILDING)
-      && !(tile_flags & TileFlags_10000000_BUILDING_EXIT)
+      && (!(tile_flags & TileFlags_10000000_BUILDING_EXIT) || tile_flags & TileFlags_8_OCC_UNIT)
       && behavior != UnitBehavior_ENGINEER
       && behavior != UnitBehavior_SABOTEUR
       && x.X == unit->TargetX
