@@ -1531,11 +1531,18 @@ LABEL_368:
           // Harvester can unload spice only if there is enough spice storage capacity
           if (!(rulesExt__harvsUnloadOnlyIfEnoughStorage && side_->SpiceReal + side_->SpiceDrip + _gVariables.harvestBlobValue > side_->__MaxStorage))
           {
+          // New logic end
             CSide__AddSpice(side_, _gVariables.harvestBlobValue);
             side_ = GetSide((eSideType)side_id_);
             side_->__SpiceHarvested += _gVariables.harvestBlobValue;
             --unit->__SpecialPurpose;
-            if ( _templates_GroupIDs.EX_REF != -1 )
+            // New logic start
+            // Implement customizable refinery processing explosion
+            Building *refinery = GetBuilding(side_id_, unit->RefineryIndex);
+            int ref_explosion_type = (refinery && _templates_buildattribs[refinery->Type].RefineryProcessingExplosion != 0)?_templates_buildattribs[refinery->Type].RefineryProcessingExplosion:-1;
+            if (ref_explosion_type == -1)
+              ref_explosion_type = _templates_GroupIDs.EX_REF;
+            if ( ref_explosion_type != -1 )
             {
               if ( unit->RefineryIndex == -1 )
               {
@@ -1544,7 +1551,7 @@ LABEL_368:
               side_ = GetSide((eSideType)side_id_);
               ModelAddExplosion(
                 (eSideType)side_id_,
-                _templates_GroupIDs.EX_REF,
+                ref_explosion_type,
                 LOWORD(_gVariables.refineryExplosionOffsetX)
               + side_->__ObjectArray[(unsigned short)unit->RefineryIndex].Speed / 0x10000,
                 LOWORD(_gVariables.refineryExplosionOffsetY)
@@ -1555,8 +1562,8 @@ LABEL_368:
                 0,
                 0);
             }
+            // New logic end
           }
-          // New logic end
         }
         else
         {
